@@ -3,9 +3,27 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@types/jest": "^24.0.15",
+    "@types/lodash": "^4.14.136",
+    "@types/node": "^12.6.1",
+    "@types/react": "^16.8.23",
+    "@types/react-dom": "^16.8.4",
+    "@types/react-leaflet": "^2.2.1",
+    "@types/react-redux": "^7.1.1",
+    "@types/vis": "^4.21.18",
+    "axios": "^0.19.0",
+    "leaflet": "^1.5.1",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
-    "react-scripts": "3.0.1"
+    "react-leaflet": "^2.4.0",
+    "react-redux": "^7.1.0",
+    "react-scripts": "3.0.1",
+    "redux": "^4.0.2",
+    "reselect": "^4.0.0",
+    "typesafe-actions": "^4.4.2",
+    "vis": "^4.21.0"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -27,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "typescript": "^3.5.3"
   }
 }
