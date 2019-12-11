@@ -3,7 +3,7 @@ import he from 'he';
 import $ from 'jquery';
 import _ from 'lodash';
 import 'popper.js';
-import React, { useContext, useEffect, useRef, useMemo } from 'react';
+import React, { useContext, useEffect, useRef, useMemo, useState } from 'react';
 import vis from 'vis';
 import { Datation, Nullable } from '../models';
 import { AugmentedEvent, SiprojurisContext } from '../SiprojurisContext';
@@ -110,6 +110,7 @@ var options = {
   max: '2000-01-01', //Maximum date of timeline
   min: '1700-01-01', // Minimum date of timeline,
   multiselect: true, // Allow to select multiples items
+  selectable: true,
   stack: true, // Stack items
   width: '100%',
   height: '350px',
@@ -131,6 +132,14 @@ var options = {
   horizontalScroll: true
 };
 
+function usePrevious(value: any) {
+  const ref = useRef();
+  useEffect(() => {
+    ref.current = value;
+  }, [value]);
+  return ref.current;
+}
+
 export const Timeline: React.FC = function() {
   const context = useContext(SiprojurisContext);
   const $tl = useRef<HTMLDivElement>(null);
@@ -142,6 +151,7 @@ export const Timeline: React.FC = function() {
     tGroups: new vis.DataSet()
   });
 
+  const { current: popover } = useRef({ state: false });
   const toTimelineGroups = useMemo(() => {
     return _.map(context.groups, e => ({ id: e.id, content: e.label }));
   }, [context.groups]);
@@ -151,30 +161,18 @@ export const Timeline: React.FC = function() {
   );
 
   const { current: trigger } = useRef({
-    click: (e: any) => {
-      console.log(e);
-
-      if (e.group) {
-        context.select(e.group);
-      }
-    },
+    click: (_e: any) => {},
     changed: (_e: any) => {
-      console.log('update');
+      console.log('changed');
     },
-    mouseOver: (e: any) => {
-      if (e.item && _.indexOf(context.highlights, e.item) === -1) {
-        console.log(e.item, context.highlights);
-
-        context.setHighlights([e.item]);
-      }
-    }
+    mouseOver: (_e: any) => {}
   });
 
   useEffect(() => {
     trigger.click = e => {
       console.log(e);
 
-      if (e.group) {
+      if (e.what !== 'background') {
         context.select(e.group);
       }
     };
@@ -183,25 +181,29 @@ export const Timeline: React.FC = function() {
 
   useEffect(() => {
     trigger.mouseOver = (e: any) => {
-      if (e.item && _.indexOf(context.highlights, e.item) === -1) {
-        console.log(e.item, context.highlights);
-
+      if (e.item === null && context.highlights.length > 0) {
+        context.setHighlights([]);
+      } else if (e.item && _.indexOf(context.highlights, e.item) === -1) {
         context.setHighlights([e.item]);
       }
+
+      if (!popover.state) {
+        console.log('setting up popovers');
+
+        $('[data-toggle="popover"]').popover();
+        popover.state = true;
+      }
     };
-    //eslint-disable-next-line
   }, [context.highlights]);
+
+  useEffect(() => {
+    popover.state = false;
+  }, [tItems]);
 
   useEffect(() => {
     tGroups.clear();
     tGroups.update(toTimelineGroups);
     tItems.update(timelineEvents);
-    $('[data-toggle="popover"]').popover();
-    //eslint-disable-next-line
-
-    return () => {
-      $('[data-toggle="popover"]').popover('dispose');
-    };
   }, [timelineEvents, toTimelineGroups]);
 
   // on create :)
@@ -219,7 +221,6 @@ export const Timeline: React.FC = function() {
     return () => {
       tl.destroy();
     };
-
     //eslint-disable-next-line
   }, []);
 
