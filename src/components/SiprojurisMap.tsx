@@ -1,4 +1,4 @@
-import React, { createRef, useRef } from 'react';
+import React, { useRef } from 'react';
 import {
   Map,
   TileLayer,
@@ -14,7 +14,13 @@ import './SiprojurisMap.css';
 export function SiprojurisMap() {
   const $map = useRef(null);
   return (
-    <Map ref={$map} bounds={[[48.853333, 2.348611], [46.5691, 0.348203]]}>
+    <Map
+      bounds={[
+        [48.853333, 2.348611],
+        [46.5691, 0.348203]
+      ]}
+      ref={$map}
+    >
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

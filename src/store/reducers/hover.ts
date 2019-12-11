@@ -1,4 +1,4 @@
-import { ActionType, getType, createReducer } from 'typesafe-actions';
+import { createReducer } from 'typesafe-actions';
 import { end, begin } from '../actions/hover';
 export type HoverState = string | undefined;
 

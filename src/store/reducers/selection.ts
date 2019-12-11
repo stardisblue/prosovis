@@ -1,4 +1,4 @@
-import { ActionType, getType, createReducer } from 'typesafe-actions';
+import { createReducer } from 'typesafe-actions';
 import { add, remove, clear, only } from '../actions/selection';
 
 export type SelectionState = Set<string>;
