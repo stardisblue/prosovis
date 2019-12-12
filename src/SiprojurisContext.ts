@@ -22,7 +22,7 @@ type SiprojurisContextProps = {
   select(id: number | string): void;
   events: AnyEvent[];
   augmentedEvents: AugmentedEvent[];
-  groups: { kind: 'Actor' | 'NamedPlace'; items: any[] };
+  groups: { kind: string; items: any[] };
   setGroup<T extends string>(grouping: Grouping<T>): void;
   highlights: HightlightEvents;
   setHighlights(highlight: HightlightEvents): void;
@@ -74,7 +74,8 @@ export const useSiprojurisContext = function(
         e =>
           (e as any).localisation || {
             id: 0,
-            label: 'Inconnue'
+            label: 'Inconnue',
+            kind: 'NamedPlace'
           }
       )
       .uniqBy('id')

@@ -30,6 +30,7 @@
           "id": 12291,
           "label": "Mens",
           "uri": "http://symogih.org/resource/NaPl12291",
+          "kind": "NamedPlace",
           "lat": "44.814400",
           "lng": "5.759460"
         },
@@ -65,6 +66,7 @@
           "id": 85007,
           "label": "Raincy, Le",
           "uri": "http://symogih.org/resource/NaPl85007",
+          "kind": "NamedPlace",
           "lat": "48.897000",
           "lng": "2.519740"
         },
@@ -237,6 +239,7 @@
             "id": 1971,
             "label": "Lille",
             "uri": "http://symogih.org/resource/NaPl1971",
+            "kind": "NamedPlace",
             "lat": "50.625400",
             "lng": "3.040090"
           },
@@ -245,6 +248,7 @@
             "id": 1849,
             "label": "Douai",
             "uri": "http://symogih.org/resource/NaPl1849",
+            "kind": "NamedPlace",
             "lat": "50.368100",
             "lng": "3.079720"
           },
@@ -332,6 +336,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -405,6 +410,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -472,6 +478,7 @@
             "id": 1971,
             "label": "Lille",
             "uri": "http://symogih.org/resource/NaPl1971",
+            "kind": "NamedPlace",
             "lat": "50.625400",
             "lng": "3.040090"
           },
@@ -480,6 +487,7 @@
             "id": 1849,
             "label": "Douai",
             "uri": "http://symogih.org/resource/NaPl1849",
+            "kind": "NamedPlace",
             "lat": "50.368100",
             "lng": "3.079720"
           },
@@ -561,6 +569,7 @@
             "id": 1971,
             "label": "Lille",
             "uri": "http://symogih.org/resource/NaPl1971",
+            "kind": "NamedPlace",
             "lat": "50.625400",
             "lng": "3.040090"
           },
@@ -569,6 +578,7 @@
             "id": 1849,
             "label": "Douai",
             "uri": "http://symogih.org/resource/NaPl1849",
+            "kind": "NamedPlace",
             "lat": "50.368100",
             "lng": "3.079720"
           },
@@ -656,6 +666,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -724,6 +735,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -802,6 +814,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },
@@ -918,6 +931,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1020,6 +1034,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1120,6 +1135,7 @@
           "id": 78070,
           "label": "Anost",
           "uri": "http://symogih.org/resource/NaPl78070",
+          "kind": "NamedPlace",
           "lat": null,
           "lng": null
         },
@@ -1155,6 +1171,7 @@
           "id": 78070,
           "label": "Anost",
           "uri": "http://symogih.org/resource/NaPl78070",
+          "kind": "NamedPlace",
           "lat": null,
           "lng": null
         },
@@ -1210,6 +1227,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -1278,6 +1296,7 @@
             "id": 1998,
             "label": "Lyon",
             "uri": "http://symogih.org/resource/NaPl1998",
+            "kind": "NamedPlace",
             "lat": "45.767500",
             "lng": "4.833510"
           },
@@ -1351,6 +1370,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -1424,6 +1444,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1497,6 +1518,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1570,6 +1592,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -1643,6 +1666,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -1711,6 +1735,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1784,6 +1809,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -1862,6 +1888,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -1935,6 +1962,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -2008,6 +2036,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -2081,6 +2110,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -2154,6 +2184,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -2227,6 +2258,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2300,6 +2332,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2378,6 +2411,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -2451,6 +2485,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2529,6 +2564,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -2602,6 +2638,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2675,6 +2712,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2753,6 +2791,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2831,6 +2870,7 @@
             "id": 1888,
             "label": "Grenoble",
             "uri": "http://symogih.org/resource/NaPl1888",
+            "kind": "NamedPlace",
             "lat": "45.187500",
             "lng": "5.724020"
           },
@@ -2904,6 +2944,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -2977,6 +3018,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3055,6 +3097,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3133,6 +3176,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3206,6 +3250,7 @@
             "id": 2121,
             "label": "Rennes",
             "uri": "http://symogih.org/resource/NaPl2121",
+            "kind": "NamedPlace",
             "lat": "48.118900",
             "lng": "-1.676940"
           },
@@ -3269,6 +3314,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3333,6 +3379,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3399,6 +3446,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3476,6 +3524,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },
@@ -3572,6 +3621,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },
@@ -3711,6 +3761,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -3785,6 +3836,7 @@
           "id": 11397,
           "label": "Odessa",
           "uri": "http://symogih.org/resource/NaPl11397",
+          "kind": "NamedPlace",
           "lat": null,
           "lng": null
         },
@@ -3908,6 +3960,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -3981,6 +4034,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4054,6 +4108,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4122,6 +4177,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4190,6 +4246,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4258,6 +4315,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4326,6 +4384,7 @@
             "id": 1846,
             "label": "Dijon",
             "uri": "http://symogih.org/resource/NaPl1846",
+            "kind": "NamedPlace",
             "lat": "47.316100",
             "lng": "5.029200"
           },
@@ -4389,6 +4448,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -4453,6 +4513,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -4531,6 +4592,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },
@@ -4627,6 +4689,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },
@@ -4700,6 +4763,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -4807,6 +4871,7 @@
           "id": 1965,
           "label": "Lesparre-Medoc",
           "uri": "http://symogih.org/resource/NaPl1965",
+          "kind": "NamedPlace",
           "lat": null,
           "lng": null
         },
@@ -4842,6 +4907,7 @@
           "id": 1742,
           "label": "Bordeaux",
           "uri": "http://symogih.org/resource/NaPl1742",
+          "kind": "NamedPlace",
           "lat": "44.844200",
           "lng": "-0.583846"
         },
@@ -4937,6 +5003,7 @@
             "id": 2049,
             "label": "Montpellier",
             "uri": "http://symogih.org/resource/NaPl2049",
+            "kind": "NamedPlace",
             "lat": "43.615200",
             "lng": "3.878060"
           },
@@ -5015,6 +5082,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5088,6 +5156,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5161,6 +5230,7 @@
             "id": 1763,
             "label": "Caen",
             "uri": "http://symogih.org/resource/NaPl1763",
+            "kind": "NamedPlace",
             "lat": "49.188300",
             "lng": "-0.374377"
           },
@@ -5234,6 +5304,7 @@
             "id": 1763,
             "label": "Caen",
             "uri": "http://symogih.org/resource/NaPl1763",
+            "kind": "NamedPlace",
             "lat": "49.188300",
             "lng": "-0.374377"
           },
@@ -5302,6 +5373,7 @@
             "id": 1763,
             "label": "Caen",
             "uri": "http://symogih.org/resource/NaPl1763",
+            "kind": "NamedPlace",
             "lat": "49.188300",
             "lng": "-0.374377"
           },
@@ -5370,6 +5442,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5443,6 +5516,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5511,6 +5585,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5584,6 +5659,7 @@
             "id": 1763,
             "label": "Caen",
             "uri": "http://symogih.org/resource/NaPl1763",
+            "kind": "NamedPlace",
             "lat": "49.188300",
             "lng": "-0.374377"
           },
@@ -5662,6 +5738,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5740,6 +5817,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5803,6 +5881,7 @@
             "id": 2085,
             "label": "Paris",
             "uri": "http://symogih.org/resource/NaPl2085",
+            "kind": "NamedPlace",
             "lat": "48.853300",
             "lng": "2.348610"
           },
@@ -5869,6 +5948,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5933,6 +6013,7 @@
             "id": 1742,
             "label": "Bordeaux",
             "uri": "http://symogih.org/resource/NaPl1742",
+            "kind": "NamedPlace",
             "lat": "44.844200",
             "lng": "-0.583846"
           },
@@ -5997,6 +6078,7 @@
             "id": 1998,
             "label": "Lyon",
             "uri": "http://symogih.org/resource/NaPl1998",
+            "kind": "NamedPlace",
             "lat": "45.767500",
             "lng": "4.833510"
           },
@@ -6074,6 +6156,7 @@
               "id": 2085,
               "label": "Paris",
               "uri": "http://symogih.org/resource/NaPl2085",
+              "kind": "NamedPlace",
               "lat": "48.853300",
               "lng": "2.348610"
             },

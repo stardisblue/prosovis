@@ -119,8 +119,8 @@ function getTimelineEvents(events: AugmentedEvent[]) {
 var options = {
   max: '2000-01-01', //Maximum date of timeline
   min: '1700-01-01', // Minimum date of timeline,
-  multiselect: true, // Allow to select multiples items
-  selectable: true,
+  multiselect: false, // Allow to select multiples items
+  selectable: false,
   stack: true, // Stack items
   showTooltips: false,
   width: '100%',
@@ -186,20 +186,26 @@ export const Timeline: React.FC = function() {
   useEffect(() => {
     const change = () => {
       if ($events.current && selected) {
-        console.log('change', selected);
-
         _.forEach($events.current, $event => {
           const currentGroup = $event.dataset.group;
           const isDimmed = $event.classList.contains('o-50');
-          if (isDimmed) {
-            if (currentGroup === '' + selected.id) {
+          if (groups.kind !== selected.kind) {
+            if (isDimmed) {
+              console.log('timeline:opacity:remove');
+
               $event.classList.remove('o-50');
-              console.log('remove-dim');
             }
           } else {
-            if (currentGroup !== '' + selected.id) {
-              $event.classList.add('o-50');
-              console.log('add-dim');
+            if (isDimmed) {
+              if (currentGroup === '' + selected.id) {
+                $event.classList.remove('o-50');
+                console.log('timeline:opacity:remove');
+              }
+            } else {
+              if (currentGroup !== '' + selected.id) {
+                $event.classList.add('o-50');
+                console.log('timeline:opacity:add');
+              }
             }
           }
         });
@@ -208,17 +214,17 @@ export const Timeline: React.FC = function() {
     change();
 
     trigger.changed = change;
-    if (selected === undefined) {
-      _.forEach($events.current, $event => {
-        if ($event.classList.contains('o-50')) {
-          $event.classList.remove('o-50');
-          console.log('remove-dim');
-        }
-      });
-    }
+    // if (selected === undefined) {
+    //   _.forEach($events.current, $event => {
+    //     if ($event.classList.contains('o-50')) {
+    //       $event.classList.remove('o-50');
+    //       console.log('remove-dim');
+    //     }
+    //   });
+    // }
 
     // eslint-disable-next-line
-  }, [selected]);
+  }, [selected, groups]);
 
   // on create :)
   useEffect(() => {
@@ -306,9 +312,7 @@ export const Timeline: React.FC = function() {
                   className="btn btn-secondary btn-sm text-wrap"
                   name="display"
                   value="group_person"
-                  onClick={() =>
-                    setGroup(group.actor.groupBy, group.actor.groups)
-                  }
+                  onClick={() => setGroup(group.actor)}
                 >
                   Grouper par personnes
                 </button>
@@ -317,12 +321,7 @@ export const Timeline: React.FC = function() {
                   className="btn btn-secondary btn-sm text-wrap"
                   name="display"
                   value="group_place"
-                  onClick={() =>
-                    setGroup(
-                      group.localisation.groupBy,
-                      group.localisation.groups
-                    )
-                  }
+                  onClick={() => setGroup(group.localisation)}
                 >
                   Grouper par lieux
                 </button>
