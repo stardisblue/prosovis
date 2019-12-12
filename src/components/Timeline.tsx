@@ -1,13 +1,28 @@
 import 'bootstrap';
+import classnames from 'classnames';
 import he from 'he';
 import $ from 'jquery';
 import _ from 'lodash';
+import { Moment } from 'moment';
 import 'popper.js';
-import React, { useContext, useEffect, useRef, useMemo, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import vis from 'vis';
 import { Datation, Nullable } from '../models';
 import { AugmentedEvent, SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
+
+type VisEvent = {
+  event: MouseEvent;
+  item: Nullable<number | string>;
+  group: Nullable<number | string>;
+  what: Nullable<string>;
+  pageX: number;
+  pageY: number;
+  x: number;
+  y: number;
+  time: Date;
+  snappedTime: Moment;
+};
 
 function resolveDatation([start, end]: Datation[]): {
   start: string;
@@ -17,7 +32,7 @@ function resolveDatation([start, end]: Datation[]): {
   return {
     start: start.clean_date,
     end: end ? end.clean_date : null,
-    type: end ? 'range' : 'point'
+    type: end ? 'range' : 'box'
   };
 }
 
@@ -82,17 +97,12 @@ function getTimelineEvents(events: AugmentedEvent[]) {
       const colors = getStyles(kebabKind);
       const item = {
         id,
-        content: `<div class="click-content"
-          data-placement="top"
-          data-toggle="popover"
-          title="${he.unescape(actor.label)}"
-          data-content="${he.unescape(label)}"
-          data-trigger="hover"
-        ></div>`,
+        title: he.unescape(actor.label),
+        label: he.unescape(label),
+        popover: 'true',
         ...resolveDatation(datation),
-        className: kebabKind,
+        className: classnames(kebabKind, 'timeline-event'),
         style: `border:1px solid ${colors.border};
-          padding: 0.5px;
           background-color: ${colors.background}`,
         group
       };
@@ -112,6 +122,7 @@ var options = {
   multiselect: true, // Allow to select multiples items
   selectable: true,
   stack: true, // Stack items
+  showTooltips: false,
   width: '100%',
   height: '350px',
   margin: {
@@ -125,40 +136,44 @@ var options = {
     'id',
     'start',
     'end',
-    'person',
-    'place'
+    'group',
+    'title',
+    'label',
+    'popover'
   ],
   verticalScroll: true,
   horizontalScroll: true
 };
 
-function usePrevious(value: any) {
-  const ref = useRef();
-  useEffect(() => {
-    ref.current = value;
-  }, [value]);
-  return ref.current;
-}
-
 export const Timeline: React.FC = function() {
-  const context = useContext(SiprojurisContext);
+  const {
+    groups,
+    highlights,
+    setHighlights,
+    augmentedEvents,
+    selected,
+    select,
+    setGroup,
+    group
+  } = useContext(SiprojurisContext);
   const $tl = useRef<HTMLDivElement>(null);
 
+  const $events = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
+
   const {
-    current: { tItems, tGroups }
+    current: { tlItems, tlGroups }
   } = useRef({
-    tItems: new vis.DataSet(),
-    tGroups: new vis.DataSet()
+    tlItems: new vis.DataSet(),
+    tlGroups: new vis.DataSet()
   });
 
-  const { current: popover } = useRef({ state: false });
-  const toTimelineGroups = useMemo(() => {
-    return _.map(context.groups, e => ({ id: e.id, content: e.label }));
-  }, [context.groups]);
-  const timelineEvents = useMemo(
-    () => getTimelineEvents(context.augmentedEvents),
-    [context.augmentedEvents]
+  const toTlGroups = useMemo(
+    () => _.map(groups.items, ({ id, label }) => ({ id, content: label })),
+    [groups]
   );
+  const toTlItems = useMemo(() => getTimelineEvents(augmentedEvents), [
+    augmentedEvents
+  ]);
 
   const { current: trigger } = useRef({
     click: (_e: any) => {},
@@ -169,60 +184,101 @@ export const Timeline: React.FC = function() {
   });
 
   useEffect(() => {
+    const change = () => {
+      if ($events.current && selected) {
+        console.log('change', selected);
+
+        _.forEach($events.current, $event => {
+          const currentGroup = $event.dataset.group;
+          const isDimmed = $event.classList.contains('o-50');
+          if (isDimmed) {
+            if (currentGroup === '' + selected.id) {
+              $event.classList.remove('o-50');
+              console.log('remove-dim');
+            }
+          } else {
+            if (currentGroup !== '' + selected.id) {
+              $event.classList.add('o-50');
+              console.log('add-dim');
+            }
+          }
+        });
+      }
+    };
+    change();
+
+    trigger.changed = change;
+    if (selected === undefined) {
+      _.forEach($events.current, $event => {
+        if ($event.classList.contains('o-50')) {
+          $event.classList.remove('o-50');
+          console.log('remove-dim');
+        }
+      });
+    }
+
+    // eslint-disable-next-line
+  }, [selected]);
+
+  // on create :)
+  useEffect(() => {
+    const $tlCopy = $tl.current!;
+    // put timeline logic here
+    const timeline = new vis.Timeline($tlCopy, tlItems, tlGroups);
+    timeline.setOptions(options);
+
+    timeline.on('changed', e => trigger.changed(e));
+
+    timeline.on('click', e => trigger.click(e));
+
+    timeline.on('mouseOver', e => trigger.mouseOver(e));
+
+    $($tlCopy).popover({
+      selector: '[data-popover="true"]',
+      trigger: 'hover',
+      placement: 'top',
+      content: function() {
+        return this.getAttribute('data-label') || '';
+      }
+    });
+
+    $events.current = $tlCopy.getElementsByClassName('timeline-event') as any;
+
+    return () => {
+      // $($tl.current!).popover('disable');
+      timeline.destroy();
+    };
+    //eslint-disable-next-line
+  }, []);
+
+  useEffect(() => {
     trigger.click = e => {
       console.log(e);
 
       if (e.what !== 'background') {
-        context.select(e.group);
+        select(e.group);
       }
     };
-    //eslint-disable-next-line
-  }, [context.select]);
+    // eslint-disable-next-line
+  }, [select]);
 
   useEffect(() => {
-    trigger.mouseOver = (e: any) => {
-      if (e.item === null && context.highlights.length > 0) {
-        context.setHighlights([]);
-      } else if (e.item && _.indexOf(context.highlights, e.item) === -1) {
-        context.setHighlights([e.item]);
-      }
-
-      if (!popover.state) {
-        console.log('setting up popovers');
-
-        $('[data-toggle="popover"]').popover();
-        popover.state = true;
+    trigger.mouseOver = (e: VisEvent) => {
+      if (e.item === null && highlights.length > 0) {
+        setHighlights([]);
+      } else if (e.item && !_.find(highlights, ['id', e.item])) {
+        setHighlights([{ id: e.item, kind: 'Event' }]);
       }
     };
-  }, [context.highlights]);
+    // eslint-disable-next-line
+  }, [highlights]);
 
   useEffect(() => {
-    popover.state = false;
-  }, [tItems]);
-
-  useEffect(() => {
-    tGroups.clear();
-    tGroups.update(toTimelineGroups);
-    tItems.update(timelineEvents);
-  }, [timelineEvents, toTimelineGroups]);
-
-  // on create :)
-  useEffect(() => {
-    // put timeline logic here
-    const tl = new vis.Timeline($tl.current!, tItems, tGroups);
-    tl.setOptions(options);
-
-    tl.on('changed', e => trigger.changed(e));
-
-    tl.on('click', e => trigger.click(e));
-
-    tl.on('mouseOver', e => trigger.mouseOver(e));
-
-    return () => {
-      tl.destroy();
-    };
-    //eslint-disable-next-line
-  }, []);
+    tlGroups.clear();
+    tlGroups.update(toTlGroups);
+    tlItems.update(toTlItems);
+    // eslint-disable-next-line
+  }, [toTlItems, toTlGroups]);
 
   return (
     <>
@@ -251,10 +307,7 @@ export const Timeline: React.FC = function() {
                   name="display"
                   value="group_person"
                   onClick={() =>
-                    context.setGroup(
-                      context.group.actor.groupBy,
-                      context.group.actor.groups
-                    )
+                    setGroup(group.actor.groupBy, group.actor.groups)
                   }
                 >
                   Grouper par personnes
@@ -265,9 +318,9 @@ export const Timeline: React.FC = function() {
                   name="display"
                   value="group_place"
                   onClick={() =>
-                    context.setGroup(
-                      context.group.localisation.groupBy,
-                      context.group.localisation.groups
+                    setGroup(
+                      group.localisation.groupBy,
+                      group.localisation.groups
                     )
                   }
                 >

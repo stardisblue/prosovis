@@ -6,7 +6,7 @@ import { Timeline } from './components/Timeline';
 import { InfoBox } from './components/InfoBox';
 
 function App() {
-  const value = useSiprojurisContext(defaultActors);
+  const value = useSiprojurisContext(defaultActors as any);
 
   return (
     <SiprojurisContext.Provider value={value}>

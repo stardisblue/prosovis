@@ -21,6 +21,7 @@ export type Event = Ressource & {
 };
 
 export type NamedPlace = Ressource & {
+  kind: 'NamedPlace';
   lat: Nullable<string>;
   lng: Nullable<string>;
 };
@@ -80,6 +81,7 @@ export type RetirementEvent = Event & {
 };
 
 export type Actor = ActorCard & {
+  kind: 'Actor';
   birth_set: BirthEvent[];
   death_set: DeathEvent[];
   suspensionactivity_set: SuspensionActivityEvent[];

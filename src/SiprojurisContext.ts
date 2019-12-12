@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Actor, AnyEvent, NamedPlace } from './models';
 import _ from 'lodash';
 
@@ -6,27 +6,28 @@ type Groupable = { group: number };
 
 export type AugmentedEvent = AnyEvent & Partial<Groupable>;
 
-type HightlightEvents = number[];
+type HightlightEvents = { id: number | string; kind: string }[];
 type GroupByFunc = (a: AnyEvent) => any;
 type GroupsFunc = (e: AugmentedEvent[]) => any[];
 
-type Grouping = {
+type Grouping<T extends string = string> = {
   groups: GroupsFunc;
   groupBy: GroupByFunc;
+  kind: T;
 };
 
 type SiprojurisContextProps = {
   actors: Actor[];
-  selected?: any;
+  selected?: Actor | NamedPlace;
   select(id: number | string): void;
   events: AnyEvent[];
   augmentedEvents: AugmentedEvent[];
-  groups: any[];
-  setGroup(groupBy: GroupByFunc, getGroup: GroupsFunc): void;
+  groups: { kind: 'Actor' | 'NamedPlace'; items: any[] };
+  setGroup<T extends string>(grouping: Grouping<T>): void;
   highlights: HightlightEvents;
   setHighlights(highlight: HightlightEvents): void;
   setFilter(filter: any): void;
-  group: { actor: Grouping; localisation: Grouping };
+  group: { actor: Grouping<'Actor'>; localisation: Grouping<'NamedPlace'> };
 };
 
 export const SiprojurisContext = React.createContext<SiprojurisContextProps>(
@@ -66,11 +67,7 @@ export const useSiprojurisContext = function(
   const groupByNamedPlace = (a: any) =>
     (a.localisation && a.localisation.id) || 0;
 
-  const [groupBy, setGroupBy] = useState<GroupByFunc>(() => groupByActor);
-
-  // default: group by actors
   const groupsActor = useCallback(() => actors, [actors]);
-
   const groupsNamedPlace = (selection: AugmentedEvent[]) =>
     _(selection)
       .map(
@@ -83,7 +80,12 @@ export const useSiprojurisContext = function(
       .uniqBy('id')
       .value();
 
-  const [getGroups, setGroups] = useState<GroupsFunc>(() => groupsActor);
+  // default: group by actors
+  const [grouping, setGrouping] = useState<Grouping>({
+    groupBy: groupByActor,
+    groups: groupsActor,
+    kind: 'Actor'
+  });
 
   const [filter, setFilter] = useState<any>(() => (a: AnyEvent) => true);
 
@@ -107,26 +109,30 @@ export const useSiprojurisContext = function(
         .map(
           (a: AnyEvent): AugmentedEvent => ({
             ...a,
-            group: groupBy(a)
+            group: grouping.groupBy(a)
           })
         )
         .value();
     },
-    [events, filter, groupBy]
+    [events, filter, grouping.groupBy]
   );
 
   const groups = useMemo(() => {
-    return getGroups(events);
-  }, [getGroups, events]);
+    return { kind: grouping.kind, items: grouping.groups(events) };
+  }, [grouping.kind, grouping.groups, events]);
 
   const [selected, setSelected] = useState<Actor | undefined>();
 
   const select = useCallback(
     (id: number | string) => {
-      return setSelected(_.find(groups, ['id', id]));
+      return setSelected(_.find(groups.items, ['id', id]));
     },
     [groups]
   );
+
+  useEffect(() => {
+    setSelected(undefined);
+  }, [groups]);
 
   return {
     selected,
@@ -137,19 +143,20 @@ export const useSiprojurisContext = function(
     groups,
     highlights,
     setHighlights,
-    setGroup: (groupBy: GroupByFunc, groups: GroupsFunc) => {
-      setGroupBy(() => groupBy);
-      setGroups(() => groups);
+    setGroup: grouping => {
+      setGrouping(grouping);
     },
     setFilter,
     group: {
       actor: {
         groups: groupsActor,
-        groupBy: groupByActor
+        groupBy: groupByActor,
+        kind: 'Actor'
       },
       localisation: {
         groups: groupsNamedPlace,
-        groupBy: groupByNamedPlace
+        groupBy: groupByNamedPlace,
+        kind: 'NamedPlace'
       }
     }
   };

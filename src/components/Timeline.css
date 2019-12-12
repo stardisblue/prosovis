@@ -974,12 +974,6 @@ input[type='submit'] {
   display: none;
 }
 
-.click-content {
-  height: 10px;
-  width: 100%;
-  min-width: 10px;
-}
-
 .vis-item.vis-range {
   background-color: rgba(0, 0, 0, 0);
   box-sizing: border-box;
@@ -1331,4 +1325,10 @@ input[type='submit'] {
   border-radius: 6px;
   border-top: 1px grey solid;
   border-bottom: 1px grey solid;
+}
+
+.vis-item.vis-box {
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
 }

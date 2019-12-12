@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import _ from 'lodash';
-import { Datation, Actor } from '../models';
+import { Datation } from '../models';
 import { SiprojurisContext } from '../SiprojurisContext';
 import { ActorInfoBox } from './ActorInfoBox';
 
