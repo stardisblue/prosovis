@@ -16,6 +16,11 @@ type GroupProps = {
 
 export type GroupedEvent = AnyEvent & { group: PrimaryKey };
 
+/**
+ * Allows to group events by NamedPlace or Actors
+ * @param events
+ * @param actors
+ */
 export function useGroups(
   events: AnyEvent[],
   actors: Actor[]
