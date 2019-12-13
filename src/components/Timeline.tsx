@@ -5,14 +5,13 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { Moment } from 'moment';
 import 'popper.js';
-import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import vis, {
-  TimelineEventPropertiesResult,
-  TimelineEventPropertiesResultWhatType
-} from 'vis';
+import React, { useContext, useEffect, useRef } from 'react';
+import vis from 'vis';
 import { Datation, Nullable, PrimaryKey } from '../models';
-import { AugmentedEvent, SiprojurisContext } from '../SiprojurisContext';
+import { SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
+import { useGroups, GroupedEvent } from '../hooks/useGroups';
+import { useMouse } from '../hooks/useMouse';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -107,7 +106,7 @@ function getStyles(str: string) {
   return colorMapping[str] || colorMapping.basic;
 }
 
-function getTimelineEvents(events: AugmentedEvent[]) {
+function getTimelineEvents(events: GroupedEvent[]) {
   const items: any[] = [];
 
   _.forEach(events, ({ datation, id, actor, label, group, kind }) => {
@@ -167,54 +166,45 @@ var options = {
 
 const OPACITY_CLASS = 'o-30';
 
-function draggingTreshold(
-  mouse: { x: number; y: number },
-  event: { pageX: number; pageY: number }
-) {
-  return Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6;
-}
-
 export const Timeline: React.FC = function() {
   const {
     groups,
     highlights,
     setHighlights,
-    augmentedEvents,
+    groupedEvents,
     selected,
     select,
     setGroup,
     group
   } = useContext(SiprojurisContext);
-  const $tl = useRef<HTMLDivElement>(null);
 
-  const $events = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
+  // const [groupedEvents, groups, setGroup, group] = useGroups(
+  //   filteredEvents,
+  //   actors
+  // );
+
+  const refTimeline = useRef<HTMLDivElement>(null);
+
+  const refEvents = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
 
   const {
-    current: { tlItems, tlGroups }
+    current: { tl_items, tl_groups }
   } = useRef({
-    tlItems: new vis.DataSet(),
-    tlGroups: new vis.DataSet()
+    tl_items: new vis.DataSet(),
+    tl_groups: new vis.DataSet()
   });
-
-  const toTlGroups = useMemo(
-    () => _.map(groups.items, ({ id, label }) => ({ id, content: label })),
-    [groups]
-  );
-  const toTlItems = useMemo(() => getTimelineEvents(augmentedEvents), [
-    augmentedEvents
-  ]);
 
   const mouse = useMouse();
 
   const { current: trigger } = useRef({
-    legacyClick: (e: VisEvent) => {
-      // console.log(e);
-    },
-    legacyDrag: (e: VisEvent) => {
+    /** @deprecated */
+    legacyClick: (e_: VisEvent) => {},
+    /** @deprecated */
+    legacyDrag: (_e: VisEvent) => {
       console.log('legacyDrag');
     },
-    changed: (_e: VisEvent) => {
-      console.log('changed');
+    changed: (e: VisEvent) => {
+      console.log('changed', e);
     },
     mouseOver: (_e: VisEvent) => {},
     click: (_e: VisEvent) => {}
@@ -222,9 +212,9 @@ export const Timeline: React.FC = function() {
 
   // on create :)
   useEffect(() => {
-    const $tlCopy = $tl.current!;
+    const $timeline = refTimeline.current!;
     // put timeline logic here
-    const timeline = new vis.Timeline($tlCopy, tlItems, tlGroups);
+    const timeline = new vis.Timeline($timeline, tl_items, tl_groups);
     timeline.setOptions(options);
 
     timeline.on('changed', (e: any) => trigger.changed(e));
@@ -246,13 +236,13 @@ export const Timeline: React.FC = function() {
     });
     timeline.on('mouseUp', (e: any) => {
       if (mouse.click) trigger.click(e);
-      
+
       mouse.dragging = false;
       mouse.click = false;
     });
     timeline.on('mouseOver', (e: any) => trigger.mouseOver(e));
 
-    $($tlCopy).popover({
+    $($timeline).popover({
       selector: '[data-popover="true"]',
       trigger: 'hover',
       placement: 'top',
@@ -261,7 +251,9 @@ export const Timeline: React.FC = function() {
       }
     });
 
-    $events.current = $tlCopy.getElementsByClassName('timeline-event') as any;
+    refEvents.current = $timeline.getElementsByClassName(
+      'timeline-event'
+    ) as any;
 
     return () => {
       timeline.destroy();
@@ -270,9 +262,11 @@ export const Timeline: React.FC = function() {
   }, []);
 
   useEffect(() => {
-    const change = function() {
-      if ($events.current) {
-        _.forEach($events.current, $event => {
+    const change = function(e?: VisEvent) {
+      console.log('changed', e);
+
+      if (refEvents.current) {
+        _.forEach(refEvents.current, $event => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
           if (selected === undefined) {
@@ -304,7 +298,7 @@ export const Timeline: React.FC = function() {
       console.log('click', e);
       if (e.what === 'group-label') {
         select(
-          _(augmentedEvents)
+          _(groupedEvents)
             .filter({ group: e.group })
             .map('id')
             .value()
@@ -316,7 +310,7 @@ export const Timeline: React.FC = function() {
       }
     };
     // eslint-disable-next-line
-  }, [select, augmentedEvents]);
+  }, [select, groupedEvents]);
 
   useEffect(() => {
     trigger.mouseOver = (e: VisEvent) => {
@@ -330,11 +324,12 @@ export const Timeline: React.FC = function() {
   }, [highlights]);
 
   useEffect(() => {
-    tlGroups.clear();
-    tlGroups.update(toTlGroups);
-    tlItems.update(toTlItems);
-    // eslint-disable-next-line
-  }, [toTlItems, toTlGroups]);
+    tl_groups.clear();
+    tl_groups.update(
+      _.map(groups.items, ({ id, label }) => ({ id, content: label }))
+    );
+    tl_items.update(getTimelineEvents(groupedEvents));
+  }, [groupedEvents, groups.items]);
 
   return (
     <>
@@ -727,25 +722,7 @@ export const Timeline: React.FC = function() {
           ></div>
         </div>
       </div>
-      <div id="timeline" ref={$tl}></div>
+      <div id="timeline" ref={refTimeline}></div>
     </>
   );
 };
-function useMouse() {
-  return useRef({
-    click: false,
-    dragging: false,
-    x: 0,
-    y: 0,
-    draggingTreshold: (
-      mouse: {
-        x: number;
-        y: number;
-      },
-      event: {
-        pageX: number;
-        pageY: number;
-      }
-    ) => Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6
-  }).current;
-}

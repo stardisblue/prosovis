@@ -15,7 +15,7 @@ function App() {
           <InfoBox />
         </div>
         <div className="fl w-75 vh-100">
-          <div className="h-50">{/* <SiprojurisMap /> */}</div>
+          {/* <div className="h-50"><SiprojurisMap /></div> */}
           <div className="h-50">
             <Timeline />
           </div>
