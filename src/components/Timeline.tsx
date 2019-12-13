@@ -168,20 +168,18 @@ const OPACITY_CLASS = 'o-30';
 
 export const Timeline: React.FC = function() {
   const {
-    groups,
     highlights,
     setHighlights,
-    groupedEvents,
     selected,
     select,
-    setGroup,
-    group
+    actors,
+    filteredEvents
   } = useContext(SiprojurisContext);
 
-  // const [groupedEvents, groups, setGroup, group] = useGroups(
-  //   filteredEvents,
-  //   actors
-  // );
+  const [groupedEvents, groups, setGroup, group] = useGroups(
+    filteredEvents,
+    actors
+  );
 
   const refTimeline = useRef<HTMLDivElement>(null);
 

@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Actor, AnyEvent, PrimaryKey } from './models';
 import _ from 'lodash';
-import { useGroups, Grouping, GroupedEvent } from './hooks/useGroups';
 
 type HightlightEvents = { id: PrimaryKey; kind: string }[];
 
@@ -15,17 +14,6 @@ type SiprojurisContextProps = {
   setHighlights(highlight: HightlightEvents): void;
   setFilter(filter: any): void;
   indexedEvents: _.Dictionary<AnyEvent>;
-  groupedEvents: GroupedEvent[];
-
-  setGroup<T extends string>(grouping: Grouping<T>): void;
-  /**
-   * @deprecated
-   */
-  groups: { kind: string; items: any[] };
-  /**
-   * @deprecated
-   */
-  group: { actor: Grouping<'Actor'>; localisation: Grouping<'NamedPlace'> };
 };
 
 export const SiprojurisContext = React.createContext<SiprojurisContextProps>(
@@ -92,11 +80,6 @@ export const useSiprojurisContext = function(
     []
   );
 
-  const [groupedEvents, groups, setGroup, group] = useGroups(
-    filteredEvents,
-    actors
-  );
-
   return {
     selected,
     select,
@@ -106,10 +89,6 @@ export const useSiprojurisContext = function(
     filteredEvents,
     highlights,
     setHighlights,
-    setFilter,
-    groupedEvents,
-    groups,
-    setGroup,
-    group
+    setFilter
   };
 };
