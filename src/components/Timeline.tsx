@@ -6,13 +6,16 @@ import _ from 'lodash';
 import { Moment } from 'moment';
 import 'popper.js';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
-import vis from 'vis';
+import vis, {
+  TimelineEventPropertiesResult,
+  TimelineEventPropertiesResultWhatType
+} from 'vis';
 import { Datation, Nullable, PrimaryKey } from '../models';
 import { AugmentedEvent, SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
 
 type VisEventProps = {
-  event: MouseEvent;
+  event: MouseEvent | PointerEvent;
   item: Nullable<number | string>;
   group: Nullable<number | string>;
   what: Nullable<string>;
@@ -201,22 +204,20 @@ export const Timeline: React.FC = function() {
     augmentedEvents
   ]);
 
-  const { current: mouse } = useRef({
-    click: false,
-    dragging: false,
-    x: 0,
-    y: 0
-  });
+  const mouse = useMouse();
 
   const { current: trigger } = useRef({
-    legacyClick: (e: any) => {
+    legacyClick: (e: VisEvent) => {
       // console.log(e);
     },
-    changed: (_e: any) => {
+    legacyDrag: (e: VisEvent) => {
+      console.log('legacyDrag');
+    },
+    changed: (_e: VisEvent) => {
       console.log('changed');
     },
-    mouseOver: (_e: any) => {},
-    click: (_e: any) => {}
+    mouseOver: (_e: VisEvent) => {},
+    click: (_e: VisEvent) => {}
   });
 
   // on create :)
@@ -226,31 +227,30 @@ export const Timeline: React.FC = function() {
     const timeline = new vis.Timeline($tlCopy, tlItems, tlGroups);
     timeline.setOptions(options);
 
-    timeline.on('changed', e => trigger.changed(e));
-    timeline.on('click', e => trigger.legacyClick(e));
+    timeline.on('changed', (e: any) => trigger.changed(e));
+    timeline.on('click', (e: any) => trigger.legacyClick(e));
+    timeline.on('dragover', (e: any) => trigger.legacyDrag(e));
 
-    timeline.on('mouseDown', e => {
+    timeline.on('mouseDown', (e: any) => {
       if (!mouse.click) {
         mouse.click = true;
         mouse.x = e.pageX;
         mouse.y = e.pageY;
       }
     });
-    timeline.on('mouseMove', e => {
-      if (mouse.click && draggingTreshold(mouse, e.event)) {
-        // console.log('dragging');
-
+    timeline.on('mouseMove', (e: any) => {
+      if (mouse.click && mouse.draggingTreshold(mouse, e.event as any)) {
         mouse.dragging = true;
         mouse.click = false;
       }
     });
-    timeline.on('mouseUp', e => {
+    timeline.on('mouseUp', (e: any) => {
       if (mouse.click) trigger.click(e);
-
+      
       mouse.dragging = false;
       mouse.click = false;
     });
-    timeline.on('mouseOver', e => trigger.mouseOver(e));
+    timeline.on('mouseOver', (e: any) => trigger.mouseOver(e));
 
     $($tlCopy).popover({
       selector: '[data-popover="true"]',
@@ -731,3 +731,21 @@ export const Timeline: React.FC = function() {
     </>
   );
 };
+function useMouse() {
+  return useRef({
+    click: false,
+    dragging: false,
+    x: 0,
+    y: 0,
+    draggingTreshold: (
+      mouse: {
+        x: number;
+        y: number;
+      },
+      event: {
+        pageX: number;
+        pageY: number;
+      }
+    ) => Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6
+  }).current;
+}
