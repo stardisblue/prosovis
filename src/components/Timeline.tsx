@@ -7,11 +7,11 @@ import { Moment } from 'moment';
 import 'popper.js';
 import React, { useContext, useEffect, useMemo, useRef } from 'react';
 import vis from 'vis';
-import { Datation, Nullable } from '../models';
+import { Datation, Nullable, PrimaryKey } from '../models';
 import { AugmentedEvent, SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
 
-type VisEvent = {
+type VisEventProps = {
   event: MouseEvent;
   item: Nullable<number | string>;
   group: Nullable<number | string>;
@@ -23,6 +23,23 @@ type VisEvent = {
   time: Date;
   snappedTime: Moment;
 };
+
+type VisEventGroup = VisEventProps & {
+  what: 'group-label';
+  group: PrimaryKey;
+};
+type VisEventItem = VisEventProps & {
+  what: 'item';
+  item: PrimaryKey;
+  group: PrimaryKey;
+};
+type VisEventBackground = VisEventProps & {
+  what: 'background';
+  item: null;
+  group: PrimaryKey;
+};
+
+type VisEvent = VisEventGroup | VisEventItem | VisEventBackground;
 
 function resolveDatation([start, end]: Datation[]): {
   start: string;
@@ -100,7 +117,7 @@ function getTimelineEvents(events: AugmentedEvent[]) {
         title: he.unescape(actor.label),
         label: he.unescape(label),
         popover: 'true',
-        ...resolveDatation(datation),
+        ...resolveDatation(_.sortBy(datation, 'clean_date')),
         className: classnames(kebabKind, 'timeline-event'),
         style: `border:1px solid ${colors.border};
           background-color: ${colors.background}`,
@@ -145,6 +162,15 @@ var options = {
   horizontalScroll: true
 };
 
+const OPACITY_CLASS = 'o-30';
+
+function draggingTreshold(
+  mouse: { x: number; y: number },
+  event: { pageX: number; pageY: number }
+) {
+  return Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6;
+}
+
 export const Timeline: React.FC = function() {
   const {
     groups,
@@ -175,56 +201,23 @@ export const Timeline: React.FC = function() {
     augmentedEvents
   ]);
 
+  const { current: mouse } = useRef({
+    click: false,
+    dragging: false,
+    x: 0,
+    y: 0
+  });
+
   const { current: trigger } = useRef({
-    click: (_e: any) => {},
+    legacyClick: (e: any) => {
+      // console.log(e);
+    },
     changed: (_e: any) => {
       console.log('changed');
     },
-    mouseOver: (_e: any) => {}
+    mouseOver: (_e: any) => {},
+    click: (_e: any) => {}
   });
-
-  useEffect(() => {
-    const change = () => {
-      if ($events.current && selected) {
-        _.forEach($events.current, $event => {
-          const currentGroup = $event.dataset.group;
-          const isDimmed = $event.classList.contains('o-50');
-          if (groups.kind !== selected.kind) {
-            if (isDimmed) {
-              console.log('timeline:opacity:remove');
-
-              $event.classList.remove('o-50');
-            }
-          } else {
-            if (isDimmed) {
-              if (currentGroup === '' + selected.id) {
-                $event.classList.remove('o-50');
-                console.log('timeline:opacity:remove');
-              }
-            } else {
-              if (currentGroup !== '' + selected.id) {
-                $event.classList.add('o-50');
-                console.log('timeline:opacity:add');
-              }
-            }
-          }
-        });
-      }
-    };
-    change();
-
-    trigger.changed = change;
-    // if (selected === undefined) {
-    //   _.forEach($events.current, $event => {
-    //     if ($event.classList.contains('o-50')) {
-    //       $event.classList.remove('o-50');
-    //       console.log('remove-dim');
-    //     }
-    //   });
-    // }
-
-    // eslint-disable-next-line
-  }, [selected, groups]);
 
   // on create :)
   useEffect(() => {
@@ -234,9 +227,29 @@ export const Timeline: React.FC = function() {
     timeline.setOptions(options);
 
     timeline.on('changed', e => trigger.changed(e));
+    timeline.on('click', e => trigger.legacyClick(e));
 
-    timeline.on('click', e => trigger.click(e));
+    timeline.on('mouseDown', e => {
+      if (!mouse.click) {
+        mouse.click = true;
+        mouse.x = e.pageX;
+        mouse.y = e.pageY;
+      }
+    });
+    timeline.on('mouseMove', e => {
+      if (mouse.click && draggingTreshold(mouse, e.event)) {
+        // console.log('dragging');
 
+        mouse.dragging = true;
+        mouse.click = false;
+      }
+    });
+    timeline.on('mouseUp', e => {
+      if (mouse.click) trigger.click(e);
+
+      mouse.dragging = false;
+      mouse.click = false;
+    });
     timeline.on('mouseOver', e => trigger.mouseOver(e));
 
     $($tlCopy).popover({
@@ -251,22 +264,59 @@ export const Timeline: React.FC = function() {
     $events.current = $tlCopy.getElementsByClassName('timeline-event') as any;
 
     return () => {
-      // $($tl.current!).popover('disable');
       timeline.destroy();
     };
     //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
-    trigger.click = e => {
-      console.log(e);
+    const change = function() {
+      if ($events.current) {
+        _.forEach($events.current, $event => {
+          const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
-      if (e.what !== 'background') {
-        select(e.group);
+          if (selected === undefined) {
+            if (isDimmed) {
+              console.log('timeline:opacity:undefined');
+              $event.classList.remove(OPACITY_CLASS);
+            }
+          } else {
+            const inSelection =
+              _.sortedIndexOf(selected, +$event.dataset.id!) !== -1;
+            if (isDimmed && inSelection) {
+              console.log('timeline:opacity:remove');
+              $event.classList.remove(OPACITY_CLASS);
+            } else if (!isDimmed && !inSelection) {
+              console.log('timeline:opacity:add');
+              $event.classList.add(OPACITY_CLASS);
+            }
+          }
+        });
+      }
+    };
+    change();
+
+    trigger.changed = change;
+  }, [selected]);
+
+  useEffect(() => {
+    trigger.click = (e: VisEvent) => {
+      console.log('click', e);
+      if (e.what === 'group-label') {
+        select(
+          _(augmentedEvents)
+            .filter({ group: e.group })
+            .map('id')
+            .value()
+        );
+      } else if (e.what === 'item') {
+        select([e.item]);
+      } else {
+        select();
       }
     };
     // eslint-disable-next-line
-  }, [select]);
+  }, [select, augmentedEvents]);
 
   useEffect(() => {
     trigger.mouseOver = (e: VisEvent) => {

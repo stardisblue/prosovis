@@ -1,12 +1,12 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { Actor, AnyEvent, NamedPlace } from './models';
+import React, { useState, useCallback, useMemo } from 'react';
+import { Actor, AnyEvent, PrimaryKey } from './models';
 import _ from 'lodash';
 
-type Groupable = { group: number };
+type Groupable = { group: PrimaryKey };
 
 export type AugmentedEvent = AnyEvent & Partial<Groupable>;
 
-type HightlightEvents = { id: number | string; kind: string }[];
+type HightlightEvents = { id: PrimaryKey; kind: string }[];
 type GroupByFunc = (a: AnyEvent) => any;
 type GroupsFunc = (e: AugmentedEvent[]) => any[];
 
@@ -18,15 +18,22 @@ type Grouping<T extends string = string> = {
 
 type SiprojurisContextProps = {
   actors: Actor[];
-  selected?: Actor | NamedPlace;
-  select(id: number | string): void;
+  selected?: PrimaryKey[];
+  select(events?: PrimaryKey[]): void;
   events: AnyEvent[];
   augmentedEvents: AugmentedEvent[];
-  groups: { kind: string; items: any[] };
   setGroup<T extends string>(grouping: Grouping<T>): void;
   highlights: HightlightEvents;
   setHighlights(highlight: HightlightEvents): void;
   setFilter(filter: any): void;
+  indexedEvents: _.Dictionary<AnyEvent>;
+  /**
+   * @deprecated
+   */
+  groups: { kind: string; items: any[] };
+  /**
+   * @deprecated
+   */
   group: { actor: Grouping<'Actor'>; localisation: Grouping<'NamedPlace'> };
 };
 
@@ -103,6 +110,17 @@ export const useSiprojurisContext = function(
     },
     [actors]
   );
+
+  const indexedEvents = useMemo(
+    function() {
+      return _(events)
+        .filter(filter)
+        .keyBy('id')
+        .value();
+    },
+    [events]
+  );
+
   const augmentedEvents = useMemo(
     function() {
       return _(events)
@@ -122,32 +140,26 @@ export const useSiprojurisContext = function(
     return { kind: grouping.kind, items: grouping.groups(events) };
   }, [grouping.kind, grouping.groups, events]);
 
-  const [selected, setSelected] = useState<Actor | undefined>();
+  const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
 
   const select = useCallback(
-    (id: number | string) => {
-      return setSelected(_.find(groups.items, ['id', id]));
-    },
-    [groups]
+    (items?: PrimaryKey[]) => setSelected(items ? items.sort() : undefined),
+    []
   );
-
-  useEffect(() => {
-    setSelected(undefined);
-  }, [groups]);
-
   return {
     selected,
     select,
     actors,
     events,
+    indexedEvents,
     augmentedEvents,
     groups,
     highlights,
     setHighlights,
+    setFilter,
     setGroup: grouping => {
       setGrouping(grouping);
     },
-    setFilter,
     group: {
       actor: {
         groups: groupsActor,

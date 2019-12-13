@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import _ from 'lodash';
-import { Datation } from '../models';
+import { Datation, isActor } from '../models';
 import { SiprojurisContext } from '../SiprojurisContext';
 import { ActorInfoBox } from './ActorInfoBox';
 
@@ -15,7 +15,7 @@ export const InfoBox: React.FC = function() {
   const context = useContext(SiprojurisContext);
   return (
     <div>
-      {context.selected && context.selected.kind === 'Actor' && (
+      {context.selected && isActor(context.selected) && (
         <ActorInfoBox actor={context.selected} />
       )}
     </div>

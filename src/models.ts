@@ -1,5 +1,7 @@
+export type PrimaryKey = number | string;
+
 export type Ressource = {
-  id: string | number;
+  id: PrimaryKey;
   url: string;
   uri: string;
   label: string;
@@ -91,6 +93,10 @@ export type Actor = ActorCard & {
   obtainqualification_set: ObtainQualificationEvent[];
   retirement_set: RetirementEvent[];
 };
+
+export function isActor(object: any): object is Actor {
+  return object.kind && object.kind === 'Actor';
+}
 
 export type AnyEvent =
   | BirthEvent
