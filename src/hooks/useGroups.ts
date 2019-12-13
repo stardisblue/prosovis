@@ -81,32 +81,23 @@ export function useGroups(
   );
   // default: group by actors
   const [grouping, setGrouping] = useState<Grouping>(group.actor);
-  const setGroup: <T extends string>(
-    grouping: Grouping<T>
-  ) => void = useCallback(grouping => {
-    setGrouping(grouping);
-  }, []);
 
-  const groups: GroupProps = useMemo(() => {
-    return { kind: grouping.kind, items: grouping.groups(events) };
-  }, [grouping, events]);
+  const groups: GroupProps = useMemo(
+    () => ({ kind: grouping.kind, items: grouping.groups(events) }),
+    [grouping, events]
+  );
 
   const groupifiedEvents = useMemo(
-    function() {
-      return _.map(
+    () =>
+      _.map(
         events,
-        (a: AnyEvent): GroupedEvent => ({
+        (a): GroupedEvent => ({
           ...a,
           group: grouping.groupBy(a)
         })
-      );
-    },
+      ),
     [events, grouping]
   );
 
-  useEffect(() => {
-    console.log(groupifiedEvents, groups, setGroup, group);
-  }, [groupifiedEvents, groups, setGroup, group]);
-
-  return [groupifiedEvents, groups, setGroup, group];
+  return [groupifiedEvents, groups, setGrouping, group];
 }
