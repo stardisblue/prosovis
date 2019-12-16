@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import defaultActors from './store/actors.json';
 import { useSiprojurisContext, SiprojurisContext } from './SiprojurisContext';
-import { Timeline } from './components/Timeline';
+import { Timeline } from './components/SiprojurisTimeline';
 import { InfoBox } from './components/InfoBox';
 
 function App() {
