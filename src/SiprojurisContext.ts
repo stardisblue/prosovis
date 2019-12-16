@@ -10,10 +10,10 @@ type SiprojurisContextProps = {
   select(events?: PrimaryKey[]): void;
   events: AnyEvent[];
   filteredEvents: AnyEvent[];
-  highlights: HightlightEvents;
-  setHighlights(highlight: HightlightEvents): void;
+  highlights?: HightlightEvents;
+  setHighlights(highlight?: HightlightEvents): void;
   setFilter(filter: any): void;
-  indexedEvents: _.Dictionary<AnyEvent>;
+  // indexedEvents: _.Dictionary<AnyEvent>;
 };
 
 export const SiprojurisContext = React.createContext<SiprojurisContextProps>(
@@ -47,7 +47,7 @@ export const useSiprojurisContext = function(
 ): SiprojurisContextProps {
   const [actors] = useState(dataset);
 
-  const [highlights, setHighlights] = useState<HightlightEvents>([]);
+  const [highlights, setHighlights] = useState<HightlightEvents>();
 
   const [filter, setFilter] = useState<any>(() => (a: AnyEvent) => true);
 
@@ -69,9 +69,9 @@ export const useSiprojurisContext = function(
     events,
     filter
   ]);
-  const indexedEvents = useMemo(() => _.keyBy(filteredEvents, 'id'), [
-    filteredEvents
-  ]);
+  // const indexedEvents = useMemo(() => _.keyBy(filteredEvents, 'id'), [
+  //   filteredEvents
+  // ]);
 
   const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
 
@@ -85,7 +85,7 @@ export const useSiprojurisContext = function(
     select,
     actors,
     events,
-    indexedEvents,
+    // indexedEvents,
     filteredEvents,
     highlights,
     setHighlights,

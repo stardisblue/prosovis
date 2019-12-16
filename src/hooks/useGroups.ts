@@ -9,7 +9,7 @@ export type Grouping<T extends string = string> = {
   groupBy: GroupByFunc;
   kind: T;
 };
-type GroupProps = {
+export type GroupProps = {
   kind: string;
   items: any[];
 };

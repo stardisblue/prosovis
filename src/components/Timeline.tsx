@@ -5,12 +5,12 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { Moment } from 'moment';
 import 'popper.js';
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect, useRef, useState, useMemo } from 'react';
 import vis from 'vis';
-import { Datation, Nullable, PrimaryKey } from '../models';
+import { Datation, Nullable, PrimaryKey, AnyEvent } from '../models';
 import { SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
-import { useGroups, GroupedEvent } from '../hooks/useGroups';
+import { GroupedEvent } from '../hooks/useGroups';
 import { useMouse } from '../hooks/useMouse';
 
 type VisEventProps = {
@@ -166,58 +166,109 @@ var options = {
 
 const OPACITY_CLASS = 'o-30';
 
+function groupByActor(a: AnyEvent) {
+  return a.actor.id;
+}
+
+function groupByNamedPlace(a: any) {
+  return a.localisation ? a.localisation.id : 0;
+}
+
+function groupsActor(events: AnyEvent[]) {
+  return _(events)
+    .uniqBy('actor.id')
+    .map(e => e.actor)
+    .value();
+}
+
+function groupsNamedPlace(events: AnyEvent[]) {
+  return _(events)
+    .uniqBy('localisation.id')
+    .map(
+      e =>
+        (e as any).localisation || {
+          id: 0,
+          label: 'Inconnue',
+          kind: 'NamedPlace'
+        }
+    )
+    .value();
+}
+
+const GROUP_BY = {
+  actor: {
+    groups: groupsActor,
+    groupBy: groupByActor,
+    kind: 'Actor'
+  },
+  localisation: {
+    groups: groupsNamedPlace,
+    groupBy: groupByNamedPlace,
+    kind: 'NamedPlace'
+  }
+};
+
 export const Timeline: React.FC = function() {
   const {
     highlights,
     setHighlights,
     selected,
     select,
-    actors,
     filteredEvents
   } = useContext(SiprojurisContext);
 
-  const [groupedEvents, groups, setGroup, group] = useGroups(
-    filteredEvents,
-    actors
-  );
+  const $timelineRef = useRef<HTMLDivElement>(null);
 
-  const refTimeline = useRef<HTMLDivElement>(null);
+  const $eventsRef = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
 
-  const refEvents = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
+  const itemsRef = useRef(new vis.DataSet());
+  const groupsRef = useRef(new vis.DataSet());
 
-  const {
-    current: { tl_items, tl_groups }
-  } = useRef({
-    tl_items: new vis.DataSet(),
-    tl_groups: new vis.DataSet()
-  });
+  const [grouping, setGroup] = useState(GROUP_BY.actor);
+
+  const timelineEvents = useMemo(() => {
+    return getTimelineEvents(
+      _.map(
+        filteredEvents,
+        (a): GroupedEvent => ({
+          ...a,
+          group: grouping.groupBy(a)
+        })
+      )
+    );
+  }, [filteredEvents, grouping]);
 
   const mouse = useMouse();
 
-  const { current: trigger } = useRef({
+  const clickRef = useRef((_e: VisEvent) => {});
+  const changedRef = useRef((e: VisEvent) => {
+    console.log('changed', e);
+  });
+  const mouseOverRef = useRef((_e: VisEvent) => {});
+
+  const triggerRef = useRef({
     /** @deprecated */
     legacyClick: (e_: VisEvent) => {},
     /** @deprecated */
     legacyDrag: (_e: VisEvent) => {
       console.log('legacyDrag');
-    },
-    changed: (e: VisEvent) => {
-      console.log('changed', e);
-    },
-    mouseOver: (_e: VisEvent) => {},
-    click: (_e: VisEvent) => {}
+    }
   });
 
   // on create :)
   useEffect(() => {
-    const $timeline = refTimeline.current!;
+    const $timeline = $timelineRef.current!;
     // put timeline logic here
-    const timeline = new vis.Timeline($timeline, tl_items, tl_groups);
+    const timeline = new vis.Timeline(
+      $timeline,
+      itemsRef.current,
+      groupsRef.current
+    );
     timeline.setOptions(options);
 
-    timeline.on('changed', (e: any) => trigger.changed(e));
-    timeline.on('click', (e: any) => trigger.legacyClick(e));
-    timeline.on('dragover', (e: any) => trigger.legacyDrag(e));
+    timeline.on('changed', (e: any) => changedRef.current(e));
+    timeline.on('click', (e: any) => triggerRef.current.legacyClick(e));
+    timeline.on('dragover', (e: any) => triggerRef.current.legacyDrag(e));
 
     timeline.on('mouseDown', (e: any) => {
       if (!mouse.click) {
@@ -226,19 +277,22 @@ export const Timeline: React.FC = function() {
         mouse.y = e.pageY;
       }
     });
+
     timeline.on('mouseMove', (e: any) => {
       if (mouse.click && mouse.draggingTreshold(mouse, e.event as any)) {
         mouse.dragging = true;
         mouse.click = false;
       }
     });
+
     timeline.on('mouseUp', (e: any) => {
-      if (mouse.click) trigger.click(e);
+      if (mouse.click) clickRef.current(e);
 
       mouse.dragging = false;
       mouse.click = false;
     });
-    timeline.on('mouseOver', (e: any) => trigger.mouseOver(e));
+
+    timeline.on('mouseOver', (e: any) => mouseOverRef.current(e));
 
     $($timeline).popover({
       selector: '[data-popover="true"]',
@@ -249,7 +303,7 @@ export const Timeline: React.FC = function() {
       }
     });
 
-    refEvents.current = $timeline.getElementsByClassName(
+    $eventsRef.current = $timeline.getElementsByClassName(
       'timeline-event'
     ) as any;
 
@@ -260,11 +314,9 @@ export const Timeline: React.FC = function() {
   }, []);
 
   useEffect(() => {
-    const change = function(e?: VisEvent) {
-      console.log('changed', e);
-
-      if (refEvents.current) {
-        _.forEach(refEvents.current, $event => {
+    const change = function() {
+      if ($eventsRef.current) {
+        _.forEach($eventsRef.current, $event => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
           if (selected === undefined) {
@@ -288,15 +340,15 @@ export const Timeline: React.FC = function() {
     };
     change();
 
-    trigger.changed = change;
+    changedRef.current = change;
   }, [selected]);
 
   useEffect(() => {
-    trigger.click = (e: VisEvent) => {
+    clickRef.current = (e: VisEvent) => {
       console.log('click', e);
       if (e.what === 'group-label') {
         select(
-          _(groupedEvents)
+          _(timelineEvents)
             .filter({ group: e.group })
             .map('id')
             .value()
@@ -307,27 +359,36 @@ export const Timeline: React.FC = function() {
         select();
       }
     };
-    // eslint-disable-next-line
-  }, [select, groupedEvents]);
+  }, [select, timelineEvents]);
 
   useEffect(() => {
-    trigger.mouseOver = (e: VisEvent) => {
-      if (e.item === null && highlights.length > 0) {
-        setHighlights([]);
-      } else if (e.item && !_.find(highlights, ['id', e.item])) {
+    mouseOverRef.current = (e: VisEvent) => {
+      console.log(e);
+
+      if (e.what === 'group-label') {
+        setHighlights([{ id: e.group, kind: grouping.kind }]);
+      } else if (e.what === 'item') {
         setHighlights([{ id: e.item, kind: 'Event' }]);
+      } else if (highlights) {
+        setHighlights();
       }
     };
-    // eslint-disable-next-line
-  }, [highlights]);
+  }, [highlights, setHighlights]);
 
   useEffect(() => {
-    tl_groups.clear();
-    tl_groups.update(
-      _.map(groups.items, ({ id, label }) => ({ id, content: label }))
+    // refItems.current.clear();
+    itemsRef.current.update(timelineEvents);
+  }, [timelineEvents]);
+
+  useEffect(() => {
+    groupsRef.current.clear();
+    groupsRef.current.update(
+      _.map(grouping.groups(filteredEvents), ({ id, label }) => ({
+        id,
+        content: label
+      }))
     );
-    tl_items.update(getTimelineEvents(groupedEvents));
-  }, [groupedEvents, groups.items]);
+  }, [grouping, filteredEvents]);
 
   return (
     <>
@@ -355,7 +416,7 @@ export const Timeline: React.FC = function() {
                   className="btn btn-secondary btn-sm text-wrap"
                   name="display"
                   value="group_person"
-                  onClick={() => setGroup(group.actor)}
+                  onClick={() => setGroup(GROUP_BY.actor)}
                 >
                   Grouper par personnes
                 </button>
@@ -364,7 +425,7 @@ export const Timeline: React.FC = function() {
                   className="btn btn-secondary btn-sm text-wrap"
                   name="display"
                   value="group_place"
-                  onClick={() => setGroup(group.localisation)}
+                  onClick={() => setGroup(GROUP_BY.localisation)}
                 >
                   Grouper par lieux
                 </button>
@@ -720,7 +781,7 @@ export const Timeline: React.FC = function() {
           ></div>
         </div>
       </div>
-      <div id="timeline" ref={refTimeline}></div>
+      <div id="timeline" ref={$timelineRef}></div>
     </>
   );
 };
