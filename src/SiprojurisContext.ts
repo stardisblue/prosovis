@@ -12,7 +12,8 @@ type SiprojurisContextProps = {
   filteredEvents: AnyEvent[];
   highlights?: HightlightEvents;
   setHighlights(highlight?: HightlightEvents): void;
-  setFilter(filter: any): void;
+  setFilter(filter: () => any): void;
+  types: string[];
   // indexedEvents: _.Dictionary<AnyEvent>;
 };
 
@@ -80,6 +81,15 @@ export const useSiprojurisContext = function(
     []
   );
 
+  const types = useMemo(
+    () =>
+      _(events)
+        .uniqBy('kind')
+        .map('kind')
+        .value(),
+    [events]
+  );
+
   return {
     selected,
     select,
@@ -89,6 +99,7 @@ export const useSiprojurisContext = function(
     filteredEvents,
     highlights,
     setHighlights,
-    setFilter
+    setFilter,
+    types
   };
 };

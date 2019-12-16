@@ -5,13 +5,21 @@ import $ from 'jquery';
 import _ from 'lodash';
 import { Moment } from 'moment';
 import 'popper.js';
-import React, { useContext, useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback
+} from 'react';
 import vis from 'vis';
 import { Datation, Nullable, PrimaryKey, AnyEvent } from '../models';
 import { SiprojurisContext } from '../SiprojurisContext';
 import './Timeline.css';
 import { GroupedEvent } from '../hooks/useGroups';
 import { useMouse } from '../hooks/useMouse';
+import items from '../store/reducers/items';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -123,7 +131,8 @@ function getTimelineEvents(events: GroupedEvent[]) {
         className: classnames(kebabKind, 'timeline-event'),
         style: `border:1px solid ${colors.border};
           background-color: ${colors.background}`,
-        group
+        group,
+        kind
       };
 
       items.push(item);
@@ -164,7 +173,7 @@ var options = {
   horizontalScroll: true
 };
 
-const OPACITY_CLASS = 'o-30';
+const OPACITY_CLASS = 'o-50';
 
 function groupByActor(a: AnyEvent) {
   return a.actor.id;
@@ -214,29 +223,48 @@ export const Timeline: React.FC = function() {
     setHighlights,
     selected,
     select,
-    filteredEvents
+    filteredEvents,
+    setFilter,
+    types
   } = useContext(SiprojurisContext);
 
+  const [displayTypes, setDisplayTypes] = useState(() =>
+    _(types)
+      .map(t => [t, true])
+      .fromPairs()
+      .value()
+  );
+
+  const toggle = useCallback((typ: string) => {
+    setDisplayTypes(state => {
+      state[typ] = !state[typ];
+      return { ...state };
+    });
+  }, []);
+
   const $timelineRef = useRef<HTMLDivElement>(null);
+  const visTimeline = useRef<vis.Timeline>();
 
   const $eventsRef = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
 
-  const itemsRef = useRef(new vis.DataSet());
-  const groupsRef = useRef(new vis.DataSet());
-
   const [grouping, setGroup] = useState(GROUP_BY.actor);
+
+  useEffect(() => {
+    setFilter(() => (e: AnyEvent) => displayTypes[e.kind]);
+  }, [displayTypes]);
 
   const timelineEvents = useMemo(() => {
     return getTimelineEvents(
-      _.map(
-        filteredEvents,
-        (a): GroupedEvent => ({
-          ...a,
-          group: grouping.groupBy(a)
-        })
-      )
+      _(filteredEvents)
+        .map(
+          (a): GroupedEvent => ({
+            ...a,
+            group: grouping.groupBy(a)
+          })
+        )
+        .value()
     );
-  }, [filteredEvents, grouping]);
+  }, [filteredEvents, grouping, displayTypes]);
 
   const mouse = useMouse();
 
@@ -259,11 +287,7 @@ export const Timeline: React.FC = function() {
   useEffect(() => {
     const $timeline = $timelineRef.current!;
     // put timeline logic here
-    const timeline = new vis.Timeline(
-      $timeline,
-      itemsRef.current,
-      groupsRef.current
-    );
+    const timeline = new vis.Timeline($timeline, [], []);
     timeline.setOptions(options);
 
     timeline.on('changed', (e: any) => changedRef.current(e));
@@ -306,6 +330,8 @@ export const Timeline: React.FC = function() {
     $eventsRef.current = $timeline.getElementsByClassName(
       'timeline-event'
     ) as any;
+
+    visTimeline.current = timeline;
 
     return () => {
       timeline.destroy();
@@ -363,8 +389,6 @@ export const Timeline: React.FC = function() {
 
   useEffect(() => {
     mouseOverRef.current = (e: VisEvent) => {
-      console.log(e);
-
       if (e.what === 'group-label') {
         setHighlights([{ id: e.group, kind: grouping.kind }]);
       } else if (e.what === 'item') {
@@ -376,18 +400,18 @@ export const Timeline: React.FC = function() {
   }, [highlights, setHighlights]);
 
   useEffect(() => {
-    // refItems.current.clear();
-    itemsRef.current.update(timelineEvents);
+    visTimeline.current!.setItems(timelineEvents);
+    // visTimeline.current!.redraw();
   }, [timelineEvents]);
 
   useEffect(() => {
-    groupsRef.current.clear();
-    groupsRef.current.update(
+    visTimeline.current!.setGroups(
       _.map(grouping.groups(filteredEvents), ({ id, label }) => ({
         id,
         content: label
       }))
     );
+    visTimeline.current!.redraw();
   }, [grouping, filteredEvents]);
 
   return (
@@ -401,16 +425,7 @@ export const Timeline: React.FC = function() {
                 className="btn-group"
                 role="group"
                 aria-label="Display of groups"
-                style={{ width: '100%' }}
               >
-                <button
-                  type="button"
-                  className="btn btn-secondary btn-sm text-wrap"
-                  name="display"
-                  value="group_none"
-                >
-                  Dégrouper
-                </button>
                 <button
                   type="button"
                   className="btn btn-secondary btn-sm text-wrap"
@@ -430,23 +445,8 @@ export const Timeline: React.FC = function() {
                   Grouper par lieux
                 </button>
               </form>
-              <a
-                className="badge badge-secondary mt-1 text-white"
-                id="group_filter"
-                style={{ width: '100%' }}
-              >
-                Choisissez les groupes en cliquant dessus
-              </a>
-              <div
-                id="start-date"
-                className="text-left"
-                style={{ fontSize: '9px' }}
-              >
-                <br />
-                <span className="align-bottom"></span>
-              </div>
             </div>
-            <div className="col-6 border-right border-left p-0">
+            <div className="col-9 border-right p-0">
               <ul className="nav nav-tabs pt-1" id="myTab" role="tablist">
                 <li className="badge nav-item p-0 ml-1">
                   <a
@@ -471,34 +471,11 @@ export const Timeline: React.FC = function() {
                     aria-controls="event"
                     aria-selected="false"
                   >
-                    Evènement
+                    Evènements
                   </a>
-                </li>
-                <li className="badge nav-item p-0">
-                  <a
-                    className="nav-link text-secondary"
-                    id="search-tab"
-                    data-toggle="tab"
-                    href="#search"
-                    role="tab"
-                    aria-controls="search"
-                    aria-selected="false"
-                  >
-                    Recherche
-                  </a>
-                </li>
-                <li
-                  className="badge nav-item p-0 position-absolute"
-                  style={{ right: '0px' }}
-                >
-                  <a
-                    className="nav-link text-secondary"
-                    id="nb-item-select"
-                    data-disabled="disabled"
-                  ></a>
                 </li>
               </ul>
-              <div className="tab-content" style={{ height: '60px' }}>
+              <div className="tab-content">
                 <div
                   className="tab-pane fade"
                   id="tempo"
@@ -521,10 +498,7 @@ export const Timeline: React.FC = function() {
                             style={{ width: '60px', margin: '5px' }}
                           >
                             <div className="vis-item-overflow">
-                              <div
-                                className="vis-item-content"
-                                style={{ width: '60px' }}
-                              >
+                              <div className="vis-item-content">
                                 <div className="click-content"></div>
                               </div>
                             </div>
@@ -543,10 +517,7 @@ export const Timeline: React.FC = function() {
                             className="vis-item vis-box legend sur vis-readonly"
                             style={{ margin: '5px' }}
                           >
-                            <div
-                              className="vis-item-content"
-                              style={{ width: 'inherit' }}
-                            >
+                            <div className="vis-item-content">
                               <div className="click-content"></div>
                             </div>
                           </div>
@@ -566,10 +537,7 @@ export const Timeline: React.FC = function() {
                             style={{ width: '60px', margin: '5px' }}
                           >
                             <div className="vis-item-overflow">
-                              <div
-                                className="vis-item-content"
-                                style={{ width: '60px' }}
-                              >
+                              <div className="vis-item-content">
                                 <div className="click-content"></div>
                               </div>
                             </div>
@@ -586,13 +554,10 @@ export const Timeline: React.FC = function() {
                         <label htmlFor="long-thi" className="d-inline">
                           <div
                             className="vis-item vis-range legend long-thi vis-readonly m-1"
-                            style={{ width: '60px' }}
+                            style={{ width: '60px', margin: '5px' }}
                           >
                             <div className="vis-item-overflow">
-                              <div
-                                className="vis-item-content"
-                                style={{ width: '60px' }}
-                              >
+                              <div className="vis-item-content">
                                 <div className="click-content"></div>
                               </div>
                             </div>
@@ -611,15 +576,10 @@ export const Timeline: React.FC = function() {
                         <label htmlFor="no-beg" className="d-inline">
                           <div
                             className="vis-item vis-range legend no-beg vis-readonly m-1"
-                            style={{ width: '60px' }}
+                            style={{ width: '60px', margin: '5px' }}
                           >
                             <div className="vis-item-overflow">
-                              <div
-                                className="vis-item-content"
-                                style={{ width: '60px' }}
-                              >
-                                <div className="click-content"></div>
-                              </div>
+                              <div className="vis-item-content"></div>
                             </div>
                           </div>
                           <div className="vis-item-visible-frame"></div>
@@ -634,13 +594,10 @@ export const Timeline: React.FC = function() {
                         <label htmlFor="long-sur" className="d-inline">
                           <div
                             className="vis-item vis-range legend long-sur vis-readonly m-1"
-                            style={{ width: '60px' }}
+                            style={{ width: '60px', margin: '5px' }}
                           >
                             <div className="vis-item-overflow">
-                              <div
-                                className="vis-item-content"
-                                style={{ width: '60px' }}
-                              >
+                              <div className="vis-item-content">
                                 <div className="click-content"></div>
                               </div>
                             </div>
@@ -656,129 +613,43 @@ export const Timeline: React.FC = function() {
                   id="event"
                   role="tabpanel"
                   aria-labelledby="event-tab"
-                  style={{ height: '60px' }}
                 >
-                  <div
-                    className="container-fluid text-left"
-                    id="event_filter"
-                  ></div>
-                </div>
-                <div
-                  className="tab-pane fade p-1"
-                  id="search"
-                  role="tabpanel"
-                  aria-labelledby="search-tab"
-                  style={{ height: '60px' }}
-                >
-                  <div className="form-row">
-                    <div className="col-4">
-                      <input
-                        className="form-control form-control-sm autocomplete mr-sm-2"
-                        id="search-value"
-                        type="text"
-                        placeholder="Sélectionner..."
-                        aria-label="Select in..."
-                      />
-                    </div>
-                    <div className="col-8 text-left">
-                      <div
-                        id="unselect-search"
-                        className="btn btn-sm btn-outline-danger my-2 my-sm-0 search-button"
-                        data-value="unselect"
-                      >
-                        Déselectionner
-                      </div>
-                      <div
-                        id="select-search"
-                        className="btn btn-sm btn-outline-success my-2 my-sm-0 search-button"
-                        data-value="select"
-                      >
-                        Selectionner
-                      </div>
-                      <div
-                        id="select-range"
-                        className="btn btn-sm btn-outline-secondary my-2 my-sm-0 search-button float-right"
-                        data-value="2"
-                      >
-                        Selectionner dans intervale
-                      </div>
+                  <div className="container-fluid text-left" id="event_filter">
+                    <div className="row">
+                      {useMemo(
+                        () =>
+                          _.map(displayTypes, (state, key) => (
+                            <div className="col-4">
+                              <label>
+                                <input
+                                  id="no-beg"
+                                  type="checkbox"
+                                  className="checkbox-temporality-event"
+                                  value="no-beg"
+                                  checked={state}
+                                  onChange={() => toggle(key)}
+                                />
+                                <i
+                                  className="br-100 mh1 dib"
+                                  style={{
+                                    backgroundColor: getStyles(_.kebabCase(key))
+                                      .background,
+                                    height: '12px',
+                                    width: '12px'
+                                  }}
+                                ></i>
+                                {key}
+                              </label>
+                            </div>
+                          )),
+                        [displayTypes]
+                      )}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="col-3 border-0 p-1">
-              <form
-                name="item_selection"
-                className="btn-group"
-                role="group"
-                aria-label="Actions on selected items"
-                style={{ width: '100%' }}
-              >
-                <button
-                  id="remove_items"
-                  type="button"
-                  className="btn btn-danger btn-sm text-wrap"
-                  name="selection"
-                  value="selection_remove"
-                >
-                  Supprimer les items sélectionnés
-                </button>
-                <button
-                  id="keep_items"
-                  type="button"
-                  className="btn btn-success btn-sm text-wrap"
-                  name="selection"
-                  value="selection_keep"
-                >
-                  Conserver uniquement les items sélectionnés
-                </button>
-              </form>
-              <a
-                className="badge badge-secondary mt-1 text-white"
-                id="reset_items"
-                style={{ width: '100%', cursor: 'pointer' }}
-              >
-                Réinitialiser tous
-              </a>
-              <div
-                id="end-date"
-                className="text-right"
-                style={{ fontSize: '9px' }}
-              >
-                <br />
-                <span className="align-bottom"></span>
-              </div>
-            </div>
           </div>
-        </div>
-      </div>
-      <div id="timewindows">
-        <div className="progress" style={{ height: '5px' }}>
-          <div
-            className="progress-bar bg-light"
-            role="progressbar"
-            style={{ width: '0%' }}
-            aria-valuenow={15}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          ></div>
-          <div
-            className="progress-bar bg-secondary"
-            role="progressbar"
-            style={{ width: '100%' }}
-            aria-valuenow={30}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          ></div>
-          <div
-            className="progress-bar bg-light"
-            role="progressbar"
-            style={{ width: '0%' }}
-            aria-valuenow={20}
-            aria-valuemin={0}
-            aria-valuemax={100}
-          ></div>
         </div>
       </div>
       <div id="timeline" ref={$timelineRef}></div>
