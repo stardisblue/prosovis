@@ -16,7 +16,7 @@ import { AnyEvent, Nullable, PrimaryKey, Datation } from '../models';
 import { Moment } from 'moment';
 import he from 'he';
 import './VisTimeline.css';
-import vis from 'vis';
+import vis from 'vis-timeline';
 import { GroupedEvent } from '../hooks/useGroups';
 import { useMouse } from '../hooks/useMouse';
 import { SiprojurisTimelineContext } from './SiprojurisTimeline';
