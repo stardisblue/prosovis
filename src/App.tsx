@@ -2,7 +2,7 @@ import React from 'react';
 import './App.css';
 import defaultActors from './store/actors.json';
 import { useSiprojurisContext, SiprojurisContext } from './SiprojurisContext';
-import { Timeline } from './components/SiprojurisTimeline';
+import { SiprojurisTimeline } from './components/SiprojurisTimeline';
 import { InfoBox } from './components/InfoBox';
 
 function App() {
@@ -17,7 +17,7 @@ function App() {
         <div className="fl w-75 vh-100">
           {/* <div className="h-50"><SiprojurisMap /></div> */}
           <div className="h-50">
-            <Timeline />
+            <SiprojurisTimeline />
           </div>
         </div>
       </div>

@@ -1,11 +1,4 @@
-import React, {
-  useEffect,
-  useContext,
-  useState,
-  useCallback,
-  useRef,
-  useMemo
-} from 'react';
+import React, { useEffect, useContext, useRef, useMemo } from 'react';
 import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
@@ -193,7 +186,7 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     setFilter(() => (e: AnyEvent) => displayTypes[e.kind]);
-  }, [displayTypes]);
+  }, [displayTypes, setFilter]);
 
   const timelineEvents = useMemo(() => {
     return getTimelineEvents(
@@ -206,7 +199,7 @@ export const VisTimeline: React.FC = function() {
         )
         .value()
     );
-  }, [filteredEvents, grouping, displayTypes]);
+  }, [filteredEvents, grouping]);
 
   const mouse = useMouse();
 
@@ -339,7 +332,7 @@ export const VisTimeline: React.FC = function() {
         setHighlights();
       }
     };
-  }, [highlights, setHighlights]);
+  }, [highlights, setHighlights, grouping.kind]);
 
   useEffect(() => {
     visTimeline.current!.setItems(timelineEvents);

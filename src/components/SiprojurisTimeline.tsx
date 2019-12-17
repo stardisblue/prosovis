@@ -79,7 +79,7 @@ export function useSiprojurisTimelineContext(
   return { grouping, setGroup, displayTypes, toggle };
 }
 
-export const Timeline: React.FC = function() {
+export const SiprojurisTimeline: React.FC = function() {
   const { types } = useContext(SiprojurisContext);
   const timelineContext = useSiprojurisTimelineContext(types);
   const { setGroup, displayTypes, toggle } = timelineContext;
@@ -289,7 +289,7 @@ export const Timeline: React.FC = function() {
                       {useMemo(
                         () =>
                           _.map(displayTypes, (state, key) => (
-                            <div className="col-4">
+                            <div key={key} className="col-4">
                               <label>
                                 <input
                                   id="no-beg"
@@ -312,7 +312,7 @@ export const Timeline: React.FC = function() {
                               </label>
                             </div>
                           )),
-                        [displayTypes]
+                        [displayTypes, toggle]
                       )}
                     </div>
                   </div>
