@@ -288,30 +288,33 @@ export const SiprojurisTimeline: React.FC = function() {
                     <div className="row">
                       {useMemo(
                         () =>
-                          _.map(displayTypes, (state, key) => (
-                            <div key={key} className="col-4">
-                              <label>
-                                <input
-                                  id="no-beg"
-                                  type="checkbox"
-                                  className="checkbox-temporality-event"
-                                  value="no-beg"
-                                  checked={state}
-                                  onChange={() => toggle(key)}
-                                />
-                                <i
-                                  className="br-100 mh1 dib"
-                                  style={{
-                                    backgroundColor: getStyles(_.kebabCase(key))
-                                      .background,
-                                    height: '12px',
-                                    width: '12px'
-                                  }}
-                                ></i>
-                                {key}
-                              </label>
-                            </div>
-                          )),
+                          _.map(displayTypes, (state, key) => {
+                            const colors = getStyles(_.kebabCase(key));
+                            return (
+                              <div key={key} className="col-4">
+                                <label>
+                                  <input
+                                    id="no-beg"
+                                    type="checkbox"
+                                    className="checkbox-temporality-event"
+                                    value="no-beg"
+                                    checked={state}
+                                    onChange={() => toggle(key)}
+                                  />
+                                  <i
+                                    className="br-100 mh1 dib ba"
+                                    style={{
+                                      backgroundColor: colors.background,
+                                      borderColor: colors.border,
+                                      height: '12px',
+                                      width: '12px'
+                                    }}
+                                  ></i>
+                                  {key}
+                                </label>
+                              </div>
+                            );
+                          }),
                         [displayTypes, toggle]
                       )}
                     </div>
