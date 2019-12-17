@@ -446,6 +446,8 @@ export const VisTimeline: React.FC = function() {
       .select($svgWindow.current)
       .attr('class', 'brush')
       .call(d3Ref.current.brush);
+
+    //eslint-disable-next-line
   }, []);
 
   useEffect(() => {
@@ -466,7 +468,7 @@ export const VisTimeline: React.FC = function() {
 
       updateTimelineWindow(interval);
     }
-  }, [width]);
+  }, [width, updateTimelineWindow]);
 
   return (
     <>
