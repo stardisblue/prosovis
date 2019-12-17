@@ -242,6 +242,18 @@ export const VisTimeline: React.FC = function() {
     }
   });
 
+  const updateTimelineWindow = useCallback(
+    _.throttle(
+      (interval: vis.TimelineWindow) =>
+        d3Ref.current.window.call(
+          d3Ref.current.brush.move,
+          [interval.start, interval.end].map(d3Ref.current.xScale)
+        ),
+      10
+    ),
+    []
+  );
+
   // on create :)
   useEffect(() => {
     const $timeline = $timelineRef.current!;
@@ -279,13 +291,10 @@ export const VisTimeline: React.FC = function() {
 
     timeline.on('rangechange', event => {
       if (d3Ref.current && event.byUser) {
-        const xScale = d3Ref.current.xScale;
-        console.log(window, xScale(event.start), xScale(event.end));
+        // const xScale = d3Ref.current.xScale;
+        // console.log(window, xScale(event.start), xScale(event.end));
 
-        d3Ref.current.window.call(
-          d3Ref.current.brush.move,
-          [event.start, event.end].map(d3Ref.current.xScale)
-        );
+        updateTimelineWindow(event);
       }
     });
 
@@ -396,23 +405,6 @@ export const VisTimeline: React.FC = function() {
   const $svgTimeline = useRef<SVGSVGElement>(null);
   const $svgAxis = useRef<SVGGElement>(null);
 
-  const updateWindow = useCallback(
-    _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(d3Ref.current.xScale.invert);
-      visTimeline.current!.setWindow(start, end, {
-        animation: false
-      });
-    }, 10),
-    []
-  );
-
-  function onDrag(d: any) {
-    if (d3.event.sourceEvent !== null) {
-      console.log(d, d3.event);
-      updateWindow(d3.event.selection);
-    }
-  }
-
   useEffect(() => {
     d3Ref.current = {
       timeline: d3.select($svgTimeline.current),
@@ -430,11 +422,18 @@ export const VisTimeline: React.FC = function() {
     //   return moment(x).year() % 20 === 0 ? d3.timeFormat('%Y')(x) : '';
     // });
 
+    const updateWindow = _.throttle((selection: number[]) => {
+      const [start, end] = selection.map(d3Ref.current.xScale.invert);
+      visTimeline.current!.setWindow(start, end, {
+        animation: false
+      });
+    }, 10);
+
     d3Ref.current.brush = d3
       .brushX()
       .on('brush', function(d: any) {
         if (d3.event.sourceEvent !== null) {
-          console.log(d, d3.event);
+          // console.log(d, d3.event);
           updateWindow(d3.event.selection);
         }
       })
@@ -465,10 +464,7 @@ export const VisTimeline: React.FC = function() {
 
       const interval = visTimeline.current!.getWindow();
 
-      d3Ref.current.window.call(
-        d3Ref.current.brush.move,
-        [interval.start, interval.end].map(d3Ref.current.xScale)
-      );
+      updateTimelineWindow(interval);
     }
   }, [width]);
 
