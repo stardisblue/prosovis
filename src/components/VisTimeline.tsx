@@ -1,4 +1,11 @@
-import React, { useEffect, useContext, useRef, useMemo, useState } from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useRef,
+  useMemo,
+  useState,
+  useCallback
+} from 'react';
 import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
@@ -169,6 +176,17 @@ var options = {
   horizontalScroll: true
 };
 
+const ctxOptions = {
+  width: '100%',
+  height: 50,
+  margin: {
+    top: 0,
+    right: 10,
+    bottom: 20,
+    left: 10
+  }
+};
+
 const OPACITY_CLASS = 'o-50';
 
 export const VisTimeline: React.FC = function() {
@@ -259,6 +277,18 @@ export const VisTimeline: React.FC = function() {
 
     timeline.on('mouseOver', (e: any) => mouseOverRef.current(e));
 
+    timeline.on('rangechange', event => {
+      if (d3Ref.current && event.byUser) {
+        const xScale = d3Ref.current.xScale;
+        console.log(window, xScale(event.start), xScale(event.end));
+
+        d3Ref.current.window.call(
+          d3Ref.current.brush.move,
+          [event.start, event.end].map(d3Ref.current.xScale)
+        );
+      }
+    });
+
     $($timeline).popover({
       selector: '[data-popover="true"]',
       trigger: 'hover',
@@ -311,16 +341,6 @@ export const VisTimeline: React.FC = function() {
             }
           }
         });
-      }
-
-      if (d3Ref.current) {
-        const window = visTimeline.current!.getWindow();
-        const xScale = d3Ref.current.xScale;
-        console.log(window, xScale(window.start));
-
-        d3Ref.current.window
-          .attr('x', xScale(window.start))
-          .attr('width', xScale(window.end) - xScale(window.start));
       }
     };
     change();
@@ -376,46 +396,98 @@ export const VisTimeline: React.FC = function() {
   const $svgTimeline = useRef<SVGSVGElement>(null);
   const $svgAxis = useRef<SVGGElement>(null);
 
+  const updateWindow = useCallback(
+    _.throttle((selection: number[]) => {
+      const [start, end] = selection.map(d3Ref.current.xScale.invert);
+      visTimeline.current!.setWindow(start, end, {
+        animation: false
+      });
+    }, 10),
+    []
+  );
+
+  function onDrag(d: any) {
+    if (d3.event.sourceEvent !== null) {
+      console.log(d, d3.event);
+      updateWindow(d3.event.selection);
+    }
+  }
+
   useEffect(() => {
     d3Ref.current = {
       timeline: d3.select($svgTimeline.current),
       xScale: d3
         .scaleTime()
         .domain([moment(options.min), moment(options.max)])
-        .range([5, width - 5]),
+        .range([5, width - 5])
+        .clamp(true),
       g_axis: d3.select($svgAxis.current)
     };
 
-    d3Ref.current.axis = d3
-      .axisBottom(d3Ref.current.xScale)
-      .ticks(d3.timeYear.every(10))
-      .tickFormat((x: any) => {
-        return moment(x).year() % 10 === 0 ? d3.timeFormat('%Y')(x) : '';
-      });
+    d3Ref.current.axis = d3.axisBottom(d3Ref.current.xScale);
+    // .ticks(d3.timeYear.every(10))
+    // .tickFormat((x: any) => {
+    //   return moment(x).year() % 20 === 0 ? d3.timeFormat('%Y')(x) : '';
+    // });
+
+    d3Ref.current.brush = d3
+      .brushX()
+      .on('brush', function(d: any) {
+        if (d3.event.sourceEvent !== null) {
+          console.log(d, d3.event);
+          updateWindow(d3.event.selection);
+        }
+      })
+      .extent([
+        [ctxOptions.margin.left, ctxOptions.margin.top],
+        [ctxOptions.margin.left, ctxOptions.height]
+      ]);
 
     d3Ref.current.window = d3
       .select($svgWindow.current)
       .attr('class', 'brush')
-      .call(d3.brushX().on('brush', onDrag) as any);
+      .call(d3Ref.current.brush);
   }, []);
 
   useEffect(() => {
     if ($svgAxis.current && d3Ref.current) {
-      d3Ref.current.xScale.range([5, width - 5]);
+      d3Ref.current.xScale.range([
+        ctxOptions.margin.right,
+        width - ctxOptions.margin.left
+      ]);
       d3Ref.current.g_axis.call(d3Ref.current.axis);
+
+      d3Ref.current.brush.extent([
+        [ctxOptions.margin.left, ctxOptions.margin.top],
+        [width - ctxOptions.margin.right, ctxOptions.height]
+      ]);
+      d3Ref.current.window.call(d3Ref.current.brush);
+
+      const interval = visTimeline.current!.getWindow();
+
+      d3Ref.current.window.call(
+        d3Ref.current.brush.move,
+        [interval.start, interval.end].map(d3Ref.current.xScale)
+      );
     }
   }, [width]);
 
   return (
     <>
       <div id="timeline" ref={$timelineRef}></div>
-      <svg id="timeline-context" ref={$svgTimeline} width="100%" height="120px">
+      <svg
+        id="timeline-context"
+        ref={$svgTimeline}
+        width="100%"
+        height={ctxOptions.height + 'px'}
+      >
+        <g
+          className="axis"
+          ref={$svgAxis}
+          transform={`translate(0, ${ctxOptions.height - 20})`}
+        ></g>
         <g className="window" ref={$svgWindow}></g>
-        <g className="axis" ref={$svgAxis} transform="translate(0, 100)"></g>
       </svg>
     </>
   );
 };
-function onDrag(d: any) {
-  console.log(d, d3.event);
-}
