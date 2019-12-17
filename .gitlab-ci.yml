@@ -1,5 +1,5 @@
 # Using the node alpine image to build the React app
-image: node:alpine
+image: node:lts
 
 # Announce the URL as per CRA docs
 # https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md#advanced-configuration
