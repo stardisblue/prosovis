@@ -344,7 +344,13 @@ export const VisTimeline: React.FC = function() {
       }
     });
 
-    d3Ref.current.window = d3.select($dom.current.brush);
+    const interval = visTimeline.current!.getWindow();
+    d3Ref.current.window = d3
+      .select($dom.current.brush)
+      .call(
+        d3Ref.current.brush.move,
+        [interval.start, interval.end].map(d3Ref.current.xScale)
+      );
 
     return () => {
       timeline.destroy();
