@@ -398,13 +398,16 @@ export const VisTimeline: React.FC = function() {
     actions.current.click = (e: VisEvent) => {
       if (e.what === 'group-label') {
         console.log('selection:group', e.group);
-
-        select(
-          _(timelineEvents)
-            .filter({ group: e.group })
-            .map('id')
-            .value()
-        );
+        const groupEvents = _(timelineEvents)
+          .filter({ group: e.group })
+          .map('id')
+          .sort()
+          .value();
+        if (e.event.ctrlKey) {
+          select(_.sortedUniq(_.concat(selected || [], groupEvents).sort()));
+        } else {
+          select(groupEvents);
+        }
       } else if (e.what === 'item') {
         const index = _.sortedIndexOf(selected, e.item);
         if (index <= 0) {
