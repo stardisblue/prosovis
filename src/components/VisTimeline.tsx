@@ -440,10 +440,23 @@ export const VisTimeline: React.FC = function() {
   }, [timelineEvents]);
 
   useEffect(() => {
+    function newLineLongString(str: string, maxLenght = 20): string {
+      if (str.length < maxLenght) {
+        return str;
+      }
+      const parts = _.split(str, ' ');
+      const half = Math.floor((parts.length + 1) / 2);
+
+      return _(parts)
+        .chunk(half)
+        .map(i => _.join(i, ' '))
+        .join('<br/>');
+    }
+    // Set Groups
     visTimeline.current!.setGroups(
       _.map(grouping.groups(filteredEvents), ({ id, label }) => ({
         id,
-        content: label
+        content: newLineLongString(label)
       }))
     );
     visTimeline.current!.redraw();
