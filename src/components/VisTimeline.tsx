@@ -195,29 +195,33 @@ export const VisTimeline: React.FC = function() {
   const { grouping, displayTypes } = useContext(SiprojurisTimelineContext);
 
   const $dom = useRef<{
-    timeline: Nullable<HTMLDivElement>;
-    context: Nullable<SVGSVGElement>;
-    axis: Nullable<SVGGElement>;
-    brush: Nullable<SVGGElement>;
+    axis: SVGGElement;
+    brush: SVGGElement;
+    context: SVGSVGElement;
+    events: Nullable<HTMLCollectionOf<HTMLDivElement>>;
+    timeline: HTMLDivElement;
   }>({
     timeline: null,
     context: null,
+    events: null,
     axis: null,
     brush: null
-  });
+  } as any);
 
   const visTimeline = useRef<vis.Timeline>();
 
-  const $eventsRef = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
+  useEffect(() => {
+    console.log({ ...$dom.current });
+  });
 
   const [width, setWidth] = useState(1400);
   const d3Ref = useRef<{
     timeline: any;
-    xAxis: d3.Axis<number | Date | { valueOf(): number }>;
-    g_axis: d3.Selection<SVGGElement, unknown, null, undefined>;
-    xScale: d3.ScaleTime<number, number>;
+    axis: d3.Axis<number | Date | { valueOf(): number }>;
+    scale: d3.ScaleTime<number, number>;
     brush: d3.BrushBehavior<unknown>;
-    window: d3.Selection<SVGGElement, unknown, null, undefined>;
+    g_axis: d3.Selection<SVGGElement, unknown, null, undefined>;
+    g_window: d3.Selection<SVGGElement, unknown, null, undefined>;
   }>({} as any);
 
   useEffect(() => {
@@ -257,10 +261,9 @@ export const VisTimeline: React.FC = function() {
 
   // on create :)
   useEffect(() => {
-    const $timeline = $dom.current.timeline!;
+    const $timeline = $dom.current.timeline;
     // put timeline logic here
-    const timeline = new vis.Timeline($timeline, [], []);
-    timeline.setOptions(options);
+    const timeline = new vis.Timeline($timeline, timelineEvents, [], options);
 
     timeline.on('changed', (e: any) => actions.current.changed(e));
     timeline.on('click', (e: any) => actions.current.__click(e));
@@ -291,10 +294,10 @@ export const VisTimeline: React.FC = function() {
     timeline.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
     const updateTimelineWindow = _.throttle((interval: vis.TimelineWindow) => {
-      if (d3Ref.current.window)
-        return d3Ref.current.window.call(
+      if (d3Ref.current.g_window)
+        return d3Ref.current.g_window.call(
           d3Ref.current.brush.move,
-          [interval.start, interval.end].map(d3Ref.current.xScale)
+          [interval.start, interval.end].map(d3Ref.current.scale)
         );
     }, 10);
 
@@ -313,7 +316,7 @@ export const VisTimeline: React.FC = function() {
       }
     });
 
-    $eventsRef.current = $timeline.getElementsByClassName(
+    $dom.current.events = $timeline.getElementsByClassName(
       'timeline-event'
     ) as any;
 
@@ -321,24 +324,22 @@ export const VisTimeline: React.FC = function() {
 
     // D3 INIT
 
-    d3Ref.current = {
-      timeline: d3.select($dom.current.context),
-      xScale: d3
-        .scaleTime()
-        .domain([moment(options.min), moment(options.max)])
-        .range([5, width - 5])
-        .clamp(true),
-      g_axis: d3.select($dom.current.axis!)
-    } as any;
+    d3Ref.current.timeline = d3.select($dom.current.context);
+    d3Ref.current.scale = d3
+      .scaleTime()
+      .domain([moment(options.min), moment(options.max)])
+      .range([5, width - 5])
+      .clamp(true);
+    d3Ref.current.g_axis = d3.select($dom.current.axis);
 
-    d3Ref.current.xAxis = d3.axisBottom(d3Ref.current.xScale);
+    d3Ref.current.axis = d3.axisBottom(d3Ref.current.scale);
     // .ticks(d3.timeYear.every(10))
     // .tickFormat((x: any) => {
     //   return moment(x).year() % 20 === 0 ? d3.timeFormat('%Y')(x) : '';
     // });
 
     const updateWindow = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(d3Ref.current.xScale.invert);
+      const [start, end] = selection.map(d3Ref.current.scale.invert);
       timeline.setWindow(start, end, {
         animation: false
       });
@@ -349,7 +350,7 @@ export const VisTimeline: React.FC = function() {
         updateWindow(d3.event.selection);
       }
     });
-    d3Ref.current.window = d3.select($dom.current.brush!);
+    d3Ref.current.g_window = d3.select($dom.current.brush);
 
     return () => {
       timeline.destroy();
@@ -365,8 +366,8 @@ export const VisTimeline: React.FC = function() {
           setWidth(boundingRect.width);
         }
       }
-      if ($eventsRef.current) {
-        _.forEach($eventsRef.current, $event => {
+      if ($dom.current.events) {
+        _.forEach($dom.current.events, $event => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
           if (selected === undefined) {
@@ -451,6 +452,8 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     visTimeline.current!.setItems(timelineEvents);
+    console.log(timelineEvents);
+
     // visTimeline.current!.redraw();
   }, [timelineEvents]);
 
@@ -474,36 +477,37 @@ export const VisTimeline: React.FC = function() {
         content: newLineLongString(label)
       }))
     );
-    visTimeline.current!.redraw();
+    // visTimeline.current!.redraw();
   }, [grouping, filteredEvents]);
 
   useEffect(() => {
     if ($dom.current.axis && d3Ref.current && width !== 0) {
-      d3Ref.current.xScale.range([
+      d3Ref.current.scale.range([
         ctxOptions.margin.left,
         width - ctxOptions.margin.right
       ]);
-      d3Ref.current.g_axis.call(d3Ref.current.xAxis);
+      d3Ref.current.g_axis.call(d3Ref.current.axis);
 
       d3Ref.current.brush.extent([
         [ctxOptions.margin.left, ctxOptions.margin.top],
         [width - ctxOptions.margin.right, ctxOptions.windowHeight]
       ]);
 
-      d3Ref.current.window.call(d3Ref.current.brush).call(g =>
+      d3Ref.current.g_window.call(d3Ref.current.brush).call(g =>
         g
           .select('.overlay')
           .datum({ type: 'selection' })
           .on('mousedown touchstart', function(this: any) {
-            const [start, end] = d3.brushSelection($dom.current.brush!) as [
+            const [start, end] = d3.brushSelection($dom.current.brush) as [
               number,
               number
             ];
+
             const dx = end - start;
             const [cx] = d3.mouse(this);
 
             const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-            const [X0, X1] = d3Ref.current.xScale.range();
+            const [X0, X1] = d3Ref.current.scale.range();
 
             d3.select(this.parentNode).call(
               d3Ref.current.brush.move,
@@ -513,32 +517,34 @@ export const VisTimeline: React.FC = function() {
       );
 
       const interval = visTimeline.current!.getWindow();
-      d3Ref.current.window.call(
+      console.log(interval);
+
+      d3Ref.current.g_window.call(
         d3Ref.current.brush.move,
-        [interval.start, interval.end].map(d3Ref.current.xScale)
+        [interval.start, interval.end].map(d3Ref.current.scale)
       );
     }
   }, [width]);
 
   return (
     <>
-      <div id="timeline" ref={el => ($dom.current.timeline = el)}></div>
+      <div id="timeline" ref={el => ($dom.current.timeline = el!)}></div>
       <svg
         id="timeline-context"
-        ref={el => ($dom.current.context = el)}
+        ref={el => ($dom.current.context = el!)}
         width="100%"
         height={ctxOptions.height + 'px'}
       >
         <g
           id="context-axis"
           className="axis"
-          ref={el => ($dom.current.axis = el)}
+          ref={el => ($dom.current.axis = el!)}
           transform={`translate(0, ${ctxOptions.height - 20})`}
         ></g>
         <g
           id="context-window"
           className="brush"
-          ref={el => ($dom.current.brush = el)}
+          ref={el => ($dom.current.brush = el!)}
         ></g>
       </svg>
     </>
