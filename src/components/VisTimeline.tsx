@@ -214,10 +214,10 @@ export const VisTimeline: React.FC = function() {
   const d3Ref = useRef<{
     timeline: any;
     xAxis: d3.Axis<number | Date | { valueOf(): number }>;
-    g_axis: any;
+    g_axis: d3.Selection<SVGGElement, unknown, null, undefined>;
     xScale: d3.ScaleTime<number, number>;
     brush: d3.BrushBehavior<unknown>;
-    window: any;
+    window: d3.Selection<SVGGElement, unknown, null, undefined>;
   }>({} as any);
 
   useEffect(() => {
@@ -328,7 +328,7 @@ export const VisTimeline: React.FC = function() {
         .domain([moment(options.min), moment(options.max)])
         .range([5, width - 5])
         .clamp(true),
-      g_axis: d3.select($dom.current.axis)
+      g_axis: d3.select($dom.current.axis!)
     } as any;
 
     d3Ref.current.xAxis = d3.axisBottom(d3Ref.current.xScale);
@@ -349,8 +349,7 @@ export const VisTimeline: React.FC = function() {
         updateWindow(d3.event.selection);
       }
     });
-
-    d3Ref.current.window = d3.select($dom.current.brush);
+    d3Ref.current.window = d3.select($dom.current.brush!);
 
     return () => {
       timeline.destroy();
@@ -361,9 +360,9 @@ export const VisTimeline: React.FC = function() {
   useEffect(() => {
     const change = function() {
       if ($dom.current.timeline) {
-        const boundingClientRect = $dom.current.timeline.getBoundingClientRect();
-        if (width !== boundingClientRect.width) {
-          setWidth(boundingClientRect.width);
+        const boundingRect = $dom.current.timeline.getBoundingClientRect();
+        if (width !== boundingRect.width) {
+          setWidth(boundingRect.width);
         }
       }
       if ($eventsRef.current) {
@@ -491,7 +490,7 @@ export const VisTimeline: React.FC = function() {
         [width - ctxOptions.margin.right, ctxOptions.windowHeight]
       ]);
 
-      d3Ref.current.window.call(d3Ref.current.brush).call((g: any) =>
+      d3Ref.current.window.call(d3Ref.current.brush).call(g =>
         g
           .select('.overlay')
           .datum({ type: 'selection' })
