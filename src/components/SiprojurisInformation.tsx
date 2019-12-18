@@ -11,7 +11,7 @@ export function parseDates(dates: Datation[]) {
     .join(' - ');
 }
 
-export const InfoBox: React.FC = function() {
+export const SiprojurisInformation: React.FC = function() {
   const context = useContext(SiprojurisContext);
   return (
     <div>
