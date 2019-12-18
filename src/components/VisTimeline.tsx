@@ -404,22 +404,30 @@ export const VisTimeline: React.FC = function() {
           .sort()
           .value();
         if (e.event.ctrlKey) {
-          select(_.sortedUniq(_.concat(selected || [], groupEvents).sort()));
+          select(
+            _(selected || [])
+              .concat(groupEvents)
+              .sort()
+              .sortedUniq()
+              .value()
+          );
         } else {
           select(groupEvents);
         }
       } else if (e.what === 'item') {
         const index = _.sortedIndexOf(selected, e.item);
-        if (index < 0) {
-          console.log('selection:item', e.item);
-          // is not selected
-          if (e.event.ctrlKey) {
+        if (e.event.ctrlKey) {
+          if (index < 0) {
+            console.log('selection:item', e.item);
+            // is not selected
             select(_.concat(selected || [], e.item));
-          } else select([e.item]);
+          } else {
+            console.log('selection:item:unselect', e.item);
+            const filtered = _.filter(selected, i => i !== e.item);
+            select(filtered.length === 0 ? undefined : filtered);
+          }
         } else {
-          console.log('selection:item:unselect', e.item);
-          const filtered = _.filter(selected, i => i !== e.item);
-          select(filtered.length === 0 ? undefined : filtered);
+          select([e.item]);
         }
       } else {
         if (!e.event.ctrlKey) {
