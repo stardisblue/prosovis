@@ -414,8 +414,11 @@ export const VisTimeline: React.FC = function() {
           console.log('selection:item:ignore', e.item);
         }
       } else {
+        if (!e.event.ctrlKey) {
+          console.log('selection:reset');
           select();
         }
+      }
     };
   }, [selected, select, timelineEvents]);
 
