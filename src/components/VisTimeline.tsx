@@ -404,12 +404,20 @@ export const VisTimeline: React.FC = function() {
             .value()
         );
       } else if (e.what === 'item') {
-        select([e.item]);
+        if (_.sortedIndexOf(selected, e.item) !== 0) {
+          console.log('selection:item', e.item);
+          // is not selected
+          if (e.event.ctrlKey) {
+            select(_.concat(selected || [], e.item));
+          } else select([e.item]);
+        } else {
+          console.log('selection:item:ignore', e.item);
+        }
       } else {
-        select();
-      }
+          select();
+        }
     };
-  }, [select, timelineEvents]);
+  }, [selected, select, timelineEvents]);
 
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
