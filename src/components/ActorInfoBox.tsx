@@ -9,6 +9,11 @@ export function parseDates(dates: Datation[]) {
     .join(' - ');
 }
 
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
 export const ActorInfoBox: React.FC<{ actor: Actor }> = function({ actor }) {
   return (
     <div>
