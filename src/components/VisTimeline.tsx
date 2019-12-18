@@ -410,7 +410,7 @@ export const VisTimeline: React.FC = function() {
         }
       } else if (e.what === 'item') {
         const index = _.sortedIndexOf(selected, e.item);
-        if (index <= 0) {
+        if (index < 0) {
           console.log('selection:item', e.item);
           // is not selected
           if (e.event.ctrlKey) {
@@ -418,7 +418,7 @@ export const VisTimeline: React.FC = function() {
           } else select([e.item]);
         } else {
           console.log('selection:item:unselect', e.item);
-          const filtered = _.filter(selected, e.item);
+          const filtered = _.filter(selected, i => i !== e.item);
           select(filtered.length === 0 ? undefined : filtered);
         }
       } else {
