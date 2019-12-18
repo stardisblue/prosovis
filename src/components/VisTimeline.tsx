@@ -200,12 +200,14 @@ export const VisTimeline: React.FC = function() {
     context: SVGSVGElement;
     events: Nullable<HTMLCollectionOf<HTMLDivElement>>;
     timeline: HTMLDivElement;
+    filter: SVGGElement;
   }>({
     timeline: null,
     context: null,
     events: null,
     axis: null,
-    brush: null
+    brush: null,
+    filter: null
   } as any);
 
   const visTimeline = useRef<vis.Timeline>();
@@ -216,12 +218,14 @@ export const VisTimeline: React.FC = function() {
 
   const [width, setWidth] = useState(1400);
   const d3Ref = useRef<{
-    timeline: any;
+    svg_timeline: d3.Selection<SVGSVGElement, unknown, null, undefined>;
     axis: d3.Axis<number | Date | { valueOf(): number }>;
     scale: d3.ScaleTime<number, number>;
     brush: d3.BrushBehavior<unknown>;
+    filter: d3.BrushBehavior<unknown>;
     g_axis: d3.Selection<SVGGElement, unknown, null, undefined>;
     g_window: d3.Selection<SVGGElement, unknown, null, undefined>;
+    g_filter: d3.Selection<SVGGElement, unknown, null, undefined>;
   }>({} as any);
 
   useEffect(() => {
@@ -324,7 +328,7 @@ export const VisTimeline: React.FC = function() {
 
     // D3 INIT
 
-    d3Ref.current.timeline = d3.select($dom.current.context);
+    d3Ref.current.svg_timeline = d3.select($dom.current.context);
     d3Ref.current.scale = d3
       .scaleTime()
       .domain([moment(options.min), moment(options.max)])
@@ -351,6 +355,18 @@ export const VisTimeline: React.FC = function() {
       }
     });
     d3Ref.current.g_window = d3.select($dom.current.brush);
+
+    const updateFilter = _.throttle((selection: number[]) => {
+      const [start, end] = selection.map(d3Ref.current.scale.invert);
+      console.log(start, end);
+    });
+
+    d3Ref.current.filter = d3.brushX();
+    d3Ref.current.g_filter = d3
+      .select($dom.current.filter)
+      .on('brush', function() {
+        updateFilter(d3.event.selection);
+      });
 
     return () => {
       timeline.destroy();
@@ -492,7 +508,6 @@ export const VisTimeline: React.FC = function() {
         [ctxOptions.margin.left, ctxOptions.margin.top],
         [width - ctxOptions.margin.right, ctxOptions.windowHeight]
       ]);
-
       d3Ref.current.g_window.call(d3Ref.current.brush).call(g =>
         g
           .select('.overlay')
@@ -515,6 +530,17 @@ export const VisTimeline: React.FC = function() {
             );
           })
       );
+
+      d3Ref.current.filter.extent([
+        [ctxOptions.margin.left, ctxOptions.margin.top],
+        [width - ctxOptions.margin.right, ctxOptions.height]
+      ]);
+      d3Ref.current.g_filter
+        .call(d3Ref.current.filter)
+        .call(d3Ref.current.filter.move, [
+          ctxOptions.margin.left,
+          width - ctxOptions.margin.right
+        ]);
 
       const interval = visTimeline.current!.getWindow();
       console.log(interval);
@@ -540,6 +566,11 @@ export const VisTimeline: React.FC = function() {
           className="axis"
           ref={el => ($dom.current.axis = el!)}
           transform={`translate(0, ${ctxOptions.height - 20})`}
+        ></g>
+        <g
+          id="context-filter"
+          className="brush"
+          ref={el => ($dom.current.filter = el!)}
         ></g>
         <g
           id="context-window"
