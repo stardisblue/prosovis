@@ -210,8 +210,15 @@ export const VisTimeline: React.FC = function() {
 
   const $eventsRef = useRef<HTMLCollectionOf<HTMLDivElement> | null>(null);
 
-  const [width, setWidth] = useState(0);
-  const d3Ref = useRef<any>(null);
+  const [width, setWidth] = useState(1400);
+  const d3Ref = useRef<{
+    timeline: any;
+    xAxis: d3.Axis<number | Date | { valueOf(): number }>;
+    g_axis: any;
+    xScale: d3.ScaleTime<number, number>;
+    brush: d3.BrushBehavior<unknown>;
+    window: any;
+  }>({} as any);
 
   useEffect(() => {
     setFilter(() => (e: AnyEvent) => displayTypes[e.kind]);
@@ -283,14 +290,13 @@ export const VisTimeline: React.FC = function() {
 
     timeline.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
-    const updateTimelineWindow = _.throttle(
-      (interval: vis.TimelineWindow) =>
-        d3Ref.current.window.call(
+    const updateTimelineWindow = _.throttle((interval: vis.TimelineWindow) => {
+      if (d3Ref.current.window)
+        return d3Ref.current.window.call(
           d3Ref.current.brush.move,
           [interval.start, interval.end].map(d3Ref.current.xScale)
-        ),
-      10
-    );
+        );
+    }, 10);
 
     timeline.on('rangechange', (e: any) => {
       if (d3Ref.current && e.byUser) {
@@ -323,7 +329,7 @@ export const VisTimeline: React.FC = function() {
         .range([5, width - 5])
         .clamp(true),
       g_axis: d3.select($dom.current.axis)
-    };
+    } as any;
 
     d3Ref.current.xAxis = d3.axisBottom(d3Ref.current.xScale);
     // .ticks(d3.timeYear.every(10))
@@ -344,13 +350,7 @@ export const VisTimeline: React.FC = function() {
       }
     });
 
-    const interval = visTimeline.current!.getWindow();
-    d3Ref.current.window = d3
-      .select($dom.current.brush)
-      .call(
-        d3Ref.current.brush.move,
-        [interval.start, interval.end].map(d3Ref.current.xScale)
-      );
+    d3Ref.current.window = d3.select($dom.current.brush);
 
     return () => {
       timeline.destroy();
@@ -406,14 +406,17 @@ export const VisTimeline: React.FC = function() {
             .value()
         );
       } else if (e.what === 'item') {
-        if (_.sortedIndexOf(selected, e.item) !== 0) {
+        const index = _.sortedIndexOf(selected, e.item);
+        if (index <= 0) {
           console.log('selection:item', e.item);
           // is not selected
           if (e.event.ctrlKey) {
             select(_.concat(selected || [], e.item));
           } else select([e.item]);
         } else {
-          console.log('selection:item:ignore', e.item);
+          console.log('selection:item:unselect', e.item);
+          const filtered = _.filter(selected, e.item);
+          select(filtered.length === 0 ? undefined : filtered);
         }
       } else {
         if (!e.event.ctrlKey) {
