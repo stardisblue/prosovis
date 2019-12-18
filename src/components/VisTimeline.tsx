@@ -248,18 +248,6 @@ export const VisTimeline: React.FC = function() {
     __drag: (_e: VisEvent) => {}
   });
 
-  const updateTimelineWindow = useCallback(
-    _.throttle(
-      (interval: vis.TimelineWindow) =>
-        d3Ref.current.window.call(
-          d3Ref.current.brush.move,
-          [interval.start, interval.end].map(d3Ref.current.xScale)
-        ),
-      10
-    ),
-    []
-  );
-
   // on create :)
   useEffect(() => {
     const $timeline = $dom.current.timeline!;
@@ -295,12 +283,18 @@ export const VisTimeline: React.FC = function() {
 
     timeline.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
-    timeline.on('rangechange', event => {
-      if (d3Ref.current && event.byUser) {
-        // const xScale = d3Ref.current.xScale;
-        // console.log(window, xScale(event.start), xScale(event.end));
+    const updateTimelineWindow = _.throttle(
+      (interval: vis.TimelineWindow) =>
+        d3Ref.current.window.call(
+          d3Ref.current.brush.move,
+          [interval.start, interval.end].map(d3Ref.current.xScale)
+        ),
+      10
+    );
 
-        updateTimelineWindow(event);
+    timeline.on('rangechange', (e: any) => {
+      if (d3Ref.current && e.byUser) {
+        updateTimelineWindow(e);
       }
     });
 
@@ -397,6 +391,8 @@ export const VisTimeline: React.FC = function() {
   useEffect(() => {
     actions.current.click = (e: VisEvent) => {
       if (e.what === 'group-label') {
+        console.log('selection:group', e.group);
+
         select(
           _(timelineEvents)
             .filter({ group: e.group })
@@ -474,13 +470,36 @@ export const VisTimeline: React.FC = function() {
         [ctxOptions.margin.left, ctxOptions.margin.top],
         [width - ctxOptions.margin.right, ctxOptions.windowHeight]
       ]);
-      d3Ref.current.window.call(d3Ref.current.brush);
+
+      d3Ref.current.window.call(d3Ref.current.brush).call((g: any) =>
+        g
+          .select('.overlay')
+          .datum({ type: 'selection' })
+          .on('mousedown touchstart', function(this: any) {
+            const [start, end] = d3.brushSelection($dom.current.brush!) as [
+              number,
+              number
+            ];
+            const dx = end - start;
+            const [cx] = d3.mouse(this);
+
+            const [x0, x1] = [cx - dx / 2, cx + dx / 2];
+            const [X0, X1] = d3Ref.current.xScale.range();
+
+            d3.select(this.parentNode).call(
+              d3Ref.current.brush.move,
+              x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
+            );
+          })
+      );
 
       const interval = visTimeline.current!.getWindow();
-
-      updateTimelineWindow(interval);
+      d3Ref.current.window.call(
+        d3Ref.current.brush.move,
+        [interval.start, interval.end].map(d3Ref.current.xScale)
+      );
     }
-  }, [width, updateTimelineWindow]);
+  }, [width]);
 
   return (
     <>
