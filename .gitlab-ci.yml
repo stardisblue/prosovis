@@ -19,8 +19,8 @@ stages:
 pages:
   stage: deploy
   script:
-    - npm install # Install all dependencies
-    - npm run build --prod # Build for prod
+    - yarn install # Install all dependencies
+    - yarn build --prod # Build for prod
     - cp public/index.html public/404.html # Not necessary, but helps with https://medium.com/@pshrmn/demystifying-single-page-applications-3068d0555d46
     - mv public _public # CRA and gitlab pages both use the public folder. Only do this in a build pipeline.
     - mv build public # Move build files to public dir for Gitlab Pages
