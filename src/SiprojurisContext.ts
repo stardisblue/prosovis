@@ -12,7 +12,7 @@ type SiprojurisContextProps = {
   filteredEvents: AnyEvent[];
   highlights?: HightlightEvents;
   setHighlights(highlight?: HightlightEvents): void;
-  setFilter(filter: () => any): void;
+  setFilter(key: PrimaryKey, filter: any): void;
   types: string[];
   // indexedEvents: _.Dictionary<AnyEvent>;
 };
@@ -53,15 +53,18 @@ export const useSiprojurisContext = function(
 
   const [highlights, setHighlights] = useState<HightlightEvents>();
 
-  const [filter, setFilter] = useState<any>(() => (a: AnyEvent) => true);
+  const [filters, setFilters] = useState<{ [k: string]: any }>();
+
+  const setFilter = useCallback((key: PrimaryKey, filter: any) => {
+    setFilters((state: any) => ({ ...state, [key]: filter }));
+  }, []);
 
   const events = useMemo(
     function() {
-      return _.reduce(
+      return _.transform(
         actors,
         (acc, actor) => {
           acc.push(...getEvents(actor));
-          return acc;
         },
         [] as AnyEvent[]
       );
@@ -69,10 +72,10 @@ export const useSiprojurisContext = function(
     [actors]
   );
 
-  const filteredEvents = useMemo(() => _.filter(events, filter), [
-    events,
-    filter
-  ]);
+  const filteredEvents = useMemo(
+    () => _.filter(events, e => _.every(filters, f => f(e))),
+    [events, filters]
+  );
   // const indexedEvents = useMemo(() => _.keyBy(filteredEvents, 'id'), [
   //   filteredEvents
   // ]);
