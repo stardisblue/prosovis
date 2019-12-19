@@ -122,7 +122,7 @@ function getTimelineEvents(events: GroupedEvent[]) {
         title: he.unescape(actor.label),
         label: he.unescape(label),
         popover: 'true',
-        ...resolveDatation(_.sortBy(datation, 'clean_date')),
+        ...resolveDatation(datation),
         className: classnames(kebabKind, 'timeline-event'),
         style: `border:1px solid ${colors.border};
             background-color: ${colors.background}`,
@@ -211,10 +211,6 @@ export const VisTimeline: React.FC = function() {
   } as any);
 
   const visTimeline = useRef<vis.Timeline>();
-
-  useEffect(() => {
-    console.log({ ...$dom.current });
-  });
 
   const [width, setWidth] = useState(1400);
   const d3Ref = useRef<{
@@ -359,7 +355,7 @@ export const VisTimeline: React.FC = function() {
     const updateFilter = _.throttle((selection: number[]) => {
       const [start, end] = selection.map(d3Ref.current.scale.invert);
       console.log(start, end);
-    });
+    }, 100);
 
     d3Ref.current.filter = d3.brushX();
     d3Ref.current.g_filter = d3
@@ -420,13 +416,7 @@ export const VisTimeline: React.FC = function() {
           .sort()
           .value();
         if (e.event.ctrlKey) {
-          select(
-            _(selected || [])
-              .concat(groupEvents)
-              .sort()
-              .sortedUniq()
-              .value()
-          );
+          select(_.concat(selected || [], groupEvents));
         } else {
           select(groupEvents);
         }
@@ -468,8 +458,6 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     visTimeline.current!.setItems(timelineEvents);
-    console.log(timelineEvents);
-
     // visTimeline.current!.redraw();
   }, [timelineEvents]);
 
@@ -543,7 +531,6 @@ export const VisTimeline: React.FC = function() {
         ]);
 
       const interval = visTimeline.current!.getWindow();
-      console.log(interval);
 
       d3Ref.current.g_window.call(
         d3Ref.current.brush.move,
