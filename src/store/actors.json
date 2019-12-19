@@ -2,7 +2,6 @@
   {
     "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
     "id": 47733,
-    "kind": "Actor",
     "retirement_set": [],
     "birth_set": [
       {
@@ -13,7 +12,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -49,7 +49,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -85,7 +86,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -124,7 +126,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -163,7 +166,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -204,7 +208,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -300,7 +305,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -379,7 +385,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -448,7 +455,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -534,7 +542,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -630,7 +639,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -711,13 +721,15 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56299/?format=json",
           "id": 56299,
           "label": "Demangeat, Charles, Joseph",
-          "uri": "http://symogih.org/resource/Actr56299"
+          "uri": "http://symogih.org/resource/Actr56299",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -790,13 +802,15 @@
             "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
             "id": 47733,
             "label": "Accarias, Calixte",
-            "uri": "http://symogih.org/resource/Actr47733"
+            "uri": "http://symogih.org/resource/Actr47733",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/56299/?format=json",
             "id": 56299,
             "label": "Demangeat, Charles, Joseph",
-            "uri": "http://symogih.org/resource/Actr56299"
+            "uri": "http://symogih.org/resource/Actr56299",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -851,7 +865,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -894,7 +909,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -954,7 +970,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -997,7 +1014,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1057,7 +1075,8 @@
           "url": "http://127.0.0.1:8000/api/actor/47733/?format=json",
           "id": 47733,
           "label": "Accarias, Calixte",
-          "uri": "http://symogih.org/resource/Actr47733"
+          "uri": "http://symogih.org/resource/Actr47733",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1076,12 +1095,12 @@
       }
     ],
     "label": "Accarias, Calixte",
-    "uri": "http://symogih.org/resource/Actr47733"
+    "uri": "http://symogih.org/resource/Actr47733",
+    "kind": "Actor"
   },
   {
     "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
     "id": 56874,
-    "kind": "Actor",
     "retirement_set": [
       {
         "url": "http://127.0.0.1:8000/api/retirement/109243/?format=json",
@@ -1091,7 +1110,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1118,7 +1138,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1154,7 +1175,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1191,7 +1213,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1265,7 +1288,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1334,7 +1358,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1413,7 +1438,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1482,7 +1508,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1556,7 +1583,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1630,7 +1658,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1704,7 +1733,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1773,7 +1803,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1852,7 +1883,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -1931,7 +1963,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2000,7 +2033,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2079,7 +2113,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2148,7 +2183,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2227,7 +2263,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2296,7 +2333,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2375,7 +2413,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2449,7 +2488,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2528,7 +2568,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2602,7 +2643,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2676,7 +2718,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2755,7 +2798,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2834,7 +2878,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2908,7 +2953,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -2982,7 +3028,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3061,7 +3108,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3140,7 +3188,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3214,7 +3263,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3290,13 +3340,15 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/50053/?format=json",
           "id": 50053,
           "label": "Leseur, Paul, Pierre, Auguste",
-          "uri": "http://symogih.org/resource/Actr50053"
+          "uri": "http://symogih.org/resource/Actr50053",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -3355,13 +3407,15 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56805/?format=json",
           "id": 56805,
           "label": "Esmein, Adhémar, Jean, Paul, Hippolyte, Emmanuel",
-          "uri": "http://symogih.org/resource/Actr56805"
+          "uri": "http://symogih.org/resource/Actr56805",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -3422,13 +3476,15 @@
           "url": "http://127.0.0.1:8000/api/actor/56921/?format=json",
           "id": 56921,
           "label": "Trotabas, Louis, Joseph, Marie",
-          "uri": "http://symogih.org/resource/Actr56921"
+          "uri": "http://symogih.org/resource/Actr56921",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -3500,13 +3556,15 @@
             "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
             "id": 56874,
             "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-            "uri": "http://symogih.org/resource/Actr56874"
+            "uri": "http://symogih.org/resource/Actr56874",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/56805/?format=json",
             "id": 56805,
             "label": "Esmein, Adhémar, Jean, Paul, Hippolyte, Emmanuel",
-            "uri": "http://symogih.org/resource/Actr56805"
+            "uri": "http://symogih.org/resource/Actr56805",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -3561,7 +3619,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3597,13 +3656,15 @@
             "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
             "id": 56874,
             "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-            "uri": "http://symogih.org/resource/Actr56874"
+            "uri": "http://symogih.org/resource/Actr56874",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/50053/?format=json",
             "id": 50053,
             "label": "Leseur, Paul, Pierre, Auguste",
-            "uri": "http://symogih.org/resource/Actr50053"
+            "uri": "http://symogih.org/resource/Actr50053",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -3658,7 +3719,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3691,7 +3753,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3724,7 +3787,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3784,7 +3848,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56874/?format=json",
           "id": 56874,
           "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-          "uri": "http://symogih.org/resource/Actr56874"
+          "uri": "http://symogih.org/resource/Actr56874",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3803,12 +3868,12 @@
       }
     ],
     "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis",
-    "uri": "http://symogih.org/resource/Actr56874"
+    "uri": "http://symogih.org/resource/Actr56874",
+    "kind": "Actor"
   },
   {
     "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
     "id": 50033,
-    "kind": "Actor",
     "retirement_set": [],
     "birth_set": [
       {
@@ -3819,7 +3884,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3855,7 +3921,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3883,7 +3950,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3924,7 +3992,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -3998,7 +4067,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4072,7 +4142,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4146,7 +4217,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4215,7 +4287,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4284,7 +4357,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4353,7 +4427,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4424,13 +4499,15 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56905/?format=json",
           "id": 56905,
           "label": "Planiol, Marcel, Fernand",
-          "uri": "http://symogih.org/resource/Actr56905"
+          "uri": "http://symogih.org/resource/Actr56905",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -4489,13 +4566,15 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56860/?format=json",
           "id": 56860,
           "label": "Garçon, Emile, Auguste",
-          "uri": "http://symogih.org/resource/Actr56860"
+          "uri": "http://symogih.org/resource/Actr56860",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -4568,13 +4647,15 @@
             "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
             "id": 50033,
             "label": "Grouber, Alexandre",
-            "uri": "http://symogih.org/resource/Actr50033"
+            "uri": "http://symogih.org/resource/Actr50033",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/56860/?format=json",
             "id": 56860,
             "label": "Garçon, Emile, Auguste",
-            "uri": "http://symogih.org/resource/Actr56860"
+            "uri": "http://symogih.org/resource/Actr56860",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -4629,7 +4710,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4665,13 +4747,15 @@
             "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
             "id": 50033,
             "label": "Grouber, Alexandre",
-            "uri": "http://symogih.org/resource/Actr50033"
+            "uri": "http://symogih.org/resource/Actr50033",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/56905/?format=json",
             "id": 56905,
             "label": "Planiol, Marcel, Fernand",
-            "uri": "http://symogih.org/resource/Actr56905"
+            "uri": "http://symogih.org/resource/Actr56905",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -4726,7 +4810,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4786,7 +4871,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4819,7 +4905,8 @@
           "url": "http://127.0.0.1:8000/api/actor/50033/?format=json",
           "id": 50033,
           "label": "Grouber, Alexandre",
-          "uri": "http://symogih.org/resource/Actr50033"
+          "uri": "http://symogih.org/resource/Actr50033",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4838,12 +4925,12 @@
       }
     ],
     "label": "Grouber, Alexandre",
-    "uri": "http://symogih.org/resource/Actr50033"
+    "uri": "http://symogih.org/resource/Actr50033",
+    "kind": "Actor"
   },
   {
     "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
     "id": 56812,
-    "kind": "Actor",
     "retirement_set": [],
     "birth_set": [
       {
@@ -4854,7 +4941,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4890,7 +4978,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4926,7 +5015,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -4967,7 +5057,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5046,7 +5137,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5120,7 +5212,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5194,7 +5287,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5268,7 +5362,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5342,7 +5437,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5411,7 +5507,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5480,7 +5577,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5554,7 +5652,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5623,7 +5722,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5702,7 +5802,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5781,7 +5882,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -5857,13 +5959,15 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/50091/?format=json",
           "id": 50091,
           "label": "Véron-Duverger, Alexandre, Jacques",
-          "uri": "http://symogih.org/resource/Actr50091"
+          "uri": "http://symogih.org/resource/Actr50091",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -5924,13 +6028,15 @@
           "url": "http://127.0.0.1:8000/api/actor/49958/?format=json",
           "id": 49958,
           "label": "Boyé, André-Jean",
-          "uri": "http://symogih.org/resource/Actr49958"
+          "uri": "http://symogih.org/resource/Actr49958",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -5989,13 +6095,15 @@
           "url": "http://127.0.0.1:8000/api/actor/49975/?format=json",
           "id": 49975,
           "label": "Cheneaux, Gustave, Joseph",
-          "uri": "http://symogih.org/resource/Actr49975"
+          "uri": "http://symogih.org/resource/Actr49975",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -6054,13 +6162,15 @@
           "url": "http://127.0.0.1:8000/api/actor/56883/?format=json",
           "id": 56883,
           "label": "Lambert, Jacques, Edouard",
-          "uri": "http://symogih.org/resource/Actr56883"
+          "uri": "http://symogih.org/resource/Actr56883",
+          "kind": "Actor"
         },
         "actor_evaluer": {
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "abstract_object": {
           "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -6132,13 +6242,15 @@
             "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
             "id": 56812,
             "label": "Monnier, Henri, Jacques",
-            "uri": "http://symogih.org/resource/Actr56812"
+            "uri": "http://symogih.org/resource/Actr56812",
+            "kind": "Actor"
           },
           "actor_evaluer": {
             "url": "http://127.0.0.1:8000/api/actor/50091/?format=json",
             "id": 50091,
             "label": "Véron-Duverger, Alexandre, Jacques",
-            "uri": "http://symogih.org/resource/Actr50091"
+            "uri": "http://symogih.org/resource/Actr50091",
+            "kind": "Actor"
           },
           "abstract_object": {
             "url": "http://127.0.0.1:8000/api/abstract-object/1587/?format=json",
@@ -6193,7 +6305,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -6226,7 +6339,8 @@
           "url": "http://127.0.0.1:8000/api/actor/56812/?format=json",
           "id": 56812,
           "label": "Monnier, Henri, Jacques",
-          "uri": "http://symogih.org/resource/Actr56812"
+          "uri": "http://symogih.org/resource/Actr56812",
+          "kind": "Actor"
         },
         "datation": [
           {
@@ -6245,6 +6359,7 @@
       }
     ],
     "label": "Monnier, Henri, Jacques",
-    "uri": "http://symogih.org/resource/Actr56812"
+    "uri": "http://symogih.org/resource/Actr56812",
+    "kind": "Actor"
   }
 ]
