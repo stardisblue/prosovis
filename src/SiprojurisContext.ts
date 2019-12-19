@@ -79,10 +79,16 @@ export const useSiprojurisContext = function(
 
   const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
 
-  const select = useCallback(
-    (items?: PrimaryKey[]) => setSelected(items ? items.sort() : undefined),
-    []
-  );
+  const select = useCallback((items?: PrimaryKey[]) => {
+    if (items === undefined) return setSelected(undefined);
+
+    setSelected(
+      _(items)
+        .sort()
+        .sortedUniq()
+        .value()
+    );
+  }, []);
 
   const types = useMemo(
     () =>
