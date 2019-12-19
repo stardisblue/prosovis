@@ -40,7 +40,10 @@ function getEvents(actor: Actor): AnyEvent[] {
     ...actor.obtainqualification_set
   );
 
-  return events;
+  return _.map(events, e => {
+    e.datation = _.sortBy(e.datation, 'clean_date');
+    return e;
+  });
 }
 
 export const useSiprojurisContext = function(
