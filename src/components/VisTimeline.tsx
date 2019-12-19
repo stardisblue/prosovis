@@ -415,14 +415,15 @@ export const VisTimeline: React.FC = function() {
           .map('id')
           .sort()
           .value();
-        if (e.event.ctrlKey) {
+        if (e.event.ctrlKey || e.event.metaKey) {
           select(_.concat(selected || [], groupEvents));
         } else {
           select(groupEvents);
         }
       } else if (e.what === 'item') {
         const index = _.sortedIndexOf(selected, e.item);
-        if (e.event.ctrlKey) {
+
+        if (e.event.ctrlKey || e.event.metaKey) {
           if (index < 0) {
             console.log('selection:item', e.item);
             // is not selected
@@ -436,7 +437,7 @@ export const VisTimeline: React.FC = function() {
           select([e.item]);
         }
       } else {
-        if (!e.event.ctrlKey) {
+        if (!e.event.ctrlKey || e.event.metaKey) {
           console.log('selection:reset');
           select();
         }
