@@ -6,7 +6,6 @@ import classnames from 'classnames';
 import { SiprojurisContext } from '../SiprojurisContext';
 import _ from 'lodash';
 import { AnyEvent, Nullable, PrimaryKey, Datation } from '../models';
-import { Moment } from 'moment';
 import he from 'he';
 import './VisTimeline.css';
 import vis from 'vis-timeline';
@@ -14,7 +13,7 @@ import { GroupedEvent } from '../hooks/useGroups';
 import { useMouse } from '../hooks/useMouse';
 import { SiprojurisTimelineContext } from './SiprojurisTimeline';
 import * as d3 from 'd3';
-import moment from 'moment';
+import moment, { Moment } from 'moment';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -171,14 +170,26 @@ var options = {
 
 const ctxOptions = {
   width: '100%',
-  height: 60,
+  height: 70,
   margin: {
-    top: 5,
-    right: 15,
-    bottom: 20,
-    left: 15
+    top: 0,
+    right: 20,
+    bottom: 0,
+    left: 20
   },
-  windowHeight: 39
+  window: {
+    left: 20,
+    right: 18,
+    top: 15,
+    bottom: 15
+  },
+
+  filter: {
+    left: 20,
+    right: 18,
+    top: 0,
+    bottom: 0
+  }
 };
 
 const OPACITY_CLASS = 'o-50';
@@ -225,7 +236,7 @@ export const VisTimeline: React.FC = function() {
   }>({} as any);
 
   useEffect(() => {
-    setFilter(() => (e: AnyEvent) => displayTypes[e.kind]);
+    setFilter('display', (e: AnyEvent) => displayTypes[e.kind]);
   }, [displayTypes, setFilter]);
 
   const timelineEvents = useMemo(() => {
@@ -299,13 +310,16 @@ export const VisTimeline: React.FC = function() {
           d3Ref.current.brush.move,
           [interval.start, interval.end].map(d3Ref.current.scale)
         );
-    }, 10);
+    }, 16);
 
     timeline.on('rangechange', (e: any) => {
       if (d3Ref.current && e.byUser) {
         updateTimelineWindow(e);
       }
     });
+
+    timeline.addCustomTime(undefined as any, 'start');
+    timeline.addCustomTime(undefined as any, 'end');
 
     $($timeline).popover({
       selector: '[data-popover="true"]',
@@ -328,6 +342,7 @@ export const VisTimeline: React.FC = function() {
     d3Ref.current.scale = d3
       .scaleTime()
       .domain([moment(options.min), moment(options.max)])
+      .nice()
       .range([5, width - 5])
       .clamp(true);
     d3Ref.current.g_axis = d3.select($dom.current.axis);
@@ -343,7 +358,7 @@ export const VisTimeline: React.FC = function() {
       timeline.setWindow(start, end, {
         animation: false
       });
-    }, 10);
+    }, 16);
 
     d3Ref.current.brush = d3.brushX().on('start brush end', function() {
       if (d3.event.sourceEvent && d3.event.selection) {
@@ -354,15 +369,20 @@ export const VisTimeline: React.FC = function() {
 
     const updateFilter = _.throttle((selection: number[]) => {
       const [start, end] = selection.map(d3Ref.current.scale.invert);
-      console.log(start, end);
+      setFilter('interval', (e: any) =>
+        _.some(e.datation, datation =>
+          moment(datation.clean_date).isBetween(start, end)
+        )
+      );
     }, 100);
 
-    d3Ref.current.filter = d3.brushX();
-    d3Ref.current.g_filter = d3
-      .select($dom.current.filter)
-      .on('brush', function() {
-        updateFilter(d3.event.selection);
-      });
+    d3Ref.current.filter = d3.brushX().on('brush', function() {
+      const [start, end] = d3.event.selection.map(d3Ref.current.scale.invert);
+      timeline.setCustomTime(start, 'start');
+      timeline.setCustomTime(end, 'end');
+      updateFilter(d3.event.selection);
+    });
+    d3Ref.current.g_filter = d3.select($dom.current.filter);
 
     return () => {
       timeline.destroy();
@@ -494,8 +514,11 @@ export const VisTimeline: React.FC = function() {
       d3Ref.current.g_axis.call(d3Ref.current.axis);
 
       d3Ref.current.brush.extent([
-        [ctxOptions.margin.left, ctxOptions.margin.top],
-        [width - ctxOptions.margin.right, ctxOptions.windowHeight]
+        [ctxOptions.window.left, ctxOptions.window.top],
+        [
+          width - ctxOptions.window.right,
+          ctxOptions.height - ctxOptions.window.bottom
+        ]
       ]);
       d3Ref.current.g_window.call(d3Ref.current.brush).call(g =>
         g
@@ -521,14 +544,17 @@ export const VisTimeline: React.FC = function() {
       );
 
       d3Ref.current.filter.extent([
-        [ctxOptions.margin.left, ctxOptions.margin.top],
-        [width - ctxOptions.margin.right, ctxOptions.height]
+        [ctxOptions.filter.left, ctxOptions.filter.top],
+        [
+          width - ctxOptions.filter.right,
+          ctxOptions.height - ctxOptions.filter.bottom
+        ]
       ]);
       d3Ref.current.g_filter
         .call(d3Ref.current.filter)
         .call(d3Ref.current.filter.move, [
-          ctxOptions.margin.left,
-          width - ctxOptions.margin.right
+          ctxOptions.filter.left,
+          width - ctxOptions.filter.right
         ]);
 
       const interval = visTimeline.current!.getWindow();
@@ -553,7 +579,7 @@ export const VisTimeline: React.FC = function() {
           id="context-axis"
           className="axis"
           ref={el => ($dom.current.axis = el!)}
-          transform={`translate(0, ${ctxOptions.height - 20})`}
+          transform={`translate(0, ${ctxOptions.height - 35})`}
         ></g>
         <g
           id="context-filter"
