@@ -9,6 +9,7 @@ variables:
 cache:
   paths:
     - node_modules
+    - public
 
 # Name the stages involved in the pipeline
 stages:
