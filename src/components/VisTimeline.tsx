@@ -221,18 +221,22 @@ export const VisTimeline: React.FC = function() {
     filter: null
   } as any);
 
-  const visTimeline = useRef<vis.Timeline>();
+  const [visTl, setVisTl] = useState<vis.Timeline>();
 
   const [width, setWidth] = useState(1400);
+
+  const $svg = useRef<{
+    context: d3.Selection<SVGSVGElement, unknown, null, undefined>;
+    axis: d3.Selection<SVGGElement, unknown, null, undefined>;
+    window: d3.Selection<SVGGElement, unknown, null, undefined>;
+    filter: d3.Selection<SVGGElement, unknown, null, undefined>;
+  }>({} as any);
+
   const d3Ref = useRef<{
-    svg_timeline: d3.Selection<SVGSVGElement, unknown, null, undefined>;
     axis: d3.Axis<number | Date | { valueOf(): number }>;
-    scale: d3.ScaleTime<number, number>;
-    brush: d3.BrushBehavior<unknown>;
     filter: d3.BrushBehavior<unknown>;
-    g_axis: d3.Selection<SVGGElement, unknown, null, undefined>;
-    g_window: d3.Selection<SVGGElement, unknown, null, undefined>;
-    g_filter: d3.Selection<SVGGElement, unknown, null, undefined>;
+    window: d3.BrushBehavior<unknown>;
+    x: d3.ScaleTime<number, number>;
   }>({} as any);
 
   useEffect(() => {
@@ -304,17 +308,17 @@ export const VisTimeline: React.FC = function() {
 
     timeline.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
-    const updateTimelineWindow = _.throttle((interval: vis.TimelineWindow) => {
-      if (d3Ref.current.g_window)
-        return d3Ref.current.g_window.call(
-          d3Ref.current.brush.move,
-          [interval.start, interval.end].map(d3Ref.current.scale)
+    const updateContext = _.throttle((interval: vis.TimelineWindow) => {
+      if ($svg.current.window)
+        return $svg.current.window.call(
+          d3Ref.current.window.move,
+          [interval.start, interval.end].map(d3Ref.current.x)
         );
     }, 16);
 
     timeline.on('rangechange', (e: any) => {
       if (d3Ref.current && e.byUser) {
-        updateTimelineWindow(e);
+        updateContext(e);
       }
     });
 
@@ -334,55 +338,58 @@ export const VisTimeline: React.FC = function() {
       'timeline-event'
     ) as any;
 
-    visTimeline.current = timeline;
+    setVisTl(timeline);
 
     // D3 INIT
 
-    d3Ref.current.svg_timeline = d3.select($dom.current.context);
-    d3Ref.current.scale = d3
+    $svg.current.context = d3.select($dom.current.context);
+    d3Ref.current.x = d3
       .scaleTime()
       .domain([moment(options.min), moment(options.max)])
       .nice()
       .range([5, width - 5])
       .clamp(true);
-    d3Ref.current.g_axis = d3.select($dom.current.axis);
+    $svg.current.axis = d3.select($dom.current.axis);
 
-    d3Ref.current.axis = d3.axisBottom(d3Ref.current.scale);
+    d3Ref.current.axis = d3.axisBottom(d3Ref.current.x);
     // .ticks(d3.timeYear.every(10))
     // .tickFormat((x: any) => {
     //   return moment(x).year() % 20 === 0 ? d3.timeFormat('%Y')(x) : '';
     // });
 
     const updateWindow = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(d3Ref.current.scale.invert);
+      const [start, end] = selection.map(d3Ref.current.x.invert);
       timeline.setWindow(start, end, {
         animation: false
       });
     }, 16);
 
-    d3Ref.current.brush = d3.brushX().on('start brush end', function() {
+    d3Ref.current.window = d3.brushX().on('start brush end', function() {
       if (d3.event.sourceEvent && d3.event.selection) {
         updateWindow(d3.event.selection);
       }
     });
-    d3Ref.current.g_window = d3.select($dom.current.brush);
+    $svg.current.window = d3.select($dom.current.brush);
 
     const updateFilter = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(d3Ref.current.scale.invert);
+      const [start, end] = selection.map(d3Ref.current.x.invert);
+      console.log(start, end);
+
       setFilter('interval', (e: any) =>
-        _.some(e.datation, datation =>
-          moment(datation.clean_date).isBetween(start, end)
-        )
+        _.some(e.datation, datation => {
+          console.log(datation);
+          return moment(datation.clean_date).isBetween(start, end);
+        })
       );
     }, 100);
 
     d3Ref.current.filter = d3.brushX().on('brush', function() {
-      const [start, end] = d3.event.selection.map(d3Ref.current.scale.invert);
+      const [start, end] = d3.event.selection.map(d3Ref.current.x.invert);
       timeline.setCustomTime(start, 'start');
       timeline.setCustomTime(end, 'end');
       updateFilter(d3.event.selection);
     });
-    d3Ref.current.g_filter = d3.select($dom.current.filter);
+    $svg.current.filter = d3.select($dom.current.filter);
 
     return () => {
       timeline.destroy();
@@ -478,11 +485,12 @@ export const VisTimeline: React.FC = function() {
   }, [highlights, setHighlights, grouping.kind]);
 
   useEffect(() => {
-    visTimeline.current!.setItems(timelineEvents);
+    if (visTl) visTl.setItems(timelineEvents);
     // visTimeline.current!.redraw();
-  }, [timelineEvents]);
+  }, [visTl, timelineEvents]);
 
   useEffect(() => {
+    if (!visTl) return;
     function newLineLongString(str: string, maxLenght = 20): string {
       if (str.length < maxLenght) {
         return str;
@@ -496,31 +504,31 @@ export const VisTimeline: React.FC = function() {
         .join('<br/>');
     }
     // Set Groups
-    visTimeline.current!.setGroups(
+    visTl.setGroups(
       _.map(grouping.groups(filteredEvents), ({ id, label }) => ({
         id,
         content: newLineLongString(label)
       }))
     );
     // visTimeline.current!.redraw();
-  }, [grouping, filteredEvents]);
+  }, [visTl, grouping, filteredEvents]);
 
   useEffect(() => {
-    if ($dom.current.axis && d3Ref.current && width !== 0) {
-      d3Ref.current.scale.range([
+    if ($dom.current.axis && d3Ref.current && width !== 0 && visTl) {
+      d3Ref.current.x.range([
         ctxOptions.margin.left,
         width - ctxOptions.margin.right
       ]);
-      d3Ref.current.g_axis.call(d3Ref.current.axis);
+      $svg.current.axis.call(d3Ref.current.axis);
 
-      d3Ref.current.brush.extent([
+      d3Ref.current.window.extent([
         [ctxOptions.window.left, ctxOptions.window.top],
         [
           width - ctxOptions.window.right,
           ctxOptions.height - ctxOptions.window.bottom
         ]
       ]);
-      d3Ref.current.g_window.call(d3Ref.current.brush).call(g =>
+      $svg.current.window.call(d3Ref.current.window).call(g =>
         g
           .select('.overlay')
           .datum({ type: 'selection' })
@@ -534,10 +542,10 @@ export const VisTimeline: React.FC = function() {
             const [cx] = d3.mouse(this);
 
             const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-            const [X0, X1] = d3Ref.current.scale.range();
+            const [X0, X1] = d3Ref.current.x.range();
 
             d3.select(this.parentNode).call(
-              d3Ref.current.brush.move,
+              d3Ref.current.window.move,
               x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
             );
           })
@@ -550,18 +558,18 @@ export const VisTimeline: React.FC = function() {
           ctxOptions.height - ctxOptions.filter.bottom
         ]
       ]);
-      d3Ref.current.g_filter
+      $svg.current.filter
         .call(d3Ref.current.filter)
         .call(d3Ref.current.filter.move, [
           ctxOptions.filter.left,
           width - ctxOptions.filter.right
         ]);
 
-      const interval = visTimeline.current!.getWindow();
+      const interval = visTl.getWindow();
 
-      d3Ref.current.g_window.call(
-        d3Ref.current.brush.move,
-        [interval.start, interval.end].map(d3Ref.current.scale)
+      $svg.current.window.call(
+        d3Ref.current.window.move,
+        [interval.start, interval.end].map(d3Ref.current.x)
       );
     }
   }, [width]);
