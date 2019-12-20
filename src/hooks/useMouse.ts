@@ -15,5 +15,5 @@ export function useMouse() {
         pageY: number;
       }
     ) => Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6
-  }).current;
+  });
 }
