@@ -1,7 +1,7 @@
 import React, { useContext, useMemo } from 'react';
 import _ from 'lodash';
 import { Datation, AnyEvent, Ressource } from '../models';
-import { SiprojurisContext } from '../SiprojurisContext';
+import { SiprojurisContext } from '../context/SiprojurisContext';
 import { SiprojurisInformationItem } from './SiprojurisInformationItem';
 
 export function parseDates(dates: Datation[]) {

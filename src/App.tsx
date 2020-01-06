@@ -1,7 +1,10 @@
 import React from 'react';
 import './App.css';
 import defaultActors from './store/actors.json';
-import { useSiprojurisContext, SiprojurisContext } from './SiprojurisContext';
+import {
+  useSiprojurisContext,
+  SiprojurisContext
+} from './context/SiprojurisContext';
 import { SiprojurisTimeline } from './components/SiprojurisTimeline';
 import { SiprojurisInformation } from './components/SiprojurisInformation';
 

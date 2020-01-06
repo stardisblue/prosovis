@@ -1,87 +1,16 @@
-import React, { useMemo, useState, useCallback, useContext } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { VisTimeline, getStyles } from './VisTimeline';
-import { AnyEvent, Ressource, PrimaryKey } from '../models';
 import _ from 'lodash';
-import { SiprojurisContext } from '../SiprojurisContext';
-
-function groupByActor(a: AnyEvent) {
-  return a.actor.id;
-}
-
-function groupByNamedPlace(a: any) {
-  return a.localisation ? a.localisation.id : 0;
-}
-
-function groupsActor(events: AnyEvent[]) {
-  return _(events)
-    .uniqBy('actor.id')
-    .map(e => e.actor)
-    .value();
-}
-
-function groupsNamedPlace(events: AnyEvent[]) {
-  return _(events)
-    .uniqBy('localisation.id')
-    .map(
-      e =>
-        (e as any).localisation || {
-          id: 0,
-          label: 'Inconnue',
-          kind: 'NamedPlace'
-        }
-    )
-    .value();
-}
-export const SiprojurisTimelineContext = React.createContext({} as any);
-
-const GROUP_BY: { [k: string]: GroupingProps } = {
-  actor: {
-    groups: groupsActor,
-    groupBy: groupByActor,
-    kind: 'Actor'
-  },
-  localisation: {
-    groups: groupsNamedPlace,
-    groupBy: groupByNamedPlace,
-    kind: 'NamedPlace'
-  }
-};
-
-type GroupingProps = {
-  groups: (events: AnyEvent[]) => Ressource[];
-  groupBy: (a: AnyEvent) => PrimaryKey;
-  kind: string;
-};
-
-export function useSiprojurisTimelineContext(
-  types: string[]
-): {
-  grouping: GroupingProps;
-  setGroup: React.Dispatch<React.SetStateAction<GroupingProps>>;
-  displayTypes: _.Dictionary<any>;
-  toggle: (typ: string) => void;
-} {
-  const [grouping, setGroup] = useState(GROUP_BY.actor);
-  const [displayTypes, setDisplayTypes] = useState(() =>
-    _(types)
-      .map(t => [t, true])
-      .fromPairs()
-      .value()
-  );
-
-  const toggle = useCallback((typ: string) => {
-    setDisplayTypes(state => {
-      state[typ] = !state[typ];
-      return { ...state };
-    });
-  }, []);
-
-  return { grouping, setGroup, displayTypes, toggle };
-}
+import { SiprojurisContext } from '../context/SiprojurisContext';
+import {
+  useTimelineContext,
+  GROUP_BY,
+  TimelineContext
+} from '../context/TimelineContext';
 
 export const SiprojurisTimeline: React.FC = function() {
   const { types } = useContext(SiprojurisContext);
-  const timelineContext = useSiprojurisTimelineContext(types);
+  const timelineContext = useTimelineContext(types);
   const { setGroup, displayTypes, toggle } = timelineContext;
 
   return (
@@ -325,9 +254,9 @@ export const SiprojurisTimeline: React.FC = function() {
           </div>
         </div>
       </div>
-      <SiprojurisTimelineContext.Provider value={timelineContext}>
+      <TimelineContext.Provider value={timelineContext}>
         <VisTimeline />
-      </SiprojurisTimelineContext.Provider>
+      </TimelineContext.Provider>
     </>
   );
 };

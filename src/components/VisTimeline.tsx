@@ -10,7 +10,7 @@ import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
 import classnames from 'classnames';
-import { SiprojurisContext } from '../SiprojurisContext';
+import { SiprojurisContext } from '../context/SiprojurisContext';
 import _ from 'lodash';
 import { AnyEvent, Nullable, PrimaryKey, Datation } from '../models';
 import he from 'he';
@@ -18,7 +18,7 @@ import './VisTimeline.css';
 import vis from 'vis-timeline';
 import { GroupedEvent } from '../hooks/useGroups';
 import { useMouse } from '../hooks/useMouse';
-import { SiprojurisTimelineContext } from './SiprojurisTimeline';
+import { TimelineContext } from '../context/TimelineContext';
 import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
 
@@ -223,7 +223,7 @@ export const VisTimeline: React.FC = function() {
     filteredEvents,
     setFilter
   } = useContext(SiprojurisContext);
-  const { grouping, displayTypes } = useContext(SiprojurisTimelineContext);
+  const { grouping, displayTypes } = useContext(TimelineContext);
 
   const [width, setWidth] = useState(1400);
 
@@ -485,7 +485,10 @@ export const VisTimeline: React.FC = function() {
     timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
     return () => timeline.vis.destroy();
-  }, [timeline, mouse]);
+
+    //! disabled for mouse, if modification, check deps again
+    // eslint-disable-next-line
+  }, [timeline]);
 
   useEffect(() => {}, [timeline, window, x]);
 
