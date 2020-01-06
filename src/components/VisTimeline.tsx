@@ -485,7 +485,7 @@ export const VisTimeline: React.FC = function() {
     timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
     return () => timeline.vis.destroy();
-  }, [timeline]);
+  }, [timeline, mouse]);
 
   useEffect(() => {}, [timeline, window, x]);
 
