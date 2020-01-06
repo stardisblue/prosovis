@@ -1,6 +1,6 @@
 import React from 'react';
 // import _ from 'lodash';
-import { Ressource, AnyEvent } from '../models';
+import { Ressource, AnyEvent } from '../data';
 
 export const SiprojurisInformationItem: React.FC<{
   group: Ressource;

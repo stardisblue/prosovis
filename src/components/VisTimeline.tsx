@@ -12,7 +12,7 @@ import 'bootstrap';
 import classnames from 'classnames';
 import { SiprojurisContext } from '../context/SiprojurisContext';
 import _ from 'lodash';
-import { AnyEvent, Nullable, PrimaryKey, Datation } from '../models';
+import { AnyEvent, Nullable, PrimaryKey, Datation } from '../data';
 import he from 'he';
 import './VisTimeline.css';
 import vis from 'vis-timeline';

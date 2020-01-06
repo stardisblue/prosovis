@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useCallback, useMemo, useState, useEffect } from 'react';
-import { Actor, AnyEvent, PrimaryKey } from '../models';
+import { Actor, AnyEvent, PrimaryKey } from '../data';
 
 type GroupByFunc = (a: AnyEvent) => any;
 type GroupsFunc = (e: AnyEvent[]) => any[];

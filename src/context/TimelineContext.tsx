@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { AnyEvent, Ressource, PrimaryKey } from '../models';
+import { AnyEvent, Ressource, PrimaryKey } from '../data';
 import _ from 'lodash';
 
 function groupByActor(a: AnyEvent) {

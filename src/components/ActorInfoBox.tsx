@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import { Datation, Actor } from '../models';
+import { Datation, Actor } from '../data';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)

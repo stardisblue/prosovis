@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import _ from 'lodash';
-import { Datation, AnyEvent, Ressource } from '../models';
+import { Datation, AnyEvent, Ressource } from '../data';
 import { SiprojurisContext } from '../context/SiprojurisContext';
 import { SiprojurisInformationItem } from './SiprojurisInformationItem';
 

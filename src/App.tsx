@@ -1,6 +1,6 @@
 import React from 'react';
 import './App.css';
-import defaultActors from './store/actors.json';
+import defaultActors from './data/actors.json';
 import {
   useSiprojurisContext,
   SiprojurisContext

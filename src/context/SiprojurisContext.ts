@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Actor, AnyEvent, PrimaryKey } from '../models';
+import { Actor, AnyEvent, PrimaryKey } from '../data';
 import _ from 'lodash';
 
 type HightlightEvents = { id: PrimaryKey; kind: string }[];
