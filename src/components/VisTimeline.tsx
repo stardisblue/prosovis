@@ -234,6 +234,17 @@ export const VisTimeline: React.FC = function() {
     selection: d3.Selection<SVGGElement, unknown, null, undefined>;
     d3Axis: d3.Axis<number | Date | { valueOf(): number }>;
   }>();
+
+  const axisRef = useCallback(function($g: Nullable<SVGGElement>) {
+    if (!$g) return;
+    setAxis({
+      dom: $g,
+      selection: d3.select($g),
+      d3Axis: d3.axisBottom(x)
+    });
+    //eslint-disable-next-line
+  }, []);
+
   // const [context, setContext] = useState<{
   //   dom: SVGSVGElement;
   //   selection: d3.Selection<SVGSVGElement, unknown, null, undefined>;
@@ -243,28 +254,18 @@ export const VisTimeline: React.FC = function() {
     brush: d3.BrushBehavior<unknown>;
     dom: SVGGElement;
   }>();
+
+  const contextFilterRef = useCallback(function(dom: SVGGElement) {
+    if (!dom) return;
+    const brush = d3.brushX();
+    const selection = d3.select(dom).call(brush);
+    setContextFilter({ dom, brush, selection });
+  }, []);
+
   const [timeline, setTimeline] = useState<{
     vis: vis.Timeline;
     dom: HTMLDivElement;
   }>();
-  const [window, setWindow] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-  }>();
-
-  const timelineEvents = useMemo(() => {
-    return getTimelineEvents(
-      _(filteredEvents)
-        .map(
-          (a): GroupedEvent => ({
-            ...a,
-            group: grouping.groupBy(a)
-          })
-        )
-        .value()
-    );
-  }, [filteredEvents, grouping]);
 
   const timelineRef = useCallback(function($div: Nullable<HTMLDivElement>) {
     // put timeline logic here
@@ -289,6 +290,25 @@ export const VisTimeline: React.FC = function() {
     // eslint-disable-next-line
   }, []);
 
+  const [window, setWindow] = useState<{
+    dom: SVGGElement;
+    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
+    brush: d3.BrushBehavior<unknown>;
+  }>();
+
+  const timelineEvents = useMemo(() => {
+    return getTimelineEvents(
+      _(filteredEvents)
+        .map(
+          (a): GroupedEvent => ({
+            ...a,
+            group: grouping.groupBy(a)
+          })
+        )
+        .value()
+    );
+  }, [filteredEvents, grouping]);
+
   // const contextRef = useCallback(($svg: Nullable<SVGSVGElement>) => {
   //   if (!$svg) return;
   //   setContext({ selection: d3.select($svg), dom: $svg });
@@ -301,19 +321,6 @@ export const VisTimeline: React.FC = function() {
       .nice()
       .clamp(true)
   );
-
-  const axisRef = useCallback(function($g: Nullable<SVGGElement>) {
-    if (!$g) return;
-    setAxis({ dom: $g, selection: d3.select($g), d3Axis: d3.axisBottom(x) });
-    //eslint-disable-next-line
-  }, []);
-
-  const contextFilterRef = useCallback(function(dom: SVGGElement) {
-    if (!dom) return;
-    const brush = d3.brushX();
-    const selection = d3.select(dom).call(brush);
-    setContextFilter({ dom, brush, selection });
-  }, []);
 
   useEffect(() => {
     if (!timeline || !contextFilter) return;
@@ -598,6 +605,7 @@ export const VisTimeline: React.FC = function() {
   }, [timeline, grouping, filteredEvents]);
 
   useEffect(() => {
+    //* never the case
     if (!axis) return;
     x.range([ctxOptions.margin.left, width - ctxOptions.margin.right]);
     axis.selection.call(axis.d3Axis);

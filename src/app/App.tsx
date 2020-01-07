@@ -1,12 +1,12 @@
 import React from 'react';
 import './App.css';
-import defaultActors from './data/actors.json';
+import defaultActors from '../data/actors.json';
 import {
   useSiprojurisContext,
   SiprojurisContext
-} from './context/SiprojurisContext';
-import { SiprojurisTimeline } from './components/SiprojurisTimeline';
-import { SiprojurisInformation } from './components/SiprojurisInformation';
+} from '../context/SiprojurisContext';
+import { SiprojurisTimeline } from '../components/SiprojurisTimeline';
+import { SiprojurisInformation } from '../components/SiprojurisInformation';
 
 function App() {
   const value = useSiprojurisContext(defaultActors as any);
