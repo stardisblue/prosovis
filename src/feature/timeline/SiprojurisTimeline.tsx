@@ -1,12 +1,12 @@
 import React, { useMemo, useContext } from 'react';
 import { VisTimeline, getStyles } from './VisTimeline';
 import _ from 'lodash';
-import { SiprojurisContext } from '../context/SiprojurisContext';
+import { SiprojurisContext } from '../../context/SiprojurisContext';
 import {
   useTimelineContext,
   GROUP_BY,
   TimelineContext
-} from '../context/TimelineContext';
+} from './TimelineContext';
 
 export const SiprojurisTimeline: React.FC = function() {
   const { types } = useContext(SiprojurisContext);

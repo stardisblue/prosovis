@@ -5,7 +5,7 @@ import {
   useSiprojurisContext,
   SiprojurisContext
 } from '../context/SiprojurisContext';
-import { SiprojurisTimeline } from '../components/SiprojurisTimeline';
+import { SiprojurisTimeline } from '../feature/timeline/SiprojurisTimeline';
 import { SiprojurisInformation } from '../components/SiprojurisInformation';
 
 function App() {
