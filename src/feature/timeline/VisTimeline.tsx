@@ -1,12 +1,4 @@
-import React, {
-  useEffect,
-  useContext,
-  useRef,
-  useMemo,
-  useState,
-  useCallback
-} from 'react';
-import $ from 'jquery';
+import React, { useEffect, useContext, useRef, useMemo, useState } from 'react';
 import 'popper.js';
 import 'bootstrap';
 import classnames from 'classnames';
@@ -21,6 +13,7 @@ import { useMouse } from './useMouse';
 import { TimelineContext } from './TimelineContext';
 import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
+import { useReferences } from './useReferences';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -158,36 +151,6 @@ function getTimelineEvents(events: GroupedEvent[]) {
   return items;
 }
 
-var options = {
-  max: '2000-01-01', //Maximum date of timeline
-  min: '1700-01-01', // Minimum date of timeline,
-  multiselect: false, // Allow to select multiples items
-  selectable: false,
-  stack: true, // Stack items
-  showTooltips: false,
-  width: '100%',
-  height: '350px',
-  margin: {
-    item: {
-      horizontal: 5, // distance
-      vertical: 1
-    }
-  },
-  orientation: { item: 'top' },
-  dataAttributes: [
-    // attributes of html balise div
-    'id',
-    'start',
-    'end',
-    'group',
-    'title',
-    'label',
-    'popover'
-  ],
-  verticalScroll: true,
-  horizontalScroll: true
-};
-
 const ctxOptions = {
   width: '100%',
   height: 70,
@@ -223,78 +186,10 @@ export const VisTimeline: React.FC = function() {
     filteredEvents,
     setFilter
   } = useContext(SiprojurisContext);
+
   const { grouping, displayTypes } = useContext(TimelineContext);
 
   const [width, setWidth] = useState(1400);
-
-  const $events = useRef<HTMLCollectionOf<HTMLDivElement>>();
-
-  const [axis, setAxis] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    d3Axis: d3.Axis<number | Date | { valueOf(): number }>;
-  }>();
-
-  const axisRef = useCallback(function($g: Nullable<SVGGElement>) {
-    if (!$g) return;
-    setAxis({
-      dom: $g,
-      selection: d3.select($g),
-      d3Axis: d3.axisBottom(x)
-    });
-    //eslint-disable-next-line
-  }, []);
-
-  // const [context, setContext] = useState<{
-  //   dom: SVGSVGElement;
-  //   selection: d3.Selection<SVGSVGElement, unknown, null, undefined>;
-  // }>();
-  const [contextFilter, setContextFilter] = useState<{
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-    dom: SVGGElement;
-  }>();
-
-  const contextFilterRef = useCallback(function(dom: SVGGElement) {
-    if (!dom) return;
-    const brush = d3.brushX();
-    const selection = d3.select(dom).call(brush);
-    setContextFilter({ dom, brush, selection });
-  }, []);
-
-  const [timeline, setTimeline] = useState<{
-    vis: vis.Timeline;
-    dom: HTMLDivElement;
-  }>();
-
-  const timelineRef = useCallback(function($div: Nullable<HTMLDivElement>) {
-    // put timeline logic here
-    if (!$div) return;
-    $($div).popover({
-      selector: '[data-popover="true"]',
-      trigger: 'hover',
-      placement: 'top',
-      content: function() {
-        return this.getAttribute('data-label') || '';
-      }
-    });
-
-    $events.current = $div.getElementsByClassName('timeline-event') as any;
-    const visTimeline = new vis.Timeline($div, timelineEvents, [], options);
-    visTimeline.addCustomTime(undefined as any, 'start');
-    visTimeline.addCustomTime(undefined as any, 'end');
-    setTimeline({
-      vis: visTimeline,
-      dom: $div
-    });
-    // eslint-disable-next-line
-  }, []);
-
-  const [window, setWindow] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-  }>();
 
   const timelineEvents = useMemo(() => {
     return getTimelineEvents(
@@ -309,21 +204,22 @@ export const VisTimeline: React.FC = function() {
     );
   }, [filteredEvents, grouping]);
 
-  // const contextRef = useCallback(($svg: Nullable<SVGSVGElement>) => {
-  //   if (!$svg) return;
-  //   setContext({ selection: d3.select($svg), dom: $svg });
-  // }, []);
-
-  const [x] = useState(() =>
-    d3
-      .scaleTime()
-      .domain([moment(options.min), moment(options.max)])
-      .nice()
-      .clamp(true)
-  );
+  const {
+    $events,
+    axis,
+    axisRef,
+    contextFilter,
+    contextFilterRef,
+    timeline,
+    timelineRef,
+    window,
+    windowRef,
+    x
+  } = useReferences(timelineEvents);
 
   useEffect(() => {
     if (!timeline || !contextFilter) return;
+
     contextFilter.selection.call(contextFilter.brush);
 
     const updateFilter = _.throttle((selection: number[]) => {
@@ -346,6 +242,7 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     if (!contextFilter || !timeline) return;
+
     contextFilter.brush.extent([
       [ctxOptions.filter.left, ctxOptions.filter.top],
       [
@@ -353,6 +250,7 @@ export const VisTimeline: React.FC = function() {
         ctxOptions.height - ctxOptions.filter.bottom
       ]
     ]);
+
     contextFilter.selection
       .call(contextFilter.brush)
       .call(contextFilter.brush.move, [
@@ -360,13 +258,6 @@ export const VisTimeline: React.FC = function() {
         width - ctxOptions.filter.right
       ]);
   }, [timeline, contextFilter, width]);
-
-  const windowRef = useCallback(function(dom: Nullable<SVGGElement>) {
-    if (!dom) return;
-    const selection = d3.select(dom);
-    const brush = d3.brushX();
-    setWindow({ dom, selection, brush });
-  }, []);
 
   useEffect(() => {
     if (!timeline || !window) return;
