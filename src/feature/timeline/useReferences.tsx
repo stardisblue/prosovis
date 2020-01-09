@@ -1,8 +1,10 @@
-import React, { useCallback, useRef, useMemo, useState } from 'react';
+import { useCallback, useRef, useMemo, useState } from 'react';
 import $ from 'jquery';
+import 'popper.js';
+import 'bootstrap';
 import { Nullable } from '../../data';
 import vis, { moment } from 'vis-timeline';
-import d3, { select } from 'd3';
+import * as d3 from 'd3';
 
 function refNotNull<T>(f: (dom: T) => any) {
   return function(dom: Nullable<T>) {
@@ -87,7 +89,7 @@ export function useReferences(timelineEvents: any[]) {
       refNotNull(function(dom: SVGGElement) {
         setAxis({
           dom,
-          selection: select(dom),
+          selection: d3.select(dom),
           d3Axis: d3.axisBottom(x)
         });
       }),
@@ -98,7 +100,7 @@ export function useReferences(timelineEvents: any[]) {
     contextFilterRef: useCallback(
       refNotNull(function(dom: SVGGElement) {
         const brush = d3.brushX();
-        const selection = select(dom).call(brush);
+        const selection = d3.select(dom).call(brush);
         setContextFilter({ dom, brush, selection });
       }),
       []
@@ -118,9 +120,9 @@ export function useReferences(timelineEvents: any[]) {
 
         $events.current = dom.getElementsByClassName('timeline-event') as any;
 
-        const visTimeline = new vis.Timeline(dom, timelineEvents, [], options);
-        visTimeline.addCustomTime(undefined as any, 'start');
-        visTimeline.addCustomTime(undefined as any, 'end');
+        const visTimeline = new vis.Timeline(dom, [], [], options);
+        visTimeline.addCustomTime(undefined as any, 'a');
+        visTimeline.addCustomTime(undefined as any, 'b');
         setTimeline({
           vis: visTimeline,
           dom
@@ -132,7 +134,9 @@ export function useReferences(timelineEvents: any[]) {
     window,
     windowRef: useCallback(
       refNotNull(function(dom: SVGGElement) {
-        setWindow({ dom, selection: select(dom), brush: d3.brushX() });
+        const brush = d3.brushX();
+        const selection = d3.select(dom).call(brush);
+        setWindow({ dom, selection, brush });
       }),
       []
     ),

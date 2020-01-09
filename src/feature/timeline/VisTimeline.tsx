@@ -1,6 +1,4 @@
 import React, { useEffect, useContext, useRef, useMemo, useState } from 'react';
-import 'popper.js';
-import 'bootstrap';
 import classnames from 'classnames';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
 import _ from 'lodash';
@@ -41,6 +39,11 @@ type VisEventBackground = VisEventProps & {
   what: 'background';
   item: null;
   group: PrimaryKey;
+};
+type VisTimeMarker = {
+  id: string;
+  time: Date;
+  event: MouseEvent | PointerEvent;
 };
 
 type VisEvent = VisEventGroup | VisEventItem | VisEventBackground;
@@ -146,8 +149,6 @@ function getTimelineEvents(events: GroupedEvent[]) {
     }
   });
 
-  // console.log(items);
-
   return items;
 }
 
@@ -178,6 +179,8 @@ const ctxOptions = {
 const OPACITY_CLASS = 'o-50';
 
 export const VisTimeline: React.FC = function() {
+  const firstEventSet = useRef(true);
+
   const {
     highlights,
     setHighlights,
@@ -189,7 +192,7 @@ export const VisTimeline: React.FC = function() {
 
   const { grouping, displayTypes } = useContext(TimelineContext);
 
-  const [width, setWidth] = useState(1400);
+  const [width, setWidth] = useState<number>();
 
   const timelineEvents = useMemo(() => {
     return getTimelineEvents(
@@ -217,14 +220,15 @@ export const VisTimeline: React.FC = function() {
     x
   } = useReferences(timelineEvents);
 
+  /*
+   * CONTEXT
+   */
   useEffect(() => {
     if (!timeline || !contextFilter) return;
 
-    contextFilter.selection.call(contextFilter.brush);
+    // contextFilter.selection.call(contextFilter.brush);
 
-    const updateFilter = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(x.invert);
-
+    const updateFilter = _.throttle((start: Date, end: Date) => {
       setFilter('interval', (e: any) =>
         _.some(e.datation, datation => {
           return moment(datation.clean_date).isBetween(start, end);
@@ -232,16 +236,41 @@ export const VisTimeline: React.FC = function() {
       );
     }, 100);
 
+    const contextThrottle = _.throttle((start: Date, end: Date) => {
+      timeline.vis.setCustomTime(start, 'a');
+      timeline.vis.setCustomTime(end, 'b');
+      updateFilter(start, end);
+    }, 16);
+
+    const timelineThrottle = _.throttle((e: VisTimeMarker) => {
+      const interval = _.sortBy([
+        e.time,
+        e.id === 'a'
+          ? timeline.vis.getCustomTime('b')
+          : timeline.vis.getCustomTime('a')
+      ]);
+      contextFilter.selection.call(contextFilter.brush.move, interval.map(x));
+      updateFilter(interval[0], interval[1]);
+    }, 16);
+
     contextFilter.brush.on('brush', function() {
-      const [start, end] = d3.event.selection.map(x.invert);
-      timeline.vis.setCustomTime(start, 'start');
-      timeline.vis.setCustomTime(end, 'end');
-      updateFilter(d3.event.selection);
+      if (d3.event.sourceEvent) {
+        const [start, end] = d3.event.selection.map(x.invert);
+        contextThrottle(start, end);
+      }
+    });
+
+    timeline.vis.on('timechange', (e: VisTimeMarker) => {
+      timelineThrottle(e);
     });
   }, [contextFilter, timeline, setFilter, x.invert]);
 
   useEffect(() => {
-    if (!contextFilter || !timeline) return;
+    if (!axis || !contextFilter || !window || !width) return;
+
+    // contextFilter.brush.brushSelection;
+
+    x.range([ctxOptions.margin.left, width - ctxOptions.margin.right]);
 
     contextFilter.brush.extent([
       [ctxOptions.filter.left, ctxOptions.filter.top],
@@ -251,51 +280,6 @@ export const VisTimeline: React.FC = function() {
       ]
     ]);
 
-    contextFilter.selection
-      .call(contextFilter.brush)
-      .call(contextFilter.brush.move, [
-        ctxOptions.filter.left,
-        width - ctxOptions.filter.right
-      ]);
-  }, [timeline, contextFilter, width]);
-
-  useEffect(() => {
-    if (!timeline || !window) return;
-    const updateWindow = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(x.invert);
-      timeline.vis.setWindow(start, end, {
-        animation: false
-      });
-    }, 16);
-
-    window.brush.on('start brush end', function() {
-      if (d3.event.sourceEvent && d3.event.selection) {
-        updateWindow(d3.event.selection);
-      }
-    });
-
-    const interval = timeline.vis.getWindow();
-
-    window.selection
-      .call(window.brush)
-      .call(window.brush.move, [interval.start, interval.end].map(x));
-
-    const updateContext = _.throttle((interval: vis.TimelineWindow) => {
-      return window.selection.call(
-        window.brush.move,
-        [interval.start, interval.end].map(x)
-      );
-    }, 16);
-
-    timeline.vis.on('rangechange', (e: any) => {
-      if (e.byUser) {
-        updateContext(e);
-      }
-    });
-  }, [timeline, window, x]);
-
-  useEffect(() => {
-    if (!window) return;
     window.brush.extent([
       [ctxOptions.window.left, ctxOptions.window.top],
       [
@@ -303,15 +287,33 @@ export const VisTimeline: React.FC = function() {
         ctxOptions.height - ctxOptions.window.bottom
       ]
     ]);
-    window.selection.call(window.brush).call(g =>
-      g
-        .select('.overlay')
+
+    axis.selection.call(axis.d3Axis);
+
+    contextFilter.selection.call(contextFilter.brush);
+
+    window.selection.call(window.brush);
+
+  }, [axis, contextFilter, width, window, x]);
+
+  /*
+   * Window
+   */
+
+  // Allows the window to be teleported when clicking on the context
+  useEffect(() => {
+    if (!window) return;
+    window.selection.call(function(g) {
+      g.select('.overlay')
         .datum({ type: 'selection' })
         .on('mousedown touchstart', function(this: any) {
-          const [start, end] = d3.brushSelection(window.dom) as [
-            number,
-            number
-          ];
+          const brushSelection = d3.brushSelection(window.dom) as
+            | [number, number]
+            | null;
+
+          if (!brushSelection) return;
+
+          const [start, end] = brushSelection;
 
           const dx = end - start;
           const [cx] = d3.mouse(this);
@@ -323,15 +325,47 @@ export const VisTimeline: React.FC = function() {
             window.brush.move,
             x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
           );
-        })
-    );
-  }, [width, window, x]);
+        });
+    });
+  }, [window, x]);
 
+  // Syncs the context window view and the timeline view
+  useEffect(() => {
+    if (!timeline || !window) return;
+
+    const updateWindow = _.throttle((selection: number[]) => {
+      const [start, end] = selection.map(x.invert);
+      timeline.vis.setWindow(start, end, {
+        animation: false
+      });
+    }, 16);
+
+    const updateContext = _.throttle((interval: vis.TimelineWindow) => {
+      return window.selection.call(
+        window.brush.move,
+        [interval.start, interval.end].map(x)
+      );
+    }, 16);
+
+    window.brush.on('brush', function() {
+      if (d3.event.sourceEvent && d3.event.selection) {
+        updateWindow(d3.event.selection);
+      }
+    });
+
+    timeline.vis.on('rangechange', (e: any) => {
+      if (e.byUser) {
+        updateContext(e);
+      }
+    });
+  }, [timeline, window, x]);
+
+  /*
+   * Display Types
+   */
   useEffect(() => {
     setFilter('display', (e: AnyEvent) => displayTypes[e.kind]);
   }, [displayTypes, setFilter]);
-
-  const mouse = useMouse();
 
   const actions = useRef<{
     click: (e: VisEvent) => void;
@@ -349,47 +383,54 @@ export const VisTimeline: React.FC = function() {
     __drag: (_e: VisEvent) => {}
   });
 
-  useEffect(() => {
-    if (!timeline) return;
-    timeline.vis.on('changed', (e: any) => actions.current.changed(e));
-    timeline.vis.on('click', (e: any) => actions.current.__click(e));
-    timeline.vis.on('dragover', (e: any) => actions.current.__drag(e));
+  /*
+   * Binds actions and mouse interactions to the timeline
+   */
+  {
+    // mouse actions
+    const mouse = useMouse();
 
-    timeline.vis.on('mouseDown', (e: any) => {
-      if (!mouse.current.click) {
-        mouse.current.click = true;
-        mouse.current.x = e.pageX;
-        mouse.current.y = e.pageY;
-      }
-    });
+    useEffect(() => {
+      if (!timeline) return;
 
-    timeline.vis.on('mouseMove', (e: any) => {
-      if (
-        mouse.current.click &&
-        mouse.current.draggingTreshold(mouse.current, e.event as any)
-      ) {
-        mouse.current.dragging = true;
+      timeline.vis.on('changed', (e: any) => actions.current.changed(e));
+      timeline.vis.on('click', (e: any) => actions.current.__click(e));
+      timeline.vis.on('dragover', (e: any) => actions.current.__drag(e));
+
+      timeline.vis.on('mouseDown', (e: any) => {
+        if (!mouse.current.click) {
+          mouse.current.click = true;
+          mouse.current.x = e.pageX;
+          mouse.current.y = e.pageY;
+        }
+      });
+
+      timeline.vis.on('mouseMove', (e: any) => {
+        if (
+          mouse.current.click &&
+          mouse.current.draggingTreshold(mouse.current, e.event as any)
+        ) {
+          mouse.current.dragging = true;
+          mouse.current.click = false;
+        }
+      });
+
+      timeline.vis.on('mouseUp', (e: any) => {
+        if (mouse.current.click) actions.current.click(e);
+        mouse.current.dragging = false;
         mouse.current.click = false;
-      }
-    });
+      });
 
-    timeline.vis.on('mouseUp', (e: any) => {
-      if (mouse.current.click) actions.current.click(e);
+      timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
-      mouse.current.dragging = false;
-      mouse.current.click = false;
-    });
+      return () => timeline.vis.destroy();
+    }, [timeline, mouse]);
+  }
 
-    timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
-
-    return () => timeline.vis.destroy();
-
-    //! disabled for mouse, if modification, check deps again
-    // eslint-disable-next-line
-  }, [timeline]);
-
-  useEffect(() => {}, [timeline, window, x]);
-
+  /*
+   * Selection
+   */
+  // updates visual cues on timeline during navigation
   useEffect(() => {
     const change = function() {
       if (timeline) {
@@ -404,17 +445,17 @@ export const VisTimeline: React.FC = function() {
 
           if (selected === undefined) {
             if (isDimmed) {
-              console.log('timeline:opacity:undefined');
+              console.debug('timeline:opacity:undefined');
               $event.classList.remove(OPACITY_CLASS);
             }
           } else {
             const inSelection =
               _.sortedIndexOf(selected, +$event.dataset.id!) !== -1;
             if (isDimmed && inSelection) {
-              console.log('timeline:opacity:remove');
+              console.debug('timeline:opacity:remove');
               $event.classList.remove(OPACITY_CLASS);
             } else if (!isDimmed && !inSelection) {
-              console.log('timeline:opacity:add');
+              console.debug('timeline:opacity:add');
               $event.classList.add(OPACITY_CLASS);
             }
           }
@@ -424,12 +465,13 @@ export const VisTimeline: React.FC = function() {
     change();
 
     actions.current.changed = change;
-  }, [selected, width, timeline]);
+  }, [$events, selected, timeline, width]);
 
+  // binds click to selection actions
   useEffect(() => {
     actions.current.click = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        console.log('selection:group', e.group);
+        console.debug('selection:group', e.group);
         const groupEvents = _(timelineEvents)
           .filter({ group: e.group })
           .map('id')
@@ -445,11 +487,11 @@ export const VisTimeline: React.FC = function() {
 
         if (e.event.ctrlKey || e.event.metaKey) {
           if (index < 0) {
-            console.log('selection:item', e.item);
+            console.debug('selection:item', e.item);
             // is not selected
             select(_.concat(selected || [], e.item));
           } else {
-            console.log('selection:item:unselect', e.item);
+            console.debug('selection:item:unselect', e.item);
             const filtered = _.filter(selected, i => i !== e.item);
             select(filtered.length === 0 ? undefined : filtered);
           }
@@ -458,13 +500,17 @@ export const VisTimeline: React.FC = function() {
         }
       } else {
         if (!e.event.ctrlKey || e.event.metaKey) {
-          console.log('selection:reset');
+          console.debug('selection:reset');
           select();
         }
       }
     };
-  }, [selected, select, timelineEvents]);
+  }, [select, selected, timelineEvents]);
 
+  /*
+   * Highlights
+   Events and Groups are highlighted
+   */
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
@@ -477,10 +523,31 @@ export const VisTimeline: React.FC = function() {
     };
   }, [highlights, setHighlights, grouping.kind]);
 
+  /*
+   * Data change
+   */
   useEffect(() => {
-    if (timeline) timeline.vis.setItems(timelineEvents);
+    if (!timeline || !window || !width || !contextFilter) return;
+
+    timeline.vis.setItems(timelineEvents);
+
+    if (firstEventSet.current) {
+      timeline.vis.fit({ animation: false });
+      const interval = timeline.vis.getWindow();
+
+      window.selection.call(
+        window.brush.move,
+        [interval.start, interval.end].map(x)
+      );
+      contextFilter.selection.call(contextFilter.brush.move, [
+        ctxOptions.filter.left,
+        width - ctxOptions.filter.right
+      ]);
+
+      firstEventSet.current = false;
+    }
     // visTimeline.current!.redraw();
-  }, [timeline, timelineEvents]);
+  }, [timeline, timelineEvents, x, window, contextFilter, width]);
 
   useEffect(() => {
     if (!timeline) return;
@@ -493,14 +560,7 @@ export const VisTimeline: React.FC = function() {
       }))
     );
     // visTimeline.current!.redraw();
-  }, [timeline, grouping, filteredEvents]);
-
-  useEffect(() => {
-    //* never the case
-    if (!axis) return;
-    x.range([ctxOptions.margin.left, width - ctxOptions.margin.right]);
-    axis.selection.call(axis.d3Axis);
-  }, [x, width, axis]);
+  }, [filteredEvents, grouping, timeline]);
 
   return (
     <>
