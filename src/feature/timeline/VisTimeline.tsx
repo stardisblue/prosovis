@@ -1,4 +1,11 @@
-import React, { useEffect, useContext, useRef, useMemo, useState } from 'react';
+import React, {
+  useEffect,
+  useContext,
+  useRef,
+  useMemo,
+  useState,
+  useCallback
+} from 'react';
 import classnames from 'classnames';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
 import _ from 'lodash';
@@ -60,57 +67,6 @@ function resolveDatation([start, end]: Datation[]): {
   };
 }
 
-export function getStyles(str: string) {
-  // "naissance", "qualite", "enseigne", "retraite", "deces", "chaire"
-  const colorMapping: {
-    [k: string]: { background: string; border: string };
-  } = {
-    // array of ten colors for items
-    birth: {
-      background: '#e0e1a8',
-      border: '#666723'
-    },
-    'obtain-qualification': {
-      background: '#a8a8e1',
-      border: '#242367'
-    },
-    education: {
-      background: '#e1a8a8',
-      border: '#672423'
-    },
-    retirement: {
-      background: '#a8e1a8',
-      border: '#236724'
-    },
-    death: {
-      background: '#e1a8e0',
-      border: '#672366'
-    },
-    basic: {
-      background: '#a8e0e1',
-      border: ' #236667'
-    }
-    // {
-    //   background: '#e1cba8',
-    //   border: '#674d23'
-    // },
-    // {
-    //   background: '#aea8e1',
-    //   border: '#2b2367'
-    // },
-    // {
-    //   background: '#a8e1cb',
-    //   border: '#23674d'
-    // },
-    // {
-    //   background: '#a8bee1',
-    //   border: '#233d67'
-    // }
-  };
-
-  return colorMapping[str] || colorMapping.basic;
-}
-
 function newLineLongString(str: string, maxLenght = 20): string {
   if (str.length < maxLenght) {
     return str;
@@ -124,23 +80,21 @@ function newLineLongString(str: string, maxLenght = 20): string {
     .join('<br/>');
 }
 
-function getTimelineEvents(events: GroupedEvent[]) {
+function getTimelineEvents(events: GroupedEvent[], color: any, border: any) {
   const items: any[] = [];
 
   _.forEach(events, ({ datation, id, actor, label, group, kind }) => {
     // if has dates
     if (datation && datation.length > 0) {
-      const kebabKind = _.kebabCase(kind);
-      const colors = getStyles(kebabKind);
       const item = {
         id,
         title: he.unescape(actor.label),
         label: he.unescape(label),
         popover: 'true',
         ...resolveDatation(datation),
-        className: classnames(kebabKind, 'timeline-event'),
-        style: `border:1px solid ${colors.border};
-            background-color: ${colors.background}`,
+        className: classnames(_.kebabCase(kind), 'timeline-event'),
+        style: `border:1px solid ${border(kind)};
+            background-color: ${color(kind)}`,
         group,
         kind
       };
@@ -182,6 +136,7 @@ export const VisTimeline: React.FC = function() {
   const firstEventSet = useRef(true);
 
   const {
+    events,
     highlights,
     setHighlights,
     selected,
@@ -190,7 +145,7 @@ export const VisTimeline: React.FC = function() {
     setFilter
   } = useContext(SiprojurisContext);
 
-  const { grouping, displayTypes } = useContext(TimelineContext);
+  const { grouping, displayTypes, color, border } = useContext(TimelineContext);
 
   const [width, setWidth] = useState<number>();
 
@@ -203,9 +158,78 @@ export const VisTimeline: React.FC = function() {
             group: grouping.groupBy(a)
           })
         )
-        .value()
+        .value(),
+      color,
+      border
     );
-  }, [filteredEvents, grouping]);
+  }, [filteredEvents, grouping, color, border]);
+
+  const [chart, setChart] = useState<{
+    dom: SVGGElement;
+    selection: d3.Selection<
+      SVGGElement,
+      d3.Series<
+        {
+          [key: string]: number;
+        },
+        string
+      >[],
+      any,
+      undefined
+    >;
+  }>();
+
+  const chartRef = useCallback(function(dom: SVGGElement) {
+    if (!dom) return;
+
+    setChart({ dom, selection: d3.select(dom) });
+  }, []);
+
+  const countStack = useMemo(() => {
+    const flatten = _(events)
+      .flatMap(e => {
+        if (e.datation.length === 2) {
+          const [start, end] = _(e.datation)
+            .sort()
+            .map(d => d3.timeYear.floor(new Date(d.clean_date)))
+            .value();
+
+          return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
+            kind: e.kind,
+            time
+          }));
+        } else if (e.datation.length === 1) {
+          return {
+            kind: e.kind,
+            time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
+          };
+        }
+      })
+      .concat(
+        d3.timeYear
+          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+          .map(d => ({ time: d, kind: '' }))
+      )
+      .groupBy('time')
+      .mapValues(v => _.countBy(v, 'kind'))
+      .map((value, time) => ({ time: new Date(time), ...value }))
+      .sortBy('time')
+      .value();
+
+    const keys = _(events)
+      .uniqBy('kind')
+      .map('kind')
+      .value();
+
+    console.log(keys);
+
+    return d3
+      .stack()
+      .keys(keys)
+      .offset(d3.stackOffsetSilhouette)
+      .order(d3.stackOrderInsideOut)
+      .value((d, k) => d[k] || 0)(flatten as any);
+  }, [events]);
 
   const {
     $events,
@@ -263,10 +287,11 @@ export const VisTimeline: React.FC = function() {
     timeline.vis.on('timechange', (e: VisTimeMarker) => {
       timelineThrottle(e);
     });
-  }, [contextFilter, timeline, setFilter, x.invert]);
+  }, [color, contextFilter, timeline, setFilter, x]);
 
   useEffect(() => {
-    if (!axis || !contextFilter || !window || !width) return;
+    if (!axis || !chart || !contextFilter || !window || !width) return;
+    // if (!axis || !contextFilter || !window || !width) return;
 
     // contextFilter.brush.brushSelection;
 
@@ -294,7 +319,37 @@ export const VisTimeline: React.FC = function() {
 
     window.selection.call(window.brush);
 
-  }, [axis, contextFilter, width, window, x]);
+    // const color = d3
+    //   .scaleOrdinal()
+    //   .domain(countStack.keys)
+    //   .range(d3.schemeCategory10);
+
+    const y = d3
+      .scalePow()
+      .domain([
+        d3.min(countStack, d => d3.min(d, d => d[0])) as any,
+        d3.max(countStack, d => d3.max(d, d => d[1])) as any
+      ])
+      // .nice()
+      .range([10, ctxOptions.height - 15]);
+
+    const area = d3
+      .area()
+      .x((d: any) => x(d.data.time))
+      .y0(d => y(d[0]))
+      .y1(d => y(d[1]))
+      .curve(d3.curveStep);
+
+    chart.selection
+      .selectAll('path')
+      .data(countStack)
+      .join('path')
+      .attr('fill', (d: any) => color(d.key))
+      .attr('d', area as any)
+      .append('title')
+      .text(d => d.key);
+  }, [axis, color, chart, countStack, contextFilter, width, window, x]);
+  // }, [axis, contextFilter, width, window, x]);
 
   /*
    * Window
@@ -321,13 +376,13 @@ export const VisTimeline: React.FC = function() {
           const [x0, x1] = [cx - dx / 2, cx + dx / 2];
           const [X0, X1] = x.range();
 
-          d3.select(this.parentNode).call(
+          window.selection.call(
             window.brush.move,
             x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
           );
         });
     });
-  }, [window, x]);
+  }, [width, window, x]);
 
   // Syncs the context window view and the timeline view
   useEffect(() => {
@@ -577,6 +632,7 @@ export const VisTimeline: React.FC = function() {
           ref={axisRef}
           transform={`translate(0, ${ctxOptions.height - 35})`}
         ></g>
+        <g id="context-stackedchart" ref={chartRef}></g>
         <g id="context-filter" className="brush" ref={contextFilterRef}></g>
         <g id="context-window" className="brush" ref={windowRef}></g>
       </svg>

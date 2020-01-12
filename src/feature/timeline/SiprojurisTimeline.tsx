@@ -1,5 +1,5 @@
 import React, { useMemo, useContext } from 'react';
-import { VisTimeline, getStyles } from './VisTimeline';
+import { VisTimeline } from './VisTimeline';
 import _ from 'lodash';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
 import {
@@ -11,7 +11,7 @@ import {
 export const SiprojurisTimeline: React.FC = function() {
   const { types } = useContext(SiprojurisContext);
   const timelineContext = useTimelineContext(types);
-  const { setGroup, displayTypes, toggle } = timelineContext;
+  const { setGroup, displayTypes, toggle, border, color } = timelineContext;
 
   return (
     <>
@@ -218,7 +218,6 @@ export const SiprojurisTimeline: React.FC = function() {
                       {useMemo(
                         () =>
                           _.map(displayTypes, (state, key) => {
-                            const colors = getStyles(_.kebabCase(key));
                             return (
                               <div key={key} className="col-4">
                                 <label>
@@ -233,8 +232,8 @@ export const SiprojurisTimeline: React.FC = function() {
                                   <i
                                     className="br-100 mh1 dib ba"
                                     style={{
-                                      backgroundColor: colors.background,
-                                      borderColor: colors.border,
+                                      backgroundColor: color(key),
+                                      borderColor: border(key),
                                       height: '12px',
                                       width: '12px'
                                     }}
@@ -244,7 +243,7 @@ export const SiprojurisTimeline: React.FC = function() {
                               </div>
                             );
                           }),
-                        [displayTypes, toggle]
+                        [displayTypes, toggle, border, color]
                       )}
                     </div>
                   </div>

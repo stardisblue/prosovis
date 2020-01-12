@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import { AnyEvent, Ressource, PrimaryKey } from '../../data';
 import _ from 'lodash';
+import * as d3 from 'd3';
 
 function groupByActor(a: AnyEvent) {
   return a.actor.id;
@@ -31,6 +32,31 @@ function groupsNamedPlace(events: AnyEvent[]) {
     .value();
 }
 
+const color = d3
+  .scaleOrdinal<string, string>()
+  .domain([
+    'Birth',
+    'Death',
+    'Education',
+    'PassageExamen',
+    'SuspensionActivity',
+    'ObtainQualification',
+    'Retirement'
+  ])
+  .range((d3 as any).schemeTableau10);
+
+const border = d3
+  .scaleOrdinal<string, string>()
+  .domain(color.domain())
+  .range(
+    color.range().map(d =>
+      d3
+        .color(d)!
+        .darker(2)
+        .toString()
+    )
+  );
+
 export const TimelineContext = React.createContext({} as any);
 
 export const GROUP_BY: {
@@ -60,6 +86,8 @@ export function useTimelineContext(
   setGroup: React.Dispatch<React.SetStateAction<GroupingProps>>;
   displayTypes: _.Dictionary<any>;
   toggle: (typ: string) => void;
+  color: d3.ScaleOrdinal<string, string>;
+  border: d3.ScaleOrdinal<string, string>;
 } {
   const [grouping, setGroup] = useState(GROUP_BY.actor);
   const [displayTypes, setDisplayTypes] = useState(() =>
@@ -74,5 +102,5 @@ export function useTimelineContext(
       return { ...state };
     });
   }, []);
-  return { grouping, setGroup, displayTypes, toggle };
+  return { grouping, setGroup, displayTypes, toggle, color, border };
 }
