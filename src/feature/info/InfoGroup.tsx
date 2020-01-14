@@ -1,8 +1,10 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import _ from 'lodash';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Ressource, AnyEvent } from '../../data';
 import classnames from 'classnames';
 import { SelectedAnyEvent } from './models';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+import { Flex } from '../../components/Flex';
 
 // TODO griser personnes
 // surlingé : survol
@@ -25,24 +27,32 @@ export const InfoGroup: React.FC<{
   group: Ressource;
   events: AnyEvent[];
   selected: boolean;
-}> = function({ group, events, selected }) {
+  filtered: boolean;
+}> = function({ group, events, selected, filtered }) {
   const [show, setShow] = useState(selected === true);
 
   useEffect(() => setShow(selected === true), [selected]);
 
+  const handleClick = useCallback(() => setShow(s => !s), []);
+
   return useMemo(
     () => (
       <div className={classnames('sip-info-item', 'ba')}>
-        <div
-          className={classnames('sip-info-group--title', {
-            b: selected === true
-          })}
+        <Flex
+          justify="between"
+          className="sip-info-group--title"
+          onClick={handleClick}
         >
-          {group.label}{' '}
-          <a href="#" onClick={() => setShow(s => !s)}>
-            show
-          </a>
-        </div>
+          <div
+            className={classnames({
+              b: selected === true,
+              'o-50': filtered === true
+            })}
+          >
+            {group.label}
+          </div>
+          <div>{show ? <ExpandLessIcon /> : <ExpandMoreIcon />}</div>
+        </Flex>
 
         {show && (
           <div className="sip-info-group--events bt">
@@ -53,7 +63,7 @@ export const InfoGroup: React.FC<{
         )}
       </div>
     ),
-    [group, events, selected, show]
+    [events, group, filtered, selected, show]
   );
 };
 
@@ -65,7 +75,8 @@ export const InfoEvent: React.FC<{
   return (
     <div
       className={classnames('sip-info--event', {
-        b: event.selected
+        b: event.selected,
+        'o-50': event.filtered
       })}
     >
       {event.label}

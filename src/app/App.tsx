@@ -8,23 +8,23 @@ import {
 import { SiprojurisTimeline } from '../feature/timeline/SiprojurisTimeline';
 import { Information } from '../feature/info/Information';
 // import { SiprojurisMap } from '../feature/map/SiprojurisMap';
+import { Flex } from '../components/Flex';
 
 function App() {
   const value = useSiprojurisContext(defaultActors as any);
 
   return (
     <SiprojurisContext.Provider value={value}>
-      <div className="cf vh-100">
-        <div className="fl w-25 h-100 overflow-y-auto">
+      <Flex>
+        <div className="w-25">
           <Information />
         </div>
-        <div className="fl w-75 vh-100">
+        <div className="w-75">
           {/* <div className="h-50"> <SiprojurisMap /> </div> */}
-          <div className="h-50">
-            <SiprojurisTimeline />
-          </div>
+          <SiprojurisTimeline />
         </div>
-      </div>
+      </Flex>
+      <div className="cf vh-100"></div>
     </SiprojurisContext.Provider>
   );
 }

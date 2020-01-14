@@ -1,6 +1,6 @@
 import React, { useContext, useMemo } from 'react';
 import _ from 'lodash';
-import { Datation, AnyEvent } from '../../data';
+import { Datation } from '../../data';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
@@ -14,31 +14,38 @@ export function parseDates(dates: Datation[]) {
 
 export const Information: React.FC = function() {
   const siprojuris = useContext(SiprojurisContext);
-  const { selected, filteredEvents } = siprojuris;
+  const { selected, events, filteredEvents } = siprojuris;
+
+  const filtered = useMemo(() => {
+    return _(filteredEvents)
+      .map('id')
+      .sort()
+      .value();
+  }, [filteredEvents]);
 
   const selectedEvents = useMemo(() => {
-    let loEvents = _<SelectedAnyEvent>(filteredEvents);
-
-    if (selected) {
-      loEvents = loEvents.map<SelectedAnyEvent>(e => ({
+    return _<SelectedAnyEvent>(events)
+      .chain()
+      .map<SelectedAnyEvent>(e => ({
         ...e,
-        selected: _.sortedIndexOf(selected, e.id) !== -1
-      }));
-    }
-
-    return loEvents.orderBy(['datation[0].clean_date']).value();
-  }, [selected, filteredEvents]);
+        selected: _.sortedIndexOf(selected, e.id) !== -1,
+        filtered: _.sortedIndexOf(filtered, e.id) === -1
+      }))
+      .orderBy(['datation[0].clean_date'])
+      .value();
+  }, [selected, events, filtered]);
 
   const groups = useGroups(selectedEvents);
 
   return (
     <div>
-      {_.map(groups, ({ key, events, selected }) => (
+      {_.map(groups, ({ key, events, selected, filtered }) => (
         <MemoInfoGroup
           key={key.uri}
           group={key}
           events={events}
           selected={selected}
+          filtered={filtered}
         />
       ))}
     </div>

@@ -7,9 +7,11 @@ export function useGroups(selectedEvents: AnyEvent[]) {
   // order by selection and then by kind
   return useMemo(() => {
     const grps: {
+      kind: string;
       key: Ressource;
       events: SelectedAnyEvent[];
       selected: boolean;
+      filtered: boolean;
     }[] = [];
     const actorKeyIndex: {
       [k: string]: number;
@@ -17,12 +19,18 @@ export function useGroups(selectedEvents: AnyEvent[]) {
     const localisationKeyIndex: {
       [k: string]: number;
     } = {};
-    _.map(selectedEvents, (e: any) => {
+    _.map(selectedEvents, (e: SelectedAnyEvent) => {
       if (actorKeyIndex[e.actor.id] === undefined) {
         actorKeyIndex[e.actor.id] = grps.length;
-        grps.push({ key: e.actor, events: [], selected: false });
+        grps.push({
+          kind: 'Actor',
+          key: e.actor,
+          events: [],
+          selected: false,
+          filtered: true
+        });
       }
-      const localisation = e.localisation || {
+      const localisation = (e as any).localisation || {
         id: 0,
         label: 'Inconnue',
         kind: 'NamedPlace',
@@ -30,15 +38,32 @@ export function useGroups(selectedEvents: AnyEvent[]) {
       };
       if (localisationKeyIndex[localisation.id] === undefined) {
         localisationKeyIndex[localisation.id] = grps.length;
-        grps.push({ key: localisation, events: [], selected: false });
+        grps.push({
+          kind: 'NamedPlace',
+          key: localisation,
+          events: [],
+          selected: false,
+          filtered: true
+        });
       }
+
       if (e.selected === true) {
         grps[actorKeyIndex[e.actor.id]].selected = true;
         grps[localisationKeyIndex[localisation.id]].selected = true;
       }
+
+      if (e.filtered === false) {
+        grps[actorKeyIndex[e.actor.id]].filtered = false;
+        grps[localisationKeyIndex[localisation.id]].filtered = false;
+      }
+
       grps[actorKeyIndex[e.actor.id]].events.push(e);
       grps[localisationKeyIndex[localisation.id]].events.push(e);
     });
-    return _.orderBy(grps, ['selected', 'key.kind', 'key.label'], ['desc']);
+    return _.orderBy(
+      grps,
+      ['filtered', 'selected', 'key.kind', 'key.label'],
+      ['asc', 'desc']
+    );
   }, [selectedEvents]);
 }
