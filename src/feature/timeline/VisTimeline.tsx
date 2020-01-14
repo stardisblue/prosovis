@@ -223,12 +223,14 @@ export const VisTimeline: React.FC = function() {
 
     console.log(keys);
 
-    return d3
-      .stack()
-      .keys(keys)
-      .offset(d3.stackOffsetSilhouette)
-      .order(d3.stackOrderInsideOut)
-      .value((d, k) => d[k] || 0)(flatten as any);
+    return (
+      d3
+        .stack()
+        .keys(keys)
+        // .offset(d3.stackOffsetSilhouette)
+        .order(d3.stackOrderInsideOut)
+        .value((d, k) => d[k] || 0)(flatten as any)
+    );
   }, [events]);
 
   const {
@@ -331,7 +333,7 @@ export const VisTimeline: React.FC = function() {
         d3.max(countStack, d => d3.max(d, d => d[1])) as any
       ])
       // .nice()
-      .range([10, ctxOptions.height - 15]);
+      .range([ctxOptions.height - 15, 10]);
 
     const area = d3
       .area()
