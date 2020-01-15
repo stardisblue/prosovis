@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Ressource, AnyEvent } from '../../data';
 import classnames from 'classnames';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ExpandLessIcon from '@material-ui/icons/ExpandLess';
+
+import Octicon, { ChevronDown, ChevronUp } from '@primer/octicons-react';
 import { Flex } from '../../components/ui/Flex';
 import { MemoInfoEvent } from './InfoEvent';
 
@@ -23,6 +23,20 @@ import { MemoInfoEvent } from './InfoEvent';
 // Barre de recherche globale : lieu & acteur
 // synchro timeline-carte-information
 // laisser le graphe grisé
+const useStyles = (filtered: boolean, selected: boolean) =>
+  useMemo(
+    () => ({
+      parent: classnames('sip-info-group', 'ba'),
+      titleGroup: 'sip-info-group--title',
+      titleLabel: classnames('sip-info-group--label', {
+        b: selected === true,
+        'o-50': filtered === true
+      }),
+      titleMore: 'mh2',
+      events: classnames('sip-info-group--events', 'bt')
+    }),
+    [filtered, selected]
+  );
 
 export const InfoGroup: React.FC<{
   group: Ressource;
@@ -39,18 +53,7 @@ export const InfoGroup: React.FC<{
   /*
    * Styles
    */
-  const classes = useMemo(
-    () => ({
-      parent: classnames('sip-info-group', 'ba'),
-      titleGroup: 'sip-info-group--title',
-      label: classnames('sip-info-group--label', {
-        b: selected === true,
-        'o-50': filtered === true
-      }),
-      events: classnames('sip-info-group--events', 'bt')
-    }),
-    [selected, filtered]
-  );
+  const classes = useStyles(filtered, selected);
 
   return (
     <div className={classes.parent}>
@@ -59,8 +62,14 @@ export const InfoGroup: React.FC<{
         className={classes.titleGroup}
         onClick={handleClick}
       >
-        <div className={classes.label}>{group.label}</div>
-        <div>{show ? <ExpandLessIcon /> : <ExpandMoreIcon />}</div>
+        <div className={classes.titleLabel}>{group.label}</div>
+        <div className={classes.titleMore}>
+          <Octicon
+            verticalAlign="text-bottom"
+            icon={show ? ChevronUp : ChevronDown}
+            ariaLabel={show ? 'Etendre' : 'Réduire'}
+          />
+        </div>
       </Flex>
 
       {show && (
