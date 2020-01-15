@@ -1,8 +1,8 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import events from '../app/eventSlice';
-import highlights from '../app/highlightSlice';
-import selection from '../app/selectionSlice';
-import filters from '../app/filterSlice';
+import highlights from './highlightSlice';
+import selection from './selectionSlice';
+import filters from './filterSlice';
 const rootReducer = combineReducers({
   events,
   highlights,
