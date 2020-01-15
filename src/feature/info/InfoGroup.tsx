@@ -1,10 +1,10 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { Ressource, AnyEvent } from '../../data';
 import classnames from 'classnames';
-import { SelectedAnyEvent } from './models';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
-import { Flex } from '../../components/Flex';
+import { Flex } from '../../components/ui/Flex';
+import { MemoInfoEvent } from './InfoEvent';
 
 // TODO griser personnes
 // surlingé : survol
@@ -23,6 +23,7 @@ import { Flex } from '../../components/Flex';
 // Barre de recherche globale : lieu & acteur
 // synchro timeline-carte-information
 // laisser le graphe grisé
+
 export const InfoGroup: React.FC<{
   group: Ressource;
   events: AnyEvent[];
@@ -35,53 +36,42 @@ export const InfoGroup: React.FC<{
 
   const handleClick = useCallback(() => setShow(s => !s), []);
 
-  return useMemo(
-    () => (
-      <div className={classnames('sip-info-item', 'ba')}>
-        <Flex
-          justify="between"
-          className="sip-info-group--title"
-          onClick={handleClick}
-        >
-          <div
-            className={classnames({
-              b: selected === true,
-              'o-50': filtered === true
-            })}
-          >
-            {group.label}
-          </div>
-          <div>{show ? <ExpandLessIcon /> : <ExpandMoreIcon />}</div>
-        </Flex>
-
-        {show && (
-          <div className="sip-info-group--events bt">
-            {events.map(e => (
-              <MemoInfoEvent key={e.id} event={e} />
-            ))}
-          </div>
-        )}
-      </div>
-    ),
-    [events, group, filtered, selected, show]
+  /*
+   * Styles
+   */
+  const classes = useMemo(
+    () => ({
+      parent: classnames('sip-info-group', 'ba'),
+      titleGroup: 'sip-info-group--title',
+      label: classnames('sip-info-group--label', {
+        b: selected === true,
+        'o-50': filtered === true
+      }),
+      events: classnames('sip-info-group--events', 'bt')
+    }),
+    [selected, filtered]
   );
-};
 
-export const MemoInfoGroup = InfoGroup;
-
-export const InfoEvent: React.FC<{
-  event: SelectedAnyEvent;
-}> = function({ event }) {
   return (
-    <div
-      className={classnames('sip-info--event', {
-        b: event.selected,
-        'o-50': event.filtered
-      })}
-    >
-      {event.label}
+    <div className={classes.parent}>
+      <Flex
+        justify="between"
+        className={classes.titleGroup}
+        onClick={handleClick}
+      >
+        <div className={classes.label}>{group.label}</div>
+        <div>{show ? <ExpandLessIcon /> : <ExpandMoreIcon />}</div>
+      </Flex>
+
+      {show && (
+        <div className={classes.events}>
+          {events.map(e => (
+            <MemoInfoEvent key={e.id} event={e} />
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-export const MemoInfoEvent = React.memo(InfoEvent);
+export const MemoInfoGroup = InfoGroup;
