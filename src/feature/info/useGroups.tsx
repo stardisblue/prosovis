@@ -60,10 +60,9 @@ export function useGroups(selectedEvents: AnyEvent[]) {
       grps[actorKeyIndex[e.actor.id]].events.push(e);
       grps[localisationKeyIndex[localisation.id]].events.push(e);
     });
-    return _.orderBy(
-      grps,
-      ['filtered', 'selected', 'key.kind', 'key.label'],
-      ['asc', 'desc']
-    );
+    return _(grps)
+      .orderBy(['selected', 'key.kind', 'key.label'], ['desc'])
+      .groupBy(e => (e.filtered === true ? 'yes' : 'no'))
+      .value();
   }, [selectedEvents]);
 }

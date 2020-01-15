@@ -26,14 +26,14 @@ import { MemoInfoEvent } from './InfoEvent';
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
     () => ({
-      parent: classnames('sip-info-group', 'ba'),
-      titleGroup: 'sip-info-group--title',
-      titleLabel: classnames('sip-info-group--label', {
+      parent: classnames('sipig', 'ba', 'b--light-silver'),
+      titleGroup: classnames('sipig--title', 'pa1'),
+      titleLabel: classnames('sipig--label', {
         b: selected === true,
         'o-50': filtered === true
       }),
       titleMore: 'mh2',
-      events: classnames('sip-info-group--events', 'bt')
+      events: classnames('sipig--events', 'bt', 'b--light-silver', 'ph1')
     }),
     [filtered, selected]
   );

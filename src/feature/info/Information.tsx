@@ -37,17 +37,33 @@ export const Information: React.FC = function() {
 
   const groups = useGroups(selectedEvents);
 
-  return (
-    <div>
-      {_.map(groups, ({ key, events, selected, filtered }) => (
-        <MemoInfoGroup
-          key={key.uri}
-          group={key}
-          events={events}
-          selected={selected}
-          filtered={filtered}
-        />
-      ))}
-    </div>
+  return useMemo(
+    () => (
+      <div id="sipi" className="pa1">
+        <div id="sipi--enabled" className="pb1">
+          {_.map(groups.no, ({ key, events, selected, filtered }) => (
+            <MemoInfoGroup
+              key={key.uri}
+              group={key}
+              events={events}
+              selected={selected}
+              filtered={filtered}
+            />
+          ))}
+        </div>
+        <div id="sipi--disabled">
+          {_.map(groups.yes, ({ key, events, selected, filtered }) => (
+            <MemoInfoGroup
+              key={key.uri}
+              group={key}
+              events={events}
+              selected={selected}
+              filtered={filtered}
+            />
+          ))}
+        </div>
+      </div>
+    ),
+    [groups]
   );
 };
