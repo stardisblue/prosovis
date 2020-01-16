@@ -7,7 +7,6 @@ import {
   Marker,
   Popup
 } from 'react-leaflet';
-import { connect } from 'react-redux';
 
 import './SiprojurisMap.css';
 
@@ -38,4 +37,4 @@ export function SiprojurisMap() {
   );
 }
 
-export default connect()(SiprojurisMap);
+export default SiprojurisMap;
