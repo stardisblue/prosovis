@@ -13,7 +13,7 @@ type SiprojurisContextProps = {
   highlights?: HightlightEvents;
   setHighlights(highlight?: HightlightEvents): void;
   setFilter(key: PrimaryKey, filter: any): void;
-  types: string[];
+  types: AnyEvent['kind'][];
   // indexedEvents: _.Dictionary<AnyEvent>;
 };
 
@@ -29,10 +29,12 @@ function getEvents(actor: Actor): AnyEvent[] {
     ...actor.education_set,
     ..._.map(actor.est_evalue_examen, ({ actor_evalue, ...rest }) => ({
       ...rest,
+      actor_evalue,
       actor: actor_evalue
     })),
     ..._.map(actor.evaluer_examen, ({ actor_evaluer, ...rest }) => ({
       ...rest,
+      actor_evaluer,
       actor: actor_evaluer
     })),
     ...actor.retirement_set,

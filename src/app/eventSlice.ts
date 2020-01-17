@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnyEvent, Actor } from '../data';
+import { AnyEvent, Actor, ExamenEvent, DirectionalExamenEvent } from '../data';
 import _ from 'lodash';
 
 export const eventSlice = createSlice({
@@ -16,6 +16,7 @@ export const eventSlice = createSlice({
           action.payload.est_evalue_examen,
           ({ actor_evalue, ...rest }) => ({
             ...rest,
+            actor_evalue,
             actor: actor_evalue
           })
         ),
@@ -23,6 +24,7 @@ export const eventSlice = createSlice({
           action.payload.evaluer_examen,
           ({ actor_evaluer, ...rest }) => ({
             ...rest,
+            actor_evaluer,
             actor: actor_evaluer
           })
         ),

@@ -16,7 +16,7 @@ export type Datation = Ressource & {
 };
 
 export type Event = Ressource & {
-  kind: string;
+  // kind: string;
   datation: Datation[];
   created: Nullable<string>;
   creator: Nullable<string>;
@@ -29,16 +29,19 @@ export type NamedPlace = Ressource & {
 };
 
 export type BirthEvent = Event & {
+  kind: 'Birth';
   actor: ActorCard;
   localisation: Nullable<NamedPlace>;
 };
 
 export type DeathEvent = Event & {
+  kind: 'Death';
   actor: ActorCard;
   localisation: Nullable<NamedPlace>;
 };
 
 export type SuspensionActivityEvent = Event & {
+  kind: 'SuspensionActivity';
   actor: ActorCard;
   abstract_object?: AbstractObject;
 };
@@ -53,6 +56,7 @@ export type CollectiveActor = Ressource & {
 export type SocialCharacteristic = Ressource;
 
 export type EducationEvent = Event & {
+  kind: 'Education';
   actor: ActorCard;
   abstract_object: Nullable<AbstractObject>;
   collective_actor: CollectiveActor;
@@ -61,6 +65,7 @@ export type EducationEvent = Event & {
 };
 
 export type ExamenEvent = Event & {
+  kind: 'PassageExamen';
   actor_evalue: ActorCard;
   actor_evaluer: ActorCard;
   abstract_object: AbstractObject;
@@ -72,6 +77,7 @@ export type DirectionalExamenEvent = ExamenEvent & {
 };
 
 export type ObtainQualificationEvent = Event & {
+  kind: 'ObtainQualification';
   social_characteristic: Nullable<SocialCharacteristic>;
   collective_actor: Nullable<CollectiveActor>;
   passage_examen: Nullable<ExamenEvent>;
@@ -79,6 +85,7 @@ export type ObtainQualificationEvent = Event & {
 };
 
 export type RetirementEvent = Event & {
+  kind: 'Retirement';
   actor: ActorCard;
 };
 
