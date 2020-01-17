@@ -7,7 +7,7 @@ export function useGroups(selectedEvents: AnyEvent[]) {
   // order by selection and then by kind
   return useMemo(() => {
     const grps: {
-      kind: string;
+      kind: 'Actor' | 'NamedPlace';
       key: Ressource;
       events: SelectedAnyEvent[];
       selected: boolean;

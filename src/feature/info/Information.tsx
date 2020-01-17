@@ -39,12 +39,13 @@ export const Information: React.FC = function() {
 
   return useMemo(
     () => (
-      <div id="sipi" className="pa1">
+      <div id="sipi" className="pa1 overflow-y">
         <div id="sipi--enabled" className="pb1">
-          {_.map(groups.no, ({ key, events, selected, filtered }) => (
+          {_.map(groups.no, ({ key, events, kind, selected, filtered }) => (
             <MemoInfoGroup
               key={key.uri}
               group={key}
+              kind={kind}
               events={events}
               selected={selected}
               filtered={filtered}
@@ -52,10 +53,11 @@ export const Information: React.FC = function() {
           ))}
         </div>
         <div id="sipi--disabled">
-          {_.map(groups.yes, ({ key, events, selected, filtered }) => (
+          {_.map(groups.yes, ({ key, events, kind, selected, filtered }) => (
             <MemoInfoGroup
               key={key.uri}
               group={key}
+              kind={kind}
               events={events}
               selected={selected}
               filtered={filtered}
