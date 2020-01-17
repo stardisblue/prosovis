@@ -19,6 +19,7 @@ import { TimelineContext } from './TimelineContext';
 import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
 import { useReferences } from './useReferences';
+import { ColorContext } from '../../context/ColorContext';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -106,35 +107,36 @@ function getTimelineEvents(events: GroupedEvent[], color: any, border: any) {
   return items;
 }
 
-const ctxOptions = {
-  width: '100%',
-  height: 70,
-  margin: {
-    top: 0,
-    right: 20,
-    bottom: 0,
-    left: 20
-  },
-  window: {
-    left: 20,
-    right: 18,
-    top: 15,
-    bottom: 15
-  },
+const margins = {
+  top: 10,
+  right: 20,
+  bottom: 20,
+  left: 20
+};
 
-  filter: {
-    left: 20,
-    right: 18,
-    top: 0,
-    bottom: 0
-  }
+const windowMargins = {
+  left: 20,
+  right: 18,
+  top: 15,
+  bottom: 15
+};
+
+const filterMargins = {
+  left: 20,
+  right: 18,
+  top: 0,
+  bottom: 0
+};
+
+const dimensions = {
+  width: '100%',
+  height: 70
 };
 
 const OPACITY_CLASS = 'o-50';
 
 export const VisTimeline: React.FC = function() {
-  const firstEventSet = useRef(true);
-
+  const {border, color} = useContext(ColorContext)
   const {
     events,
     highlights,
@@ -145,11 +147,13 @@ export const VisTimeline: React.FC = function() {
     setFilter
   } = useContext(SiprojurisContext);
 
-  const { grouping, displayTypes, color, border } = useContext(TimelineContext);
+  const { grouping, displayTypes } = useContext(TimelineContext);
 
   const [width, setWidth] = useState<number>();
 
   const timelineEvents = useMemo(() => {
+    console.log(border, color);
+
     return getTimelineEvents(
       _(filteredEvents)
         .map(
@@ -187,7 +191,7 @@ export const VisTimeline: React.FC = function() {
 
   const countStack = useMemo(() => {
     const flatten = _(events)
-      .flatMap(e => {
+      .flatMap<{ kind: AnyEvent['kind'] | ''; time: Date } | undefined>(e => {
         if (e.datation.length === 2) {
           const [start, end] = _(e.datation)
             .sort()
@@ -297,22 +301,16 @@ export const VisTimeline: React.FC = function() {
 
     // contextFilter.brush.brushSelection;
 
-    x.range([ctxOptions.margin.left, width - ctxOptions.margin.right]);
+    x.range([margins.left, width - margins.right]);
 
     contextFilter.brush.extent([
-      [ctxOptions.filter.left, ctxOptions.filter.top],
-      [
-        width - ctxOptions.filter.right,
-        ctxOptions.height - ctxOptions.filter.bottom
-      ]
+      [filterMargins.left, filterMargins.top],
+      [width - filterMargins.right, dimensions.height - filterMargins.bottom]
     ]);
 
     window.brush.extent([
-      [ctxOptions.window.left, ctxOptions.window.top],
-      [
-        width - ctxOptions.window.right,
-        ctxOptions.height - ctxOptions.window.bottom
-      ]
+      [windowMargins.left, windowMargins.top],
+      [width - windowMargins.right, dimensions.height - windowMargins.bottom]
     ]);
 
     axis.selection.call(axis.d3Axis);
@@ -333,7 +331,7 @@ export const VisTimeline: React.FC = function() {
         d3.max(countStack, d => d3.max(d, d => d[1])) as any
       ])
       // .nice()
-      .range([ctxOptions.height - 15, 10]);
+      .range([dimensions.height - margins.bottom, margins.top]);
 
     const area = d3
       .area()
@@ -583,28 +581,36 @@ export const VisTimeline: React.FC = function() {
   /*
    * Data change
    */
+  const [firstEvent, setFirstEvent] = useState<boolean | number>(false);
+
   useEffect(() => {
-    if (!timeline || !window || !width || !contextFilter) return;
+    if (!timeline) return;
 
     timeline.vis.setItems(timelineEvents);
-
-    if (firstEventSet.current) {
-      timeline.vis.fit({ animation: false });
-      const interval = timeline.vis.getWindow();
-
-      window.selection.call(
-        window.brush.move,
-        [interval.start, interval.end].map(x)
-      );
-      contextFilter.selection.call(contextFilter.brush.move, [
-        ctxOptions.filter.left,
-        width - ctxOptions.filter.right
-      ]);
-
-      firstEventSet.current = false;
+    if (firstEvent === false) {
+      setFirstEvent(true);
     }
     // visTimeline.current!.redraw();
-  }, [timeline, timelineEvents, x, window, contextFilter, width]);
+  }, [firstEvent, timeline, timelineEvents]);
+
+  useEffect(() => {
+    if (firstEvent !== true) return;
+    if (!timeline || !window || !width || !contextFilter) return;
+
+    timeline.vis.fit({ animation: false });
+    const interval = timeline.vis.getWindow();
+
+    window.selection.call(
+      window.brush.move,
+      [interval.start, interval.end].map(x)
+    );
+    contextFilter.selection.call(contextFilter.brush.move, [
+      filterMargins.left,
+      width - filterMargins.right
+    ]);
+
+    setFirstEvent(width);
+  }, [contextFilter, firstEvent, timeline, width, window, x]);
 
   useEffect(() => {
     if (!timeline) return;
@@ -626,13 +632,14 @@ export const VisTimeline: React.FC = function() {
         id="timeline-context"
         // ref={contextRef}
         width="100%"
-        height={ctxOptions.height + 'px'}
+        height={dimensions.height + 'px'}
       >
         <g
           id="context-axis"
           className="axis"
           ref={axisRef}
-          transform={`translate(0, ${ctxOptions.height - 35})`}
+          transform={`translate(0, ${dimensions.height - margins.bottom})`}
+          pointerEvents="none"
         ></g>
         <g id="context-stackedchart" ref={chartRef}></g>
         <g id="context-filter" className="brush" ref={contextFilterRef}></g>

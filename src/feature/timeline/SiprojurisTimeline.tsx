@@ -7,18 +7,20 @@ import {
   GROUP_BY,
   TimelineContext
 } from './TimelineContext';
-import { Flex } from '../../components/ui/Flex';
+import { Flex, FlexItem } from '../../components/ui/Flex';
+import { ColorContext } from '../../context/ColorContext';
 
 export const SiprojurisTimeline: React.FC = function() {
+  const { border, color } = useContext(ColorContext);
   const { types } = useContext(SiprojurisContext);
   const timelineContext = useTimelineContext(types);
-  const { setGroup, displayTypes, toggle, border, color } = timelineContext;
+  const { setGroup, displayTypes, toggle } = timelineContext;
 
   return (
     <>
       <div id="timeline-top">
         <Flex className="text-center">
-          <div className="w-25 pa1">
+          <FlexItem className="pa1">
             <div>Grouper par </div>
             <form
               name="group_display"
@@ -45,8 +47,8 @@ export const SiprojurisTimeline: React.FC = function() {
                 Lieux
               </button>
             </form>
-          </div>
-          <div className="w-75">
+          </FlexItem>
+          <FlexItem auto>
             <ul className="nav nav-tabs pt-1" id="myTab" role="tablist">
               <li className="badge nav-item p-0 ml-1">
                 <a
@@ -83,47 +85,35 @@ export const SiprojurisTimeline: React.FC = function() {
                 aria-labelledby="tempo-tab"
               >
                 <div className="container-fluid text-left">
-                  <div className="row">
-                    <div className="col">
+                  <Flex wrap justify="between">
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="no-end"
                         type="checkbox"
-                        className="checkbox-temporality-event"
                         value="no-end"
                         defaultChecked
                       />
-                      <label htmlFor="no-end" className="d-inline">
-                        <div
-                          className="vis-item vis-range legend no-end vis-readonly"
-                          style={{ width: '60px', margin: '5px' }}
-                        >
-                          <div className="vis-item-overflow">
-                            <div className="vis-item-content">
-                              <div className="click-content"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="vis-item-visible-frame"></div>
-                      </label>
+                      <div
+                        className="ma2 vis-item vis-range legend sipt--no-end"
+                        style={{
+                          width: '60px',
+                          position: 'relative'
+                        }}
+                      ></div>
+                    </Flex>
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="sur"
                         type="checkbox"
-                        className="checkbox-temporality-event"
                         value="sur"
                         defaultChecked
                       />
-                      <label htmlFor="sur" className="d-inline">
-                        <div
-                          className="vis-item vis-box legend sur vis-readonly"
-                          style={{ margin: '5px' }}
-                        >
-                          <div className="vis-item-content">
-                            <div className="click-content"></div>
-                          </div>
-                        </div>
-                      </label>
-                    </div>
-                    <div className="col">
+                      <div
+                        className="ma2 vis-item vis-box legend sipt--sur vis-readonly"
+                        style={{ position: 'relative' }}
+                      ></div>
+                    </Flex>
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="no-thi"
                         type="checkbox"
@@ -131,19 +121,12 @@ export const SiprojurisTimeline: React.FC = function() {
                         value="no-thi"
                         defaultChecked
                       />
-                      <label htmlFor="no-thi" className="d-inline">
-                        <div
-                          className="vis-item vis-range legend no-thi vis-readonly"
-                          style={{ width: '60px', margin: '5px' }}
-                        >
-                          <div className="vis-item-overflow">
-                            <div className="vis-item-content">
-                              <div className="click-content"></div>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="vis-item-visible-frame"></div>
-                      </label>
+                      <div
+                        className="ma2 vis-item vis-range legend sipt--no-thi vis-readonly"
+                        style={{ width: '60px', position: 'relative' }}
+                      ></div>
+                    </Flex>
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="long-thi"
                         type="checkbox"
@@ -151,21 +134,18 @@ export const SiprojurisTimeline: React.FC = function() {
                         value="long-thi"
                         defaultChecked
                       />
-                      <label htmlFor="long-thi" className="d-inline">
-                        <div
-                          className="vis-item vis-range legend long-thi vis-readonly m-1"
-                          style={{ width: '60px', margin: '5px' }}
-                        >
-                          <div className="vis-item-overflow">
-                            <div className="vis-item-content">
-                              <div className="click-content"></div>
-                            </div>
+                      <div
+                        className="vis-item vis-range legend sipt--long-thi vis-readonly ma2"
+                        style={{ width: '60px', position: 'relative' }}
+                      >
+                        <div className="vis-item-overflow">
+                          <div className="vis-item-content">
+                            <div className="click-content"></div>
                           </div>
                         </div>
-                        <div className="vis-item-visible-frame"></div>
-                      </label>
-                    </div>
-                    <div className="col">
+                      </div>
+                    </Flex>
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="no-beg"
                         type="checkbox"
@@ -173,17 +153,17 @@ export const SiprojurisTimeline: React.FC = function() {
                         value="no-beg"
                         defaultChecked
                       />
-                      <label htmlFor="no-beg" className="d-inline">
-                        <div
-                          className="vis-item vis-range legend no-beg vis-readonly m-1"
-                          style={{ width: '60px', margin: '5px' }}
-                        >
-                          <div className="vis-item-overflow">
-                            <div className="vis-item-content"></div>
-                          </div>
+                      <div
+                        className="vis-item vis-range legend sipt--no-beg vis-readonly ma2"
+                        style={{ width: '60px', position: 'relative' }}
+                      >
+                        <div className="vis-item-overflow">
+                          <div className="vis-item-content"></div>
                         </div>
-                        <div className="vis-item-visible-frame"></div>
-                      </label>
+                      </div>
+                      <div className="vis-item-visible-frame"></div>
+                    </Flex>
+                    <Flex tag="label" className="ph2" col items="baseline">
                       <input
                         id="long-sur"
                         type="checkbox"
@@ -191,68 +171,62 @@ export const SiprojurisTimeline: React.FC = function() {
                         value="long-sur"
                         defaultChecked
                       />
-                      <label htmlFor="long-sur" className="d-inline">
-                        <div
-                          className="vis-item vis-range legend long-sur vis-readonly m-1"
-                          style={{ width: '60px', margin: '5px' }}
-                        >
-                          <div className="vis-item-overflow">
-                            <div className="vis-item-content">
-                              <div className="click-content"></div>
-                            </div>
+                      <div
+                        className="vis-item vis-range sipt--long-sur vis-readonly ma2"
+                        style={{ width: '60px', position: 'relative' }}
+                      >
+                        <div className="vis-item-overflow">
+                          <div className="vis-item-content">
+                            <div className="click-content"></div>
                           </div>
                         </div>
-                        <div className="vis-item-visible-frame"></div>
-                      </label>
-                    </div>
-                  </div>
+                      </div>
+                    </Flex>
+                  </Flex>
                 </div>
               </div>
               <div
-                className="tab-pane fade show active"
+                className="tab-pane fade show active "
                 id="event"
                 role="tabpanel"
                 aria-labelledby="event-tab"
               >
-                <div className="container-fluid text-left" id="event_filter">
-                  <Flex justify="between" wrap>
-                    {useMemo(
-                      () =>
-                        _.map(displayTypes, (state, key) => (
-                          <Flex
-                            tag="label"
-                            className="db"
-                            key={key}
-                            wrap
-                            items="baseline"
-                          >
-                            <input
-                              id="no-beg"
-                              type="checkbox"
-                              className="checkbox-temporality-event"
-                              value="no-beg"
-                              checked={state}
-                              onChange={() => toggle(key)}
-                            />
-                            <i
-                              className="br-100 mh1 dib ba"
-                              style={{
-                                backgroundColor: color(key),
-                                borderColor: border(key),
-                                height: '12px',
-                                width: '12px'
-                              }}
-                            ></i>
-                            <p>{key}</p>
-                          </Flex>
-                        )),
-                      [displayTypes, toggle, border, color]
-                    )}
-                  </Flex>
-                </div>
+                <Flex className="ph2" justify="between" wrap>
+                  {useMemo(
+                    () =>
+                      _.map(displayTypes, (state, key) => (
+                        <Flex
+                          key={key}
+                          tag="label"
+                          className="ph2"
+                          col
+                          items="baseline"
+                        >
+                          <input
+                            id="no-beg"
+                            type="checkbox"
+                            className="checkbox-temporality-event"
+                            checked={state}
+                            onChange={() => toggle(key)}
+                          />
+                          <i
+                            className="br-100 mh1 dib ba"
+                            style={{
+                              backgroundColor: color(key),
+                              borderColor: border(key),
+                              height: '12px',
+                              width: '12px'
+                            }}
+                          ></i>
+                          {key}
+                        </Flex>
+                      )),
+                    [displayTypes, toggle, border, color]
+                  )}
+                </Flex>
               </div>
             </div>
-          </div>
+          </FlexItem>
         </Flex>
       </div>
       <TimelineContext.Provider value={timelineContext}>
