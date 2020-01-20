@@ -5,7 +5,6 @@ import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedAnyEvent } from './models';
-import { group } from 'd3';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
