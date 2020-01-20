@@ -5,6 +5,7 @@ import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedAnyEvent } from './models';
+import { group } from 'd3';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -40,7 +41,7 @@ export const Information: React.FC = function() {
   return useMemo(
     () => (
       <div id="sipi" className="pa1 overflow-y">
-        <div id="sipi--enabled" className="pb1">
+        <div id="sipi--enabled">
           {_.map(groups.no, ({ key, events, kind, selected, filtered }) => (
             <MemoInfoGroup
               key={key.uri}
@@ -52,18 +53,26 @@ export const Information: React.FC = function() {
             />
           ))}
         </div>
-        <div id="sipi--disabled">
-          {_.map(groups.yes, ({ key, events, kind, selected, filtered }) => (
-            <MemoInfoGroup
-              key={key.uri}
-              group={key}
-              kind={kind}
-              events={events}
-              selected={selected}
-              filtered={filtered}
-            />
-          ))}
-        </div>
+        {groups.yes && (
+          <>
+            <hr />
+            <div id="sipi--disabled">
+              {_.map(
+                groups.yes,
+                ({ key, events, kind, selected, filtered }) => (
+                  <MemoInfoGroup
+                    key={key.uri}
+                    group={key}
+                    kind={kind}
+                    events={events}
+                    selected={selected}
+                    filtered={filtered}
+                  />
+                )
+              )}
+            </div>
+          </>
+        )}
       </div>
     ),
     [groups]

@@ -28,17 +28,20 @@ import { MemoEventInfo } from './EventInfo';
 // Barre de recherche globale : lieu & acteur
 // synchro timeline-carte-information
 // laisser le graphe grisé
+
+
+// grouper par type d'evenement consécutifs dans le groupe, bla bla bla
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
     () => ({
-      parent: classnames('sipig', 'ba', 'b--light-silver'),
-      titleIcon: classnames('sipig--icon', 'ma1'),
+      parent: classnames('sipig', 'ba', 'b--light-silver', 'mb1'),
+      titleIcon: classnames('sipig--icon', 'ma1', 'flex-shrink-0'),
       titleGroup: classnames('sipig--title', 'pa1'),
-      titleLabel: classnames('sipig--label', {
+      titleLabel: classnames('sipig--label', 'flex-auto', {
         b: selected === true,
         'o-50': filtered === true
       }),
-      titleMore: 'ma1',
+      titleMore: classnames('ma1', 'flex-shrink-0'),
       events: classnames('sipig--events', 'bt', 'b--light-silver', 'ph1')
     }),
     [filtered, selected]
@@ -86,7 +89,7 @@ export const InfoGroup: React.FC<{
       {show && (
         <div className={classes.events}>
           {events.map(e => (
-            <MemoEventInfo key={e.id} event={e} />
+            <MemoEventInfo key={e.id} event={e} origin={kind} />
           ))}
         </div>
       )}

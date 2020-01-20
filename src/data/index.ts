@@ -43,7 +43,7 @@ export type DeathEvent = Event & {
 export type SuspensionActivityEvent = Event & {
   kind: 'SuspensionActivity';
   actor: ActorCard;
-  abstract_object?: AbstractObject;
+  abstract_object: Nullable<AbstractObject>;
 };
 
 export type CollectiveActor = Ressource & {

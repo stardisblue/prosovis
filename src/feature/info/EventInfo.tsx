@@ -9,7 +9,10 @@ import Octicon, {
   Plus,
   Question,
   Icon,
-  Milestone
+  Book,
+  Bookmark,
+  Home,
+  Telescope
 } from '@primer/octicons-react';
 import { ColorContext } from '../../context/ColorContext';
 import { FlexItem } from '../../components/ui/Flex/FlexItem';
@@ -21,23 +24,32 @@ type Selected<T = AnyEvent> = T & {
 
 type EventInfoProps<T = AnyEvent> = {
   event: Selected<T>;
+  origin: 'Actor' | 'NamedPlace';
 };
 
 const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
   return (
-    <div>
+    <div className="tr">
       {_.flatMap(dates, (d, index, array) =>
         array.length - 1 !== index ? (
           [
-            <abbr key={d.id} className="nowrap" title={d.label}>
+            <abbr
+              key={d.id}
+              className="nowrap"
+              title={d.label + ' - ' + d.clean_date}
+            >
               <time dateTime={d.clean_date} data-uri={d.uri}>
                 {d.value}
               </time>
             </abbr>,
-            <> - </>
+            <React.Fragment key={d.id + 'interspace'}> - </React.Fragment>
           ]
         ) : (
-          <abbr key={d.id} className="nowrap" title={d.label}>
+          <abbr
+            key={d.id}
+            className="nowrap"
+            title={d.label + ' - ' + d.clean_date}
+          >
             <time dateTime={d.clean_date} data-uri={d.uri}>
               {d.value}
             </time>
@@ -48,57 +60,106 @@ const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
   );
 };
 
-export const EventInfo: React.FC<EventInfoProps> = function({ event }) {
-  let icon: Icon<number, number> = Question;
-  let content = <div>{event.label}</div>;
+function prefix(condition: boolean, prefix: string) {
+  return function(...content: (string | null)[]) {
+    const compacted = _(content)
+      .compact()
+      .join(' ');
+    if (condition !== false) {
+      return prefix + ' ' + compacted;
+    }
+
+    return _.upperFirst(compacted);
+  };
+}
+
+export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
+  let icon: Icon<number, number>;
+  let content;
   const { color } = useContext(ColorContext);
+  const { actor } = event;
+  const place = origin === 'NamedPlace';
+
+  const createContent = prefix(place, actor.label);
 
   switch (event.kind) {
     case 'Birth': {
       icon = Plus;
-      content = (
-        <>Naissance {event.localisation && 'à ' + event.localisation.label}</>
-      );
+      content =
+        'Naissance' +
+        (place
+          ? ` de ${actor.label}`
+          : event.localisation
+          ? ` à ${event.localisation.label}`
+          : '');
       break;
     }
     case 'Death': {
       icon = XIcon;
-      content = (
-        <>Décès {event.localisation && 'à ' + event.localisation.label}</>
-      );
+      content =
+        'Décès' +
+        (place
+          ? ` de ${actor.label}`
+          : event.localisation
+          ? ` à ${event.localisation.label}`
+          : '');
       break;
     }
     case 'Education': {
+      icon = Book;
       const matiere =
-        event.abstract_object && '"' + event.abstract_object.label + '"';
-      const organisme = event.collective_actor && (
-        <>
-          <br /> à {event.collective_actor.label}
-        </>
-      );
-
-      icon = MortarBoard;
-      content = (
-        <>
-          Enseigne {matiere} {organisme}
-        </>
-      );
+        event.abstract_object && `"${event.abstract_object.label}"`;
+      const organisme =
+        event.collective_actor && `à ${event.collective_actor.label}`;
+      content = createContent('enseigne', matiere, organisme);
       break;
     }
     case 'ObtainQualification': {
       const qualite =
-        event.social_characteristic &&
-        '"' + event.social_characteristic.label + '"';
+        event.social_characteristic && `"${event.social_characteristic.label}"`;
       const organisme =
-        event.collective_actor && 'par ' + event.collective_actor.label;
+        event.collective_actor && `à ${event.collective_actor.label}`;
 
-      icon = Milestone;
-      content = (
-        <>
-          Obtient la qualité {qualite} {organisme}
-        </>
+      icon = MortarBoard;
+      content = createContent('obtient la qualité', qualite, organisme);
+      break;
+    }
+    case 'PassageExamen': {
+      const evaluateur = actor.id === event.actor_evaluer.id;
+      const subject = event.abstract_object.label;
+      const organisme = event.collective_actor.label;
+
+      icon = Bookmark;
+      content = createContent(
+        evaluateur
+          ? 'evalue ' + event.actor_evalue.label
+          : 'évalué par ' + event.actor_evaluer.label,
+        `pour "${subject}"`,
+        `à ${organisme}`
       );
       break;
+    }
+    case 'Retirement': {
+      icon = Home;
+      content = 'Départ en retraite' + (place ? ' de ' + actor.label : '');
+      break;
+    }
+
+    case 'SuspensionActivity': {
+      console.log(event);
+
+      icon = Telescope;
+      content = createContent(
+        event.abstract_object && event.abstract_object.label
+      );
+      break;
+    }
+
+    default: {
+      console.error('should not be here', event);
+
+      icon = Question;
+      content = (event as any).label;
     }
   }
 
@@ -106,13 +167,13 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event }) {
     <Flex
       justify="between"
       items="center"
-      className={classnames('sip-info--event', {
+      className={classnames('sip-info--event', 'pb1', {
         b: event.selected,
         'o-50': event.filtered
       })}
     >
       <span className="pa2" style={{ color: color(event.kind) }}>
-        <Octicon icon={icon} />
+        <Octicon icon={icon} width={16} height={16} />
       </span>
       <FlexItem auto>{content}</FlexItem>
       <EventDates dates={event.datation} />
