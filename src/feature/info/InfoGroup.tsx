@@ -1,6 +1,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { Ressource, AnyEvent } from '../../data';
+import { Ressource } from '../../data';
 import classnames from 'classnames';
+import _ from 'lodash';
 
 import Octicon, {
   ChevronDown,
@@ -9,7 +10,8 @@ import Octicon, {
   Location
 } from '@primer/octicons-react';
 import { Flex } from '../../components/ui/Flex';
-import { MemoEventInfo } from './EventInfo';
+import { InfoKindGroup } from './InfoKindGroup';
+import { EventGroup, SelectedEvent } from './models';
 
 // TODO griser personnes
 // surlingé : survol
@@ -29,7 +31,6 @@ import { MemoEventInfo } from './EventInfo';
 // synchro timeline-carte-information
 // laisser le graphe grisé
 
-
 // grouper par type d'evenement consécutifs dans le groupe, bla bla bla
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
@@ -47,18 +48,71 @@ const useStyles = (filtered: boolean, selected: boolean) =>
     [filtered, selected]
   );
 
-export const InfoGroup: React.FC<{
-  kind: 'Actor' | 'NamedPlace';
-  group: Ressource;
-  events: AnyEvent[];
-  selected: boolean;
+type InfoGroupProps = {
+  events: SelectedEvent[];
   filtered: boolean;
-}> = function({ events, filtered, group, kind, selected }) {
+  group: Ressource;
+  kind: 'Actor' | 'NamedPlace';
+  selected: boolean;
+};
+
+export const InfoGroup: React.FC<InfoGroupProps> = function({
+  events,
+  filtered,
+  group,
+  kind,
+  selected
+}) {
   const [show, setShow] = useState(selected === true);
 
   useEffect(() => setShow(selected === true), [selected]);
 
   const handleClick = useCallback(() => setShow(s => !s), []);
+
+  const groupedEvents = useMemo(
+    () =>
+      _.reduce(
+        events,
+        (acc, e) => {
+          let last = _.last(acc);
+
+          if (last === undefined || last.kind !== e.kind) {
+            acc.push({
+              id: e.id,
+              kind: e.kind,
+              events: e,
+              start: _.first(e.datation)!,
+              end: _.last(e.datation)!,
+              filtered: e.filtered,
+              selected: e.selected
+            });
+            return acc;
+          }
+          if (_.isArray(last.events)) {
+            last.events.push(e);
+          } else {
+            last.events = [last.events, e];
+          }
+
+          last.start = _.minBy(
+            [last.start, _.first(e.datation)],
+            'clean_date'
+          )!;
+          last.end = _.maxBy([last.end, _.last(e.datation)], 'clean_date')!;
+
+          if (e.selected !== undefined) {
+            last.selected = last.selected || e.selected;
+          }
+          if (e.filtered !== undefined) {
+            last.filtered = last.filtered && e.filtered;
+          }
+
+          return acc;
+        },
+        [] as EventGroup[]
+      ),
+    [events]
+  );
 
   /*
    * Styles
@@ -88,8 +142,11 @@ export const InfoGroup: React.FC<{
 
       {show && (
         <div className={classes.events}>
-          {events.map(e => (
+          {/* {events.map(e => (
             <MemoEventInfo key={e.id} event={e} origin={kind} />
+          ))} */}
+          {groupedEvents.map(e => (
+            <InfoKindGroup key={e.id} {...e} origin={kind} />
           ))}
         </div>
       )}

@@ -1,15 +1,15 @@
 import { useMemo } from 'react';
 import _ from 'lodash';
 import { AnyEvent, Ressource } from '../../data';
-import { SelectedAnyEvent } from './models';
+import { SelectedEvent } from './models';
 
-export function useGroups(selectedEvents: AnyEvent[]) {
+export function useGroups(selectedEvents: SelectedEvent[]) {
   // order by selection and then by kind
   return useMemo(() => {
     const grps: {
       kind: 'Actor' | 'NamedPlace';
-      key: Ressource;
-      events: SelectedAnyEvent[];
+      group: Ressource;
+      events: SelectedEvent[];
       selected: boolean;
       filtered: boolean;
     }[] = [];
@@ -19,12 +19,12 @@ export function useGroups(selectedEvents: AnyEvent[]) {
     const localisationKeyIndex: {
       [k: string]: number;
     } = {};
-    _.map(selectedEvents, (e: SelectedAnyEvent) => {
+    _.map(selectedEvents, e => {
       if (actorKeyIndex[e.actor.id] === undefined) {
         actorKeyIndex[e.actor.id] = grps.length;
         grps.push({
           kind: 'Actor',
-          key: e.actor,
+          group: e.actor,
           events: [],
           selected: false,
           filtered: true
@@ -40,7 +40,7 @@ export function useGroups(selectedEvents: AnyEvent[]) {
         localisationKeyIndex[localisation.id] = grps.length;
         grps.push({
           kind: 'NamedPlace',
-          key: localisation,
+          group: localisation,
           events: [],
           selected: false,
           filtered: true
@@ -61,7 +61,7 @@ export function useGroups(selectedEvents: AnyEvent[]) {
       grps[localisationKeyIndex[localisation.id]].events.push(e);
     });
     return _(grps)
-      .orderBy(['selected', 'key.kind', 'key.label'], ['desc'])
+      .orderBy(['selected', 'group.kind', 'group.label'], ['desc'])
       .groupBy(e => (e.filtered === true ? 'yes' : 'no'))
       .value();
   }, [selectedEvents]);

@@ -4,7 +4,7 @@ import { Datation } from '../../data';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
-import { SelectedAnyEvent } from './models';
+import { SelectedEvent } from './models';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -24,9 +24,9 @@ export const Information: React.FC = function() {
   }, [filteredEvents]);
 
   const selectedEvents = useMemo(() => {
-    return _<SelectedAnyEvent>(events)
+    return _<SelectedEvent>(events)
       .chain()
-      .map<SelectedAnyEvent>(e => ({
+      .map<SelectedEvent>(e => ({
         ...e,
         selected: _.sortedIndexOf(selected, e.id) !== -1,
         filtered: _.sortedIndexOf(filtered, e.id) === -1
@@ -41,37 +41,18 @@ export const Information: React.FC = function() {
     () => (
       <div id="sipi" className="pa1 overflow-y">
         <div id="sipi--enabled">
-          {_.map(groups.no, ({ key, events, kind, selected, filtered }) => (
-            <MemoInfoGroup
-              key={key.uri}
-              group={key}
-              kind={kind}
-              events={events}
-              selected={selected}
-              filtered={filtered}
-            />
+          {_.map(groups.no, g => (
+            <MemoInfoGroup key={g.group.uri} {...g} />
           ))}
         </div>
-        {groups.yes && (
-          <>
-            <hr />
-            <div id="sipi--disabled">
-              {_.map(
-                groups.yes,
-                ({ key, events, kind, selected, filtered }) => (
-                  <MemoInfoGroup
-                    key={key.uri}
-                    group={key}
-                    kind={kind}
-                    events={events}
-                    selected={selected}
-                    filtered={filtered}
-                  />
-                )
-              )}
-            </div>
-          </>
-        )}
+        {groups.yes && [
+          <hr />,
+          <div id="sipi--disabled">
+            {_.map(groups.yes, g => (
+              <MemoInfoGroup key={g.group.uri} {...g} />
+            ))}
+          </div>
+        ]}
       </div>
     ),
     [groups]

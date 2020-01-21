@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
-import { Flex } from '../../components/ui/Flex';
+import { Flex, FlexItem } from '../../components/ui/Flex';
 import _ from 'lodash';
 import Octicon, {
   MortarBoard,
@@ -15,19 +15,15 @@ import Octicon, {
   Telescope
 } from '@primer/octicons-react';
 import { ColorContext } from '../../context/ColorContext';
-import { FlexItem } from '../../components/ui/Flex/FlexItem';
-
-type Selected<T = AnyEvent> = T & {
-  selected?: boolean;
-  filtered?: boolean;
-};
+import { SelectedEvent } from './models';
 
 type EventInfoProps<T = AnyEvent> = {
-  event: Selected<T>;
+  event: SelectedEvent<T>;
   origin: 'Actor' | 'NamedPlace';
+  icon?: boolean;
 };
 
-const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
+export const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
   return (
     <div className="tr">
       {_.flatMap(dates, (d, index, array) =>
@@ -61,7 +57,7 @@ const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
 };
 
 function prefix(condition: boolean, prefix: string) {
-  return function(...content: (string | null)[]) {
+  return function(...content: (string | null | false)[]) {
     const compacted = _(content)
       .compact()
       .join(' ');
@@ -73,7 +69,11 @@ function prefix(condition: boolean, prefix: string) {
   };
 }
 
-export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
+export const EventInfo: React.FC<EventInfoProps> = function({
+  event,
+  origin,
+  icon: showIcon = true
+}) {
   let icon: Icon<number, number>;
   let content;
   const { color } = useContext(ColorContext);
@@ -111,7 +111,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
         event.abstract_object && `"${event.abstract_object.label}"`;
       const organisme =
         event.collective_actor && `à ${event.collective_actor.label}`;
-      content = createContent('enseigne', matiere, organisme);
+      content = createContent(showIcon && 'enseigne', matiere, organisme);
       break;
     }
     case 'ObtainQualification': {
@@ -121,7 +121,11 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
         event.collective_actor && `à ${event.collective_actor.label}`;
 
       icon = MortarBoard;
-      content = createContent('obtient la qualité', qualite, organisme);
+      content = createContent(
+        showIcon && 'obtient la qualité',
+        qualite,
+        organisme
+      );
       break;
     }
     case 'PassageExamen': {
@@ -173,7 +177,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
       })}
     >
       <span className="pa2" style={{ color: color(event.kind) }}>
-        <Octicon icon={icon} width={16} height={16} />
+        {showIcon && <Octicon icon={icon} width={16} height={16} />}
       </span>
       <FlexItem auto>{content}</FlexItem>
       <EventDates dates={event.datation} />
