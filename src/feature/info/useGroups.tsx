@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import _ from 'lodash';
-import { AnyEvent, Ressource } from '../../data';
+import { Ressource } from '../../data';
 import { SelectedEvent } from './models';
 
 export function useGroups(selectedEvents: SelectedEvent[]) {
