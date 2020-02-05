@@ -12,6 +12,8 @@ import Octicon, {
 import { Flex } from '../../components/ui/Flex';
 import { InfoKindGroup } from './InfoKindGroup';
 import { EventGroup, SelectedEvent } from './models';
+import { MemoEventInfo } from './EventInfo';
+import { FlexItem } from '../../components/ui/Flex/FlexItem';
 
 // TODO griser personnes
 // surlingé : survol
@@ -35,15 +37,22 @@ import { EventGroup, SelectedEvent } from './models';
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
     () => ({
-      parent: classnames('sipig', 'ba', 'b--light-silver', 'mb1'),
+      title: classnames('sipig--title', 'ba', 'pa1', 'flex-grow-0'),
       titleIcon: classnames('sipig--icon', 'ma1', 'flex-shrink-0'),
-      titleGroup: classnames('sipig--title', 'pa1'),
       titleLabel: classnames('sipig--label', 'flex-auto', {
         b: selected === true,
         'o-50': filtered === true
       }),
       titleMore: classnames('ma1', 'flex-shrink-0'),
-      events: classnames('sipig--events', 'bt', 'b--light-silver', 'ph1')
+      events: classnames(
+        'sipig--events',
+        'bb',
+        'br',
+        'bl',
+        'b--light-silver',
+        'ph1',
+        'overflow-y-auto'
+      )
     }),
     [filtered, selected]
   );
@@ -65,7 +74,7 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
 }) {
   const [show, setShow] = useState(selected === true);
 
-  useEffect(() => setShow(selected === true), [selected]);
+  //useEffect(() => setShow(selected === true), [selected]);
 
   const handleClick = useCallback(() => setShow(s => !s), []);
 
@@ -120,10 +129,11 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
   const classes = useStyles(filtered, selected);
 
   return (
-    <div className={classes.parent}>
+    <>
       <Flex
+        col
         justify="between"
-        className={classes.titleGroup}
+        className={classes.title}
         items="baseline"
         onClick={handleClick}
       >
@@ -141,7 +151,10 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
       </Flex>
 
       {show && (
-        <div className={classes.events}>
+        <div
+          className={classes.events}
+          style={{ minHeight: '50px', maxHeight: '500px' }}
+        >
           {/* {events.map(e => (
             <MemoEventInfo key={e.id} event={e} origin={kind} />
           ))} */}
@@ -150,7 +163,7 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
           ))}
         </div>
       )}
-    </div>
+    </>
   );
 };
 

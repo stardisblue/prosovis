@@ -5,6 +5,7 @@ import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
+import { Flex } from '../../components/ui/Flex';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -39,22 +40,30 @@ export const Information: React.FC = function() {
 
   return useMemo(
     () => (
-      <div id="sipi" className="pa1 overflow-y">
-        <div id="sipi--enabled">
-          {_.map(groups.no, g => (
-            <MemoInfoGroup key={g.group.uri} {...g} />
-          ))}
-        </div>
+      <Flex column className="pa1 vh-100">
+        {/* <div id="sipi--enabled"> */}
+        {_.map(groups.no, g => (
+          <MemoInfoGroup key={g.group.uri} {...g} />
+        ))}
+        {/* </div> */}
         {groups.yes && [
-          <hr />,
-          <div id="sipi--disabled">
-            {_.map(groups.yes, g => (
-              <MemoInfoGroup key={g.group.uri} {...g} />
-            ))}
-          </div>
+          <hr className="w-100" />,
+          // <div id="sipi--disabled">
+          _.map(groups.yes, g => <MemoInfoGroup key={g.group.uri} {...g} />)
+          // </div>
         ]}
-      </div>
+      </Flex>
     ),
     [groups]
   );
 };
+
+// lors du click, pousser les autres déroulants en bas de l'ecran au lieu de les faire "disparaitre"
+// mettre les miserables à droite
+// filtre au brush,
+// masque avec les boutons des event.kind
+// info:selection: inactif si infoevent is gray
+// - fermé par défaut
+// info:carte: filtre = zoom fleches : séquence parmi les lieux affichés
+// couleurs-cartes
+// report: semaine derniere

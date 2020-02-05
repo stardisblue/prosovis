@@ -6,7 +6,6 @@ import _ from 'lodash';
 import Octicon, {
   MortarBoard,
   X as XIcon,
-  Plus,
   Question,
   Icon,
   Book,
@@ -14,7 +13,8 @@ import Octicon, {
   Home,
   Telescope,
   ChevronUp,
-  ChevronDown
+  ChevronDown,
+  Check
 } from '@primer/octicons-react';
 import { ColorContext } from '../../context/ColorContext';
 import { EventDates, MemoEventInfo } from './EventInfo';
@@ -36,7 +36,7 @@ export const InfoKindGroup: React.FC<{
   let content: string = kind;
   switch (kind) {
     case 'Birth':
-      icon = Plus;
+      icon = Check;
       content = 'Naissances';
       break;
     case 'Death':
@@ -91,7 +91,7 @@ export const InfoKindGroup: React.FC<{
             className="ma1 flex-shrink-0"
             verticalAlign="text-bottom"
             icon={show ? ChevronUp : ChevronDown}
-            ariaLabel={show ? 'Etendre' : 'Réduire'}
+            ariaLabel={show ? 'Réduire' : 'Etendre'}
           />
         </Flex>
         {show && (

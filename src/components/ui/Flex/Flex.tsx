@@ -8,13 +8,24 @@ type FlexProps = {
   justify?: 'start' | 'end' | 'center' | 'between' | 'around';
   items?: 'start' | 'end' | 'center' | 'baseline' | 'stretch';
   wrap?: boolean;
+  column?: boolean;
   onClick?: React.MouseEventHandler;
 };
 
 export const Flex: React.FC<React.PropsWithChildren<
   FlexProps & FlexItemProps
 >> = function(
-  { tag = 'div', className, children, items, justify, onClick, wrap, ...rest } // props
+  {
+    tag = 'div',
+    className,
+    children,
+    column,
+    items,
+    justify,
+    onClick,
+    wrap,
+    ...rest
+  } // props
 ) {
   const TagWrapper = tag;
   return (
@@ -26,7 +37,8 @@ export const Flex: React.FC<React.PropsWithChildren<
           [`justify-${justify}`]: justify,
           'flex-wrap': wrap === true,
           'flex-nowrap': wrap === false,
-          [`items-${items}`]: items
+          [`items-${items}`]: items,
+          'flex-column': column
         },
         flexItemClasses(rest)
       )}
