@@ -1,13 +1,13 @@
-import React, { useRef, useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useMemo, useCallback } from 'react';
 import { Map, TileLayer, LayersControl, Marker, Popup } from 'react-leaflet';
 
 import _ from 'lodash';
 
 import './SiprojurisMap.css';
 import { SiprojurisContext } from '../../context/SiprojurisContext';
-import { BirthEvent, getLocalisation } from '../../data';
+import { getLocalisation } from '../../data';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
-import { LatLngBounds, latLng } from 'leaflet';
+import { latLng } from 'leaflet';
 
 export function SiprojurisMap() {
   const {
@@ -33,21 +33,25 @@ export function SiprojurisMap() {
     [filteredEvents]
   );
 
-  const $map = useCallback(($map: Map) => {
-    console.log($map.leafletElement.getBounds());
+  const $map = useCallback(
+    ($map: Map) => {
+      if ($map === null) return;
+      console.log($map.leafletElement.getBounds());
 
-    $map.leafletElement.on('moveend', e => {
-      const bounds = $map.leafletElement.getBounds();
-      console.log(bounds);
-      console.log(
-        _.filter(localisationEvents, ({ localisation }) => {
-          return localisation.lat && localisation.lng
-            ? bounds.contains(latLng(localisation))
-            : false;
-        })
-      );
-    });
-  }, []);
+      $map.leafletElement.on('moveend', e => {
+        const bounds = $map.leafletElement.getBounds();
+        console.log(bounds);
+        console.log(
+          _.filter(localisationEvents, ({ localisation }) => {
+            return localisation.lat && localisation.lng
+              ? bounds.contains(latLng(localisation))
+              : false;
+          })
+        );
+      });
+    },
+    [localisationEvents]
+  );
 
   return (
     <Map
