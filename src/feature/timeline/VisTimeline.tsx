@@ -136,7 +136,7 @@ const dimensions = {
 const OPACITY_CLASS = 'o-50';
 
 export const VisTimeline: React.FC = function() {
-  const {border, color} = useContext(ColorContext)
+  const { border, color } = useContext(ColorContext);
   const {
     events,
     highlights,
@@ -152,7 +152,7 @@ export const VisTimeline: React.FC = function() {
   const [width, setWidth] = useState<number>();
 
   const timelineEvents = useMemo(() => {
-    console.log(border, color);
+    // console.log(border, color);
 
     return getTimelineEvents(
       _(filteredEvents)

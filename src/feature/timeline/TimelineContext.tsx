@@ -1,13 +1,14 @@
 import React, { useState, useCallback } from 'react';
-import { AnyEvent, Ressource, PrimaryKey } from '../../data';
+import { AnyEvent, Ressource, PrimaryKey, getLocalisation } from '../../data';
 import _ from 'lodash';
 
 function groupByActor(a: AnyEvent) {
   return a.actor.id;
 }
 
-function groupByNamedPlace(a: any) {
-  return a.localisation ? a.localisation.id : 0;
+function groupByNamedPlace(a: AnyEvent) {
+  const loc = getLocalisation(a);
+  return loc ? loc.id : 0;
 }
 
 function groupsActor(events: AnyEvent[]) {
@@ -19,15 +20,22 @@ function groupsActor(events: AnyEvent[]) {
 
 function groupsNamedPlace(events: AnyEvent[]) {
   return _(events)
-    .uniqBy('localisation.id')
-    .map(
-      e =>
-        (e as any).localisation || {
+    .uniqBy(e => {
+      const localisation = getLocalisation(e);
+      return (localisation && localisation.id) || 0;
+    })
+    .map(e => {
+      const localisation = getLocalisation(e);
+      return (
+        localisation || {
           id: 0,
           label: 'Inconnue',
-          kind: 'NamedPlace'
+          kind: 'NamedPlace',
+          url: 'unknown',
+          uri: 'unknown'
         }
-    )
+      );
+    })
     .value();
 }
 

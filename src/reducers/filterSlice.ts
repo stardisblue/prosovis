@@ -1,21 +1,40 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
+import _ from 'lodash';
+type Filters = 'kind' | 'timeInterval';
 
 export const filterSlice = createSlice({
   name: 'filters',
-  initialState: {} as { [k: string]: any },
+  initialState: {} as {
+    current: { [k in Filters]: PrimaryKey[] };
+  },
   reducers: {
     setFilter: {
-      reducer(state, action: PayloadAction<{ key: PrimaryKey; filter: any }>) {
-        state[action.payload.key] = action.payload.filter;
+      reducer: function(
+        { current },
+        action: PayloadAction<{ key: Filters; values: PrimaryKey[] }>
+      ) {
+        current[action.payload.key] = action.payload.values;
+        return { current };
       },
-      prepare(key: PrimaryKey, filter: any) {
-        return { payload: { key, filter } };
+      prepare: function(key: Filters, values: PrimaryKey[]) {
+        return {
+          payload: {
+            key,
+            values: _(values)
+              .sortBy('id')
+              .sortedUniqBy('id')
+              .value()
+          }
+        };
       }
+    },
+    reset: function() {
+      return { current: { kind: [], timeInterval: [] } };
     }
   }
 });
 
-export const { setFilter } = filterSlice.actions;
+export const { setFilter, reset } = filterSlice.actions;
 
 export default filterSlice.reducer;

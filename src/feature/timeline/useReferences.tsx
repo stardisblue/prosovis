@@ -3,7 +3,8 @@ import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
 import { Nullable } from '../../data';
-import vis, { moment } from 'vis-timeline';
+import * as vis from 'vis-timeline/standalone';
+import moment from 'moment';
 import * as d3 from 'd3';
 
 function refNotNull<T>(f: (dom: T) => any) {
@@ -21,7 +22,7 @@ const options = {
   stack: true, // Stack items
   showTooltips: false,
   width: '100%',
-  height: '350px',
+  height: '300px',
   margin: {
     item: {
       horizontal: 5, // distance
