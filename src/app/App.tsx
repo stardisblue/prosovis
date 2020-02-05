@@ -8,6 +8,7 @@ import { SiprojurisTimeline } from '../feature/timeline/SiprojurisTimeline';
 import { Information } from '../feature/info/Information';
 import { Flex } from '../components/ui/Flex';
 import { useColorContext, ColorContext } from '../context/ColorContext';
+import { SiprojurisMap } from '../feature/map/SiprojurisMap';
 
 function App() {
   const value = useSiprojurisContext(defaultActors as any);
@@ -19,10 +20,15 @@ function App() {
           <div className="w-25">
             <Information />
           </div>
-          <div className="w-75">
-            {/* <div className="h-50"> <SiprojurisMap /> </div> */}
-            <SiprojurisTimeline />
-          </div>
+          <Flex column className="w-75">
+            <Flex col>
+              <div className="w-100 h-100"></div>
+              <SiprojurisMap />
+            </Flex>
+            <div>
+              <SiprojurisTimeline />
+            </div>
+          </Flex>
         </Flex>
       </SiprojurisContext.Provider>
     </ColorContext.Provider>

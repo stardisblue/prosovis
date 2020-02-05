@@ -114,3 +114,21 @@ export type AnyEvent =
   | RetirementEvent
   // | ExamenEvent
   | DirectionalExamenEvent;
+
+export function getLocalisation(event: AnyEvent) {
+  switch (event.kind) {
+    case 'Birth':
+    case 'Death':
+      return event.localisation;
+    case 'Education':
+    case 'ObtainQualification':
+    case 'PassageExamen':
+      return (
+        event.collective_actor &&
+        (event.collective_actor?.localisation ||
+          event.collective_actor?.creation)
+      );
+    default:
+      return null;
+  }
+}

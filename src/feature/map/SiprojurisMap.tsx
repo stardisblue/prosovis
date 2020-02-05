@@ -1,17 +1,54 @@
-import React, { useRef } from 'react';
-import {
-  Map,
-  TileLayer,
-  LayersControl,
-  LayerGroup,
-  Marker,
-  Popup
-} from 'react-leaflet';
+import React, { useRef, useContext, useMemo, useCallback } from 'react';
+import { Map, TileLayer, LayersControl, Marker, Popup } from 'react-leaflet';
+
+import _ from 'lodash';
 
 import './SiprojurisMap.css';
+import { SiprojurisContext } from '../../context/SiprojurisContext';
+import { BirthEvent, getLocalisation } from '../../data';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { LatLngBounds, latLng } from 'leaflet';
 
 export function SiprojurisMap() {
-  const $map = useRef(null);
+  const {
+    // events,
+    // highlights,
+    // setHighlights,
+    // selected,
+    // select,
+    // setFilter,
+    filteredEvents
+  } = useContext(SiprojurisContext);
+
+  const localisationEvents: any[] = useMemo(
+    () =>
+      _(filteredEvents)
+        .filter(e => getLocalisation(e) !== null)
+        .map(e => ({
+          localisation: getLocalisation(e),
+          label: e.label,
+          id: e.id
+        }))
+        .value(),
+    [filteredEvents]
+  );
+
+  const $map = useCallback(($map: Map) => {
+    console.log($map.leafletElement.getBounds());
+
+    $map.leafletElement.on('moveend', e => {
+      const bounds = $map.leafletElement.getBounds();
+      console.log(bounds);
+      console.log(
+        _.filter(localisationEvents, ({ localisation }) => {
+          return localisation.lat && localisation.lng
+            ? bounds.contains(latLng(localisation))
+            : false;
+        })
+      );
+    });
+  }, []);
+
   return (
     <Map
       bounds={[
@@ -19,6 +56,8 @@ export function SiprojurisMap() {
         [46.5691, 0.348203]
       ]}
       ref={$map}
+      maxZoom={15}
+      style={{ maxHeight: '600px' }}
     >
       <TileLayer
         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -26,12 +65,49 @@ export function SiprojurisMap() {
       />
       <LayersControl position="topright">
         <LayersControl.Overlay name="Markers" checked>
-          <LayerGroup>
-            <Marker position={[10, 10]}>
-              <Popup>bonjour</Popup>
-            </Marker>
-          </LayerGroup>
+          <MarkerClusterGroup
+            maxClusterRadius={50}
+            zoomToBoundsOnClick={false}
+            onclusterclick={(e: any) => {
+              console.log(e.target);
+
+              console.log(e.layer._group._spiderfied);
+            }}
+          >
+            {_(localisationEvents)
+              .map(event => {
+                const localisation = event.localisation;
+                if (localisation !== null) {
+                  if (localisation.lat && localisation.lng) {
+                    return (
+                      <Marker
+                        data-id={event.id}
+                        onclick={function(e) {
+                          console.log(e);
+                        }}
+                        onmouseover={function(e: any) {
+                          console.log(e.target.options);
+                        }}
+                        onmouseout={function(e: any) {
+                          console.log('out');
+                        }}
+                        key={event.id}
+                        position={[+localisation.lat, +localisation.lng]}
+                      >
+                        <Popup>{event.label}</Popup>
+                      </Marker>
+                    );
+                  } else {
+                    console.log(event.localisation);
+                  }
+                }
+                return null;
+              })
+              .compact()
+              .value()}
+          </MarkerClusterGroup>
         </LayersControl.Overlay>
+        {/* <LayersControl.Overlay name="AntPaths" checked></LayersControl.Overlay> */}
       </LayersControl>
     </Map>
   );

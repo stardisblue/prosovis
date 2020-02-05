@@ -1157,8 +1157,8 @@
           "label": "Anost",
           "uri": "http://symogih.org/resource/NaPl78070",
           "kind": "NamedPlace",
-          "lat": null,
-          "lng": null
+          "lat": 47.078079,
+          "lng": 4.09906
         },
         "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis - Naissance à Anost",
         "uri": "http://symogih.org/resource/Info108974",
@@ -1194,8 +1194,8 @@
           "label": "Anost",
           "uri": "http://symogih.org/resource/NaPl78070",
           "kind": "NamedPlace",
-          "lat": null,
-          "lng": null
+          "lat": 47.078079,
+          "lng": 4.09906
         },
         "label": "Basdevant, Jules, Dominique, Jean-Baptiste, Louis - Décès",
         "uri": "http://symogih.org/resource/Info109118",
@@ -3903,8 +3903,8 @@
           "label": "Odessa",
           "uri": "http://symogih.org/resource/NaPl11397",
           "kind": "NamedPlace",
-          "lat": null,
-          "lng": null
+          "lat": 46.482525,
+          "lng": 30.723309
         },
         "label": "Grouber, Alexandre - Naissance à Odessa",
         "uri": "http://symogih.org/resource/Info100422",
@@ -4960,8 +4960,8 @@
           "label": "Lesparre-Medoc",
           "uri": "http://symogih.org/resource/NaPl1965",
           "kind": "NamedPlace",
-          "lat": null,
-          "lng": null
+          "lat": 45.30879,
+          "lng": -0.93708
         },
         "label": "Monnier, Henri,Jacques - Naissance à Lesparre-Medoc",
         "uri": "http://symogih.org/resource/Info109050",
