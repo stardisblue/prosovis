@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, useCallback } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Ressource } from '../../data';
 import classnames from 'classnames';
 import _ from 'lodash';
@@ -12,8 +12,6 @@ import Octicon, {
 import { Flex } from '../../components/ui/Flex';
 import { InfoKindGroup } from './InfoKindGroup';
 import { EventGroup, SelectedEvent } from './models';
-import { MemoEventInfo } from './EventInfo';
-import { FlexItem } from '../../components/ui/Flex/FlexItem';
 
 // TODO griser personnes
 // surlingé : survol
@@ -25,7 +23,6 @@ import { FlexItem } from '../../components/ui/Flex/FlexItem';
 // carte: meme granularité que la timeline filtres selections synchronisés
 // mettre une personne floue
 // TODO mettre surbrillance tout ce qui est personne selectionnée
-// TODO mettre la date et l'evenement
 // griser timeline lors du survol sur les autres visus
 
 // V0 :
@@ -153,7 +150,10 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
       {show && (
         <div
           className={classes.events}
-          style={{ minHeight: '50px', maxHeight: '500px' }}
+          style={{
+            minHeight: '50px',
+            height: groupedEvents.length > 12 ? '600px' : 'auto'
+          }}
         >
           {/* {events.map(e => (
             <MemoEventInfo key={e.id} event={e} origin={kind} />
