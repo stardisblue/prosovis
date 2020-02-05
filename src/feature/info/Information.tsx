@@ -40,11 +40,13 @@ export const Information: React.FC = function() {
 
   return useMemo(
     () => (
-      <Flex column className="pa1 vh-100">
-        {/* <div id="sipi--enabled"> */}
-        {_.map(groups.no, g => (
-          <MemoInfoGroup key={g.group.uri} {...g} />
-        ))}
+      <div className="overflow-y-auto  vh-100">
+        <Flex column className="pa1 vh-100">
+          {/* <div id="sipi--enabled"> */}
+          {_.map(groups.no, g => (
+            <MemoInfoGroup key={g.group.uri} {...g} />
+          ))}
+        </Flex>
         {/* </div> */}
         {groups.yes && [
           <hr className="w-100" />,
@@ -52,7 +54,7 @@ export const Information: React.FC = function() {
           _.map(groups.yes, g => <MemoInfoGroup key={g.group.uri} {...g} />)
           // </div>
         ]}
-      </Flex>
+      </div>
     ),
     [groups]
   );

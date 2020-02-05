@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import _ from 'lodash';
-import { Ressource } from '../../data';
+import { Ressource, getLocalisation, NamedPlace } from '../../data';
 import { SelectedEvent } from './models';
 
 export function useGroups(selectedEvents: SelectedEvent[]) {
@@ -8,7 +8,7 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
   return useMemo(() => {
     const grps: {
       kind: 'Actor' | 'NamedPlace';
-      group: Ressource;
+      group: Ressource | NamedPlace;
       events: SelectedEvent[];
       selected: boolean;
       filtered: boolean;
@@ -30,11 +30,12 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
           filtered: true
         });
       }
-      const localisation = (e as any).localisation || {
+      const localisation = getLocalisation(e) || {
         id: 0,
         label: 'Inconnue',
         kind: 'NamedPlace',
-        uri: 'unknown'
+        uri: 'unknown',
+        url: 'unknown'
       };
       if (localisationKeyIndex[localisation.id] === undefined) {
         localisationKeyIndex[localisation.id] = grps.length;
