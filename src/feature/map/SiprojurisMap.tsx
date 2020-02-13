@@ -1,4 +1,4 @@
-import React, { useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useMemo, useEffect, useRef } from 'react';
 import { Map, TileLayer, LayersControl, Marker, Popup } from 'react-leaflet';
 
 import _ from 'lodash';
@@ -33,25 +33,25 @@ export function SiprojurisMap() {
     [filteredEvents]
   );
 
-  const $map = useCallback(
-    ($map: Map) => {
-      if ($map === null) return;
-      console.log($map.leafletElement.getBounds());
+  const $map = useRef<Map>(null);
 
-      $map.leafletElement.on('moveend', e => {
-        const bounds = $map.leafletElement.getBounds();
-        console.log(bounds);
-        console.log(
-          _.filter(localisationEvents, ({ localisation }) => {
-            return localisation.lat && localisation.lng
-              ? bounds.contains(latLng(localisation))
-              : false;
-          })
-        );
-      });
-    },
-    [localisationEvents]
-  );
+  useEffect(() => {
+    if ($map.current === null) return;
+    console.log($map.current.leafletElement.getBounds());
+
+    $map.current.leafletElement.on('moveend', e => {
+      if ($map.current === null) return null;
+      const bounds = $map.current.leafletElement.getBounds();
+      console.log(bounds);
+      console.log(
+        _.filter(localisationEvents, ({ localisation }) => {
+          return localisation.lat && localisation.lng
+            ? bounds.contains(latLng(localisation))
+            : false;
+        })
+      );
+    });
+  }, [localisationEvents]);
 
   return (
     <Map
@@ -73,9 +73,33 @@ export function SiprojurisMap() {
             maxClusterRadius={50}
             zoomToBoundsOnClick={false}
             onclusterclick={(e: any) => {
-              console.log(e.target);
+              const cluster = e.layer;
 
-              console.log(e.layer._group._spiderfied);
+              let bottomCluster = cluster;
+              let zoomLevel = cluster._zoom;
+              while (bottomCluster._childClusters.length === 1) {
+                bottomCluster = bottomCluster._childClusters[0];
+                if (
+                  zoomLevel === cluster._zoom &&
+                  cluster._childCount !== bottomCluster._childCount
+                ) {
+                  zoomLevel = bottomCluster._zoom;
+                }
+              }
+              if (bottomCluster._childClusters.length > 1) {
+                zoomLevel = bottomCluster._childClusters[0]._zoom;
+              }
+
+              if (
+                bottomCluster._zoom === e.target._maxZoom &&
+                bottomCluster._childCount === cluster._childCount
+              ) {
+                // All child markers are contained in a single cluster from this._maxZoom to this cluster.
+                cluster.spiderfy();
+              } else {
+                $map.current!.leafletElement.flyTo(cluster._cLatLng, zoomLevel);
+              }
+              console.log(cluster, bottomCluster, zoomLevel);
             }}
           >
             {_(localisationEvents)

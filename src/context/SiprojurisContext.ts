@@ -4,14 +4,53 @@ import _ from 'lodash';
 
 type HightlightEvents = { id: PrimaryKey; kind: string }[];
 
+/* 
+ TODO: 5 types of interaction
+ - highlight (on hover)
+ - highlight+
+ - focus (on select)
+ - mask (on hide)
+ - filter (on delete)
+
+ * Highlight:
+ - timeline hover
+ - map hover
+ 
+ * Highlight+:
+ - Information hover
+
+ * Focus:
+ - map select
+ - timeline select
+ - information select
+
+ * Mask
+ - Types uncheck
+ - Timeline filter
+ - Map zoom filter
+
+ * Filter
+ - Information remove
+
+ ! exceptions
+ - Info hover has them focused in the other views (Highlight +)
+
+ * Switch
+ - map camembert display
+ - color
+
+ 
+ TODO Info: trier par année
+ TODO Info: a partir du moment qu'il y a un évènement dans le groupe, on affiche le groupe, sinon supprimmer del a vue INFO
+ */
 type SiprojurisContextProps = {
   actors: Actor[];
-  selected?: PrimaryKey[];
-  select(events?: PrimaryKey[]): void;
+  // selected?: PrimaryKey[];
+  // select(events?: PrimaryKey[]): void;
   events: AnyEvent[];
   filteredEvents: AnyEvent[];
-  highlights?: HightlightEvents;
-  setHighlights(highlight?: HightlightEvents): void;
+  // highlights?: HightlightEvents;
+  // setHighlights(highlight?: HightlightEvents): void;
   setFilter(key: PrimaryKey, filter: any): void;
   types: AnyEvent['kind'][];
   // indexedEvents: _.Dictionary<AnyEvent>;
@@ -53,7 +92,7 @@ export const useSiprojurisContext = function(
 ): SiprojurisContextProps {
   const [actors] = useState(dataset);
 
-  const [highlights, setHighlights] = useState<HightlightEvents>();
+  // const [highlights, setHighlights] = useState<HightlightEvents>();
 
   const [filters, setFilters] = useState<{ [k: string]: any }>();
 
@@ -82,18 +121,18 @@ export const useSiprojurisContext = function(
   //   filteredEvents
   // ]);
 
-  const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
+  // const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
 
-  const select = useCallback((items?: PrimaryKey[]) => {
-    if (items === undefined) return setSelected(undefined);
+  // const select = useCallback((items?: PrimaryKey[]) => {
+  //   if (items === undefined) return setSelected(undefined);
 
-    setSelected(
-      _(items)
-        .sort()
-        .sortedUniq()
-        .value()
-    );
-  }, []);
+  //   setSelected(
+  //     _(items)
+  //       .sort()
+  //       .sortedUniq()
+  //       .value()
+  //   );
+  // }, []);
 
   const types = useMemo(
     () =>
@@ -105,14 +144,14 @@ export const useSiprojurisContext = function(
   );
 
   return {
-    selected,
-    select,
+    // selected,
+    // select,
     actors,
     events,
     // indexedEvents,
     filteredEvents,
-    highlights,
-    setHighlights,
+    // highlights,
+    // setHighlights,
     setFilter,
     types
   };

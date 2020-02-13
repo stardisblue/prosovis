@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useCallback } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
@@ -16,6 +16,8 @@ import Octicon, {
 } from '@primer/octicons-react';
 import { ColorContext } from '../../context/ColorContext';
 import { SelectedEvent } from './models';
+import { useDispatch } from 'react-redux';
+import { setSelection } from '../../reducers/selectionSlice';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -81,6 +83,10 @@ export const EventInfo: React.FC<EventInfoProps> = function({
   const place = origin === 'NamedPlace';
 
   const createContent = prefix(place, actor.label);
+  const dispatch = useDispatch();
+  const handleSelection = useCallback(() => {
+    dispatch(setSelection(event.id));
+  }, [dispatch, event.id]);
 
   switch (event.kind) {
     case 'Birth': {
@@ -175,6 +181,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({
         b: event.selected,
         'o-50': event.filtered
       })}
+      onClick={handleSelection}
     >
       <span className="pa2" style={{ color: color(event.kind) }}>
         {showIcon && <Octicon icon={icon} width={16} height={16} />}

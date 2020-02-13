@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnyEvent, Actor, ExamenEvent, DirectionalExamenEvent } from '../data';
+import { AnyEvent, Actor } from '../data';
 import _ from 'lodash';
 
 export const eventSlice = createSlice({

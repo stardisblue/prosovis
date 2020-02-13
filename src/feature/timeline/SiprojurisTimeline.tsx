@@ -235,3 +235,5 @@ export const SiprojurisTimeline: React.FC = function() {
     </>
   );
 };
+
+export default SiprojurisTimeline;

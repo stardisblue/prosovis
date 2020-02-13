@@ -10,6 +10,10 @@ type ColorContextProps = {
 export const ColorContext = React.createContext<ColorContextProps>({} as any);
 
 // TODO http://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7
+// TODO suspension activité: pause
+// switch couleur par personne/ par type d'evenement
+// voir mettre à jour le camembert
+// et griser les liens de la carte lrosquel a couleur est par type d'evenement
 export const useColorContext = function() {
   return useMemo(function() {
     const color = d3

@@ -20,6 +20,15 @@ import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
 import { useReferences } from './useReferences';
 import { ColorContext } from '../../context/ColorContext';
+import { RootState } from '../../reducers';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearHighlights, setHighlight } from '../../reducers/highlightSlice';
+import {
+  selectSelection,
+  addSelection,
+  setSelection,
+  clearSelection
+} from '../../reducers/selectionSlice';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -135,17 +144,24 @@ const dimensions = {
 
 const OPACITY_CLASS = 'o-50';
 
+const selectHighlights = (state: RootState) => state.highlights;
+
 export const VisTimeline: React.FC = function() {
   const { border, color } = useContext(ColorContext);
   const {
     events,
-    highlights,
-    setHighlights,
-    selected,
-    select,
+    // highlights,
+    // setHighlights,
+    // selected,
+    // select,
     filteredEvents,
     setFilter
   } = useContext(SiprojurisContext);
+
+  const dispatch = useDispatch();
+
+  const highlights = useSelector(selectHighlights);
+  const selection = useSelector(selectSelection);
 
   const { grouping, displayTypes } = useContext(TimelineContext);
 
@@ -498,14 +514,14 @@ export const VisTimeline: React.FC = function() {
         _.forEach($events.current, $event => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
-          if (selected === undefined) {
+          if (selection === null) {
             if (isDimmed) {
               console.debug('timeline:opacity:undefined');
               $event.classList.remove(OPACITY_CLASS);
             }
           } else {
             const inSelection =
-              _.sortedIndexOf(selected, +$event.dataset.id!) !== -1;
+              _.sortedIndexOf(selection, +$event.dataset.id!) !== -1;
             if (isDimmed && inSelection) {
               console.debug('timeline:opacity:remove');
               $event.classList.remove(OPACITY_CLASS);
@@ -520,7 +536,7 @@ export const VisTimeline: React.FC = function() {
     change();
 
     actions.current.changed = change;
-  }, [$events, selected, timeline, width]);
+  }, [$events, selection, timeline, width]);
 
   // binds click to selection actions
   useEffect(() => {
@@ -533,34 +549,36 @@ export const VisTimeline: React.FC = function() {
           .sort()
           .value();
         if (e.event.ctrlKey || e.event.metaKey) {
-          select(_.concat(selected || [], groupEvents));
+          dispatch(addSelection(groupEvents));
         } else {
-          select(groupEvents);
+          dispatch(setSelection(groupEvents));
         }
       } else if (e.what === 'item') {
-        const index = _.sortedIndexOf(selected, e.item);
+        const index = _.sortedIndexOf(selection, e.item);
 
         if (e.event.ctrlKey || e.event.metaKey) {
           if (index < 0) {
             console.debug('selection:item', e.item);
             // is not selected
-            select(_.concat(selected || [], e.item));
+            dispatch(addSelection(e.item));
           } else {
             console.debug('selection:item:unselect', e.item);
-            const filtered = _.filter(selected, i => i !== e.item);
-            select(filtered.length === 0 ? undefined : filtered);
+            const filtered = _.filter(selection, i => i !== e.item);
+            dispatch(
+              setSelection(filtered.length === 0 ? undefined : filtered)
+            );
           }
         } else {
-          select([e.item]);
+          dispatch(setSelection(e.item));
         }
       } else {
         if (!e.event.ctrlKey || e.event.metaKey) {
           console.debug('selection:reset');
-          select();
+          dispatch(clearSelection());
         }
       }
     };
-  }, [select, selected, timelineEvents]);
+  }, [dispatch, selection, timelineEvents]);
 
   /*
    * Highlights
@@ -569,14 +587,14 @@ export const VisTimeline: React.FC = function() {
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        setHighlights([{ id: e.group, kind: grouping.kind }]);
+        dispatch(setHighlight({ id: e.group, kind: grouping.kind }));
       } else if (e.what === 'item') {
-        setHighlights([{ id: e.item, kind: 'Event' }]);
+        dispatch(setHighlight({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
-        setHighlights();
+        dispatch(clearHighlights());
       }
     };
-  }, [highlights, setHighlights, grouping.kind]);
+  }, [highlights, dispatch, grouping.kind]);
 
   /*
    * Data change

@@ -62,7 +62,10 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
       grps[localisationKeyIndex[localisation.id]].events.push(e);
     });
     return _(grps)
-      .orderBy(['selected', 'group.kind', 'group.label'], ['desc'])
+      .orderBy(
+        ['selected', 'group.kind', 'events[0].datation[0].clean_date'],
+        ['desc']
+      )
       .groupBy(e => (e.filtered === true ? 'yes' : 'no'))
       .value();
   }, [selectedEvents]);

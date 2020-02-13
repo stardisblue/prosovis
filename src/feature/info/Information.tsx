@@ -6,6 +6,8 @@ import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
+import { useSelector } from 'react-redux';
+import { selectSelection } from '../../reducers/selectionSlice';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -15,7 +17,13 @@ export function parseDates(dates: Datation[]) {
 
 export const Information: React.FC = function() {
   const siprojuris = useContext(SiprojurisContext);
-  const { selected, events, filteredEvents } = siprojuris;
+  const {
+    // selected,
+    events,
+    filteredEvents
+  } = siprojuris;
+
+  const selected = useSelector(selectSelection);
 
   const filtered = useMemo(() => {
     return _(filteredEvents)
@@ -48,17 +56,19 @@ export const Information: React.FC = function() {
           ))}
         </Flex>
         {/* </div> */}
-        {groups.yes && [
+        {/* {groups.yes && [
           <hr className="w-100" />,
           // <div id="sipi--disabled">
           _.map(groups.yes, g => <MemoInfoGroup key={g.group.uri} {...g} />)
           // </div>
-        ]}
+        ]} */}
       </div>
     ),
     [groups]
   );
 };
+
+export default Information;
 
 // lors du click, pousser les autres déroulants en bas de l'ecran au lieu de les faire "disparaitre"
 // mettre les miserables à droite

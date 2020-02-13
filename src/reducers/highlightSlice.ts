@@ -2,21 +2,27 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
 
 type HightlightEvent = { id: PrimaryKey; kind: string };
-type HightlightEvents = HightlightEvent[];
 
 export const highlightSlice = createSlice({
   name: 'highlight',
-  initialState: null as HightlightEvents | null,
+  initialState: null as HightlightEvent[] | null,
   reducers: {
-    setHighlights(state, action: PayloadAction<HightlightEvents>) {
+    setHighlight(_, action: PayloadAction<HightlightEvent>) {
+      return [action.payload];
+    },
+    setHighlights(_, action: PayloadAction<HightlightEvent[]>) {
       return action.payload;
     },
-    clearHighlights(state) {
+    clearHighlights() {
       return null;
     }
   }
 });
 
-export const { setHighlights, clearHighlights } = highlightSlice.actions;
+export const {
+  setHighlight,
+  setHighlights,
+  clearHighlights
+} = highlightSlice.actions;
 
 export default highlightSlice.reducer;
