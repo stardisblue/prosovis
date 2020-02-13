@@ -20,9 +20,12 @@ import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
 import { useReferences } from './useReferences';
 import { ColorContext } from '../../context/ColorContext';
-import { RootState } from '../../reducers';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearHighlights, setHighlight } from '../../reducers/highlightSlice';
+import {
+  clearHighlights,
+  setHighlight,
+  selectHighlights
+} from '../../reducers/highlightSlice';
 import {
   selectSelection,
   addSelection,
@@ -143,8 +146,6 @@ const dimensions = {
 };
 
 const OPACITY_CLASS = 'o-50';
-
-const selectHighlights = (state: RootState) => state.highlights;
 
 export const VisTimeline: React.FC = function() {
   const { border, color } = useContext(ColorContext);

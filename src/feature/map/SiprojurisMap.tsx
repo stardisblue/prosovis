@@ -8,17 +8,14 @@ import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { getLocalisation } from '../../data';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { latLng } from 'leaflet';
+import { useDispatch } from 'react-redux';
+import { setSelection } from '../../reducers/selectionSlice';
+import { setHighlight, clearHighlights } from '../../reducers/highlightSlice';
 
 export function SiprojurisMap() {
-  const {
-    // events,
-    // highlights,
-    // setHighlights,
-    // selected,
-    // select,
-    // setFilter,
-    filteredEvents
-  } = useContext(SiprojurisContext);
+  const { filteredEvents } = useContext(SiprojurisContext);
+
+  const dispatch = useDispatch();
 
   const localisationEvents: any[] = useMemo(
     () =>
@@ -111,13 +108,20 @@ export function SiprojurisMap() {
                       <Marker
                         data-id={event.id}
                         onclick={function(e) {
-                          console.log(e);
+                          dispatch(setSelection(e.target.options['data-id']));
                         }}
                         onmouseover={function(e: any) {
                           console.log(e.target.options);
+                          dispatch(
+                            setHighlight({
+                              id: e.target.options['data-id'],
+                              kind: 'Event'
+                            })
+                          );
                         }}
                         onmouseout={function(e: any) {
                           console.log('out');
+                          dispatch(clearHighlights());
                         }}
                         key={event.id}
                         position={[+localisation.lat, +localisation.lng]}

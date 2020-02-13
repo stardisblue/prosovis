@@ -1,5 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
+import { RootState } from '.';
+import _ from 'lodash';
 
 type HightlightEvent = { id: PrimaryKey; kind: string };
 
@@ -26,3 +28,9 @@ export const {
 } = highlightSlice.actions;
 
 export default highlightSlice.reducer;
+
+export const selectHighlights = (state: RootState) => state.highlights;
+
+export const selectHighlightsAsMap = createSelector([selectHighlights], res =>
+  _.keyBy(res, i => i.id)
+);

@@ -41,7 +41,6 @@ type HightlightEvents = { id: PrimaryKey; kind: string }[];
 
  
  TODO Info: trier par année
- TODO Info: a partir du moment qu'il y a un évènement dans le groupe, on affiche le groupe, sinon supprimmer del a vue INFO
  */
 type SiprojurisContextProps = {
   actors: Actor[];

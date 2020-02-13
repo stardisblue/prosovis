@@ -16,8 +16,9 @@ import Octicon, {
 } from '@primer/octicons-react';
 import { ColorContext } from '../../context/ColorContext';
 import { SelectedEvent } from './models';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setSelection } from '../../reducers/selectionSlice';
+import { selectHighlightsAsMap } from '../../reducers/highlightSlice';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -83,6 +84,9 @@ export const EventInfo: React.FC<EventInfoProps> = function({
   const place = origin === 'NamedPlace';
 
   const createContent = prefix(place, actor.label);
+
+  const highlights = useSelector(selectHighlightsAsMap);
+
   const dispatch = useDispatch();
   const handleSelection = useCallback(() => {
     dispatch(setSelection(event.id));
@@ -179,7 +183,8 @@ export const EventInfo: React.FC<EventInfoProps> = function({
       items="center"
       className={classnames('sip-info--event', 'pb1', {
         b: event.selected,
-        'o-50': event.filtered
+        'o-50': event.filtered,
+        underline: highlights[event.id]
       })}
       onClick={handleSelection}
     >
