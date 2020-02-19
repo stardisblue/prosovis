@@ -47,7 +47,6 @@ const useStyles = (filtered: boolean, selected: boolean) =>
         'br',
         'bl',
         'b--light-silver',
-        'ph1',
         'overflow-y-auto'
       )
     }),

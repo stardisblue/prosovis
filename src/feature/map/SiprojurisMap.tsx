@@ -1,21 +1,17 @@
-import React, { useContext, useMemo, useEffect, useRef } from 'react';
-import { Map, TileLayer, LayersControl, Marker, Popup } from 'react-leaflet';
-
-import _ from 'lodash';
-
-import './SiprojurisMap.css';
-import { SiprojurisContext } from '../../context/SiprojurisContext';
-import { getLocalisation } from '../../data';
-import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { latLng } from 'leaflet';
-import { useDispatch } from 'react-redux';
+import _ from 'lodash';
+import React, { useEffect, useMemo, useRef } from 'react';
+import { LayersControl, Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import MarkerClusterGroup from 'react-leaflet-markercluster';
+import { useDispatch, useSelector } from 'react-redux';
+import { getLocalisation } from '../../data';
+import { clearHighlights, setHighlights } from '../../reducers/highlightSlice';
 import { setSelection } from '../../reducers/selectionSlice';
-import { setHighlight, clearHighlights } from '../../reducers/highlightSlice';
+import { selectMaskedEvents } from '../../selectors/mask';
+import './SiprojurisMap.css';
 
 export function SiprojurisMap() {
-  const { filteredEvents } = useContext(SiprojurisContext);
-
-  const dispatch = useDispatch();
+  const filteredEvents = useSelector(selectMaskedEvents);
 
   const localisationEvents: any[] = useMemo(
     () =>
@@ -66,83 +62,99 @@ export function SiprojurisMap() {
       />
       <LayersControl position="topright">
         <LayersControl.Overlay name="Markers" checked>
-          <MarkerClusterGroup
-            maxClusterRadius={50}
-            zoomToBoundsOnClick={false}
-            onclusterclick={(e: any) => {
-              const cluster = e.layer;
-
-              let bottomCluster = cluster;
-              let zoomLevel = cluster._zoom;
-              while (bottomCluster._childClusters.length === 1) {
-                bottomCluster = bottomCluster._childClusters[0];
-                if (
-                  zoomLevel === cluster._zoom &&
-                  cluster._childCount !== bottomCluster._childCount
-                ) {
-                  zoomLevel = bottomCluster._zoom;
-                }
-              }
-              if (bottomCluster._childClusters.length > 1) {
-                zoomLevel = bottomCluster._childClusters[0]._zoom;
-              }
-
-              if (
-                bottomCluster._zoom === e.target._maxZoom &&
-                bottomCluster._childCount === cluster._childCount
-              ) {
-                // All child markers are contained in a single cluster from this._maxZoom to this cluster.
-                cluster.spiderfy();
-              } else {
-                $map.current!.leafletElement.flyTo(cluster._cLatLng, zoomLevel);
-              }
-              console.log(cluster, bottomCluster, zoomLevel);
-            }}
-          >
-            {_(localisationEvents)
-              .map(event => {
-                const localisation = event.localisation;
-                if (localisation !== null) {
-                  if (localisation.lat && localisation.lng) {
-                    return (
-                      <Marker
-                        data-id={event.id}
-                        onclick={function(e) {
-                          dispatch(setSelection(e.target.options['data-id']));
-                        }}
-                        onmouseover={function(e: any) {
-                          console.log(e.target.options);
-                          dispatch(
-                            setHighlight({
-                              id: e.target.options['data-id'],
-                              kind: 'Event'
-                            })
-                          );
-                        }}
-                        onmouseout={function(e: any) {
-                          console.log('out');
-                          dispatch(clearHighlights());
-                        }}
-                        key={event.id}
-                        position={[+localisation.lat, +localisation.lng]}
-                      >
-                        <Popup>{event.label}</Popup>
-                      </Marker>
-                    );
-                  } else {
-                    console.log(event.localisation);
-                  }
-                }
-                return null;
-              })
-              .compact()
-              .value()}
-          </MarkerClusterGroup>
+          <SipMarkers mapRef={$map} events={localisationEvents} />
         </LayersControl.Overlay>
         {/* <LayersControl.Overlay name="AntPaths" checked></LayersControl.Overlay> */}
       </LayersControl>
     </Map>
   );
 }
+
+export const SipMarkers: React.FC<{ mapRef: any; events: any[] }> = function({
+  mapRef,
+  events
+}) {
+  const dispatch = useDispatch();
+
+  return (
+    <MarkerClusterGroup
+      maxClusterRadius={50}
+      zoomToBoundsOnClick={false}
+      onclusterclick={(e: any) => {
+        const cluster = e.layer;
+
+        let bottomCluster = cluster;
+        let zoomLevel = cluster._zoom;
+        while (bottomCluster._childClusters.length === 1) {
+          bottomCluster = bottomCluster._childClusters[0];
+          if (
+            zoomLevel === cluster._zoom &&
+            cluster._childCount !== bottomCluster._childCount
+          ) {
+            zoomLevel = bottomCluster._zoom;
+          }
+        }
+        if (bottomCluster._childClusters.length > 1) {
+          zoomLevel = bottomCluster._childClusters[0]._zoom;
+        }
+
+        if (
+          bottomCluster._zoom === e.target._maxZoom &&
+          bottomCluster._childCount === cluster._childCount
+        ) {
+          // All child markers are contained in a single cluster from this._maxZoom to this cluster.
+          cluster.spiderfy();
+        } else {
+          mapRef.current!.leafletElement.flyTo(cluster._cLatLng, zoomLevel);
+        }
+        console.log(cluster, bottomCluster, zoomLevel);
+      }}
+    >
+      {_(events)
+        .map(event => {
+          const localisation = event.localisation;
+          if (localisation !== null) {
+            if (localisation.lat && localisation.lng) {
+              return (
+                <Marker
+                  data-id={event.id}
+                  onclick={function(e) {
+                    dispatch(
+                      setSelection({
+                        id: e.target.options['data-id'],
+                        kind: 'Event'
+                      })
+                    );
+                  }}
+                  onmouseover={function(e: any) {
+                    console.log(e.target.options);
+                    dispatch(
+                      setHighlights({
+                        id: e.target.options['data-id'],
+                        kind: 'Event'
+                      })
+                    );
+                  }}
+                  onmouseout={function(e: any) {
+                    console.log('out');
+                    dispatch(clearHighlights());
+                  }}
+                  key={event.id}
+                  position={[+localisation.lat, +localisation.lng]}
+                >
+                  <Popup>{event.label}</Popup>
+                </Marker>
+              );
+            } else {
+              console.log(event.localisation);
+            }
+          }
+          return null;
+        })
+        .compact()
+        .value()}
+    </MarkerClusterGroup>
+  );
+};
 
 export default SiprojurisMap;

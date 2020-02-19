@@ -1,40 +1,35 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
 import _ from 'lodash';
-import { RootState } from '.';
+
+type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
 
 const selectionSlice = createSlice({
   name: 'selection',
-  initialState: null as PrimaryKey[] | null,
+  initialState: null as SelectionEvent[] | null,
   reducers: {
-    setSelection: {
-      prepare(value?: PrimaryKey[] | PrimaryKey) {
-        if (value === undefined) return { payload: null };
-        if (Array.isArray(value))
-          return {
-            payload: _(value)
-              .sort()
-              .sortedUniq()
-              .value()
-          };
-        else return { payload: [value] };
-      },
-      reducer(_state, action: PayloadAction<PrimaryKey[] | null>) {
-        return action.payload;
-      }
-    },
-    addSelection(state, action: PayloadAction<PrimaryKey | PrimaryKey[]>) {
-      // if state exists , add to state
-      if (state) {
-        if (Array.isArray(action.payload)) {
-          return state.concat(action.payload);
-        }
-        state.push(action.payload);
-      }
-
-      if (Array.isArray(action.payload)) return action.payload;
-      // otherwise, add as new
+    setSelection(
+      _state,
+      action: PayloadAction<SelectionEvent | SelectionEvent[]>
+    ) {
+      if (_.isArray(action.payload))
+        return _(action.payload)
+          .sortBy('id')
+          .sortedUniqBy('id')
+          .value();
       else return [action.payload];
+    },
+    addSelection(
+      state,
+      action: PayloadAction<SelectionEvent | SelectionEvent[]>
+    ) {
+      // if state exists , add to state
+      if (_.isArray(action.payload)) {
+        return state ? state.concat(action.payload) : action.payload;
+      } else {
+        if (state) state.push(action.payload);
+        else return [action.payload];
+      }
     },
     clearSelection() {
       return null;
@@ -49,5 +44,3 @@ export const {
 } = selectionSlice.actions;
 
 export default selectionSlice.reducer;
-
-export const selectSelection = (state: RootState) => state.selection;

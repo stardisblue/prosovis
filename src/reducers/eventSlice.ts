@@ -33,16 +33,16 @@ export const eventSlice = createSlice({
   name: 'event',
   initialState: [] as AnyEvent[],
   reducers: {
-    addActor: {
-      prepare: function(actor: Actor) {
-        return { payload: getEvents(actor) };
-      },
-      reducer: function(state, action: PayloadAction<AnyEvent[]>) {
-        return state.concat(action.payload);
+    addActor(state, action: PayloadAction<Actor | Actor[]>) {
+      if (_.isArray(action.payload)) {
+        return state.concat(_.flatMap(action.payload, getEvents));
       }
+      return state.concat(getEvents(action.payload));
     },
     deleteActor(state, { payload }: PayloadAction<PrimaryKey>) {
       return state.filter(({ actor: { id } }) => id !== payload);
     }
   }
 });
+
+export default eventSlice.reducer;

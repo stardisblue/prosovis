@@ -1,40 +1,45 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AnyEvent } from '../data';
-import _ from 'lodash';
-import moment from 'moment';
-type Filters = 'kind' | 'interval';
+
+type IntervalMask = {
+  start: string;
+  end: string;
+};
+
+type KindMask = {
+  [k in AnyEvent['kind']]: boolean;
+};
 
 export const maskSlice = createSlice({
   name: 'filters',
-  initialState: { kind: () => true, interval: () => true } as {
-    [k in Filters]?: (e: AnyEvent) => boolean;
+  initialState: {} as {
+    interval?: IntervalMask;
+    kind?: KindMask;
   },
   reducers: {
-    setIntervalMask: function(
-      state,
-      { payload: { start, end } }: PayloadAction<{ start: string; end: string }>
-    ) {
-      return {
-        ...state,
-        interval: ({ datation }: AnyEvent) =>
-          _.some(datation, ({ clean_date }) =>
-            moment(clean_date).isBetween(start, end)
-          )
-      };
+    setIntervalMask: function(state, { payload }: PayloadAction<IntervalMask>) {
+      state.interval = payload;
     },
-    setKindMask: function(
+    toggleKindMask: function(
       state,
-      action: PayloadAction<{ [k in AnyEvent['kind']]: boolean }>
+      { payload }: PayloadAction<AnyEvent['kind']>
     ) {
-      return { ...state, kind: (e: AnyEvent) => action.payload[e.kind] };
+      if (state.kind) state.kind[payload] = !state.kind[payload];
     },
-
+    setKindMask: function(state, { payload }: PayloadAction<KindMask>) {
+      state.kind = payload;
+    },
     clearMask: function() {
       return {};
     }
   }
 });
 
-export const { setIntervalMask, setKindMask, clearMask } = maskSlice.actions;
+export const {
+  setIntervalMask,
+  setKindMask,
+  toggleKindMask,
+  clearMask
+} = maskSlice.actions;
 
 export default maskSlice.reducer;

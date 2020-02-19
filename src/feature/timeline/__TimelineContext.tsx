@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 import { AnyEvent, Ressource, PrimaryKey, getLocalisation } from '../../data';
 import _ from 'lodash';
 
@@ -66,26 +66,31 @@ type DisplayTypesMap = {
   [k in AnyEvent['kind']]: boolean;
 };
 
-export function useTimelineContext(
-  types: AnyEvent['kind'][]
-): {
+export function useTimelineContext(): {
   grouping: GroupingProps;
   setGroup: React.Dispatch<React.SetStateAction<GroupingProps>>;
-  displayTypes: _.Dictionary<boolean>;
-  toggle: (typ: string) => void;
+  // displayTypes: _.Dictionary<boolean>;
+  // toggle: (typ: string) => void;
 } {
   const [grouping, setGroup] = useState(GROUP_BY.actor);
-  const [displayTypes, setDisplayTypes] = useState(() =>
-    _(types)
-      .map<[AnyEvent['kind'], boolean]>(t => [t, true])
-      .fromPairs()
-      .value()
-  );
-  const toggle = useCallback((typ: any) => {
-    setDisplayTypes(state => {
-      state[typ] = !state[typ];
-      return { ...state };
-    });
-  }, []);
-  return { grouping, setGroup, displayTypes, toggle };
+  // const [displayTypes, setDisplayTypes] = useState(() =>
+  //   _(types)
+  //     .map<[AnyEvent['kind'], boolean]>(t => [t, true])
+  //     .fromPairs()
+  //     .value()
+  // );
+  // console.log(types, displayTypes);
+
+  // const toggle = useCallback((typ: any) => {
+  //   setDisplayTypes(state => {
+  //     state[typ] = !state[typ];
+  //     return { ...state };
+  //   });
+  // }, []);
+  return {
+    grouping,
+    setGroup
+    // displayTypes,
+    // toggle
+  };
 }

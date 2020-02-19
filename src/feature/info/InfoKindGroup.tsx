@@ -1,4 +1,4 @@
-import React, { useContext, useState, useCallback, useEffect } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
@@ -16,8 +16,9 @@ import Octicon, {
   ChevronDown,
   Check
 } from '@primer/octicons-react';
-import { ColorContext } from '../../context/ColorContext';
 import { EventDates, MemoEventInfo } from './EventInfo';
+import { useSelector } from 'react-redux';
+import { selectMainColor } from '../../selectors/color';
 
 export const InfoKindGroup: React.FC<{
   kind: AnyEvent['kind'];
@@ -28,7 +29,7 @@ export const InfoKindGroup: React.FC<{
   selected?: boolean;
   filtered?: boolean;
 }> = function({ kind, events, start, end, origin, selected, filtered }) {
-  const { color } = useContext(ColorContext);
+  const color = useSelector(selectMainColor);
   const [show, setShow] = useState(false);
   const handleClick = useCallback(() => setShow(s => !s), []);
   useEffect(() => setShow(selected === true), [selected]);

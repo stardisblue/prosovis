@@ -1,37 +1,33 @@
-import React, {
-  useEffect,
-  useContext,
-  useRef,
-  useMemo,
-  useState,
-  useCallback
-} from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import classnames from 'classnames';
-import { SiprojurisContext } from '../../context/SiprojurisContext';
 import _ from 'lodash';
 import { AnyEvent, Nullable, PrimaryKey, Datation } from '../../data';
 import he from 'he';
 import './VisTimeline.css';
 import vis from 'vis-timeline';
-import { GroupedEvent } from './useGroups';
 import { useMouse } from './useMouse';
-import { TimelineContext } from './TimelineContext';
 import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
 import { useReferences } from './useReferences';
-import { ColorContext } from '../../context/ColorContext';
 import { useSelector, useDispatch } from 'react-redux';
+import { clearHighlights, setHighlights } from '../../reducers/highlightSlice';
 import {
-  clearHighlights,
-  setHighlight,
-  selectHighlights
-} from '../../reducers/highlightSlice';
-import {
-  selectSelection,
   addSelection,
   setSelection,
   clearSelection
 } from '../../reducers/selectionSlice';
+import { setIntervalMask } from '../../reducers/maskSlice';
+import { selectEvents, selectKinds } from '../../selectors/event';
+import { selectMaskedEvents } from '../../selectors/mask';
+import { selectHighlights } from '../../selectors/highlight';
+import { selectionAsMap } from '../../selectors/selection';
+import { selectMainColor, selectBorderColor } from '../../selectors/color';
+import { createSelector } from '@reduxjs/toolkit';
+import {
+  selectTimelineGroupBy,
+  selectTimelineGroup,
+  selectTimelineEventGroups
+} from './timelineGroupSlice';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -93,32 +89,6 @@ function newLineLongString(str: string, maxLenght = 20): string {
     .join('<br/>');
 }
 
-function getTimelineEvents(events: GroupedEvent[], color: any, border: any) {
-  const items: any[] = [];
-
-  _.forEach(events, ({ datation, id, actor, label, group, kind }) => {
-    // if has dates
-    if (datation && datation.length > 0) {
-      const item = {
-        id,
-        title: he.unescape(actor.label),
-        label: he.unescape(label),
-        popover: 'true',
-        ...resolveDatation(datation),
-        className: classnames(_.kebabCase(kind), 'timeline-event'),
-        style: `border:1px solid ${border(kind)};
-            background-color: ${color(kind)}`,
-        group,
-        kind
-      };
-
-      items.push(item);
-    }
-  });
-
-  return items;
-}
-
 const margins = {
   top: 10,
   right: 20,
@@ -147,43 +117,93 @@ const dimensions = {
 
 const OPACITY_CLASS = 'o-50';
 
+const selectTimelineEvents = createSelector(
+  selectMaskedEvents,
+  selectTimelineGroupBy,
+  selectMainColor,
+  selectBorderColor,
+  (events, groupBy, mainColor, borderColor) => {
+    return _.transform(
+      events,
+      function(acc, e) {
+        if (e.datation && e.datation.length > 0) {
+          const { id, actor, label, kind, datation } = e;
+          acc.push({
+            id,
+            title: he.unescape(actor.label),
+            label: he.unescape(label),
+            popover: 'true',
+            ...resolveDatation(datation),
+            className: classnames(_.kebabCase(kind), 'timeline-event'),
+            style: `border:1px solid ${borderColor(kind)};
+            background-color: ${mainColor(kind)}`,
+            group: groupBy(e),
+            kind
+          });
+        }
+      },
+      [] as any[]
+    );
+  }
+);
+
+const selectStack = createSelector(selectEvents, selectKinds, function(
+  events,
+  kinds
+) {
+  const flatten = _(events)
+    .flatMap<{ kind: AnyEvent['kind'] | ''; time: Date } | undefined>(e => {
+      if (e.datation.length === 2) {
+        const [start, end] = _(e.datation)
+          .map(d => d3.timeYear.floor(new Date(d.clean_date)))
+          .sort()
+          .value();
+
+        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
+          kind: e.kind,
+          time
+        }));
+      } else if (e.datation.length === 1) {
+        return {
+          kind: e.kind,
+          time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
+        };
+      }
+    })
+    .concat(
+      d3.timeYear
+        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+        .map(d => ({ time: d, kind: '' }))
+    )
+    .groupBy('time')
+    .mapValues(v => _.countBy(v, 'kind'))
+    .map((value, time) => ({ time: new Date(time), ...value }))
+    .sortBy('time')
+    .value();
+
+  return d3
+    .stack()
+    .keys(kinds)
+    .order(d3.stackOrderInsideOut)
+    .value((d, k) => d[k] || 0)(flatten as any);
+});
+
 export const VisTimeline: React.FC = function() {
-  const { border, color } = useContext(ColorContext);
-  const {
-    events,
-    // highlights,
-    // setHighlights,
-    // selected,
-    // select,
-    filteredEvents,
-    setFilter
-  } = useContext(SiprojurisContext);
+  const color = useSelector(selectMainColor);
+  const filteredEvents = useSelector(selectMaskedEvents);
 
   const dispatch = useDispatch();
 
   const highlights = useSelector(selectHighlights);
-  const selection = useSelector(selectSelection);
-
-  const { grouping, displayTypes } = useContext(TimelineContext);
+  const selection = useSelector(selectionAsMap);
+  const groups = useSelector(selectTimelineEventGroups);
+  const groupingKind = useSelector(selectTimelineGroup);
 
   const [width, setWidth] = useState<number>();
 
-  const timelineEvents = useMemo(() => {
-    // console.log(border, color);
+  const timelineEvents = useSelector(selectTimelineEvents);
 
-    return getTimelineEvents(
-      _(filteredEvents)
-        .map(
-          (a): GroupedEvent => ({
-            ...a,
-            group: grouping.groupBy(a)
-          })
-        )
-        .value(),
-      color,
-      border
-    );
-  }, [filteredEvents, grouping, color, border]);
+  const countStack = useSelector(selectStack);
 
   const [chart, setChart] = useState<{
     dom: SVGGElement;
@@ -206,54 +226,6 @@ export const VisTimeline: React.FC = function() {
     setChart({ dom, selection: d3.select(dom) });
   }, []);
 
-  const countStack = useMemo(() => {
-    const flatten = _(events)
-      .flatMap<{ kind: AnyEvent['kind'] | ''; time: Date } | undefined>(e => {
-        if (e.datation.length === 2) {
-          const [start, end] = _(e.datation)
-            .sort()
-            .map(d => d3.timeYear.floor(new Date(d.clean_date)))
-            .value();
-
-          return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
-            kind: e.kind,
-            time
-          }));
-        } else if (e.datation.length === 1) {
-          return {
-            kind: e.kind,
-            time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
-          };
-        }
-      })
-      .concat(
-        d3.timeYear
-          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-          .map(d => ({ time: d, kind: '' }))
-      )
-      .groupBy('time')
-      .mapValues(v => _.countBy(v, 'kind'))
-      .map((value, time) => ({ time: new Date(time), ...value }))
-      .sortBy('time')
-      .value();
-
-    const keys = _(events)
-      .uniqBy('kind')
-      .map('kind')
-      .value();
-
-    console.log(keys);
-
-    return (
-      d3
-        .stack()
-        .keys(keys)
-        // .offset(d3.stackOffsetSilhouette)
-        .order(d3.stackOrderInsideOut)
-        .value((d, k) => d[k] || 0)(flatten as any)
-    );
-  }, [events]);
-
   const {
     $events,
     axis,
@@ -265,7 +237,7 @@ export const VisTimeline: React.FC = function() {
     window,
     windowRef,
     x
-  } = useReferences(timelineEvents);
+  } = useReferences();
 
   /*
    * CONTEXT
@@ -276,11 +248,17 @@ export const VisTimeline: React.FC = function() {
     // contextFilter.selection.call(contextFilter.brush);
 
     const updateFilter = _.throttle((start: Date, end: Date) => {
-      setFilter('interval', (e: any) =>
-        _.some(e.datation, datation => {
-          return moment(datation.clean_date).isBetween(start, end);
+      dispatch(
+        setIntervalMask({
+          start: start.toDateString(),
+          end: end.toDateString()
         })
       );
+      // setFilter('interval', (e: any) =>
+      //   _.some(e.datation, datation => {
+      //     return moment(datation.clean_date).isBetween();
+      //   })
+      // );
     }, 100);
 
     const contextThrottle = _.throttle((start: Date, end: Date) => {
@@ -310,7 +288,7 @@ export const VisTimeline: React.FC = function() {
     timeline.vis.on('timechange', (e: VisTimeMarker) => {
       timelineThrottle(e);
     });
-  }, [color, contextFilter, timeline, setFilter, x]);
+  }, [contextFilter, timeline, dispatch, x]);
 
   useEffect(() => {
     if (!axis || !chart || !contextFilter || !window || !width) return;
@@ -432,23 +410,26 @@ export const VisTimeline: React.FC = function() {
     });
   }, [timeline, window, x]);
 
-  /*
-   * Display Types
-   */
-  useEffect(() => {
-    setFilter('display', (e: AnyEvent) => displayTypes[e.kind]);
-  }, [displayTypes, setFilter]);
+  // /*
+  //  * Display Types
+  //  */
+  // useEffect(() => {
+  //   // dispatch(setKindMask(displayTypes));
+  //   // setFilter('display', (e: AnyEvent) => displayTypes[e.kind]);
+  // }, [displayTypes, dispatch]);
 
   const actions = useRef<{
     click: (e: VisEvent) => void;
     changed: (e: VisEvent) => void;
     mouseOver: (e: VisEvent) => void;
+    mouseOut: (e: VisEvent) => void;
     __click: (e: VisEvent) => void;
     __drag: (e: VisEvent) => void;
   }>({
     click: (_e: VisEvent) => {},
     changed: (_e: VisEvent) => {},
     mouseOver: (_e: VisEvent) => {},
+    mouseOut: (_e: VisEvent) => {},
     /** @deprecated */
     __click: (_e: VisEvent) => {},
     /** @deprecated */
@@ -496,7 +477,7 @@ export const VisTimeline: React.FC = function() {
       timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
       return () => timeline.vis.destroy();
-    }, [timeline, mouse]);
+    }, [dispatch, timeline, mouse]);
   }
 
   /*
@@ -515,14 +496,13 @@ export const VisTimeline: React.FC = function() {
         _.forEach($events.current, $event => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
-          if (selection === null) {
+          if (_.isEmpty(selection)) {
             if (isDimmed) {
               console.debug('timeline:opacity:undefined');
               $event.classList.remove(OPACITY_CLASS);
             }
           } else {
-            const inSelection =
-              _.sortedIndexOf(selection, +$event.dataset.id!) !== -1;
+            const inSelection = selection[+$event.dataset.id!] !== undefined;
             if (isDimmed && inSelection) {
               console.debug('timeline:opacity:remove');
               $event.classList.remove(OPACITY_CLASS);
@@ -546,8 +526,8 @@ export const VisTimeline: React.FC = function() {
         console.debug('selection:group', e.group);
         const groupEvents = _(timelineEvents)
           .filter({ group: e.group })
-          .map('id')
-          .sort()
+          .map(({ id }) => ({ id, kind: 'Event' }))
+          .sortBy('id')
           .value();
         if (e.event.ctrlKey || e.event.metaKey) {
           dispatch(addSelection(groupEvents));
@@ -555,22 +535,22 @@ export const VisTimeline: React.FC = function() {
           dispatch(setSelection(groupEvents));
         }
       } else if (e.what === 'item') {
-        const index = _.sortedIndexOf(selection, e.item);
+        const index = selection[e.item];
 
         if (e.event.ctrlKey || e.event.metaKey) {
-          if (index < 0) {
+          if (index) {
+            console.debug('selection:item:unselect', e.item);
+            const filtered = _.filter(selection, i => i.id !== e.item);
+            if (filtered) {
+              dispatch(setSelection(filtered));
+            }
+          } else {
             console.debug('selection:item', e.item);
             // is not selected
-            dispatch(addSelection(e.item));
-          } else {
-            console.debug('selection:item:unselect', e.item);
-            const filtered = _.filter(selection, i => i !== e.item);
-            dispatch(
-              setSelection(filtered.length === 0 ? undefined : filtered)
-            );
+            dispatch(addSelection({ id: e.item, kind: 'Event' }));
           }
         } else {
-          dispatch(setSelection(e.item));
+          dispatch(setSelection({ id: e.item, kind: 'Event' }));
         }
       } else {
         if (!e.event.ctrlKey || e.event.metaKey) {
@@ -588,14 +568,18 @@ export const VisTimeline: React.FC = function() {
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        dispatch(setHighlight({ id: e.group, kind: grouping.kind }));
+        dispatch(setHighlights({ id: e.group, kind: groupingKind }));
       } else if (e.what === 'item') {
-        dispatch(setHighlight({ id: e.item, kind: 'Event' }));
+        dispatch(setHighlights({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
         dispatch(clearHighlights());
       }
     };
-  }, [highlights, dispatch, grouping.kind]);
+
+    actions.current.mouseOut = () => {
+      if (highlights) dispatch(clearHighlights());
+    };
+  }, [highlights, dispatch, groupingKind]);
 
   /*
    * Data change
@@ -636,13 +620,13 @@ export const VisTimeline: React.FC = function() {
 
     // Set Groups
     timeline.vis.setGroups(
-      _.map(grouping.groups(filteredEvents), ({ id, label }) => ({
+      _.map(groups, ({ id, label }) => ({
         id,
         content: newLineLongString(label)
       }))
     );
     // visTimeline.current!.redraw();
-  }, [filteredEvents, grouping, timeline]);
+  }, [filteredEvents, groups, timeline]);
 
   return (
     <>

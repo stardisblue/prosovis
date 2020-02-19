@@ -44,7 +44,7 @@ const options = {
   horizontalScroll: true
 };
 
-export function useReferences(timelineEvents: any[]) {
+export function useReferences() {
   const [axis, setAxis] = useState<{
     dom: SVGGElement;
     selection: d3.Selection<SVGGElement, unknown, null, undefined>;

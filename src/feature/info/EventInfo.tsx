@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from 'react';
+import React, { useCallback } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
@@ -14,11 +14,11 @@ import Octicon, {
   Home,
   Telescope
 } from '@primer/octicons-react';
-import { ColorContext } from '../../context/ColorContext';
 import { SelectedEvent } from './models';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelection } from '../../reducers/selectionSlice';
-import { selectHighlightsAsMap } from '../../reducers/highlightSlice';
+import { highlightsAsMap } from '../../selectors/highlight';
+import { selectMainColor } from '../../selectors/color';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -79,17 +79,17 @@ export const EventInfo: React.FC<EventInfoProps> = function({
 }) {
   let icon: Icon<number, number>;
   let content;
-  const { color } = useContext(ColorContext);
+  const color = useSelector(selectMainColor);
   const { actor } = event;
   const place = origin === 'NamedPlace';
 
   const createContent = prefix(place, actor.label);
 
-  const highlights = useSelector(selectHighlightsAsMap);
+  const highlights = useSelector(highlightsAsMap);
 
   const dispatch = useDispatch();
   const handleSelection = useCallback(() => {
-    dispatch(setSelection(event.id));
+    dispatch(setSelection({ id: event.id, kind: 'Event' }));
   }, [dispatch, event.id]);
 
   switch (event.kind) {
@@ -181,10 +181,10 @@ export const EventInfo: React.FC<EventInfoProps> = function({
     <Flex
       justify="between"
       items="center"
-      className={classnames('sip-info--event', 'pb1', {
+      className={classnames('sip-info--event', 'pb1', 'br2', {
         b: event.selected,
         'o-50': event.filtered,
-        underline: highlights[event.id]
+        'bg-light-gray': highlights[event.id]
       })}
       onClick={handleSelection}
     >

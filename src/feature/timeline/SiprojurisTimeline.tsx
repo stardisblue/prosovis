@@ -1,20 +1,25 @@
-import React, { useMemo, useContext } from 'react';
+import React, { useMemo } from 'react';
+
 import { VisTimeline } from './VisTimeline';
-import _ from 'lodash';
-import { SiprojurisContext } from '../../context/SiprojurisContext';
-import {
-  useTimelineContext,
-  GROUP_BY,
-  TimelineContext
-} from './TimelineContext';
 import { Flex, FlexItem } from '../../components/ui/Flex';
-import { ColorContext } from '../../context/ColorContext';
+import KindList from '../kind/KindList';
+import { useDispatch } from 'react-redux';
+import { setGroup } from './timelineGroupSlice';
 
 export const SiprojurisTimeline: React.FC = function() {
-  const { border, color } = useContext(ColorContext);
-  const { types } = useContext(SiprojurisContext);
-  const timelineContext = useTimelineContext(types);
-  const { setGroup, displayTypes, toggle } = timelineContext;
+  const dispatch = useDispatch();
+
+  const handleClick = useMemo(
+    () => ({
+      actor: function() {
+        dispatch(setGroup('Actor'));
+      },
+      place: function() {
+        dispatch(setGroup('NamedPlace'));
+      }
+    }),
+    [dispatch]
+  );
 
   return (
     <>
@@ -31,18 +36,16 @@ export const SiprojurisTimeline: React.FC = function() {
               <button
                 type="button"
                 className="btn btn-secondary btn-sm text-wrap"
-                name="display"
                 value="group_person"
-                onClick={() => setGroup(GROUP_BY.actor)}
+                onClick={handleClick.actor}
               >
                 Personnes
               </button>
               <button
                 type="button"
                 className="btn btn-secondary btn-sm text-wrap"
-                name="display"
                 value="group_place"
-                onClick={() => setGroup(GROUP_BY.localisation)}
+                onClick={handleClick.place}
               >
                 Lieux
               </button>
@@ -191,47 +194,13 @@ export const SiprojurisTimeline: React.FC = function() {
                 role="tabpanel"
                 aria-labelledby="event-tab"
               >
-                <Flex className="ph2" justify="between" wrap>
-                  {useMemo(
-                    () =>
-                      _.map(displayTypes, (state, key) => (
-                        <Flex
-                          key={key}
-                          tag="label"
-                          className="ph2"
-                          col
-                          items="baseline"
-                        >
-                          <input
-                            id="no-beg"
-                            type="checkbox"
-                            className="checkbox-temporality-event"
-                            checked={state}
-                            onChange={() => toggle(key)}
-                          />
-                          <i
-                            className="br-100 mh1 dib ba"
-                            style={{
-                              backgroundColor: color(key),
-                              borderColor: border(key),
-                              height: '12px',
-                              width: '12px'
-                            }}
-                          ></i>
-                          {key}
-                        </Flex>
-                      )),
-                    [displayTypes, toggle, border, color]
-                  )}
-                </Flex>
+                <KindList />
               </div>
             </div>
           </FlexItem>
         </Flex>
       </div>
-      <TimelineContext.Provider value={timelineContext}>
-        <VisTimeline />
-      </TimelineContext.Provider>
+      <VisTimeline />
     </>
   );
 };

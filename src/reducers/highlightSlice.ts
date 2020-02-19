@@ -1,19 +1,18 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
-import { RootState } from '.';
 import _ from 'lodash';
 
-type HightlightEvent = { id: PrimaryKey; kind: string };
+type HightlightEvent = { id: PrimaryKey; kind: string; type?: string };
 
 export const highlightSlice = createSlice({
   name: 'highlight',
   initialState: null as HightlightEvent[] | null,
   reducers: {
-    setHighlight(_, action: PayloadAction<HightlightEvent>) {
-      return [action.payload];
-    },
-    setHighlights(_, action: PayloadAction<HightlightEvent[]>) {
-      return action.payload;
+    setHighlights(
+      _state,
+      action: PayloadAction<HightlightEvent | HightlightEvent[]>
+    ) {
+      return _.isArray(action.payload) ? action.payload : [action.payload];
     },
     clearHighlights() {
       return null;
@@ -21,16 +20,6 @@ export const highlightSlice = createSlice({
   }
 });
 
-export const {
-  setHighlight,
-  setHighlights,
-  clearHighlights
-} = highlightSlice.actions;
+export const { setHighlights, clearHighlights } = highlightSlice.actions;
 
 export default highlightSlice.reducer;
-
-export const selectHighlights = (state: RootState) => state.highlights;
-
-export const selectHighlightsAsMap = createSelector([selectHighlights], res =>
-  _.keyBy(res, i => i.id)
-);

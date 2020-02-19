@@ -1,13 +1,15 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import _ from 'lodash';
 import { Datation } from '../../data';
-import { SiprojurisContext } from '../../context/SiprojurisContext';
 import { MemoInfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
 import { useSelector } from 'react-redux';
-import { selectSelection } from '../../reducers/selectionSlice';
+import { selectEvents } from '../../selectors/event';
+import { maskedEventsAsMap } from '../../selectors/mask';
+import { selectionAsMap } from '../../selectors/selection';
+import { createSelector } from '@reduxjs/toolkit';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -15,56 +17,36 @@ export function parseDates(dates: Datation[]) {
     .join(' - ');
 }
 
-export const Information: React.FC = function() {
-  const siprojuris = useContext(SiprojurisContext);
-  const {
-    // selected,
-    events,
-    filteredEvents
-  } = siprojuris;
-
-  const selected = useSelector(selectSelection);
-
-  const filtered = useMemo(() => {
-    return _(filteredEvents)
-      .map('id')
-      .sort()
-      .value();
-  }, [filteredEvents]);
-
-  const selectedEvents = useMemo(() => {
+const selectInformationEvents = createSelector(
+  selectEvents,
+  selectionAsMap,
+  maskedEventsAsMap,
+  function(events, selected, masked) {
     return _<SelectedEvent>(events)
       .chain()
       .map<SelectedEvent>(e => ({
         ...e,
-        selected: _.sortedIndexOf(selected, e.id) !== -1,
-        filtered: _.sortedIndexOf(filtered, e.id) === -1
+        selected: selected[e.id] !== undefined,
+        filtered: masked[e.id] === undefined
       }))
       .orderBy(['datation[0].clean_date'])
       .value();
-  }, [selected, events, filtered]);
+  }
+);
+
+export const Information: React.FC = function() {
+  const selectedEvents = useSelector(selectInformationEvents);
 
   const groups = useGroups(selectedEvents);
 
-  return useMemo(
-    () => (
-      <div className="overflow-y-auto  vh-100">
-        <Flex column className="pa1 vh-100">
-          {/* <div id="sipi--enabled"> */}
-          {_.map(groups.no, g => (
-            <MemoInfoGroup key={g.group.uri} {...g} />
-          ))}
-        </Flex>
-        {/* </div> */}
-        {/* {groups.yes && [
-          <hr className="w-100" />,
-          // <div id="sipi--disabled">
-          _.map(groups.yes, g => <MemoInfoGroup key={g.group.uri} {...g} />)
-          // </div>
-        ]} */}
-      </div>
-    ),
-    [groups]
+  return (
+    <div className="overflow-y-auto vh-100">
+      <Flex column className="pa1 vh-100">
+        {_.map(groups.no, g => (
+          <MemoInfoGroup key={g.group.uri} {...g} />
+        ))}
+      </Flex>
+    </div>
   );
 };
 
