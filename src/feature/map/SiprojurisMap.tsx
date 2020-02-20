@@ -1,27 +1,40 @@
 import _ from 'lodash';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback, useMemo } from 'react';
 import { LayersControl, Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import L from 'leaflet';
 import MarkerClusterGroup from 'react-leaflet-markercluster';
 import { useDispatch, useSelector } from 'react-redux';
-import { getLocalisation, PrimaryKey, NamedPlace } from '../../data';
+import {
+  getLocalisation,
+  PrimaryKey,
+  NamedPlace,
+  Actor,
+  AnyEvent
+} from '../../data';
 import { clearHighlights, setHighlights } from '../../reducers/highlightSlice';
 import { setSelection } from '../../reducers/selectionSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
 import './SiprojurisMap.css';
 import { setBoundsMask } from '../../reducers/maskSlice';
 import { createSelector } from '@reduxjs/toolkit';
+import * as d3 from 'd3';
+import ReactDOM from 'react-dom';
+import { selectMainColor } from '../../selectors/color';
 
 export function SiprojurisMap() {
   const dispatch = useDispatch();
 
-  const $map = useRef<Map>(null);
+  const $map = useRef<Map>(null as any);
+  const handleRef = useCallback(function(dom: Map) {
+    if (!dom) return;
+    $map.current = dom;
+  }, []);
 
   useEffect(() => {
-    if ($map.current === null) return;
+    // if ($map.current === null) return;
     //console.log($map.current.leafletElement.getBounds());
 
-    $map.current.leafletElement.on('moveend', e => {
-      if ($map.current === null) return null;
+    $map.current.leafletElement.on('moveend', function() {
       const bounds = $map.current.leafletElement.getBounds();
       const sw = bounds.getSouthWest();
       const ne = bounds.getNorthEast();
@@ -40,7 +53,7 @@ export function SiprojurisMap() {
         [48.853333, 2.348611],
         [46.5691, 0.348203]
       ]}
-      ref={$map}
+      ref={handleRef}
       maxZoom={15}
     >
       <TileLayer
@@ -49,8 +62,9 @@ export function SiprojurisMap() {
       />
       <LayersControl position="topright">
         <LayersControl.Overlay name="Markers" checked>
-          <SipMarkers mapRef={$map} />
+          <SipMarkers $map={$map} />
         </LayersControl.Overlay>
+
         {/* <LayersControl.Overlay name="AntPaths" checked></LayersControl.Overlay> */}
       </LayersControl>
     </Map>
@@ -61,93 +75,178 @@ const selectLocalisedEvents = createSelector(selectMaskedEvents, events =>
   _.transform(
     events,
     (acc, e) => {
-      const localisation = getLocalisation(e);
-      if (localisation !== null)
-        acc.push({ id: e.id, label: e.label, localisation });
+      const l = getLocalisation(e);
+      if (l !== null && l.lat && l.lng)
+        acc.push({
+          id: e.id,
+          label: e.label,
+          actor: e.actor.id,
+          kind: e.kind,
+          localisation: l
+        });
     },
-    [] as { localisation: NamedPlace; label: string; id: PrimaryKey }[]
+    [] as {
+      localisation: NamedPlace;
+      label: string;
+      actor: Actor['id'];
+      id: PrimaryKey;
+      kind: AnyEvent['kind'];
+    }[]
   )
 );
 
-export const SipMarkers: React.FC<{ mapRef: any }> = function({ mapRef }) {
+export const PieChart: React.FC<{
+  radius: number;
+  counts: [string, number][];
+  color: any;
+  donut?: number;
+}> = function({ radius, counts, color, donut = 0 }) {
+  const arcs = useMemo(
+    () =>
+      d3
+        .pie<[string, number]>()
+        .sort(null)
+        .value(d => d[1])(counts),
+    [counts]
+  );
+
+  const arc = useMemo(
+    () =>
+      d3
+        .arc()
+        .innerRadius(donut)
+        .outerRadius(donut + radius),
+    [radius, donut]
+  );
+
+  return (
+    <g stroke="white">
+      {_.map(arcs, a => (
+        <path key={a.data[0]} fill={color(a.data[0])} d={arc(a as any)!}>
+          <title>{a.data[0]}</title>
+        </path>
+      ))}
+    </g>
+  );
+};
+const scale = d3.scaleSqrt().range([5, 10]);
+
+export const SipMarkers: React.FC<{
+  $map: React.MutableRefObject<Map>;
+}> = function({ $map }) {
   const dispatch = useDispatch();
+  const color = useSelector(selectMainColor);
 
   const events = useSelector(selectLocalisedEvents);
+  const createClusterIcon = useCallback(
+    function(cluster: L.MarkerCluster) {
+      const markers = cluster.getAllChildMarkers();
+      const donut = 0;
+      const radius = scale(markers.length);
+      const size = (radius + donut) * 2;
+
+      const counts = _(markers)
+        .countBy('options.data-kind')
+        .toPairs()
+        .value();
+      const svg = d3
+        .create('svg')
+        .attr('width', size)
+        .attr('height', size)
+        .attr('viewBox', [-donut - radius, -donut - radius, size, size] as any);
+      const dom: HTMLElement = svg.node() as any;
+
+      ReactDOM.render(
+        <PieChart
+          radius={radius}
+          counts={counts}
+          color={color}
+          donut={donut}
+        />,
+        dom
+      );
+
+      return L.divIcon({
+        html: dom as any,
+        className: '',
+        iconSize: L.point(size, size)
+      });
+    },
+    [color]
+  );
+
+  const onClusterClick = useCallback(
+    (e: any) => {
+      const cluster = e.layer;
+      let bottomCluster = cluster;
+      let zoomLevel = cluster._zoom;
+      while (bottomCluster._childClusters.length === 1) {
+        bottomCluster = bottomCluster._childClusters[0];
+        if (
+          zoomLevel === cluster._zoom &&
+          cluster._childCount !== bottomCluster._childCount
+        ) {
+          zoomLevel = bottomCluster._zoom;
+        }
+      }
+      if (bottomCluster._childClusters.length > 1) {
+        zoomLevel = bottomCluster._childClusters[0]._zoom;
+      }
+      if (
+        bottomCluster._zoom === e.target._maxZoom &&
+        bottomCluster._childCount === cluster._childCount
+      ) {
+        // All child markers are contained in a single cluster from this._maxZoom to this cluster.
+        cluster.spiderfy();
+      } else {
+        $map.current.leafletElement.flyTo(cluster._cLatLng, zoomLevel);
+      }
+    },
+    [$map]
+  );
 
   return (
     <MarkerClusterGroup
       maxClusterRadius={50}
       zoomToBoundsOnClick={false}
-      onclusterclick={(e: any) => {
-        const cluster = e.layer;
-
-        let bottomCluster = cluster;
-        let zoomLevel = cluster._zoom;
-        while (bottomCluster._childClusters.length === 1) {
-          bottomCluster = bottomCluster._childClusters[0];
-          if (
-            zoomLevel === cluster._zoom &&
-            cluster._childCount !== bottomCluster._childCount
-          ) {
-            zoomLevel = bottomCluster._zoom;
-          }
-        }
-        if (bottomCluster._childClusters.length > 1) {
-          zoomLevel = bottomCluster._childClusters[0]._zoom;
-        }
-
-        if (
-          bottomCluster._zoom === e.target._maxZoom &&
-          bottomCluster._childCount === cluster._childCount
-        ) {
-          // All child markers are contained in a single cluster from this._maxZoom to this cluster.
-          cluster.spiderfy();
-        } else {
-          mapRef.current!.leafletElement.flyTo(cluster._cLatLng, zoomLevel);
-        }
-        // console.log(cluster, bottomCluster, zoomLevel);
-      }}
+      onclusterclick={onClusterClick}
+      iconCreateFunction={createClusterIcon}
     >
       {_(events)
         .map(event => {
           const localisation = event.localisation;
-          if (localisation !== null) {
-            if (localisation.lat && localisation.lng) {
-              return (
-                <Marker
-                  data-id={event.id}
-                  onclick={function(e) {
-                    dispatch(
-                      setSelection({
-                        id: e.target.options['data-id'],
-                        kind: 'Event'
-                      })
-                    );
-                  }}
-                  onmouseover={function(e: any) {
-                    console.log(e.target.options);
-                    dispatch(
-                      setHighlights({
-                        id: e.target.options['data-id'],
-                        kind: 'Event'
-                      })
-                    );
-                  }}
-                  onmouseout={function(e: any) {
-                    console.log('out');
-                    dispatch(clearHighlights());
-                  }}
-                  key={event.id}
-                  position={[+localisation.lat, +localisation.lng]}
-                >
-                  <Popup>{event.label}</Popup>
-                </Marker>
-              );
-            } else {
-              console.log(event.localisation);
-            }
-          }
-          return null;
+          return (
+            <Marker
+              data-id={event.id}
+              data-kind={event.kind}
+              data-actor={event.actor}
+              onclick={function(e) {
+                dispatch(
+                  setSelection({
+                    id: e.target.options['data-id'],
+                    kind: 'Event'
+                  })
+                );
+              }}
+              onmouseover={function(e: any) {
+                console.log(e.target.options);
+                dispatch(
+                  setHighlights({
+                    id: e.target.options['data-id'],
+                    kind: 'Event'
+                  })
+                );
+              }}
+              onmouseout={function(e: any) {
+                console.log('out');
+                dispatch(clearHighlights());
+              }}
+              key={event.id}
+              position={[+localisation.lat!, +localisation.lng!]}
+            >
+              <Popup>{event.label}</Popup>
+            </Marker>
+          );
         })
         .compact()
         .value()}

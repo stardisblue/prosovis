@@ -4,7 +4,6 @@ import 'popper.js';
 import 'bootstrap';
 import { Nullable } from '../../data';
 import * as vis from 'vis-timeline/standalone';
-import * as d3 from 'd3';
 
 function refNotNull<T>(f: (dom: T) => any) {
   return function(dom: Nullable<T>) {
@@ -49,22 +48,22 @@ export function useReferences() {
   //   selection: Selection<SVGSVGElement, unknown, null, undefined>;
   // }>();
 
-  const [contextFilter, setContextFilter] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-  }>();
+  // const [contextFilter, setContextFilter] = useState<{
+  //   dom: SVGGElement;
+  //   selection: d3.Selection<SVGGElement, unknown, null, undefined>;
+  //   brush: d3.BrushBehavior<unknown>;
+  // }>();
 
   const [timeline, setTimeline] = useState<{
     dom: HTMLDivElement;
     vis: vis.Timeline;
   }>();
 
-  const [window, setWindow] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-  }>();
+  // const [window, setWindow] = useState<{
+  //   dom: SVGGElement;
+  //   selection: d3.Selection<SVGGElement, unknown, null, undefined>;
+  //   brush: d3.BrushBehavior<unknown>;
+  // }>();
 
   const $events = useRef<HTMLCollectionOf<HTMLDivElement>>();
   // const x = useMemo(
@@ -91,15 +90,15 @@ export function useReferences() {
     //   //eslint-disable-next-line
     //   [x]
     // ),
-    contextFilter,
-    contextFilterRef: useCallback(
-      refNotNull(function(dom: SVGGElement) {
-        const brush = d3.brushX();
-        const selection = d3.select(dom).call(brush);
-        setContextFilter({ dom, brush, selection });
-      }),
-      []
-    ),
+    // contextFilter,
+    // contextFilterRef: useCallback(
+    //   refNotNull(function(dom: SVGGElement) {
+    //     const brush = d3.brushX();
+    //     const selection = d3.select(dom).call(brush);
+    //     setContextFilter({ dom, brush, selection });
+    //   }),
+    //   []
+    // ),
     timeline,
     timelineRef: useCallback(
       refNotNull(function(dom: HTMLDivElement) {
@@ -125,16 +124,16 @@ export function useReferences() {
       }),
       // eslint-disable-next-line
       []
-    ),
-    window,
-    windowRef: useCallback(
-      refNotNull(function(dom: SVGGElement) {
-        const brush = d3.brushX();
-        const selection = d3.select(dom).call(brush);
-        setWindow({ dom, selection, brush });
-      }),
-      []
     )
+    // window,
+    // windowRef: useCallback(
+    //   refNotNull(function(dom: SVGGElement) {
+    //     const brush = d3.brushX();
+    //     const selection = d3.select(dom).call(brush);
+    //     setWindow({ dom, selection, brush });
+    //   }),
+    //   []
+    // )
     // contextRef : useCallback(($svg: Nullable<SVGSVGElement>) => {
     //   if (!$svg) return;
     //   setContext({ selection: select($svg), dom: $svg });

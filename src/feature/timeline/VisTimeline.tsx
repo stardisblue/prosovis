@@ -1,12 +1,17 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useCallback
+} from 'react';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { Nullable, PrimaryKey, Datation } from '../../data';
 import he from 'he';
 import './VisTimeline.css';
 import { useMouse } from './useMouse';
-import * as d3 from 'd3';
-import moment, { Moment } from 'moment';
+import { Moment } from 'moment';
 import { useReferences } from './useReferences';
 import { useSelector, useDispatch } from 'react-redux';
 import { clearHighlights, setHighlights } from '../../reducers/highlightSlice';
@@ -15,7 +20,6 @@ import {
   setSelection,
   clearSelection
 } from '../../reducers/selectionSlice';
-import { setIntervalMask } from '../../reducers/maskSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectHighlights } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
@@ -26,9 +30,7 @@ import {
   selectTimelineGroup,
   selectTimelineEventGroups
 } from './timelineGroupSlice';
-import { StackedChart } from './StackedChart';
-import { ContextTimeAxis } from './ContextTimeAxis';
-import { ContextWindowBrush } from './ContextWindowBrush';
+import { Context } from './Context';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -90,32 +92,6 @@ function newLineLongString(str: string, maxLenght = 20): string {
     .join('<br/>');
 }
 
-const margins = {
-  top: 10,
-  right: 20,
-  bottom: 20,
-  left: 20
-};
-
-const windowMargins = {
-  left: 20,
-  right: 18,
-  top: 15,
-  bottom: 15
-};
-
-const filterMargins = {
-  left: 20,
-  right: 18,
-  top: 0,
-  bottom: 0
-};
-
-const dimensions = {
-  width: '100%',
-  height: 70
-};
-
 const OPACITY_CLASS = 'o-50';
 
 const selectTimelineEvents = createSelector(
@@ -148,128 +124,75 @@ const selectTimelineEvents = createSelector(
   }
 );
 
-const options = {
-  max: '2000-01-01', //Maximum date of timeline
-  min: '1700-01-01' // Minimum date of timeline,
-};
-
 export const VisTimeline: React.FC = function() {
-  const color = useSelector(selectMainColor);
-  const filteredEvents = useSelector(selectMaskedEvents);
-
   const dispatch = useDispatch();
 
-  const highlights = useSelector(selectHighlights);
-  const selection = useSelector(selectionAsMap);
   const groups = useSelector(selectTimelineEventGroups);
-  const groupingKind = useSelector(selectTimelineGroup);
 
   const [width, setWidth] = useState<number>();
 
-  const x = useMemo(
-    () =>
-      width !== undefined
-        ? d3
-            .scaleTime()
-            .domain([moment(options.min), moment(options.max)])
-            .range([margins.left, width - margins.right])
-            .nice()
-            .clamp(true)
-        : undefined,
-    [width]
-  );
-
   const timelineEvents = useSelector(selectTimelineEvents);
 
-  const {
-    $events,
-    contextFilter,
-    contextFilterRef,
-    timeline,
-    timelineRef
-  } = useReferences();
+  const { $events, timeline, timelineRef } = useReferences();
 
   /*
    * CONTEXT
    */
-  useEffect(() => {
-    if (!timeline || !contextFilter || !x) return;
-    const updateFilter = _.throttle((start: Date, end: Date) => {
-      dispatch(
-        setIntervalMask({
-          start: start.toDateString(),
-          end: end.toDateString()
-        })
-      );
-    }, 100);
+  const updateMarkers = useMemo(
+    function() {
+      if (!timeline) return () => {};
+      return _.throttle((start: Date, end: Date) => {
+        timeline.vis.setCustomTime(start, 'a');
+        timeline.vis.setCustomTime(end, 'b');
+      }, 16);
+    },
+    [timeline]
+  );
 
-    const contextThrottle = _.throttle((start: Date, end: Date) => {
-      timeline.vis.setCustomTime(start, 'a');
-      timeline.vis.setCustomTime(end, 'b');
-      updateFilter(start, end);
-    }, 16);
+  const updateView = useMemo(() => {
+    if (!timeline) return () => {};
 
-    const timelineThrottle = _.throttle((e: VisTimeMarker) => {
-      const interval = _.sortBy([
-        e.time,
-        e.id === 'a'
-          ? timeline.vis.getCustomTime('b')
-          : timeline.vis.getCustomTime('a')
-      ]);
-      contextFilter.selection.call(contextFilter.brush.move, interval.map(x));
-      updateFilter(interval[0], interval[1]);
-    }, 16);
-
-    contextFilter.brush.on('brush', function() {
-      if (d3.event.sourceEvent) {
-        const [start, end] = d3.event.selection.map(x.invert);
-        contextThrottle(start, end);
-      }
-    });
-
-    timeline.vis.on('timechange', (e: VisTimeMarker) => {
-      timelineThrottle(e);
-    });
-  }, [contextFilter, timeline, dispatch, x]);
-
-  useEffect(() => {
-    if (!contextFilter || !width) return;
-
-    contextFilter.brush.extent([
-      [filterMargins.left, filterMargins.top],
-      [width - filterMargins.right, dimensions.height - filterMargins.bottom]
-    ]);
-
-    contextFilter.selection.call(contextFilter.brush);
-  }, [color, contextFilter, width]);
-
-  const [windowSync, setWindowSync] = useState<[Date, Date]>();
-
-  useEffect(() => {
-    if (!timeline) return;
-
-    const sync = _.throttle((start: Date, end: Date) => {
-      return setWindowSync([start, end]);
-    }, 16);
-
-    timeline.vis.on('rangechange', (e: any) => {
-      if (e.byUser) {
-        sync(e.start, e.end);
-      }
-    });
-  }, [timeline]);
-
-  // Syncs the context window view and the timeline view
-  const updateTimeline = useMemo(() => {
-    if (!timeline) return (selection: number[]) => {};
-
-    return _.throttle((selection: number[]) => {
-      const [start, end] = selection;
+    return _.throttle((start: Date, end: Date) => {
       timeline.vis.setWindow(start, end, {
         animation: false
       });
     }, 16);
   }, [timeline]);
+
+  const [maskSync, setMaskSync] = useState<[Date, Date]>();
+  const [viewSync, setViewSync] = useState<[Date, Date]>();
+
+  useEffect(() => {
+    if (!timeline) return;
+
+    // view sync with context
+    const viewSyncThrottle = _.throttle(function(start: Date, end: Date) {
+      setViewSync([start, end]);
+    }, 16);
+
+    // mask sync with context
+    const maskSyncThrottle = _.throttle(function(e: VisTimeMarker) {
+      const interval = _.sortBy([
+        e.time,
+        e.id === 'a'
+          ? timeline.vis.getCustomTime('b')
+          : timeline.vis.getCustomTime('a')
+      ]) as [Date, Date];
+      setMaskSync(interval);
+    }, 16);
+
+    timeline.vis.on('rangechange', (e: any) => {
+      if (e.byUser) {
+        viewSyncThrottle(e.start, e.end);
+      }
+    });
+
+    timeline.vis.on('timechange', (e: VisTimeMarker) => {
+      maskSyncThrottle(e);
+    });
+  }, [timeline]);
+
+  // Syncs the context window view and the timeline view
 
   const actions = useRef<{
     click: (e: VisEvent) => void;
@@ -337,6 +260,8 @@ export const VisTimeline: React.FC = function() {
    * Selection
    */
   // updates visual cues on timeline during navigation
+  const selection = useSelector(selectionAsMap);
+
   useEffect(() => {
     const change = function() {
       if (timeline) {
@@ -355,7 +280,7 @@ export const VisTimeline: React.FC = function() {
               $event.classList.remove(OPACITY_CLASS);
             }
           } else {
-            const inSelection = selection[+$event.dataset.id!] !== undefined;
+            const inSelection = selection[$event.dataset.id!] !== undefined;
             if (isDimmed && inSelection) {
               console.debug('timeline:opacity:remove');
               $event.classList.remove(OPACITY_CLASS);
@@ -373,51 +298,57 @@ export const VisTimeline: React.FC = function() {
   }, [$events, selection, timeline, width]);
 
   // binds click to selection actions
-  useEffect(() => {
-    actions.current.click = (e: VisEvent) => {
-      if (e.what === 'group-label') {
-        console.debug('selection:group', e.group);
-        const groupEvents = _(timelineEvents)
-          .filter({ group: e.group })
-          .map(({ id }) => ({ id, kind: 'Event' }))
-          .sortBy('id')
-          .value();
-        if (e.event.ctrlKey || e.event.metaKey) {
-          dispatch(addSelection(groupEvents));
-        } else {
-          dispatch(setSelection(groupEvents));
-        }
-      } else if (e.what === 'item') {
-        const index = selection[e.item];
 
-        if (e.event.ctrlKey || e.event.metaKey) {
-          if (index) {
-            console.debug('selection:item:unselect', e.item);
-            const filtered = _.filter(selection, i => i.id !== e.item);
-            if (filtered) {
-              dispatch(setSelection(filtered));
+  actions.current.click = useCallback(
+    (e: VisEvent) => {
+      switch (e.what) {
+        case 'group-label':
+          console.debug('selection:group', e.group);
+          const groupEvents = _(timelineEvents)
+            .filter({ group: e.group })
+            .map(({ id }) => ({ id, kind: 'Event' }))
+            .sortBy('id')
+            .value();
+          if (e.event.ctrlKey || e.event.metaKey) {
+            dispatch(addSelection(groupEvents));
+          } else {
+            dispatch(setSelection(groupEvents));
+          }
+          break;
+        case 'item':
+          if (e.event.ctrlKey || e.event.metaKey) {
+            if (selection[e.item]) {
+              console.debug('selection:item:unselect', e.item);
+              const filtered = _.filter(selection, i => i.id !== e.item);
+              if (filtered) {
+                dispatch(setSelection(filtered));
+              }
+            } else {
+              console.debug('selection:item', e.item);
+              // is not selected
+              dispatch(addSelection({ id: e.item, kind: 'Event' }));
             }
           } else {
-            console.debug('selection:item', e.item);
-            // is not selected
-            dispatch(addSelection({ id: e.item, kind: 'Event' }));
+            dispatch(setSelection({ id: e.item, kind: 'Event' }));
           }
-        } else {
-          dispatch(setSelection({ id: e.item, kind: 'Event' }));
-        }
-      } else {
-        if (!e.event.ctrlKey || e.event.metaKey) {
-          console.debug('selection:reset');
-          dispatch(clearSelection());
-        }
+          break;
+        default:
+          if (!e.event.ctrlKey && !e.event.metaKey) {
+            console.debug('selection:reset');
+            dispatch(clearSelection());
+          }
       }
-    };
-  }, [dispatch, selection, timelineEvents]);
+    },
+    [dispatch, selection, timelineEvents]
+  );
 
   /*
    * Highlights
    Events and Groups are highlighted
    */
+  const highlights = useSelector(selectHighlights);
+  const groupingKind = useSelector(selectTimelineGroup);
+
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
@@ -451,19 +382,15 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     if (firstEvent !== true) return;
-    if (!timeline || !width || !contextFilter || !x) return;
+    if (!timeline || !width) return;
 
     timeline.vis.fit({ animation: false });
     const interval = timeline.vis.getWindow();
 
-    setWindowSync([interval.start, interval.end]);
-    contextFilter.selection.call(contextFilter.brush.move, [
-      filterMargins.left,
-      width - filterMargins.right
-    ]);
+    setViewSync([interval.start, interval.end]);
 
     setFirstEvent(width);
-  }, [contextFilter, firstEvent, timeline, width, x]);
+  }, [firstEvent, timeline, width]);
 
   useEffect(() => {
     if (!timeline) return;
@@ -476,39 +403,20 @@ export const VisTimeline: React.FC = function() {
       }))
     );
     // visTimeline.current!.redraw();
-  }, [filteredEvents, groups, timeline]);
+  }, [groups, timeline]);
 
   return (
     <>
       <div id="timeline" ref={timelineRef}></div>
-      <svg
-        id="timeline-context"
-        // ref={contextRef}
-        width="100%"
-        height={dimensions.height + 'px'}
-      >
-        {x && (
-          <>
-            <ContextTimeAxis dimensions={dimensions} margins={margins} x={x} />
-            <StackedChart dimensions={dimensions} margins={margins} x={x} />
-            <FilterBrush ref={contextFilterRef} />
-            {width && (
-              <ContextWindowBrush
-                onBrush={updateTimeline}
-                width={width}
-                windowSync={windowSync}
-                x={x}
-                margins={windowMargins}
-                dimensions={dimensions}
-              />
-            )}
-          </>
-        )}
-      </svg>
+      {width && (
+        <Context
+          mask={maskSync}
+          onMaskUpdate={updateMarkers}
+          view={viewSync}
+          onViewUpdate={updateView}
+          width={width}
+        />
+      )}
     </>
   );
 };
-
-export const FilterBrush = React.forwardRef<SVGGElement>(function(_props, ref) {
-  return <g id="context-filter" className="brush" ref={ref}></g>;
-});

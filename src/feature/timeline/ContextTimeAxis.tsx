@@ -1,13 +1,12 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
+import ContextOptions from './ContextOptions';
 
 type AxisSelection = d3.Selection<SVGGElement, unknown, null, undefined>;
 
 export const ContextTimeAxis: React.FC<{
   x: d3.ScaleTime<number, number>;
-  dimensions: any;
-  margins: any;
-}> = function({ x, dimensions, margins }) {
+}> = function({ x }) {
   // ! assuming that ref is instantaneously populated
   const axis = useRef<AxisSelection>({} as any);
 
@@ -25,8 +24,11 @@ export const ContextTimeAxis: React.FC<{
       id="context-axis"
       className="axis"
       ref={handleRef}
-      transform={`translate(0, ${dimensions.height - margins.bottom})`}
+      transform={`translate(0, ${ContextOptions.height -
+        ContextOptions.margin.bottom})`}
       pointerEvents="none"
     ></g>
   );
 };
+
+export default ContextTimeAxis;

@@ -7,6 +7,7 @@ import { selectEvents, selectKinds } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { AnyEvent } from '../../data';
+import ContextOptions from './ContextOptions';
 
 export const selectStack = createSelector(selectEvents, selectKinds, function(
   events,
@@ -61,60 +62,67 @@ type D3Selection = d3.Selection<
   undefined
 >;
 
-export const StackedChart: React.FC<{
+export const ContextStackedChart: React.FC<{
   x: d3.ScaleTime<number, number>;
-  dimensions: { width: string | number; height: number };
-  margins: { top: number; right: number; bottom: number; left: number };
-}> = function({ x, dimensions, margins }) {
+}> = function({ x }) {
   // ! assuming that ref is instantaneously populated
   const chart = useRef<D3Selection>({} as any);
 
   const color = useSelector(selectMainColor);
 
-  const chartRef = useCallback(
-    function(dom: SVGGElement) {
-      if (!dom) return;
-      chart.current = d3.select(dom);
-    },
-    [chart]
-  );
+  const chartRef = useCallback(function(dom: SVGGElement) {
+    if (!dom) return;
+    chart.current = d3.select(dom);
+  }, []);
 
   const countStack = useSelector(selectStack);
 
   const y = useMemo(
-    () =>
-      d3
-        .scalePow()
-        .domain([
-          d3.min(countStack, d => d3.min(d, d => d[0])) as any,
-          d3.max(countStack, d => d3.max(d, d => d[1])) as any
-        ])
-        // .nice()
-        .range([dimensions.height - margins.bottom, margins.top]),
-    [countStack, dimensions, margins]
+    function() {
+      return (
+        d3
+          .scalePow()
+          .domain([
+            d3.min(countStack, d => d3.min(d, d => d[0])) as any,
+            d3.max(countStack, d => d3.max(d, d => d[1])) as any
+          ])
+          // .nice()
+          .range([
+            ContextOptions.height - ContextOptions.margin.bottom,
+            ContextOptions.margin.top
+          ])
+      );
+    },
+    [countStack]
   );
 
   const area = useMemo(
-    () =>
-      d3
+    function() {
+      return d3
         .area()
         .x((d: any) => x(d.data.time))
         .y0(d => y(d[0]))
         .y1(d => y(d[1]))
-        .curve(d3.curveStep),
+        .curve(d3.curveStep);
+    },
     [x, y]
   );
 
-  useEffect(() => {
-    chart.current
-      .selectAll('path')
-      .data(countStack)
-      .join('path')
-      .attr('fill', (d: any) => color(d.key))
-      .attr('d', area as any)
-      .append('title')
-      .text(d => d.key);
-  }, [area, color, countStack]);
+  useEffect(
+    function() {
+      chart.current
+        .selectAll('path')
+        .data(countStack)
+        .join('path')
+        .attr('fill', (d: any) => color(d.key))
+        .attr('d', area as any)
+        .append('title')
+        .text(d => d.key);
+    },
+    [area, color, countStack]
+  );
 
   return <g id="context-stackedchart" ref={chartRef}></g>;
 };
+
+export default ContextStackedChart;
