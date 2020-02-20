@@ -6,7 +6,7 @@ import { AnyEvent, Ressource } from '../data';
  * @param selectedEvents
  * @deprecated
  */
-function useActorGroups(selectedEvents: AnyEvent[]) {
+export function useActorGroups(selectedEvents: AnyEvent[]) {
   return useMemo(() => {
     const byactor: {
       key: Ressource;

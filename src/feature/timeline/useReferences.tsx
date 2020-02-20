@@ -1,10 +1,9 @@
-import { useCallback, useRef, useMemo, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
 import { Nullable } from '../../data';
 import * as vis from 'vis-timeline/standalone';
-import moment from 'moment';
 import * as d3 from 'd3';
 
 function refNotNull<T>(f: (dom: T) => any) {
@@ -45,12 +44,6 @@ const options = {
 };
 
 export function useReferences() {
-  const [axis, setAxis] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    d3Axis: d3.Axis<number | Date | { valueOf(): number }>;
-  }>();
-
   // const [context, setContext] = useState<{
   //   dom: SVGSVGElement;
   //   selection: Selection<SVGSVGElement, unknown, null, undefined>;
@@ -74,29 +67,30 @@ export function useReferences() {
   }>();
 
   const $events = useRef<HTMLCollectionOf<HTMLDivElement>>();
-  const x = useMemo(
-    () =>
-      d3
-        .scaleTime()
-        .domain([moment(options.min), moment(options.max)])
-        .nice()
-        .clamp(true),
-    []
-  );
+  // const x = useMemo(
+  //   () =>
+  //     d3
+  //       .scaleTime()
+  //       .domain([moment(options.min), moment(options.max)])
+  //       .nice()
+  //       .clamp(true),
+  //   []
+  // );
   return {
     $events,
-    axis,
-    axisRef: useCallback(
-      refNotNull(function(dom: SVGGElement) {
-        setAxis({
-          dom,
-          selection: d3.select(dom),
-          d3Axis: d3.axisBottom(x)
-        });
-      }),
-      //eslint-disable-next-line
-      []
-    ),
+    // axis,
+    // axisRef: useCallback(
+    //   refNotNull(function(dom: SVGGElement) {
+    //     if (x !== undefined)
+    //       setAxis({
+    //         dom,
+    //         selection: d3.select(dom),
+    //         d3Axis: d3.axisBottom(x)
+    //       });
+    //   }),
+    //   //eslint-disable-next-line
+    //   [x]
+    // ),
     contextFilter,
     contextFilterRef: useCallback(
       refNotNull(function(dom: SVGGElement) {
@@ -140,11 +134,11 @@ export function useReferences() {
         setWindow({ dom, selection, brush });
       }),
       []
-    ),
+    )
     // contextRef : useCallback(($svg: Nullable<SVGSVGElement>) => {
     //   if (!$svg) return;
     //   setContext({ selection: select($svg), dom: $svg });
-    // }, [])
-    x
+    // }, []),
+    // x
   };
 }

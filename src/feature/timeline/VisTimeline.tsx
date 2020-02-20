@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import classnames from 'classnames';
 import _ from 'lodash';
-import { AnyEvent, Nullable, PrimaryKey, Datation } from '../../data';
+import { Nullable, PrimaryKey, Datation } from '../../data';
 import he from 'he';
 import './VisTimeline.css';
-import vis from 'vis-timeline';
 import { useMouse } from './useMouse';
 import * as d3 from 'd3';
 import moment, { Moment } from 'moment';
@@ -17,7 +16,6 @@ import {
   clearSelection
 } from '../../reducers/selectionSlice';
 import { setIntervalMask } from '../../reducers/maskSlice';
-import { selectEvents, selectKinds } from '../../selectors/event';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectHighlights } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
@@ -28,6 +26,9 @@ import {
   selectTimelineGroup,
   selectTimelineEventGroups
 } from './timelineGroupSlice';
+import { StackedChart } from './StackedChart';
+import { ContextTimeAxis } from './ContextTimeAxis';
+import { ContextWindowBrush } from './ContextWindowBrush';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -147,46 +148,10 @@ const selectTimelineEvents = createSelector(
   }
 );
 
-const selectStack = createSelector(selectEvents, selectKinds, function(
-  events,
-  kinds
-) {
-  const flatten = _(events)
-    .flatMap<{ kind: AnyEvent['kind'] | ''; time: Date } | undefined>(e => {
-      if (e.datation.length === 2) {
-        const [start, end] = _(e.datation)
-          .map(d => d3.timeYear.floor(new Date(d.clean_date)))
-          .sort()
-          .value();
-
-        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
-          kind: e.kind,
-          time
-        }));
-      } else if (e.datation.length === 1) {
-        return {
-          kind: e.kind,
-          time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
-        };
-      }
-    })
-    .concat(
-      d3.timeYear
-        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map(d => ({ time: d, kind: '' }))
-    )
-    .groupBy('time')
-    .mapValues(v => _.countBy(v, 'kind'))
-    .map((value, time) => ({ time: new Date(time), ...value }))
-    .sortBy('time')
-    .value();
-
-  return d3
-    .stack()
-    .keys(kinds)
-    .order(d3.stackOrderInsideOut)
-    .value((d, k) => d[k] || 0)(flatten as any);
-});
+const options = {
+  max: '2000-01-01', //Maximum date of timeline
+  min: '1700-01-01' // Minimum date of timeline,
+};
 
 export const VisTimeline: React.FC = function() {
   const color = useSelector(selectMainColor);
@@ -201,52 +166,34 @@ export const VisTimeline: React.FC = function() {
 
   const [width, setWidth] = useState<number>();
 
+  const x = useMemo(
+    () =>
+      width !== undefined
+        ? d3
+            .scaleTime()
+            .domain([moment(options.min), moment(options.max)])
+            .range([margins.left, width - margins.right])
+            .nice()
+            .clamp(true)
+        : undefined,
+    [width]
+  );
+
   const timelineEvents = useSelector(selectTimelineEvents);
-
-  const countStack = useSelector(selectStack);
-
-  const [chart, setChart] = useState<{
-    dom: SVGGElement;
-    selection: d3.Selection<
-      SVGGElement,
-      d3.Series<
-        {
-          [key: string]: number;
-        },
-        string
-      >[],
-      any,
-      undefined
-    >;
-  }>();
-
-  const chartRef = useCallback(function(dom: SVGGElement) {
-    if (!dom) return;
-
-    setChart({ dom, selection: d3.select(dom) });
-  }, []);
 
   const {
     $events,
-    axis,
-    axisRef,
     contextFilter,
     contextFilterRef,
     timeline,
-    timelineRef,
-    window,
-    windowRef,
-    x
+    timelineRef
   } = useReferences();
 
   /*
    * CONTEXT
    */
   useEffect(() => {
-    if (!timeline || !contextFilter) return;
-
-    // contextFilter.selection.call(contextFilter.brush);
-
+    if (!timeline || !contextFilter || !x) return;
     const updateFilter = _.throttle((start: Date, end: Date) => {
       dispatch(
         setIntervalMask({
@@ -254,11 +201,6 @@ export const VisTimeline: React.FC = function() {
           end: end.toDateString()
         })
       );
-      // setFilter('interval', (e: any) =>
-      //   _.some(e.datation, datation => {
-      //     return moment(datation.clean_date).isBetween();
-      //   })
-      // );
     }, 100);
 
     const contextThrottle = _.throttle((start: Date, end: Date) => {
@@ -291,132 +233,43 @@ export const VisTimeline: React.FC = function() {
   }, [contextFilter, timeline, dispatch, x]);
 
   useEffect(() => {
-    if (!axis || !chart || !contextFilter || !window || !width) return;
-    // if (!axis || !contextFilter || !window || !width) return;
-
-    // contextFilter.brush.brushSelection;
-
-    x.range([margins.left, width - margins.right]);
+    if (!contextFilter || !width) return;
 
     contextFilter.brush.extent([
       [filterMargins.left, filterMargins.top],
       [width - filterMargins.right, dimensions.height - filterMargins.bottom]
     ]);
 
-    window.brush.extent([
-      [windowMargins.left, windowMargins.top],
-      [width - windowMargins.right, dimensions.height - windowMargins.bottom]
-    ]);
-
-    axis.selection.call(axis.d3Axis);
-
     contextFilter.selection.call(contextFilter.brush);
+  }, [color, contextFilter, width]);
 
-    window.selection.call(window.brush);
+  const [windowSync, setWindowSync] = useState<[Date, Date]>();
 
-    // const color = d3
-    //   .scaleOrdinal()
-    //   .domain(countStack.keys)
-    //   .range(d3.schemeCategory10);
-
-    const y = d3
-      .scalePow()
-      .domain([
-        d3.min(countStack, d => d3.min(d, d => d[0])) as any,
-        d3.max(countStack, d => d3.max(d, d => d[1])) as any
-      ])
-      // .nice()
-      .range([dimensions.height - margins.bottom, margins.top]);
-
-    const area = d3
-      .area()
-      .x((d: any) => x(d.data.time))
-      .y0(d => y(d[0]))
-      .y1(d => y(d[1]))
-      .curve(d3.curveStep);
-
-    chart.selection
-      .selectAll('path')
-      .data(countStack)
-      .join('path')
-      .attr('fill', (d: any) => color(d.key))
-      .attr('d', area as any)
-      .append('title')
-      .text(d => d.key);
-  }, [axis, color, chart, countStack, contextFilter, width, window, x]);
-  // }, [axis, contextFilter, width, window, x]);
-
-  /*
-   * Window
-   */
-
-  // Allows the window to be teleported when clicking on the context
   useEffect(() => {
-    if (!window) return;
-    window.selection.call(function(g) {
-      g.select('.overlay')
-        .datum({ type: 'selection' })
-        .on('mousedown touchstart', function(this: any) {
-          const brushSelection = d3.brushSelection(window.dom) as
-            | [number, number]
-            | null;
+    if (!timeline) return;
 
-          if (!brushSelection) return;
+    const sync = _.throttle((start: Date, end: Date) => {
+      return setWindowSync([start, end]);
+    }, 16);
 
-          const [start, end] = brushSelection;
-
-          const dx = end - start;
-          const [cx] = d3.mouse(this);
-
-          const [x0, x1] = [cx - dx / 2, cx + dx / 2];
-          const [X0, X1] = x.range();
-
-          window.selection.call(
-            window.brush.move,
-            x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
-          );
-        });
+    timeline.vis.on('rangechange', (e: any) => {
+      if (e.byUser) {
+        sync(e.start, e.end);
+      }
     });
-  }, [width, window, x]);
+  }, [timeline]);
 
   // Syncs the context window view and the timeline view
-  useEffect(() => {
-    if (!timeline || !window) return;
+  const updateTimeline = useMemo(() => {
+    if (!timeline) return (selection: number[]) => {};
 
-    const updateWindow = _.throttle((selection: number[]) => {
-      const [start, end] = selection.map(x.invert);
+    return _.throttle((selection: number[]) => {
+      const [start, end] = selection;
       timeline.vis.setWindow(start, end, {
         animation: false
       });
     }, 16);
-
-    const updateContext = _.throttle((interval: vis.TimelineWindow) => {
-      return window.selection.call(
-        window.brush.move,
-        [interval.start, interval.end].map(x)
-      );
-    }, 16);
-
-    window.brush.on('brush', function() {
-      if (d3.event.sourceEvent && d3.event.selection) {
-        updateWindow(d3.event.selection);
-      }
-    });
-
-    timeline.vis.on('rangechange', (e: any) => {
-      if (e.byUser) {
-        updateContext(e);
-      }
-    });
-  }, [timeline, window, x]);
-
-  // /*
-  //  * Display Types
-  //  */
-  // useEffect(() => {
-  //   // dispatch(setKindMask(displayTypes));
-  //   // setFilter('display', (e: AnyEvent) => displayTypes[e.kind]);
-  // }, [displayTypes, dispatch]);
+  }, [timeline]);
 
   const actions = useRef<{
     click: (e: VisEvent) => void;
@@ -598,22 +451,19 @@ export const VisTimeline: React.FC = function() {
 
   useEffect(() => {
     if (firstEvent !== true) return;
-    if (!timeline || !window || !width || !contextFilter) return;
+    if (!timeline || !width || !contextFilter || !x) return;
 
     timeline.vis.fit({ animation: false });
     const interval = timeline.vis.getWindow();
 
-    window.selection.call(
-      window.brush.move,
-      [interval.start, interval.end].map(x)
-    );
+    setWindowSync([interval.start, interval.end]);
     contextFilter.selection.call(contextFilter.brush.move, [
       filterMargins.left,
       width - filterMargins.right
     ]);
 
     setFirstEvent(width);
-  }, [contextFilter, firstEvent, timeline, width, window, x]);
+  }, [contextFilter, firstEvent, timeline, width, x]);
 
   useEffect(() => {
     if (!timeline) return;
@@ -637,17 +487,28 @@ export const VisTimeline: React.FC = function() {
         width="100%"
         height={dimensions.height + 'px'}
       >
-        <g
-          id="context-axis"
-          className="axis"
-          ref={axisRef}
-          transform={`translate(0, ${dimensions.height - margins.bottom})`}
-          pointerEvents="none"
-        ></g>
-        <g id="context-stackedchart" ref={chartRef}></g>
-        <g id="context-filter" className="brush" ref={contextFilterRef}></g>
-        <g id="context-window" className="brush" ref={windowRef}></g>
+        {x && (
+          <>
+            <ContextTimeAxis dimensions={dimensions} margins={margins} x={x} />
+            <StackedChart dimensions={dimensions} margins={margins} x={x} />
+            <FilterBrush ref={contextFilterRef} />
+            {width && (
+              <ContextWindowBrush
+                onBrush={updateTimeline}
+                width={width}
+                windowSync={windowSync}
+                x={x}
+                margins={windowMargins}
+                dimensions={dimensions}
+              />
+            )}
+          </>
+        )}
       </svg>
     </>
   );
 };
+
+export const FilterBrush = React.forwardRef<SVGGElement>(function(_props, ref) {
+  return <g id="context-filter" className="brush" ref={ref}></g>;
+});

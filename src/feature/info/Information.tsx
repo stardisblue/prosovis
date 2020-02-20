@@ -40,13 +40,11 @@ export const Information: React.FC = function() {
   const groups = useGroups(selectedEvents);
 
   return (
-    <div className="overflow-y-auto vh-100">
-      <Flex column className="pa1 vh-100">
-        {_.map(groups.no, g => (
-          <MemoInfoGroup key={g.group.uri} {...g} />
-        ))}
-      </Flex>
-    </div>
+    <Flex column className="pa1 h-100 overflow-y-auto">
+      {_.map(groups.no, g => (
+        <MemoInfoGroup key={g.group.uri} {...g} />
+      ))}
+    </Flex>
   );
 };
 

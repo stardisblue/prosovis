@@ -10,11 +10,14 @@ type KindMask = {
   [k in AnyEvent['kind']]: boolean;
 };
 
+type BoundsMask = [{ lat: number; lng: number }, { lat: number; lng: number }];
+
 export const maskSlice = createSlice({
   name: 'filters',
   initialState: {} as {
     interval?: IntervalMask;
     kind?: KindMask;
+    bounds?: BoundsMask;
   },
   reducers: {
     setIntervalMask: function(state, { payload }: PayloadAction<IntervalMask>) {
@@ -29,6 +32,9 @@ export const maskSlice = createSlice({
     setKindMask: function(state, { payload }: PayloadAction<KindMask>) {
       state.kind = payload;
     },
+    setBoundsMask: function(state, { payload }: PayloadAction<BoundsMask>) {
+      state.bounds = payload;
+    },
     clearMask: function() {
       return {};
     }
@@ -39,6 +45,7 @@ export const {
   setIntervalMask,
   setKindMask,
   toggleKindMask,
+  setBoundsMask,
   clearMask
 } = maskSlice.actions;
 
