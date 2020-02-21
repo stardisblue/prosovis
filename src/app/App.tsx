@@ -23,26 +23,6 @@ const store = configureStore({
         .map<[AnyEvent['kind'], boolean]>(k => [k.kind, true])
         .fromPairs()
         .value() as { [k in AnyEvent['kind']]: boolean }
-    },
-    color: {
-      domain: [
-        'PassageExamen',
-        'Birth',
-        'Education',
-        'Retirement',
-        'SuspensionActivity',
-        'Death',
-        'ObtainQualification'
-      ],
-      range: [
-        '#a6cee3',
-        '#1f78b4',
-        '#b2df8a',
-        '#33a02c',
-        '#fb9a99',
-        '#e31a1c',
-        '#fdbf6f'
-      ]
     }
   }
 });
@@ -58,7 +38,7 @@ function App() {
           gridTemplateAreas:
             '"header header header" "info rel map" "info timeline timeline"',
           gridTemplateColumns: '25% 1fr 1fr',
-          gridTemplateRows: 'auto 1fr 1fr'
+          gridTemplateRows: 'auto 1fr auto'
         }}
       >
         <div style={{ gridArea: 'header' }}>

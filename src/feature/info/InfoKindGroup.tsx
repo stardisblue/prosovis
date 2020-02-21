@@ -71,17 +71,17 @@ export const InfoKindGroup: React.FC<{
   }
   if (_.isArray(events))
     return (
-      <div>
+      <div className="pv1">
         <Flex
           justify="between"
           items="center"
-          className={classnames('sip-info--event', 'pb1', {
+          className={classnames('sip-info--event', {
             b: selected,
             'o-50': filtered
           })}
           onClick={handleClick}
         >
-          <span className="pa2" style={{ color: color(kind) }}>
+          <span className="ph2" style={{ color: color(kind) }}>
             <Octicon icon={icon} width={16} height={16} />
           </span>
           <FlexItem auto>
@@ -96,7 +96,10 @@ export const InfoKindGroup: React.FC<{
           />
         </Flex>
         {show && (
-          <div className="ml3 bl bw2" style={{ borderColor: color(kind) }}>
+          <div
+            className="bl bw1 pt1"
+            style={{ borderColor: color(kind), marginLeft: '1rem' }}
+          >
             {_.map(events, e => (
               <MemoEventInfo
                 key={e.id}

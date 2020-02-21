@@ -12,8 +12,8 @@ const Kind: React.FC<{
 }> = function({ id, state }) {
   const dispatch = useDispatch();
 
-  const icon = useSelector((state: RootState) => {
-    return (
+  const selectIcon = useCallback(
+    (state: RootState) => (
       <i
         className="br-100 mh1 dib ba"
         style={{
@@ -23,12 +23,16 @@ const Kind: React.FC<{
           width: '12px'
         }}
       />
-    );
-  });
+    ),
+    [id]
+  );
+
+  const icon = useSelector(selectIcon);
 
   const handleCheck = useCallback(() => {
     dispatch(toggleKindMask(id));
   }, [dispatch, id]);
+
   return (
     <Flex tag="label" className="ph2" col items="baseline">
       <input type="checkbox" checked={state} onChange={handleCheck} />

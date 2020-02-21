@@ -188,7 +188,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({
       })}
       onClick={handleSelection}
     >
-      <span className="pa2" style={{ color: color(event.kind) }}>
+      <span className="ph2" style={{ color: color(event.kind) }}>
         {showIcon && <Octicon icon={icon} width={16} height={16} />}
       </span>
       <FlexItem auto>{content}</FlexItem>

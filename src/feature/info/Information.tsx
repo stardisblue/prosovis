@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { Datation } from '../../data';
-import { MemoInfoGroup } from './InfoGroup';
+import { InfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
@@ -42,7 +42,7 @@ export const Information: React.FC = function() {
   return (
     <Flex column className="pa1 h-100 overflow-y-auto">
       {_.map(groups.no, g => (
-        <MemoInfoGroup key={g.group.uri} {...g} />
+        <InfoGroup key={g.group.uri} {...g} />
       ))}
     </Flex>
   );
@@ -59,3 +59,6 @@ export default Information;
 // info:carte: filtre = zoom fleches : séquence parmi les lieux affichés
 // couleurs-cartes
 // report: semaine derniere
+
+//* TODO : autovis clustering
+//* pacific vis van wijk

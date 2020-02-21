@@ -1,4 +1,6 @@
+import './InfoGroup.sass';
 import React, { useMemo, useState, useCallback } from 'react';
+
 import { Ressource } from '../../data';
 import classnames from 'classnames';
 import _ from 'lodash';
@@ -34,7 +36,13 @@ import { EventGroup, SelectedEvent } from './models';
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
     () => ({
-      title: classnames('sipig--title', 'ba', 'pa1', 'flex-grow-0'),
+      title: classnames(
+        'sipig--title',
+        'b--moon-gray',
+        'ph1',
+        'pt1',
+        'flex-grow-0'
+      ),
       titleIcon: classnames('sipig--icon', 'ma1', 'flex-shrink-0'),
       titleLabel: classnames('sipig--label', 'flex-auto', {
         b: selected === true,
@@ -42,11 +50,12 @@ const useStyles = (filtered: boolean, selected: boolean) =>
       }),
       titleMore: classnames('ma1', 'flex-shrink-0'),
       events: classnames(
+        // TODO pixel aligner avec l'icon des acteurs
         'sipig--events',
-        'bb',
-        'br',
         'bl',
-        'b--light-silver',
+        'bw1',
+        'bb',
+        'b--moon-gray',
         'overflow-y-auto'
       )
     }),
@@ -154,9 +163,6 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
             height: groupedEvents.length > 12 ? '600px' : 'auto'
           }}
         >
-          {/* {events.map(e => (
-            <MemoEventInfo key={e.id} event={e} origin={kind} />
-          ))} */}
           {groupedEvents.map(e => (
             <InfoKindGroup key={e.id} {...e} origin={kind} />
           ))}
@@ -165,5 +171,3 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
     </>
   );
 };
-
-export const MemoInfoGroup = InfoGroup;

@@ -134,7 +134,6 @@ const scale = d3.scaleSqrt().range([5, 10]);
 export const SipMarkers: React.FC<{
   $map: React.MutableRefObject<Map>;
 }> = function({ $map }) {
-  const dispatch = useDispatch();
   const color = useSelector(selectMainColor);
 
   const events = useSelector(selectLocalisedEvents);
@@ -212,46 +211,69 @@ export const SipMarkers: React.FC<{
       onclusterclick={onClusterClick}
       iconCreateFunction={createClusterIcon}
     >
-      {_(events)
-        .map(event => {
-          const localisation = event.localisation;
-          return (
-            <Marker
-              data-id={event.id}
-              data-kind={event.kind}
-              data-actor={event.actor}
-              onclick={function(e) {
-                dispatch(
-                  setSelection({
-                    id: e.target.options['data-id'],
-                    kind: 'Event'
-                  })
-                );
-              }}
-              onmouseover={function(e: any) {
-                console.log(e.target.options);
-                dispatch(
-                  setHighlights({
-                    id: e.target.options['data-id'],
-                    kind: 'Event'
-                  })
-                );
-              }}
-              onmouseout={function(e: any) {
-                console.log('out');
-                dispatch(clearHighlights());
-              }}
-              key={event.id}
-              position={[+localisation.lat!, +localisation.lng!]}
-            >
-              <Popup>{event.label}</Popup>
-            </Marker>
-          );
-        })
-        .compact()
-        .value()}
+      {_.map(events, event => {
+        return <SipMarker key={event.id} event={event} />;
+      })}
     </MarkerClusterGroup>
   );
 };
 
 export default SiprojurisMap;
+const SipMarker: React.FC<{
+  event: {
+    localisation: NamedPlace;
+    label: string;
+    actor: string | number;
+    id: string | number;
+    kind: AnyEvent['kind'];
+  };
+}> = function({ event: { id, actor, kind, label, localisation } }) {
+  const dispatch = useDispatch();
+
+  const handleClick = useCallback(
+    function() {
+      dispatch(
+        setSelection({
+          id: id,
+          kind: 'Event'
+        })
+      );
+    },
+    [id, dispatch]
+  );
+
+  const handleMouseOver = useCallback(
+    function() {
+      console.log('hover');
+      dispatch(
+        setHighlights({
+          id: id,
+          kind: 'Event'
+        })
+      );
+    },
+    [id, dispatch]
+  );
+
+  const handleMouseOut = useCallback(
+    function(e) {
+      console.log('out');
+      dispatch(clearHighlights());
+    },
+    [dispatch]
+  );
+
+  return (
+    <Marker
+      data-id={id}
+      data-kind={kind}
+      data-actor={actor}
+      onclick={handleClick}
+      onmouseover={handleMouseOver}
+      onmouseout={handleMouseOut}
+      position={[+localisation.lat!, +localisation.lng!]}
+    >
+      <Popup>{label}</Popup>
+    </Marker>
+  );
+};
