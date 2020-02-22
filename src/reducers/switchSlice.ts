@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { RootState } from '.';
 
 const switchSlice = createSlice({
   name: 'switch',
@@ -27,3 +28,5 @@ export const {
   switchToActor,
   switchToKind
 } = switchSlice.actions;
+
+export const selectSwitch = (state: RootState) => state.switch;

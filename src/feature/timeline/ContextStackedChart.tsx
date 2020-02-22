@@ -3,18 +3,19 @@ import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import { selectMainColor } from '../../selectors/color';
 import moment from 'moment';
-import { selectEvents, selectKinds } from '../../selectors/event';
+import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent } from '../../data';
+import { AnyEvent, PrimaryKey } from '../../data';
 import ContextOptions from './ContextOptions';
+import { selectSwitch } from '../../reducers/switchSlice';
 
-export const selectStack = createSelector(selectEvents, selectKinds, function(
-  events,
-  kinds
-) {
-  const flatten = _(events)
-    .flatMap<{ kind: AnyEvent['kind'] | ''; time: Date } | undefined>(e => {
+export const selectDiscrete = createSelector(selectEvents, function(events) {
+  return _(events)
+    .flatMap<
+      | { kind: AnyEvent['kind'] | ''; actor: PrimaryKey | null; time: Date }
+      | undefined
+    >(e => {
       if (e.datation.length === 2) {
         const [start, end] = _(e.datation)
           .map(d => d3.timeYear.floor(new Date(d.clean_date)))
@@ -23,11 +24,13 @@ export const selectStack = createSelector(selectEvents, selectKinds, function(
 
         return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
           kind: e.kind,
+          actor: e.actor.id,
           time
         }));
       } else if (e.datation.length === 1) {
         return {
           kind: e.kind,
+          actor: e.actor.id,
           time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
         };
       }
@@ -35,17 +38,34 @@ export const selectStack = createSelector(selectEvents, selectKinds, function(
     .concat(
       d3.timeYear
         .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map(d => ({ time: d, kind: '' }))
+        .map(d => ({ time: d, kind: '', actor: null }))
     )
-    .groupBy('time')
-    .mapValues(v => _.countBy(v, 'kind'))
+    .groupBy('time');
+});
+
+const selectMap = createSelector(
+  selectSwitch,
+  selectActors,
+  selectKinds,
+  (switcher, actors, kinds) =>
+    switcher === 'Actor'
+      ? { countBy: 'actor', keys: _.map(actors, a => '' + a.id) }
+      : { countBy: 'kind', keys: kinds }
+);
+
+const selectStack = createSelector(selectDiscrete, selectMap, function(
+  events,
+  selection
+) {
+  const flatten = _(events)
+    .mapValues(v => _.countBy(v, selection.countBy))
     .map((value, time) => ({ time: new Date(time), ...value }))
     .sortBy('time')
     .value();
 
   return d3
     .stack()
-    .keys(kinds)
+    .keys(selection.keys)
     .order(d3.stackOrderInsideOut)
     .value((d, k) => d[k] || 0)(flatten as any);
 });

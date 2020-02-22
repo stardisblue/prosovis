@@ -10,3 +10,10 @@ export const selectKinds = createSelector(selectEvents, events =>
     .map('kind')
     .value()
 );
+
+export const selectActors = createSelector(selectEvents, events =>
+  _(events)
+    .uniqBy('actor.id')
+    .map('actor')
+    .value()
+);

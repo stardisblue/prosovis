@@ -23,7 +23,7 @@ import {
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectHighlights } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
-import { selectMainColor, selectBorderColor } from '../../selectors/color';
+import { selectEventColor } from '../../selectors/color';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   selectTimelineGroupBy,
@@ -97,9 +97,8 @@ const OPACITY_CLASS = 'o-50';
 const selectTimelineEvents = createSelector(
   selectMaskedEvents,
   selectTimelineGroupBy,
-  selectMainColor,
-  selectBorderColor,
-  (events, groupBy, mainColor, borderColor) => {
+  selectEventColor,
+  (events, groupBy, eventColor) => {
     return _.transform(
       events,
       function(acc, e) {
@@ -112,8 +111,8 @@ const selectTimelineEvents = createSelector(
             popover: 'true',
             ...resolveDatation(datation),
             className: classnames(_.kebabCase(kind), 'timeline-event'),
-            style: `border:1px solid ${borderColor(kind)};
-            background-color: ${mainColor(kind)}`,
+            style: `border:1px solid ${eventColor.border(e)};
+            background-color: ${eventColor.main(e)}`,
             group: groupBy(e),
             kind
           });

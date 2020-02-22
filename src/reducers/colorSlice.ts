@@ -1,9 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-
+import * as d3 from 'd3-scale-chromatic';
 export const colorSlice = createSlice({
   name: 'color',
   initialState: {
-    domain: [
+    kindDomain: [
       'PassageExamen',
       'Birth',
       'Education',
@@ -12,7 +12,7 @@ export const colorSlice = createSlice({
       'Death',
       'ObtainQualification'
     ],
-    range: [
+    kindRange: [
       '#a6cee3',
       '#1f78b4',
       '#b2df8a',
@@ -21,18 +21,7 @@ export const colorSlice = createSlice({
       '#e31a1c',
       '#fdbf6f'
     ],
-    actorRange: [
-      '#4e79a7',
-      '#f28e2c',
-      '#e15759',
-      '#76b7b2',
-      '#59a14f',
-      '#edc949',
-      '#af7aa1',
-      '#ff9da7',
-      '#9c755f',
-      '#bab0ab'
-    ]
+    actorRange: (d3 as any).schemeTableau10 as string[]
   },
   reducers: {}
 });

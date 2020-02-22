@@ -160,8 +160,6 @@ export const EventInfo: React.FC<EventInfoProps> = function({
     }
 
     case 'SuspensionActivity': {
-      console.log(event);
-
       icon = Telescope;
       content = createContent(
         event.abstract_object && event.abstract_object.label
