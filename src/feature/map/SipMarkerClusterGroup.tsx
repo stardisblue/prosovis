@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { MarkerClusterGroup } from './MarkerClusterGroup';
 import { createSelector } from '@reduxjs/toolkit';
 
@@ -22,7 +22,6 @@ import { selectSwitch } from '../../reducers/switchSlice';
 import { selectMainColor, selectActorColor } from '../../selectors/color';
 import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
-import { RootState } from '../../reducers';
 
 const selectLocalisedEvents = createSelector(selectMaskedEvents, events =>
   _.transform(
@@ -92,14 +91,15 @@ const selectClusterIconFun = createSelector(
         .countBy(countBy)
         .toPairs()
         .value();
-      const svg = d3
-        .create('svg')
+
+      if (!(cluster as any)._react) {
+        (cluster as any)._react = d3.create('svg').node() as any;
+      }
+      const dom = (cluster as any)._react;
+      d3.select(dom)
         .attr('width', size)
         .attr('height', size)
         .attr('viewBox', [-donut - radius, -donut - radius, size, size] as any);
-      const dom: HTMLElement = svg.node() as any;
-
-      console.log(markers);
 
       ReactDOM.render(
         <PieChart
@@ -156,6 +156,22 @@ export const SipMarkerClusterGroup: React.FC<{
   );
 
   const iconCreateFunction = useSelector(selectClusterIconFun);
+  const [refreshCluster, setRefreshCluster] = useState(
+    () => iconCreateFunction
+  );
+
+  useEffect(
+    function() {
+      iconCreateRef.current = iconCreateFunction;
+      setRefreshCluster(() => iconCreateFunction);
+    },
+    [iconCreateFunction]
+  );
+
+  const iconCreateRef = useRef(iconCreateFunction);
+  const iconCreateFix = useRef(function(cluster: L.MarkerCluster) {
+    return iconCreateRef.current(cluster);
+  });
 
   const getMarkers = useCallback(
     (ref: React.MutableRefObject<L.MarkerClusterGroup>) => {
@@ -176,9 +192,10 @@ export const SipMarkerClusterGroup: React.FC<{
         zoomToBoundsOnClick: false,
         showCoverageOnHover: false,
         removeOutsideVisibleBounds: true,
-        iconCreateFunction
+        iconCreateFunction: iconCreateFix.current
       }}
       onClusterClick={onClusterClick}
+      refreshCluster={refreshCluster}
     />
   );
 };

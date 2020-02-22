@@ -8,8 +8,6 @@ export const PieChart: React.FC<{
   color: any;
   donut?: number;
 }> = function({ radius, counts, color, donut = 0 }) {
-  console.log('hewwo');
-
   const arcs = useMemo(
     () =>
       d3
@@ -26,6 +24,7 @@ export const PieChart: React.FC<{
         .outerRadius(donut + radius),
     [radius, donut]
   );
+
   return (
     <g stroke="white">
       {_.map(arcs, a => (

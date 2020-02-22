@@ -1,19 +1,19 @@
 import React, { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster';
-import { useAddLayer } from './useAddLayer';
 
 export const MarkerClusterGroup: React.FC<{
   $l: React.MutableRefObject<L.Map>;
   markers: (ref: React.MutableRefObject<L.MarkerClusterGroup>) => JSX.Element[];
   options?: L.MarkerClusterGroupOptions;
   onClusterClick?: L.LeafletMouseEventHandlerFn;
-}> = function({ $l, markers, options, onClusterClick }) {
+  refreshCluster?: any;
+}> = function({ $l, markers, options, onClusterClick, refreshCluster }) {
   const $group = useRef(L.markerClusterGroup(options));
 
   useEffect(
     function() {
-      console.log('onmount');
+      console.log($group.current);
 
       const p = $l.current;
       p.addLayer($group.current);
@@ -24,6 +24,13 @@ export const MarkerClusterGroup: React.FC<{
     },
     // eslint-disable-next-line
     []
+  );
+
+  useEffect(
+    function() {
+      $group.current.refreshClusters();
+    },
+    [refreshCluster]
   );
 
   useEffect(

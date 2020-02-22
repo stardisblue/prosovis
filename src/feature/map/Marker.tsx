@@ -1,6 +1,5 @@
 import React, { useRef, useEffect } from 'react';
 import L from 'leaflet';
-import { useAddLayer } from './useAddLayer';
 import { PrimaryKey } from '../../data';
 
 const DataMarker = L.Marker.extend({
