@@ -5,7 +5,7 @@ import React, {
   ReactPortal,
   useCallback
 } from 'react';
-import L, { FeatureGroup } from 'leaflet';
+import L, { FeatureGroup, svg } from 'leaflet';
 import 'leaflet.markercluster';
 import _ from 'lodash';
 import { useSelector } from 'react-redux';
@@ -21,6 +21,7 @@ type Cluster = L.MarkerCluster & {
   _iconNeedsUpdate: boolean;
   _icon: HTMLElement;
   _leaflet_id: string;
+  _svg_is_child: any;
   _svg: HTMLElement;
 };
 
@@ -28,12 +29,19 @@ function getChildren(parent: Cluster) {
   return parent._childClusters;
 }
 
-function getChildClusters(parent: Cluster, aggregator: Cluster[]) {
-  if (!parent._svg) parent._svg = d3.create('div').node()!;
-  aggregator.push(parent);
-  const childrens = getChildren(parent);
+function getChildClusters(current: Cluster, aggregator: Cluster[]) {
+  if (!current._svg) {
+    current._svg = d3.create('div').node()!;
+    current._svg_is_child = false;
+  }
+  aggregator.push(current);
+  const childrens = getChildren(current);
 
   if (childrens.length !== 0) {
+    if (childrens.length === 1 && !childrens[0]._svg) {
+      childrens[0]._svg = current._svg;
+      childrens[0]._svg_is_child = true;
+    }
     _.forEach(childrens, c => getChildClusters(c, aggregator));
   }
 
@@ -49,6 +57,7 @@ function iconCreateFunction(cluster: L.MarkerCluster) {
 
   if (!(cluster as any)._svg) {
     (cluster as any)._svg = d3.create('div').node();
+    (cluster as any)._svg_is_child = (cluster as any)._svg_is_child;
   }
 
   return L.divIcon({
@@ -58,7 +67,7 @@ function iconCreateFunction(cluster: L.MarkerCluster) {
   });
 }
 
-const selectColorSwitch = createSelector(
+const selectGrouper = createSelector(
   selectSwitch,
   selectMainColor,
   selectActorColor,
@@ -95,9 +104,9 @@ export const MarkerClusterGroup: React.FC<{
     []
   );
 
-  const grouper = useSelector(selectColorSwitch);
+  const grouper = useSelector(selectGrouper);
 
-  const [portals, setPortals] = useState<ReactPortal[]>([]);
+  const [portals, setPortals] = useState<(ReactPortal | null)[]>([]);
   useEffect(() => {
     console.log($group.current);
     const clusters = getChildClusters(
@@ -116,21 +125,25 @@ export const MarkerClusterGroup: React.FC<{
           .toPairs()
           .value();
 
-        return ReactDOM.createPortal(
-          <svg
-            width={size}
-            height={size}
-            viewBox={`${-radius} ${-radius} ${size} ${size}`}
-          >
-            <PieChart
-              radius={radius}
-              counts={counts}
-              color={grouper.color}
-              donut={0}
-            />
-          </svg>,
-          c._svg
-        );
+        if (!c._svg_is_child) {
+          return ReactDOM.createPortal(
+            <svg
+              width={size}
+              height={size}
+              viewBox={`${-radius} ${-radius} ${size} ${size}`}
+            >
+              <PieChart
+                radius={radius}
+                counts={counts}
+                color={grouper.color}
+                donut={0}
+              />
+            </svg>,
+            c._svg
+          );
+        }
+
+        return null;
       })
     );
   }, [markers, grouper]);
