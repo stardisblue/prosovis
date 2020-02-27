@@ -130,6 +130,8 @@ export const ContextStackedChart: React.FC<{
 
   useEffect(
     function() {
+      console.log(color.domain());
+
       chart.current
         .selectAll('path')
         .data(countStack)

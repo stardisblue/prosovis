@@ -33,6 +33,8 @@ export const selectBoundsFun = createSelector(selectBoundsMask, res =>
         const loc = getLocalisation(e);
         if (loc && loc.lat !== null && loc.lng !== null) {
           return L.latLngBounds(res).contains([+loc.lat, +loc.lng]);
+        } else {
+          return true;
         }
       }
     : undefined
