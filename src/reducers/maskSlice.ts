@@ -6,8 +6,12 @@ type IntervalMask = {
   end: string;
 };
 
-type KindMask = {
-  [k in AnyEvent['kind']]: boolean;
+export type KindMask = {
+  [k in AnyEvent['kind']]?: boolean;
+};
+
+export type ActorMask = {
+  [k in AnyEvent['actor']['id']]?: boolean;
 };
 
 type BoundsMask = [{ lat: number; lng: number }, { lat: number; lng: number }];
@@ -18,6 +22,7 @@ export const maskSlice = createSlice({
     interval?: IntervalMask;
     kind?: KindMask;
     bounds?: BoundsMask;
+    actor?: ActorMask;
   },
   reducers: {
     setIntervalMask: function(state, { payload }: PayloadAction<IntervalMask>) {
@@ -27,10 +32,25 @@ export const maskSlice = createSlice({
       state,
       { payload }: PayloadAction<AnyEvent['kind']>
     ) {
-      if (state.kind) state.kind[payload] = !state.kind[payload];
+      if (state.kind)
+        state.kind[payload] =
+          state.kind[payload] !== undefined ? !state.kind[payload] : false;
+      else state.kind = { [payload]: false };
     },
     setKindMask: function(state, { payload }: PayloadAction<KindMask>) {
       state.kind = payload;
+    },
+    toggleActorMask: function(
+      state,
+      { payload }: PayloadAction<AnyEvent['actor']['id']>
+    ) {
+      if (state.actor)
+        state.actor[payload] =
+          state.actor[payload] !== undefined ? !state.actor[payload] : false;
+      else state.actor = { [payload]: false };
+    },
+    setActorMask: function(state, { payload }: PayloadAction<ActorMask>) {
+      state.actor = payload;
     },
     setBoundsMask: function(state, { payload }: PayloadAction<BoundsMask>) {
       state.bounds = payload;
@@ -45,6 +65,8 @@ export const {
   setIntervalMask,
   setKindMask,
   toggleKindMask,
+  setActorMask,
+  toggleActorMask,
   setBoundsMask,
   clearMask
 } = maskSlice.actions;

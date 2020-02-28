@@ -19,6 +19,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setSelection } from '../../reducers/selectionSlice';
 import { highlightsAsMap } from '../../selectors/highlight';
 import { selectMainColor } from '../../selectors/color';
+import { createSelector } from '@reduxjs/toolkit';
+import { selectSwitch } from '../../reducers/switchSlice';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -72,6 +74,15 @@ function prefix(condition: boolean, prefix: string) {
   };
 }
 
+const selectColor = createSelector(
+  selectSwitch,
+  selectMainColor,
+  (switcher, main) => {
+    if (switcher === 'Kind') return main;
+    else return () => 'black';
+  }
+);
+
 export const EventInfo: React.FC<EventInfoProps> = function({
   event,
   origin,
@@ -79,7 +90,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({
 }) {
   let icon: Icon<number, number>;
   let content;
-  const color = useSelector(selectMainColor);
+  const color = useSelector(selectColor);
   const { actor } = event;
   const place = origin === 'NamedPlace';
 

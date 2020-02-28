@@ -5,6 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 import { selectEvents } from './event';
 import L from 'leaflet';
+import { ActorMask, KindMask } from '../reducers/maskSlice';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -12,6 +13,7 @@ export const selectIntervalMask = createSelector(
   mask => mask.interval
 );
 export const selectKindMask = createSelector(selectMask, mask => mask.kind);
+export const selectActorMask = createSelector(selectMask, mask => mask.actor);
 export const selectBoundsMask = createSelector(selectMask, mask => mask.bounds);
 
 export const selectIntervalFun = createSelector(selectIntervalMask, res =>
@@ -24,7 +26,11 @@ export const selectIntervalFun = createSelector(selectIntervalMask, res =>
 );
 
 export const selectKindFun = createSelector(selectKindMask, res =>
-  res ? (e: AnyEvent) => res[e.kind] : undefined
+  res ? (e: AnyEvent) => kindMaskState(e.kind, res) : undefined
+);
+
+export const selectActorFun = createSelector(selectActorMask, res =>
+  res ? (e: AnyEvent) => actorMaskState(e.actor, res) : undefined
 );
 
 export const selectBoundsFun = createSelector(selectBoundsMask, res =>
@@ -43,11 +49,13 @@ export const selectBoundsFun = createSelector(selectBoundsMask, res =>
 export const maskAllFun = createSelector(
   selectIntervalFun,
   selectKindFun,
+  selectActorFun,
   selectBoundsFun,
-  function(interval, kind, bound) {
+  function(interval, kind, actor, bound) {
     return (e: AnyEvent) => {
       if (interval && !interval(e)) return false;
       if (kind && !kind(e)) return false;
+      if (actor && !actor(e)) return false;
       if (bound && !bound(e)) return false;
       return true;
     };
@@ -63,3 +71,13 @@ export const selectMaskedEvents = createSelector(
 export const maskedEventsAsMap = createSelector(selectMaskedEvents, events =>
   _.keyBy(events, 'id')
 );
+
+export function actorMaskState(actor: AnyEvent['actor'], masks?: ActorMask) {
+  const state = masks && masks[actor.id];
+  return state !== undefined ? state : true;
+}
+
+export function kindMaskState(kind: AnyEvent['kind'], masks?: KindMask) {
+  const state = masks && masks[kind];
+  return state !== undefined ? state : true;
+}

@@ -1,11 +1,5 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  ReactPortal,
-  useCallback
-} from 'react';
-import L, { FeatureGroup, svg } from 'leaflet';
+import React, { useEffect, useRef, useState, ReactPortal } from 'react';
+import L from 'leaflet';
 import 'leaflet.markercluster';
 import _ from 'lodash';
 import { useSelector } from 'react-redux';
@@ -32,15 +26,15 @@ function getChildren(parent: Cluster) {
 function getChildClusters(current: Cluster, aggregator: Cluster[]) {
   if (!current._svg) {
     current._svg = d3.create('div').node()!;
-    current._svg_is_child = false;
+    // current._svg_is_child = false;
   }
   aggregator.push(current);
   const childrens = getChildren(current);
 
   if (childrens.length !== 0) {
     if (childrens.length === 1 && !childrens[0]._svg) {
-      childrens[0]._svg = current._svg;
-      childrens[0]._svg_is_child = true;
+      // childrens[0]._svg = current._svg;
+      // childrens[0]._svg_is_child = true;
     }
     _.forEach(childrens, c => getChildClusters(c, aggregator));
   }
@@ -57,7 +51,7 @@ function iconCreateFunction(cluster: L.MarkerCluster) {
 
   if (!(cluster as any)._svg) {
     (cluster as any)._svg = d3.create('div').node();
-    (cluster as any)._svg_is_child = (cluster as any)._svg_is_child;
+    // (cluster as any)._svg_is_child = (cluster as any)._svg_is_child;
   }
 
   return L.divIcon({
@@ -97,6 +91,7 @@ export const MarkerClusterGroup: React.FC<{
       const p = $l.current;
       p.addLayer($group.current);
       return function() {
+        // eslint-disable-next-line
         p.removeLayer($group.current);
       };
     },
@@ -108,7 +103,6 @@ export const MarkerClusterGroup: React.FC<{
 
   const [portals, setPortals] = useState<(ReactPortal | null)[]>([]);
   useEffect(() => {
-    console.log($group.current);
     const clusters = getChildClusters(
       ($group.current as any)._topClusterLevel as Cluster,
       []
@@ -120,30 +114,28 @@ export const MarkerClusterGroup: React.FC<{
         const radius = scale(markers.length);
         const size = radius * 2;
 
-        const counts = _(markers)
-          .countBy(grouper.countBy)
-          .toPairs()
-          .value();
+        // if (!c._svg_is_child) {
+        return ReactDOM.createPortal(
+          <svg
+            width={size}
+            height={size}
+            viewBox={`${-radius} ${-radius} ${size} ${size}`}
+          >
+            <PieChart
+              radius={radius}
+              counts={_(markers)
+                .countBy(grouper.countBy)
+                .toPairs()
+                .value()}
+              color={grouper.color}
+              donut={0}
+            />
+          </svg>,
+          c._svg
+        );
+        // }
 
-        if (!c._svg_is_child) {
-          return ReactDOM.createPortal(
-            <svg
-              width={size}
-              height={size}
-              viewBox={`${-radius} ${-radius} ${size} ${size}`}
-            >
-              <PieChart
-                radius={radius}
-                counts={counts}
-                color={grouper.color}
-                donut={0}
-              />
-            </svg>,
-            c._svg
-          );
-        }
-
-        return null;
+        // return null;
       })
     );
   }, [markers, grouper]);

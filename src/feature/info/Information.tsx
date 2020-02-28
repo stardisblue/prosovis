@@ -44,6 +44,11 @@ export const Information: React.FC = function() {
       {_.map(groups.no, g => (
         <InfoGroup key={g.group.uri} {...g} />
       ))}
+      <hr />
+      {/* todo style */}
+      {_.map(groups.yes, g => (
+        <InfoGroup key={g.group.uri} {...g} />
+      ))}
     </Flex>
   );
 };

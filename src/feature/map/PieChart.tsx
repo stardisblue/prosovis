@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import React, { useMemo, useEffect } from 'react';
 import * as d3 from 'd3';
-import { useSelector } from 'react-redux';
-import { selectMainColor } from '../../selectors/color';
 
 export const PieChart: React.FC<{
   radius: number;

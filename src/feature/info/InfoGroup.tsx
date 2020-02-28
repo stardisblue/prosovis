@@ -14,6 +14,10 @@ import Octicon, {
 import { Flex } from '../../components/ui/Flex';
 import { InfoKindGroup } from './InfoKindGroup';
 import { EventGroup, SelectedEvent } from './models';
+import { selectSwitch } from '../../reducers/switchSlice';
+import { createSelector } from '@reduxjs/toolkit';
+import { selectActorColor } from '../../selectors/color';
+import { useSelector } from 'react-redux';
 
 // TODO griser personnes
 // surlingé : survol
@@ -69,6 +73,18 @@ type InfoGroupProps = {
   kind: 'Actor' | 'NamedPlace';
   selected: boolean;
 };
+
+const selectColor = createSelector(
+  selectSwitch,
+  selectActorColor,
+  (switcher, actor) => {
+    if (switcher === 'Actor') {
+      return actor;
+    } else {
+      return () => 'black';
+    }
+  }
+);
 
 export const InfoGroup: React.FC<InfoGroupProps> = function({
   events,
@@ -132,6 +148,7 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
    * Styles
    */
   const classes = useStyles(filtered, selected);
+  const color = useSelector(selectColor);
 
   return (
     <>
@@ -142,10 +159,12 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
         items="baseline"
         onClick={handleClick}
       >
-        <Octicon
-          className={classes.titleIcon}
-          icon={kind === 'Actor' ? Person : Location}
-        />
+        <span style={{ color: kind === 'Actor' ? color(group.id) : 'black' }}>
+          <Octicon
+            className={classes.titleIcon}
+            icon={kind === 'Actor' ? Person : Location}
+          />
+        </span>
         <div className={classes.titleLabel}>{group.label}</div>
         <Octicon
           className={classes.titleMore}

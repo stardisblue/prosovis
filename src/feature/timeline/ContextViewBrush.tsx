@@ -86,9 +86,7 @@ export const ContextViewBrush: React.FC<{
             const [cx] = d3.mouse(this);
             const [x0, x1] = [cx - dx / 2, cx + dx / 2];
             const [X0, X1] = x.range();
-            console.log(
-              x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]
-            );
+
             selection.call(
               brush.move,
               x1 > X1 ? [X1 - dx, X1] : x0 < X0 ? [X0, X0 + dx] : [x0, x1]

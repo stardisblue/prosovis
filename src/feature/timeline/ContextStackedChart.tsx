@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
-import { selectMainColor } from '../../selectors/color';
+import { selectMainColor, selectActorColor } from '../../selectors/color';
 import moment from 'moment';
 import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
@@ -47,10 +47,16 @@ const selectMap = createSelector(
   selectSwitch,
   selectActors,
   selectKinds,
-  (switcher, actors, kinds) =>
+  selectMainColor,
+  selectActorColor,
+  (switcher, actors, kinds, mainColor, actorColor) =>
     switcher === 'Actor'
-      ? { countBy: 'actor', keys: _.map(actors, a => '' + a.id) }
-      : { countBy: 'kind', keys: kinds }
+      ? {
+          countBy: 'actor',
+          keys: _.map(actors, a => '' + a.id),
+          color: actorColor
+        }
+      : { countBy: 'kind', keys: kinds, color: mainColor }
 );
 
 const selectStack = createSelector(selectDiscrete, selectMap, function(
@@ -63,11 +69,14 @@ const selectStack = createSelector(selectDiscrete, selectMap, function(
     .sortBy('time')
     .value();
 
-  return d3
-    .stack()
-    .keys(selection.keys)
-    .order(d3.stackOrderInsideOut)
-    .value((d, k) => d[k] || 0)(flatten as any);
+  return {
+    stack: d3
+      .stack()
+      .keys(selection.keys)
+      .order(d3.stackOrderInsideOut)
+      .value((d, k) => d[k] || 0)(flatten as any),
+    color: selection.color
+  };
 });
 
 type D3Selection = d3.Selection<
@@ -88,14 +97,12 @@ export const ContextStackedChart: React.FC<{
   // ! assuming that ref is instantaneously populated
   const chart = useRef<D3Selection>({} as any);
 
-  const color = useSelector(selectMainColor);
-
   const chartRef = useCallback(function(dom: SVGGElement) {
     if (!dom) return;
     chart.current = d3.select(dom);
   }, []);
 
-  const countStack = useSelector(selectStack);
+  const stackAndColor = useSelector(selectStack);
 
   const y = useMemo(
     function() {
@@ -103,8 +110,8 @@ export const ContextStackedChart: React.FC<{
         d3
           .scalePow()
           .domain([
-            d3.min(countStack, d => d3.min(d, d => d[0])) as any,
-            d3.max(countStack, d => d3.max(d, d => d[1])) as any
+            d3.min(stackAndColor.stack, d => d3.min(d, d => d[0])) as any,
+            d3.max(stackAndColor.stack, d => d3.max(d, d => d[1])) as any
           ])
           // .nice()
           .range([
@@ -113,7 +120,7 @@ export const ContextStackedChart: React.FC<{
           ])
       );
     },
-    [countStack]
+    [stackAndColor.stack]
   );
 
   const area = useMemo(
@@ -130,18 +137,16 @@ export const ContextStackedChart: React.FC<{
 
   useEffect(
     function() {
-      console.log(color.domain());
-
       chart.current
         .selectAll('path')
-        .data(countStack)
+        .data(stackAndColor.stack)
         .join('path')
-        .attr('fill', (d: any) => color(d.key))
+        .attr('fill', (d: any) => stackAndColor.color(d.key))
         .attr('d', area as any)
         .append('title')
         .text(d => d.key);
     },
-    [area, color, countStack]
+    [area, stackAndColor]
   );
 
   return <g id="context-stackedchart" ref={chartRef}></g>;

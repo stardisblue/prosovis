@@ -11,10 +11,19 @@ export const SiprojurisMap: React.FC = function() {
   const dispatch = useDispatch();
 
   const $map = useRef<L.Map>(null as any);
+
+  const $markerLayer = useRef<any>();
   const handleRef = useCallback(function(dom: Map) {
     if (!dom) return;
     $map.current = dom.leafletElement;
   }, []);
+  const handleMarkerLayerRef = useCallback(function(
+    dom: LayersControl.Overlay
+  ) {
+    if (!dom) return;
+    $markerLayer.current = dom.contextValue;
+  },
+  []);
 
   useEffect(() => {
     // if ($map.current === null) return;
@@ -52,10 +61,24 @@ export const SiprojurisMap: React.FC = function() {
           <SipMarkerClusterGroup $l={$map} />
         </LayersControl.Overlay>
 
-        {/* <LayersControl.Overlay name="AntPaths" checked></LayersControl.Overlay> */}
+        <LayersControl.Overlay
+          ref={handleMarkerLayerRef}
+          name="AntPaths"
+          checked
+        >
+          <SipAnthPath $l={$markerLayer} />
+        </LayersControl.Overlay>
       </LayersControl>
     </Map>
   );
+};
+
+const SipAnthPath: React.FC<{ $l: any }> = function({ $l }) {
+  useEffect(function() {
+    console.log($l);
+  });
+
+  return null;
 };
 
 export default SiprojurisMap;
