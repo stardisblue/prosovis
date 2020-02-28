@@ -23,7 +23,7 @@ import {
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectHighlights } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
-import { selectEventColor } from '../../selectors/color';
+import { selectEventColor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   selectTimelineGroupBy,

@@ -18,7 +18,14 @@ import Octicon, {
 } from '@primer/octicons-react';
 import { EventDates, MemoEventInfo } from './EventInfo';
 import { useSelector } from 'react-redux';
-import { selectMainColor } from '../../selectors/color';
+import { StyledOcticon } from './StyledOcticon';
+import styled from 'styled-components';
+import { selectSwitchKindColor } from '../../selectors/switch';
+
+const MarginLeftDiv = styled<any>('div')`
+  border-color: ${(props: any) => props.borderColor};
+  margin-left: 1rem;
+`;
 
 export const InfoKindGroup: React.FC<{
   kind: AnyEvent['kind'];
@@ -29,7 +36,7 @@ export const InfoKindGroup: React.FC<{
   selected?: boolean;
   filtered?: boolean;
 }> = function({ kind, events, start, end, origin, selected, filtered }) {
-  const color = useSelector(selectMainColor);
+  const color = useSelector(selectSwitchKindColor);
   const [show, setShow] = useState(false);
   const handleClick = useCallback(() => setShow(s => !s), []);
   useEffect(() => setShow(selected === true), [selected]);
@@ -81,8 +88,13 @@ export const InfoKindGroup: React.FC<{
           })}
           onClick={handleClick}
         >
-          <span className="ph2" style={{ color: color(kind) }}>
-            <Octicon icon={icon} width={16} height={16} />
+          <span className="ph2">
+            <StyledOcticon
+              color={color ? color(kind) : 'black'}
+              icon={icon}
+              width={16}
+              height={16}
+            />
           </span>
           <FlexItem auto>
             {events.length} {content}
@@ -96,9 +108,9 @@ export const InfoKindGroup: React.FC<{
           />
         </Flex>
         {show && (
-          <div
+          <MarginLeftDiv
             className="bl bw1 pt1"
-            style={{ borderColor: color(kind), marginLeft: '1rem' }}
+            borderColor={color ? color(kind) : 'grey'}
           >
             {_.map(events, e => (
               <MemoEventInfo
@@ -108,7 +120,7 @@ export const InfoKindGroup: React.FC<{
                 icon={false}
               />
             ))}
-          </div>
+          </MarginLeftDiv>
         )}
       </div>
     );

@@ -1,15 +1,16 @@
 import React from 'react';
 import _ from 'lodash';
+import classnames from 'classnames';
 import { Datation } from '../../data';
 import { InfoGroup } from './InfoGroup';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
-import { useSelector } from 'react-redux';
 import { selectEvents } from '../../selectors/event';
 import { maskedEventsAsMap } from '../../selectors/mask';
 import { selectionAsMap } from '../../selectors/selection';
 import { createSelector } from '@reduxjs/toolkit';
+import { useSelector } from 'react-redux';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -34,13 +35,15 @@ const selectInformationEvents = createSelector(
   }
 );
 
-export const Information: React.FC = function() {
+export const Information: React.FC<{ className?: string }> = function({
+  className
+}) {
   const selectedEvents = useSelector(selectInformationEvents);
 
   const groups = useGroups(selectedEvents);
 
   return (
-    <Flex column className="pa1 h-100 overflow-y-auto">
+    <Flex column className={classnames('pa1 h-100 overflow-y-auto', className)}>
       {_.map(groups.no, g => (
         <InfoGroup key={g.group.uri} {...g} />
       ))}

@@ -66,8 +66,9 @@ const selectLocalisedEvents = createSelector(selectMaskedEvents, events =>
 };*/
 
 export const SipMarkerClusterGroup: React.FC<{
-  $l: React.MutableRefObject<L.Map>;
-}> = function({ $l }) {
+  $map: React.MutableRefObject<L.Map>;
+  $layer: React.MutableRefObject<any>;
+}> = function({ $map, $layer }) {
   const events = useSelector(selectLocalisedEvents);
 
   const onClusterClick = useCallback(
@@ -94,10 +95,10 @@ export const SipMarkerClusterGroup: React.FC<{
         // All child markers are contained in a single cluster from this._maxZoom to this cluster.
         cluster.spiderfy();
       } else {
-        $l.current.flyTo(cluster._cLatLng, zoomLevel);
+        $map.current.flyTo(cluster._cLatLng, zoomLevel);
       }
     },
-    [$l]
+    [$map]
   );
   const getMarkers = useCallback(
     (ref: React.MutableRefObject<L.MarkerClusterGroup>) => {
@@ -110,7 +111,7 @@ export const SipMarkerClusterGroup: React.FC<{
 
   return (
     <MarkerClusterGroup
-      $l={$l}
+      $l={$layer}
       markers={getMarkers}
       options={{
         animate: false,

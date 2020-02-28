@@ -5,7 +5,9 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { useDispatch } from 'react-redux';
 import { setGroup } from './timelineGroupSlice';
 
-export const SiprojurisTimeline: React.FC = function() {
+export const SiprojurisTimeline: React.FC<{ className?: string }> = function({
+  className
+}) {
   const dispatch = useDispatch();
 
   const handleClick = useMemo(
@@ -21,7 +23,7 @@ export const SiprojurisTimeline: React.FC = function() {
   );
 
   return (
-    <>
+    <div className={className}>
       <div id="timeline-top">
         <Flex className="text-center">
           <FlexItem className="pa1">
@@ -148,7 +150,7 @@ export const SiprojurisTimeline: React.FC = function() {
         </Flex>
       </div>
       <VisTimeline />
-    </>
+    </div>
   );
 };
 

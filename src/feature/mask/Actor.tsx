@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleActorMask } from '../../reducers/maskSlice';
 import { AnyEvent, PrimaryKey } from '../../data';
 import { selectBorderColor, selectActorColor } from '../../selectors/color';
-import { selectSwitch } from '../../reducers/switchSlice';
+import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
+import StyledIcon from './StyledIcon';
 
 const selectIcon = createSelector(
   selectSwitch,
@@ -14,14 +15,10 @@ const selectIcon = createSelector(
   (switcher, main, border) => {
     return (id: PrimaryKey) => {
       return (
-        <i
+        <StyledIcon
           className="br-100 mh1 dib ba"
-          style={{
-            backgroundColor: switcher === 'Actor' ? main(id as string) : 'gray',
-            borderColor: switcher === 'Actor' ? border(id as string) : 'black',
-            height: '12px',
-            width: '12px'
-          }}
+          background={switcher === 'Actor' ? main(id as string) : 'gray'}
+          border={switcher === 'Actor' ? border(id as string) : 'black'}
         />
       );
     };
@@ -43,7 +40,7 @@ const Actor: React.FC<{
   }, [dispatch, actor.id]);
 
   return (
-    <Flex tag="label" className="ph2" col items="baseline">
+    <Flex tag="label" className="ph2" items="baseline">
       <input type="checkbox" checked={state} onChange={handleCheck} />
       {icon} {actor.label}
     </Flex>

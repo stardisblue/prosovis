@@ -7,7 +7,7 @@ import { selectMainColor, selectActorColor } from '../../selectors/color';
 import * as d3 from 'd3';
 import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitch } from '../../reducers/switchSlice';
+import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 
 type Cluster = L.MarkerCluster & {
@@ -74,7 +74,7 @@ const selectGrouper = createSelector(
 );
 
 export const MarkerClusterGroup: React.FC<{
-  $l: React.MutableRefObject<L.Map>;
+  $l: React.MutableRefObject<any>;
   markers: (ref: React.MutableRefObject<L.MarkerClusterGroup>) => JSX.Element[];
   options?: L.MarkerClusterGroupOptions;
   onClusterClick?: L.LeafletMouseEventHandlerFn;

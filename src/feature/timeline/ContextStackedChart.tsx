@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { AnyEvent, PrimaryKey } from '../../data';
 import ContextOptions from './ContextOptions';
-import { selectSwitch } from '../../reducers/switchSlice';
+import { selectSwitch } from '../../selectors/switch';
 
 export const selectDiscrete = createSelector(selectEvents, function(events) {
   return _(events)

@@ -4,8 +4,9 @@ import { useSelector, useDispatch } from 'react-redux';
 import { toggleKindMask } from '../../reducers/maskSlice';
 import { AnyEvent } from '../../data';
 import { selectMainColor, selectBorderColor } from '../../selectors/color';
-import { selectSwitch } from '../../reducers/switchSlice';
+import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
+import StyledIcon from './StyledIcon';
 
 const selectIcon = createSelector(
   selectSwitch,
@@ -14,14 +15,10 @@ const selectIcon = createSelector(
   (switcher, main, border) => {
     return (id: string) => {
       return (
-        <i
+        <StyledIcon
           className="br-100 mh1 dib ba"
-          style={{
-            backgroundColor: switcher === 'Kind' ? main(id) : 'gray',
-            borderColor: switcher === 'Kind' ? border(id) : 'black',
-            height: '12px',
-            width: '12px'
-          }}
+          background={switcher === 'Kind' ? main(id) : 'gray'}
+          border={switcher === 'Kind' ? border(id) : 'black'}
         />
       );
     };

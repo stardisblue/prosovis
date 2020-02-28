@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import _ from 'lodash';
-import Octicon, {
+import {
   MortarBoard,
   X as XIcon,
   Plus,
@@ -18,9 +18,8 @@ import { SelectedEvent } from './models';
 import { useDispatch, useSelector } from 'react-redux';
 import { setSelection } from '../../reducers/selectionSlice';
 import { highlightsAsMap } from '../../selectors/highlight';
-import { selectMainColor } from '../../selectors/color';
-import { createSelector } from '@reduxjs/toolkit';
-import { selectSwitch } from '../../reducers/switchSlice';
+import { selectSwitchKindColor } from '../../selectors/switch';
+import { StyledOcticon } from './StyledOcticon';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -74,15 +73,6 @@ function prefix(condition: boolean, prefix: string) {
   };
 }
 
-const selectColor = createSelector(
-  selectSwitch,
-  selectMainColor,
-  (switcher, main) => {
-    if (switcher === 'Kind') return main;
-    else return () => 'black';
-  }
-);
-
 export const EventInfo: React.FC<EventInfoProps> = function({
   event,
   origin,
@@ -90,7 +80,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({
 }) {
   let icon: Icon<number, number>;
   let content;
-  const color = useSelector(selectColor);
+  const color = useSelector(selectSwitchKindColor);
   const { actor } = event;
   const place = origin === 'NamedPlace';
 
@@ -197,8 +187,15 @@ export const EventInfo: React.FC<EventInfoProps> = function({
       })}
       onClick={handleSelection}
     >
-      <span className="ph2" style={{ color: color(event.kind) }}>
-        {showIcon && <Octicon icon={icon} width={16} height={16} />}
+      <span className="ph2">
+        {showIcon && (
+          <StyledOcticon
+            color={color ? color(event.kind) : 'black'}
+            icon={icon}
+            width={16}
+            height={16}
+          />
+        )}
       </span>
       <FlexItem auto>{content}</FlexItem>
       <EventDates dates={event.datation} />

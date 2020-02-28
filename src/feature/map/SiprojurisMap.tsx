@@ -7,7 +7,9 @@ import { setBoundsMask } from '../../reducers/maskSlice';
 import SipMarkerClusterGroup from './SipMarkerClusterGroup';
 import L from 'leaflet';
 
-export const SiprojurisMap: React.FC = function() {
+export const SiprojurisMap: React.FC<{ className?: string }> = function({
+  className
+}) {
   const dispatch = useDispatch();
 
   const $map = useRef<L.Map>(null as any);
@@ -21,7 +23,7 @@ export const SiprojurisMap: React.FC = function() {
     dom: LayersControl.Overlay
   ) {
     if (!dom) return;
-    $markerLayer.current = dom.contextValue;
+    $markerLayer.current = dom;
   },
   []);
 
@@ -44,38 +46,40 @@ export const SiprojurisMap: React.FC = function() {
   }, [dispatch]);
 
   return (
-    <Map
-      bounds={[
-        [48.853333, 2.348611],
-        [46.5691, 0.348203]
-      ]}
-      ref={handleRef}
-      maxZoom={15}
-    >
-      <TileLayer
-        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
-      <LayersControl position="topright">
-        <LayersControl.Overlay name="Markers" checked>
-          <SipMarkerClusterGroup $l={$map} />
-        </LayersControl.Overlay>
+    <div className={className}>
+      <Map
+        bounds={[
+          [48.853333, 2.348611],
+          [46.5691, 0.348203]
+        ]}
+        ref={handleRef}
+        maxZoom={15}
+      >
+        <TileLayer
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
+        <LayersControl position="topright">
+          <LayersControl.Overlay
+            name="Markers"
+            checked
+            ref={handleMarkerLayerRef}
+          >
+            <SipMarkerClusterGroup $layer={$markerLayer} $map={$map} />
+          </LayersControl.Overlay>
 
-        <LayersControl.Overlay
-          ref={handleMarkerLayerRef}
-          name="AntPaths"
-          checked
-        >
-          <SipAnthPath $l={$markerLayer} />
-        </LayersControl.Overlay>
-      </LayersControl>
-    </Map>
+          <LayersControl.Overlay name="AntPaths" checked>
+            <SipAnthPath />
+          </LayersControl.Overlay>
+        </LayersControl>
+      </Map>
+    </div>
   );
 };
 
-const SipAnthPath: React.FC<{ $l: any }> = function({ $l }) {
+const SipAnthPath: React.FC<{ $l?: any }> = function({ $l }) {
   useEffect(function() {
-    console.log($l);
+    // console.log($l.current.addLayer);
   });
 
   return null;

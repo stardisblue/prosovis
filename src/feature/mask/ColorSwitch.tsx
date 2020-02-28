@@ -20,18 +20,16 @@ const ColorSwitch: React.FC = function() {
   );
 
   return (
-    <Flex className="ph2" justify="between" wrap>
-      <label>
-        <input
-          type="checkbox"
-          name="switch"
-          id="toggle-switch"
-          checked={switchState}
-          onChange={handleCheck}
-        />
-        toggle Actors
-      </label>
-    </Flex>
+    <label>
+      <input
+        type="checkbox"
+        name="switch"
+        id="toggle-switch"
+        checked={switchState}
+        onChange={handleCheck}
+      />
+      toggle Actors
+    </label>
   );
 };
 
