@@ -19,7 +19,7 @@ import Octicon, {
 import { EventDates, MemoEventInfo } from './EventInfo';
 import { useSelector } from 'react-redux';
 import { StyledOcticon } from './StyledOcticon';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
 
 const MarginLeftDiv = styled<any>('div')`

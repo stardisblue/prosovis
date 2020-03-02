@@ -1,34 +1,20 @@
 import React from 'react';
 import _ from 'lodash';
 import { Flex } from '../../components/ui/Flex';
-import { connect } from 'react-redux';
-import { selectActorMask, actorMaskState } from '../../selectors/mask';
-import { RootState } from '../../reducers';
+import { useSelector } from 'react-redux';
 import Actor from './Actor';
-import { ActorMask } from '../../reducers/maskSlice';
 import { selectActors } from '../../selectors/event';
-import { AnyEvent } from '../../data';
 
-const ActorList: React.FC<{
-  actors: AnyEvent['actor'][];
-  masks?: ActorMask;
-}> = function({ actors, masks }) {
+const ActorList: React.FC = function() {
+  const actors = useSelector(selectActors);
+
   return (
-    <Flex className="ph2" justify="between" wrap>
+    <Flex className="ph2" wrap justify="between">
       {_.map(actors, actor => {
-        return (
-          <Actor
-            key={actor.id}
-            actor={actor}
-            state={actorMaskState(actor, masks)}
-          />
-        );
+        return <Actor key={actor.id} actor={actor} />;
       })}
     </Flex>
   );
 };
 
-export default connect((state: RootState) => ({
-  masks: selectActorMask(state),
-  actors: selectActors(state)
-}))(ActorList);
+export default ActorList;

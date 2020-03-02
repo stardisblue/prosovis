@@ -1,6 +1,6 @@
 import React from 'react';
 import Octicon, { OcticonProps } from '@primer/octicons-react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 
 export const StyledOcticon = styled<
   React.FC<
