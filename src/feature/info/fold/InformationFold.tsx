@@ -1,7 +1,6 @@
-import './InfoGroup.sass';
 import React, { useMemo, useState, useCallback } from 'react';
 
-import { Ressource } from '../../data';
+import { Ressource } from '../../../data';
 import classnames from 'classnames';
 import _ from 'lodash';
 
@@ -11,12 +10,18 @@ import Octicon, {
   Person,
   Location
 } from '@primer/octicons-react';
-import { Flex } from '../../components/ui/Flex';
-import { InfoKindGroup } from './InfoKindGroup';
-import { EventGroup, SelectedEvent } from './models';
-import { selectSwitchActorColor } from '../../selectors/switch';
+import { Flex } from '../../../components/ui/Flex';
+import KindGroup from '../KindGroup';
+import { EventGroup, SelectedEvent } from '../models';
+import { selectSwitchActorColor } from '../../../selectors/switch';
 import { useSelector } from 'react-redux';
-import { StyledOcticon } from './StyledOcticon';
+import { StyledOcticon } from '../StyledOcticon';
+import styled from 'styled-components/macro';
+
+const EventsDiv = styled.div<{ height: string }>`
+  margin-left: 0.8rem;
+  min-height: 50px;
+`;
 
 // TODO griser personnes
 // surlingé : survol
@@ -39,22 +44,15 @@ import { StyledOcticon } from './StyledOcticon';
 const useStyles = (filtered: boolean, selected: boolean) =>
   useMemo(
     () => ({
-      title: classnames(
-        'sipig--title',
-        'b--moon-gray',
-        'ph1',
-        'pt1',
-        'flex-grow-0'
-      ),
-      titleIcon: classnames('sipig--icon', 'ma1', 'flex-shrink-0'),
-      titleLabel: classnames('sipig--label', 'flex-auto', {
+      title: classnames('b--moon-gray', 'ph1', 'pt1', 'flex-grow-0'),
+      titleIcon: classnames('ma1', 'flex-shrink-0'),
+      titleLabel: classnames('flex-auto', {
         b: selected === true,
         'o-50': filtered === true
       }),
       titleMore: classnames('ma1', 'flex-shrink-0'),
       events: classnames(
         // TODO pixel aligner avec l'icon des acteurs
-        'sipig--events',
         'bl',
         'bw1',
         'bb',
@@ -73,7 +71,7 @@ type InfoGroupProps = {
   selected: boolean;
 };
 
-export const InfoGroup: React.FC<InfoGroupProps> = function({
+export const InformationFold: React.FC<InfoGroupProps> = function({
   events,
   filtered,
   group,
@@ -147,7 +145,7 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
         onClick={handleClick}
       >
         <StyledOcticon
-          color={color && kind === 'Actor' ? color(group.id) : 'black'}
+          iconColor={color && kind === 'Actor' ? color(group.id) : 'black'}
           className={classes.titleIcon}
           icon={kind === 'Actor' ? Person : Location}
         />
@@ -161,18 +159,17 @@ export const InfoGroup: React.FC<InfoGroupProps> = function({
       </Flex>
 
       {show && (
-        <div
+        <EventsDiv
           className={classes.events}
-          style={{
-            minHeight: '50px',
-            height: groupedEvents.length > 12 ? '600px' : 'auto'
-          }}
+          height={groupedEvents.length > 12 ? '600px' : 'auto'}
         >
           {groupedEvents.map(e => (
-            <InfoKindGroup key={e.id} {...e} origin={kind} />
+            <KindGroup key={e.id} {...e} origin={kind} />
           ))}
-        </div>
+        </EventsDiv>
       )}
     </>
   );
 };
+
+export default InformationFold;

@@ -10,7 +10,9 @@ import {
   Book,
   Bookmark,
   Home,
-  Telescope
+  Telescope,
+  Plus,
+  X as Cross
 } from '@primer/octicons-react';
 import { SelectedEvent } from './models';
 import { useDispatch, useSelector } from 'react-redux';
@@ -19,8 +21,9 @@ import { highlightsAsMap } from '../../selectors/highlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { StyledOcticon } from './StyledOcticon';
 import { EventDates } from './EventDates';
-import BirthEvent from './event/BirthEvent';
-import DeathEvent from './event/DeathEvent';
+import { getDeathInfo, getEducationInfo } from './event/utils';
+import InfoEvent from './event/InfoEvent';
+import InfoBirth from './event/InfoBirthEvent';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -50,53 +53,87 @@ export const EventInfo: React.FC<EventInfoProps> = function({
   let content;
   const color = useSelector(selectSwitchKindColor);
   const { actor } = event;
-  const place = origin === 'NamedPlace';
+  const showPlace = origin === 'NamedPlace';
 
-  const createContent = prefix(place, actor.label);
+  const createContent = prefix(showPlace, actor.label);
 
   const highlights = useSelector(highlightsAsMap);
 
   const dispatch = useDispatch();
-  const handleSelection = useCallback(() => {
+  const handleSelect = useCallback(() => {
     dispatch(setSelection({ id: event.id, kind: 'Event' }));
   }, [dispatch, event.id]);
 
   switch (event.kind) {
     case 'Birth': {
+      const colorIcon = showIcon
+        ? color
+          ? color(event.kind)
+          : 'black'
+        : undefined;
       return (
-        <BirthEvent
-          actor={actor}
-          event={event}
-          grayed={event.filtered}
-          highlight={highlights[event.id]}
-          icon={showIcon}
-          color={color}
-          place={place}
-          selected={event.selected}
-        />
+        <InfoBirth event={event} fromActor={origin === 'Actor'}>
+          {(icon, content) => (
+            <InfoEvent
+              dates={event.datation}
+              icon={icon}
+              hideOrColorIcon={colorIcon}
+              mask={event.filtered}
+              highlight={highlights[event.id]}
+              select={event.selected}
+              handleSelect={handleSelect}
+            >
+              {content}
+            </InfoEvent>
+          )}
+        </InfoBirth>
       );
     }
     case 'Death': {
+      const colorIcon = showIcon
+        ? color
+          ? color(event.kind)
+          : 'black'
+        : undefined;
       return (
-        <DeathEvent
-          actor={actor}
-          color={color}
-          event={event}
-          grayed={event.filtered}
-          highlighted={highlights[event.id]}
-          icon={showIcon}
-          place={place}
-          selected={event.selected}
-        />
+        <InfoEvent
+          dates={event.datation}
+          icon={Cross}
+          hideOrColorIcon={colorIcon}
+          mask={event.filtered}
+          highlight={highlights[event.id]}
+          select={event.selected}
+          handleSelect={handleSelect}
+        >
+          {getDeathInfo(event, origin === 'Actor')}
+        </InfoEvent>
       );
     }
     case 'Education': {
+      const colorIcon = showIcon
+        ? color
+          ? color(event.kind)
+          : 'black'
+        : undefined;
       icon = Book;
       const matiere =
         event.abstract_object && `"${event.abstract_object.label}"`;
       const organisme =
         event.collective_actor && `à ${event.collective_actor.label}`;
       content = createContent(showIcon && 'enseigne', matiere, organisme);
+      return (
+        <InfoEvent
+          dates={event.datation}
+          icon={Book}
+          hideOrColorIcon={colorIcon}
+          mask={event.filtered}
+          highlight={highlights[event.id]}
+          select={event.selected}
+          handleSelect={handleSelect}
+        >
+          {getEducationInfo(event, origin === 'Actor')}
+        </InfoEvent>
+      );
       break;
     }
     case 'ObtainQualification': {
@@ -130,7 +167,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({
     }
     case 'Retirement': {
       icon = Home;
-      content = 'Départ en retraite' + (place ? ' de ' + actor.label : '');
+      content = 'Départ en retraite' + (showPlace ? ' de ' + actor.label : '');
       break;
     }
 
@@ -159,12 +196,12 @@ export const EventInfo: React.FC<EventInfoProps> = function({
         'o-50': event.filtered,
         'bg-light-gray': highlights[event.id]
       })}
-      onClick={handleSelection}
+      onClick={handleSelect}
     >
       <span className="ph2">
         {showIcon && (
           <StyledOcticon
-            color={color ? color(event.kind) : 'black'}
+            iconColor={color ? color(event.kind) : 'black'}
             icon={icon}
             width={16}
             height={16}

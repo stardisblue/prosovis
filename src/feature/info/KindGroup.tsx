@@ -28,7 +28,7 @@ const MarginLeftDiv = styled<any>('div')`
   margin-left: 1rem;
 `;
 
-export const InfoKindGroup: React.FC<{
+export const KindGroup: React.FC<{
   kind: AnyEvent['kind'];
   events: AnyEvent | AnyEvent[];
   start: Datation;
@@ -91,7 +91,7 @@ export const InfoKindGroup: React.FC<{
         >
           <span className="ph2">
             <StyledOcticon
-              color={color ? color(kind) : 'black'}
+              iconColor={color ? color(kind) : 'black'}
               icon={icon}
               width={16}
               height={16}
@@ -127,3 +127,5 @@ export const InfoKindGroup: React.FC<{
     );
   else return <MemoEventInfo event={events} origin={origin} />;
 };
+
+export default KindGroup;

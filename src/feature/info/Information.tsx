@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import classnames from 'classnames';
 import { Datation } from '../../data';
-import { InfoGroup } from './InfoGroup';
+import { InformationFold } from './fold/InformationFold';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
@@ -45,12 +45,12 @@ export const Information: React.FC<{ className?: string }> = function({
   return (
     <Flex column className={classnames('pa1 h-100 overflow-y-auto', className)}>
       {_.map(groups.no, g => (
-        <InfoGroup key={g.group.uri} {...g} />
+        <InformationFold key={g.group.uri} {...g} />
       ))}
       <hr />
-      {/* todo style */}
+      {/* TODO  style */}
       {_.map(groups.yes, g => (
-        <InfoGroup key={g.group.uri} {...g} />
+        <InformationFold key={g.group.uri} {...g} />
       ))}
     </Flex>
   );
