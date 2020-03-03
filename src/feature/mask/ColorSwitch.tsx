@@ -4,57 +4,44 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../reducers';
 import { toggleSwitch } from '../../reducers/switchSlice';
 import styled from 'styled-components/macro';
+import StyledInput from './StyledInput';
 
 const StyledLabel = styled.label`
   position: relative;
   display: inline-block;
-  width: 16px;
+  width: 1em;
   height: 100%;
+  margin-bottom: 0;
 `;
 
-const StyledInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-`;
-
-const StyledSlider = styled.span`
-  position: absolute;
+const StyledSlider = styled.div`
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: gray;
+  height: 100%;
+  width: 100%;
+  padding: 12.5%;
+  background-color: #333;
   transition: 0.4s;
-  border-radius: 8px;
+  border-radius: 999em;
 `;
 
-const StyledKnob = styled.span`
-  position: absolute;
-  content: '';
-  height: calc(50% - 2px);
-  width: 12px;
-  left: 2px;
-  top: 2px;
+const StyledKnob = styled.div<{ slide: boolean }>`
+  height: 50%;
   background-color: white;
   transition: 0.4s;
-  border-radius: 6px;
+  border-radius: 999em;
+  transform: translateY(${props => (props.slide ? '0%' : '100%')});
 `;
+
+const switchIsActor = (state: RootState) => state.switch === 'Actor';
 
 const ColorSwitch: React.FC = function() {
   const dispatch = useDispatch();
 
-  const switchState = useSelector(
-    (state: RootState) => state.switch === 'Actor'
-  );
+  const switchState = useSelector(switchIsActor);
 
-  const handleCheck = useCallback(
-    function() {
-      dispatch(toggleSwitch());
-    },
-    [dispatch]
-  );
+  const handleCheck = useCallback(() => {
+    dispatch(toggleSwitch());
+  }, [dispatch]);
 
   return (
     <StyledLabel>
@@ -66,11 +53,7 @@ const ColorSwitch: React.FC = function() {
         onChange={handleCheck}
       />
       <StyledSlider>
-        <StyledKnob
-          style={{
-            transform: `translateY(${switchState ? '0%' : '100%'})`
-          }}
-        />
+        <StyledKnob slide={switchState} />
       </StyledSlider>
     </StyledLabel>
   );

@@ -1,45 +1,38 @@
 import React from 'react';
 import styled from 'styled-components/macro';
+import StyledInput from './StyledInput';
 
 const StyledLabel = styled.label`
-  position: relative;
   margin-bottom: 0;
 `;
 
-const StyledInput = styled.input`
-  opacity: 0;
-  width: 0;
-  height: 0;
-`;
-
-const StyledSlider = styled.span`
-  position: absolute;
+const StyledSlider = styled.div`
+  display: inline-block;
   cursor: pointer;
-  left: 0;
-  top: 0.25em;
-  bottom: 0.25em;
-  width: 32px;
+  padding: 0.125em;
+  height: 1em;
+  width: 2em;
   transition: 0.4s;
-  border-radius: 8px;
+  border-radius: 0.5em;
   background-color: #ccc;
 `;
 
-const StyledKnob = styled.span<{ slide: boolean }>`
-  position: absolute;
-  content: '';
-  height: 12px;
-  width: 12px;
-  left: 2px;
-  top: 2px;
+const StyledKnob = styled.div<{ slide: boolean }>`
+  height: 0.75em;
+  width: 0.75em;
   background-color: white;
   transition: 0.4s;
-  border-radius: 6px;
-  ${props => (props.slide ? 'transform:translateX(16px)' : '')};
+  border-radius: 0.5em;
+  ${props => (props.slide ? 'transform:translateX(1em)' : '')};
 `;
 
-const StyledText = styled.span<{ sliderColor: string }>`
-  margin-left: 22px;
+const StyledText = styled.div<{ sliderColor: string }>`
+  display: inline-block;
+  padding-bottom: 0.125em;
+  vertical-align: bottom;
+  margin-left: 0.125em;
   color: ${props => props.sliderColor};
+  transition: 0.4s;
 `;
 
 const CheckBoxSwitch: React.FC<{
@@ -53,9 +46,7 @@ const CheckBoxSwitch: React.FC<{
       <StyledSlider style={{ backgroundColor: checked ? color : undefined }}>
         <StyledKnob slide={checked} />
       </StyledSlider>
-      <StyledText sliderColor={checked ? 'black' : '#ccc'}>
-        {children}
-      </StyledText>
+      <StyledText sliderColor={checked ? '' : '#ccc'}>{children}</StyledText>
     </StyledLabel>
   );
 };

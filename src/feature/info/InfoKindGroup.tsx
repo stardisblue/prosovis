@@ -16,7 +16,8 @@ import Octicon, {
   ChevronDown,
   Check
 } from '@primer/octicons-react';
-import { EventDates, MemoEventInfo } from './EventInfo';
+import { MemoEventInfo } from './EventInfo';
+import { EventDates } from './EventDates';
 import { useSelector } from 'react-redux';
 import { StyledOcticon } from './StyledOcticon';
 import styled from 'styled-components/macro';

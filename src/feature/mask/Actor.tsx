@@ -9,22 +9,24 @@ import CheckBoxSwitch from './CheckBoxSwitch';
 const Actor: React.FC<{
   actor: AnyEvent['actor'];
 }> = function({ actor }) {
+  const { id, label } = actor;
+
   const dispatch = useDispatch();
 
   const color = useSelector(selectSwitchActorColor);
   const actorMask = useSelector(selectActorMask);
 
   const handleCheck = useCallback(() => {
-    dispatch(toggleActorMask(actor.id));
-  }, [dispatch, actor.id]);
+    dispatch(toggleActorMask(id));
+  }, [dispatch, id]);
 
   return (
     <CheckBoxSwitch
-      color={color ? color(actor.id) : 'gray'}
+      color={color ? color(id) : '#333'}
       checked={actorMaskState(actor, actorMask)}
       handleCheck={handleCheck}
     >
-      {actor.label}
+      {label}
     </CheckBoxSwitch>
   );
 };

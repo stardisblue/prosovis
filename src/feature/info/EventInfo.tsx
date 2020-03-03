@@ -1,12 +1,10 @@
 import React, { useCallback } from 'react';
 import classnames from 'classnames';
-import { AnyEvent, Datation } from '../../data';
+import { AnyEvent } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import _ from 'lodash';
 import {
   MortarBoard,
-  X as XIcon,
-  Plus,
   Question,
   Icon,
   Book,
@@ -20,44 +18,14 @@ import { setSelection } from '../../reducers/selectionSlice';
 import { highlightsAsMap } from '../../selectors/highlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { StyledOcticon } from './StyledOcticon';
+import { EventDates } from './EventDates';
+import BirthEvent from './event/BirthEvent';
+import DeathEvent from './event/DeathEvent';
 
 type EventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
   origin: 'Actor' | 'NamedPlace';
   icon?: boolean;
-};
-
-export const EventDates: React.FC<{ dates: Datation[] }> = function({ dates }) {
-  return (
-    <div className="tr">
-      {_.flatMap(dates, (d, index, array) =>
-        array.length - 1 !== index ? (
-          [
-            <abbr
-              key={d.id}
-              className="nowrap"
-              title={d.label + ' - ' + d.clean_date}
-            >
-              <time dateTime={d.clean_date} data-uri={d.uri}>
-                {d.value}
-              </time>
-            </abbr>,
-            <React.Fragment key={d.id + 'interspace'}> - </React.Fragment>
-          ]
-        ) : (
-          <abbr
-            key={d.id}
-            className="nowrap"
-            title={d.label + ' - ' + d.clean_date}
-          >
-            <time dateTime={d.clean_date} data-uri={d.uri}>
-              {d.value}
-            </time>
-          </abbr>
-        )
-      )}
-    </div>
-  );
 };
 
 function prefix(condition: boolean, prefix: string) {
@@ -95,26 +63,32 @@ export const EventInfo: React.FC<EventInfoProps> = function({
 
   switch (event.kind) {
     case 'Birth': {
-      icon = Plus;
-      content =
-        'Naissance' +
-        (place
-          ? ` de ${actor.label}`
-          : event.localisation
-          ? ` à ${event.localisation.label}`
-          : '');
-      break;
+      return (
+        <BirthEvent
+          actor={actor}
+          event={event}
+          grayed={event.filtered}
+          highlight={highlights[event.id]}
+          icon={showIcon}
+          color={color}
+          place={place}
+          selected={event.selected}
+        />
+      );
     }
     case 'Death': {
-      icon = XIcon;
-      content =
-        'Décès' +
-        (place
-          ? ` de ${actor.label}`
-          : event.localisation
-          ? ` à ${event.localisation.label}`
-          : '');
-      break;
+      return (
+        <DeathEvent
+          actor={actor}
+          color={color}
+          event={event}
+          grayed={event.filtered}
+          highlighted={highlights[event.id]}
+          icon={showIcon}
+          place={place}
+          selected={event.selected}
+        />
+      );
     }
     case 'Education': {
       icon = Book;

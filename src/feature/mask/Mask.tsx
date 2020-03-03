@@ -18,6 +18,8 @@ const StyledSection = styled.section`
 
 const SwitchArea = styled.div`
   grid-area: switches;
+  padding-top: 0.25em;
+  padding-bottom: 0.25em;
 `;
 
 const ActorsArea = styled.div`
