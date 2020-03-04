@@ -11,7 +11,6 @@ import {
   Bookmark,
   Home,
   Telescope,
-  Plus,
   X as Cross
 } from '@primer/octicons-react';
 import { SelectedEvent } from './models';
@@ -134,7 +133,6 @@ export const EventInfo: React.FC<EventInfoProps> = function({
           {getEducationInfo(event, origin === 'Actor')}
         </InfoEvent>
       );
-      break;
     }
     case 'ObtainQualification': {
       const qualite =
