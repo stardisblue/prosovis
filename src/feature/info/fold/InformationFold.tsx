@@ -8,7 +8,6 @@ import { Location } from '@primer/octicons-react';
 import KindGroup from '../KindGroup';
 import { EventGroup, SelectedEvent } from '../models';
 import { StyledOcticon } from '../StyledOcticon';
-import styled from 'styled-components/macro';
 import EventInfo from '../EventInfo';
 import Fold from './Fold';
 import ActorIcon from './ActorIcon';
@@ -20,7 +19,6 @@ import ActorIcon from './ActorIcon';
 // grisé: filtré
 // TODO ajouter un espacement entre normal et grisé
 //
-// carte: meme granularité que la timeline filtres selections synchronisés
 // mettre une personne floue
 // TODO mettre surbrillance tout ce qui est personne selectionnée
 // griser timeline lors du survol sur les autres visus

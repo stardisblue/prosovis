@@ -5,9 +5,9 @@ import {
   MortarBoard,
   Book,
   Bookmark,
-  Home,
-  Telescope
+  Home
 } from '@primer/octicons-react';
+import Pause from './Pause';
 
 export const kindMap = {
   Birth: Plus,
@@ -16,7 +16,7 @@ export const kindMap = {
   ObtainQualification: MortarBoard,
   PassageExamen: Bookmark,
   Retirement: Home,
-  SuspensionActivity: Telescope
+  SuspensionActivity: Pause
 };
 
 function getEventIcon(kind: AnyEvent['kind']) {
