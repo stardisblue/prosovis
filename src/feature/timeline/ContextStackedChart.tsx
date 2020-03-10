@@ -56,7 +56,7 @@ const selectMap = createSelector(
           keys: _.map(actors, a => '' + a.id),
           color: actorColor
         }
-      : { countBy: 'kind', keys: kinds, color: mainColor }
+      : { countBy: 'kind', keys: _.values(kinds), color: mainColor }
 );
 
 const selectStack = createSelector(selectDiscrete, selectMap, function(

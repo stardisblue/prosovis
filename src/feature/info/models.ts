@@ -1,16 +1,18 @@
 import { AnyEvent, Datation } from '../../data';
 
-export type EventGroup = {
+export type EventGroup<T extends SelectedEvent | SelectedEvent[]> = {
   id: AnyEvent['id'];
   kind: AnyEvent['kind'];
-  events: SelectedEvent | SelectedEvent[];
+  events: T;
   start: Datation;
   end: Datation;
-  filtered?: boolean;
+  highlighted?: boolean;
   selected?: boolean;
+  masked?: boolean;
 };
 
 export type SelectedEvent<T = AnyEvent> = T & {
+  highlighted?: boolean;
   selected?: boolean;
-  filtered?: boolean;
+  masked?: boolean;
 };

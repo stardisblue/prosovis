@@ -11,7 +11,8 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
       group: Ressource | NamedPlace;
       events: SelectedEvent[];
       selected: boolean;
-      filtered: boolean;
+      highlighted: boolean;
+      masked: boolean;
     }[] = [];
     const actorKeyIndex: {
       [k: string]: number;
@@ -26,12 +27,13 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
           kind: 'Actor',
           group: e.actor,
           events: [],
+          highlighted: false,
           selected: false,
-          filtered: true
+          masked: true
         });
       }
       const localisation = getLocalisation(e) || {
-        id: 0,
+        id: -1,
         label: 'Inconnue',
         kind: 'NamedPlace',
         uri: 'unknown',
@@ -43,8 +45,9 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
           kind: 'NamedPlace',
           group: localisation,
           events: [],
+          highlighted: false,
           selected: false,
-          filtered: true
+          masked: true
         });
       }
 
@@ -53,9 +56,14 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
         grps[localisationKeyIndex[localisation.id]].selected = true;
       }
 
-      if (e.filtered === false) {
-        grps[actorKeyIndex[e.actor.id]].filtered = false;
-        grps[localisationKeyIndex[localisation.id]].filtered = false;
+      if (e.highlighted === true) {
+        grps[actorKeyIndex[e.actor.id]].highlighted = true;
+        grps[localisationKeyIndex[localisation.id]].highlighted = true;
+      }
+
+      if (e.masked === false) {
+        grps[actorKeyIndex[e.actor.id]].masked = false;
+        grps[localisationKeyIndex[localisation.id]].masked = false;
       }
 
       grps[actorKeyIndex[e.actor.id]].events.push(e);
@@ -66,7 +74,7 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
         ['selected', 'group.kind', 'events[0].datation[0].clean_date'],
         ['desc']
       )
-      .groupBy(e => (e.filtered === true ? 'yes' : 'no'))
+      .groupBy(e => (e.masked === true ? 'yes' : 'no'))
       .value();
   }, [selectedEvents]);
 }

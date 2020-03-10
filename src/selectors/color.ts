@@ -3,6 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { AnyEvent, PrimaryKey } from '../data';
 import * as d3 from 'd3';
 import { selectActors } from './event';
+import _ from 'lodash';
 
 export const selectColor = (state: RootState) => state.color;
 export const selectDomain = createSelector(selectColor, c => c.kindDomain);
@@ -23,7 +24,7 @@ export const selectActorColor = createSelector(
   selectActorRange,
   selectActors,
   (range, actors) =>
-    d3.scaleOrdinal<PrimaryKey, string>(range).domain(actors.map(a => a.id))
+    d3.scaleOrdinal<PrimaryKey, string>(range).domain(_.map(actors, a => a.id))
 );
 
 export const selectBorderColor = createSelector(

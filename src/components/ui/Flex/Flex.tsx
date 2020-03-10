@@ -10,6 +10,8 @@ type FlexProps = {
   wrap?: boolean;
   column?: boolean;
   onClick?: React.MouseEventHandler;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
 };
 
 export const Flex: React.FC<React.PropsWithChildren<
@@ -23,6 +25,8 @@ export const Flex: React.FC<React.PropsWithChildren<
     items,
     justify,
     onClick,
+    onMouseEnter,
+    onMouseLeave,
     wrap,
     ...rest
   } // props
@@ -43,6 +47,8 @@ export const Flex: React.FC<React.PropsWithChildren<
         flexItemClasses(rest)
       )}
       onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
     >
       {children}
     </TagWrapper>

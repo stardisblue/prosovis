@@ -31,7 +31,7 @@ export const PieChart: React.FC<{
     <g stroke="white">
       {_.map(arcs, a => (
         <path key={a.data[0]} fill={color(a.data[0])} d={arc(a as any)!}>
-          <title>{a.data[0]}</title>
+          <title>{a.data[1]}</title>
         </path>
       ))}
     </g>

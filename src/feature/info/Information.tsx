@@ -8,9 +8,10 @@ import { SelectedEvent } from './models';
 import { Flex } from '../../components/ui/Flex';
 import { selectEvents } from '../../selectors/event';
 import { maskedEventsAsMap } from '../../selectors/mask';
-import { selectionAsMap } from '../../selectors/selection';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
+import { highlightsAsMap } from '../../selectors/highlight';
+import { selectionAsMap } from '../../selectors/selection';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -22,13 +23,15 @@ const selectInformationEvents = createSelector(
   selectEvents,
   selectionAsMap,
   maskedEventsAsMap,
-  function(events, selected, masked) {
+  highlightsAsMap,
+  function(events, selected, masked, highlighted) {
     return _<SelectedEvent>(events)
       .chain()
       .map<SelectedEvent>(e => ({
         ...e,
+        highlighted: highlighted[e.id] !== undefined,
         selected: selected[e.id] !== undefined,
-        filtered: masked[e.id] === undefined
+        masked: masked[e.id] === undefined
       }))
       .orderBy(['datation[0].clean_date'])
       .value();

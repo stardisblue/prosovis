@@ -13,19 +13,21 @@ import { EventDates } from './EventDates';
 import getEventInfo from './event/getEventInfo';
 import getEventIcon from './event/getEventIcon';
 
-type EventInfoProps<T = AnyEvent> = {
+import {
+  setSuperHighlightThunk,
+  clearSuperHighlightThunk
+} from '../../thunks/highlights';
+
+type ThumbnailEventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
   origin: 'Actor' | 'NamedPlace';
   icon?: boolean;
 };
 
-export const EventInfo: React.FC<EventInfoProps> = function({
+export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function({
   event,
-  origin,
-  icon = true
+  origin
 }) {
-  const color = useSelector(selectSwitchKindColor);
-
   const highlights = useSelector(highlightsAsMap);
 
   const dispatch = useDispatch();
@@ -33,34 +35,80 @@ export const EventInfo: React.FC<EventInfoProps> = function({
     dispatch(setSelection({ id: event.id, kind: 'Event' }));
   }, [dispatch, event.id]);
 
-  const colorIcon = icon ? (color ? color(event.kind) : 'black') : undefined;
+  const handleMouseEnter = useCallback(() => {
+    dispatch(setSuperHighlightThunk({ id: event.id, kind: 'Event' }));
+  }, [dispatch, event.id]);
+
+  const handleMouseLeave = useCallback(() => {
+    dispatch(clearSuperHighlightThunk());
+  }, [dispatch]);
+
   return (
     <Flex
       justify="between"
       items="center"
       className={classnames('pb1', 'br2', {
         b: event.selected,
-        'o-50': event.filtered,
+        'o-50': event.masked,
         'bg-light-gray': highlights[event.id]
       })}
       onClick={handleSelect}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      <span className="ph2">
-        {colorIcon && (
-          <StyledOcticon
-            iconColor={colorIcon}
-            icon={getEventIcon(event.kind)}
-            width={16}
-            height={16}
-          />
-        )}
-      </span>
-      <FlexItem auto>
-        {getEventInfo(event, origin === 'Actor', showIcon)}
-      </FlexItem>
+      <span className="ph2"></span>
+      <FlexItem auto>{getEventInfo(event, origin === 'Actor', true)}</FlexItem>
       <EventDates dates={event.datation} />
     </Flex>
   );
 };
 
-export const MemoEventInfo = EventInfo;
+type EventInfoProps<T = AnyEvent> = {
+  event: SelectedEvent<T>;
+  origin: 'Actor' | 'NamedPlace';
+};
+
+export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
+  const color = useSelector(selectSwitchKindColor);
+
+  const dispatch = useDispatch();
+  const handleSelect = useCallback(() => {
+    dispatch(setSelection({ id: event.id, kind: 'Event' }));
+  }, [dispatch, event.id]);
+
+  const handleMouseEnter = useCallback(() => {
+    dispatch(setSuperHighlightThunk({ id: event.id, kind: 'Event' }));
+  }, [dispatch, event.id]);
+
+  const handleMouseLeave = useCallback(() => {
+    dispatch(clearSuperHighlightThunk());
+  }, [dispatch]);
+
+  return (
+    <Flex
+      justify="between"
+      items="center"
+      className={classnames('pb1', 'br2', {
+        b: event.selected,
+        'o-50': event.masked,
+        'bg-light-gray': event.highlighted
+      })}
+      onClick={handleSelect}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <span className="ph2">
+        <StyledOcticon
+          iconColor={color ? color(event.kind) : 'black'}
+          icon={getEventIcon(event.kind)}
+          width={16}
+          height={16}
+        />
+      </span>
+      <FlexItem auto>{getEventInfo(event, origin === 'Actor', false)}</FlexItem>
+      <EventDates dates={event.datation} />
+    </Flex>
+  );
+};
+
+export default EventInfo;

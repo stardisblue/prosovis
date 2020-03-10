@@ -1,27 +1,17 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo } from 'react';
 
 import { Ressource } from '../../../data';
 import classnames from 'classnames';
 import _ from 'lodash';
 
-import Octicon, {
-  ChevronDown,
-  ChevronUp,
-  Person,
-  Location
-} from '@primer/octicons-react';
-import { Flex } from '../../../components/ui/Flex';
+import { Location } from '@primer/octicons-react';
 import KindGroup from '../KindGroup';
 import { EventGroup, SelectedEvent } from '../models';
-import { selectSwitchActorColor } from '../../../selectors/switch';
-import { useSelector } from 'react-redux';
 import { StyledOcticon } from '../StyledOcticon';
 import styled from 'styled-components/macro';
-
-const EventsDiv = styled.div<{ height: string }>`
-  margin-left: 0.8rem;
-  min-height: 50px;
-`;
+import EventInfo from '../EventInfo';
+import Fold from './Fold';
+import ActorIcon from './ActorIcon';
 
 // TODO griser personnes
 // surlingé : survol
@@ -39,51 +29,23 @@ const EventsDiv = styled.div<{ height: string }>`
 // Barre de recherche globale : lieu & acteur
 // synchro timeline-carte-information
 // laisser le graphe grisé
-
-// grouper par type d'evenement consécutifs dans le groupe, bla bla bla
-const useStyles = (filtered: boolean, selected: boolean) =>
-  useMemo(
-    () => ({
-      title: classnames('b--moon-gray', 'ph1', 'pt1', 'flex-grow-0'),
-      titleIcon: classnames('ma1', 'flex-shrink-0'),
-      titleLabel: classnames('flex-auto', {
-        b: selected === true,
-        'o-50': filtered === true
-      }),
-      titleMore: classnames('ma1', 'flex-shrink-0'),
-      events: classnames(
-        // TODO pixel aligner avec l'icon des acteurs
-        'bl',
-        'bw1',
-        'bb',
-        'b--moon-gray',
-        'overflow-y-auto'
-      )
-    }),
-    [filtered, selected]
-  );
-
 type InfoGroupProps = {
   events: SelectedEvent[];
-  filtered: boolean;
   group: Ressource;
   kind: 'Actor' | 'NamedPlace';
+  masked: boolean;
   selected: boolean;
+  highlighted: boolean;
 };
 
 export const InformationFold: React.FC<InfoGroupProps> = function({
   events,
-  filtered,
   group,
   kind,
-  selected
+  masked,
+  selected,
+  highlighted
 }) {
-  const [show, setShow] = useState(selected === true);
-
-  //useEffect(() => setShow(selected === true), [selected]);
-
-  const handleClick = useCallback(() => setShow(s => !s), []);
-
   const groupedEvents = useMemo(
     () =>
       _.reduce(
@@ -98,8 +60,9 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
               events: e,
               start: _.first(e.datation)!,
               end: _.last(e.datation)!,
-              filtered: e.filtered,
-              selected: e.selected
+              masked: e.masked,
+              selected: e.selected,
+              highlighted: e.highlighted
             });
             return acc;
           }
@@ -118,57 +81,46 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
           if (e.selected !== undefined) {
             last.selected = last.selected || e.selected;
           }
-          if (e.filtered !== undefined) {
-            last.filtered = last.filtered && e.filtered;
+
+          if (e.highlighted !== undefined) {
+            last.highlighted = last.highlighted || e.highlighted;
+          }
+          if (e.masked !== undefined) {
+            last.masked = last.masked && e.masked;
           }
 
           return acc;
         },
-        [] as EventGroup[]
+        [] as EventGroup<SelectedEvent[] | SelectedEvent>[]
       ),
     [events]
   );
 
-  /*
-   * Styles
-   */
-  const classes = useStyles(filtered, selected);
-  const color = useSelector(selectSwitchActorColor);
-
   return (
-    <>
-      <Flex
-        col
-        justify="between"
-        className={classes.title}
-        items="baseline"
-        onClick={handleClick}
-      >
-        <StyledOcticon
-          iconColor={color && kind === 'Actor' ? color(group.id) : 'black'}
-          className={classes.titleIcon}
-          icon={kind === 'Actor' ? Person : Location}
-        />
-        <div className={classes.titleLabel}>{group.label}</div>
-        <Octicon
-          className={classes.titleMore}
-          verticalAlign="text-bottom"
-          icon={show ? ChevronUp : ChevronDown}
-          ariaLabel={show ? 'Etendre' : 'Réduire'}
-        />
-      </Flex>
-
-      {show && (
-        <EventsDiv
-          className={classes.events}
-          height={groupedEvents.length > 12 ? '600px' : 'auto'}
-        >
-          {groupedEvents.map(e => (
-            <KindGroup key={e.id} {...e} origin={kind} />
-          ))}
-        </EventsDiv>
+    <Fold
+      className={classnames({ 'bg-light-gray': highlighted })}
+      events={groupedEvents.map(e =>
+        _.isArray(e.events) ? (
+          <KindGroup key={e.id} {...(e as any)} origin={kind} />
+        ) : (
+          <EventInfo event={e.events} origin={kind} />
+        )
       )}
-    </>
+    >
+      {kind === 'Actor' ? (
+        <ActorIcon id={group.id} />
+      ) : (
+        <StyledOcticon className="ma1 flex-shrink-0" icon={Location} />
+      )}
+      <div
+        className={classnames('flex-auto', {
+          b: selected,
+          'o-50': masked
+        })}
+      >
+        {group.label}
+      </div>
+    </Fold>
   );
 };
 

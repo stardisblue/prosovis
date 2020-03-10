@@ -22,7 +22,6 @@ import {
 } from '../../reducers/selectionSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectHighlights } from '../../selectors/highlight';
-import { selectionAsMap } from '../../selectors/selection';
 import { selectEventColor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import {
@@ -31,6 +30,7 @@ import {
   selectTimelineEventGroups
 } from './timelineGroupSlice';
 import { Context } from './Context';
+import { superSelectionAsMap } from '../../selectors/superHighlights';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -259,7 +259,7 @@ export const VisTimeline: React.FC = function() {
    * Selection
    */
   // updates visual cues on timeline during navigation
-  const selection = useSelector(selectionAsMap);
+  const selection = useSelector(superSelectionAsMap);
 
   useEffect(() => {
     const change = function() {

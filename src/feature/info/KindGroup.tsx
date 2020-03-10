@@ -3,25 +3,18 @@ import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import _ from 'lodash';
-import Octicon, {
-  MortarBoard,
-  X as XIcon,
-  Question,
-  Icon,
-  Book,
-  Bookmark,
-  Home,
-  Telescope,
-  ChevronUp,
-  ChevronDown,
-  Check
-} from '@primer/octicons-react';
-import { MemoEventInfo } from './EventInfo';
+import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
+import { ThumbnailEventInfo } from './EventInfo';
 import { EventDates } from './EventDates';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { StyledOcticon } from './StyledOcticon';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
+import getEventIcon from './event/getEventIcon';
+import {
+  setSuperHighlightThunk,
+  clearSuperHighlightThunk
+} from '../../thunks/highlights';
 
 const MarginLeftDiv = styled<any>('div')`
   border-color: ${(props: any) => props.borderColor};
@@ -30,102 +23,119 @@ const MarginLeftDiv = styled<any>('div')`
 
 export const KindGroup: React.FC<{
   kind: AnyEvent['kind'];
-  events: AnyEvent | AnyEvent[];
+  events: AnyEvent[];
   start: Datation;
   end: Datation;
   origin: 'Actor' | 'NamedPlace';
   selected?: boolean;
-  filtered?: boolean;
-}> = function({ kind, events, start, end, origin, selected, filtered }) {
+  masked?: boolean;
+  highlighted?: boolean;
+}> = function({
+  kind,
+  events,
+  start,
+  end,
+  origin,
+  selected,
+  masked,
+  highlighted
+}) {
   const color = useSelector(selectSwitchKindColor);
   const [show, setShow] = useState(false);
   const handleClick = useCallback(() => setShow(s => !s), []);
   useEffect(() => setShow(selected === true), [selected]);
-  let icon: Icon<number, number>;
-  let content: string = kind;
-  switch (kind) {
-    case 'Birth':
-      icon = Check;
-      content = 'Naissances';
-      break;
-    case 'Death':
-      icon = XIcon;
-      content = 'Décès';
-      break;
-    case 'Education':
-      icon = Book;
-      content = 'Enseignements';
-      break;
-    case 'ObtainQualification':
-      icon = MortarBoard;
-      content = 'Obtention de qualités';
-      break;
-    case 'PassageExamen':
-      icon = Bookmark;
-      content = 'Evaluations';
-      break;
-    case 'Retirement':
-      icon = Home;
-      content = 'Départs en retraite';
-      break;
-    case 'SuspensionActivity':
-      icon = Telescope;
-      content = "Suspensions d'activités";
-      break;
-    default: {
-      icon = Question;
-      content = 'Inconnue';
-    }
-  }
-  if (_.isArray(events))
-    return (
-      <div className="pv1">
-        <Flex
-          justify="between"
-          items="center"
-          className={classnames('sip-info--event', {
-            b: selected,
-            'o-50': filtered
-          })}
-          onClick={handleClick}
-        >
-          <span className="ph2">
-            <StyledOcticon
-              iconColor={color ? color(kind) : 'black'}
-              icon={icon}
-              width={16}
-              height={16}
-            />
-          </span>
-          <FlexItem auto>
-            {events.length} {content}
-          </FlexItem>
-          <EventDates dates={[start, end]} />
-          <Octicon
-            className="ma1 flex-shrink-0"
-            verticalAlign="text-bottom"
-            icon={show ? ChevronUp : ChevronDown}
-            ariaLabel={show ? 'Réduire' : 'Etendre'}
-          />
-        </Flex>
-        {show && (
-          <MarginLeftDiv
-            className="bl bw1 pt1"
-            borderColor={color ? color(kind) : 'grey'}
-          >
-            {_.map(events, e => (
-              <MemoEventInfo
-                key={e.id}
-                event={e}
-                origin={origin}
-                icon={false}
-              />
-            ))}
-          </MarginLeftDiv>
-        )}
-      </div>
+
+  const content = getKindString(kind);
+
+  const dispatch = useDispatch();
+  const handleMouseEnter = useCallback(() => {
+    dispatch(
+      setSuperHighlightThunk(_.map(events, ({ id }) => ({ id, kind: 'Event' })))
     );
-  else return <MemoEventInfo event={events} origin={origin} />;
+  }, [dispatch, events]);
+
+  const handleMouseLeave = useCallback(() => {
+    dispatch(clearSuperHighlightThunk());
+  }, [dispatch]);
+
+  return (
+    <div className="pv1">
+      <Flex
+        justify="between"
+        items="center"
+        className={classnames('sip-info--event', {
+          b: selected,
+          'o-50': masked,
+          'bg-light-gray': highlighted
+        })}
+        onClick={handleClick}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <span className="ph2">
+          <StyledOcticon
+            iconColor={color ? color(kind) : 'black'}
+            icon={getEventIcon(kind)}
+            width={16}
+            height={16}
+          />
+        </span>
+        <FlexItem auto>
+          {events.length} {content}
+        </FlexItem>
+        <EventDates dates={[start, end]} />
+        <Octicon
+          className="ma1 flex-shrink-0"
+          verticalAlign="text-bottom"
+          icon={show ? ChevronUp : ChevronDown}
+          ariaLabel={show ? 'Réduire' : 'Etendre'}
+        />
+      </Flex>
+      {show && (
+        <MarginLeftDiv
+          className="bl bw1 pt1"
+          borderColor={color ? color(kind) : 'grey'}
+        >
+          {_.map(events, e => (
+            <ThumbnailEventInfo
+              key={e.id}
+              event={e}
+              origin={origin}
+              icon={false}
+            />
+          ))}
+        </MarginLeftDiv>
+      )}
+    </div>
+  );
 };
 
 export default KindGroup;
+function getKindString(kind: string) {
+  switch (kind) {
+    case 'Birth':
+      return 'Naissances';
+
+    case 'Death':
+      return 'Décès';
+
+    case 'Education':
+      return 'Enseignements';
+
+    case 'ObtainQualification':
+      return 'Obtention de qualités';
+
+    case 'PassageExamen':
+      return 'Evaluations';
+
+    case 'Retirement':
+      return 'Départs en retraite';
+
+    case 'SuspensionActivity':
+      return "Suspensions d'activités";
+
+    default: {
+      return 'Inconnue';
+    }
+  }
+}

@@ -1,22 +1,10 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 
-import { Ressource } from '../../../data';
 import classnames from 'classnames';
-import _ from 'lodash';
 
-import Octicon, {
-  ChevronDown,
-  ChevronUp,
-  Person,
-  Location
-} from '@primer/octicons-react';
 import { Flex } from '../../../components/ui/Flex';
-import KindGroup from '../KindGroup';
-import { EventGroup, SelectedEvent } from '../models';
-import { selectSwitchActorColor } from '../../../selectors/switch';
-import { useSelector } from 'react-redux';
-import { StyledOcticon } from '../StyledOcticon';
 import styled from 'styled-components/macro';
+import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
 
 const EventsDiv = styled.div<{ height: string }>`
   margin-left: 0.8rem;
@@ -42,12 +30,15 @@ const EventsDiv = styled.div<{ height: string }>`
 
 // grouper par type d'evenement consécutifs dans le groupe, bla bla bla
 type FoldProps = {
-  events: EventGroup[];
-  kind: 'Actor' | 'NamedPlace';
-  title: any;
+  events: JSX.Element[];
+  className?: string;
 };
 
-export const Fold: React.FC<FoldProps> = function({ events, kind, title }) {
+export const Fold: React.FC<FoldProps> = function({
+  events,
+  children,
+  className
+}) {
   const [show, setShow] = useState(false);
 
   const handleClick = useCallback(() => setShow(s => !s), []);
@@ -57,11 +48,17 @@ export const Fold: React.FC<FoldProps> = function({ events, kind, title }) {
       <Flex
         col
         justify="between"
-        className="b--moon-gray ph1 pt1 flex-grow-0"
+        className={classnames('b--moon-gray ph1 pt1 flex-grow-0', className)}
         items="baseline"
         onClick={handleClick}
       >
-        {title}
+        {children}
+        <Octicon
+          className="ma1 flex-shrink-0"
+          verticalAlign="text-bottom"
+          icon={show ? ChevronUp : ChevronDown}
+          ariaLabel={show ? 'Etendre' : 'Réduire'}
+        />
       </Flex>
 
       {show && (
@@ -69,9 +66,7 @@ export const Fold: React.FC<FoldProps> = function({ events, kind, title }) {
           className="bl bw1 bb b--moon-gray overflow-y-auto"
           height={events.length > 12 ? '600px' : 'auto'}
         >
-          {events.map(e => (
-            <KindGroup key={e.id} {...e} origin={kind} />
-          ))}
+          {events}
         </EventsDiv>
       )}
     </>

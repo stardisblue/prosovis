@@ -9,23 +9,18 @@ import {
   Telescope
 } from '@primer/octicons-react';
 
+export const kindMap = {
+  Birth: Plus,
+  Death: X,
+  Education: Book,
+  ObtainQualification: MortarBoard,
+  PassageExamen: Bookmark,
+  Retirement: Home,
+  SuspensionActivity: Telescope
+};
+
 function getEventIcon(kind: AnyEvent['kind']) {
-  switch (kind) {
-    case 'Birth':
-      return Plus;
-    case 'Death':
-      return X;
-    case 'Education':
-      return Book;
-    case 'ObtainQualification':
-      return MortarBoard;
-    case 'PassageExamen':
-      return Bookmark;
-    case 'Retirement':
-      return Home;
-    case 'SuspensionActivity':
-      return Telescope;
-  }
+  return kindMap[kind];
 }
 
 export default getEventIcon;

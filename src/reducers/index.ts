@@ -6,6 +6,7 @@ import mask from './maskSlice';
 import color from './colorSlice';
 import timelineGroup from '../feature/timeline/timelineGroupSlice';
 import SwitchReducer from './switchSlice';
+import superHighlight from './superHighlightSlice';
 const rootReducer = combineReducers({
   color,
   events,
@@ -13,7 +14,8 @@ const rootReducer = combineReducers({
   selection,
   mask,
   timelineGroup,
-  switch: SwitchReducer
+  switch: SwitchReducer,
+  superHighlight
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
