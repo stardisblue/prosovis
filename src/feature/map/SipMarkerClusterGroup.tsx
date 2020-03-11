@@ -100,6 +100,7 @@ export const SipMarkerClusterGroup: React.FC<{
     },
     [$map]
   );
+
   const getMarkers = useCallback(
     (ref: React.MutableRefObject<L.MarkerClusterGroup>) => {
       return _.map(events, event => (

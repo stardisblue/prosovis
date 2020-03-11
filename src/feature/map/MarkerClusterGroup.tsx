@@ -9,6 +9,7 @@ import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
 import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
+import { superSelectionAsMap } from '../../selectors/superHighlights';
 
 type Cluster = L.MarkerCluster & {
   _childClusters: Cluster[];
@@ -65,8 +66,19 @@ const selectGrouper = createSelector(
   selectSwitch,
   selectMainColor,
   selectActorColor,
-  function(switcher, main, actor) {
-    const countBy = switcher === 'Actor' ? 'options.actor' : 'options.kind';
+  superSelectionAsMap,
+  function(switcher, main, actor, selected) {
+    const countBy =
+      switcher === 'Actor'
+        ? ({ options }: any) =>
+            selected[options.id] !== undefined
+              ? 's:' + options.actor
+              : options.actor
+        : ({ options }: any) =>
+            selected[options.id] !== undefined
+              ? 's:' + options.kind
+              : options.kind;
+
     const color = switcher === 'Actor' ? actor : main;
 
     return { countBy, color };
@@ -113,6 +125,40 @@ export const MarkerClusterGroup: React.FC<{
         const markers = c.getAllChildMarkers();
         const radius = scale(markers.length);
         const size = radius * 2;
+        const counts = _(markers)
+          .countBy(grouper.countBy)
+          .toPairs()
+          .value();
+
+        const hasSelected = _(counts).some(i => _.startsWith(i[0], 's:'));
+
+        let colorisator;
+        if (hasSelected) {
+          const domain = grouper.color.domain();
+          const range = _.map(domain, (d: any) => grouper.color(d));
+          console.log(domain, range);
+
+          colorisator = d3
+            .scaleOrdinal<string | number, string>()
+            .domain(
+              _.concat(
+                _.map(domain, i => 's:' + i),
+                domain
+              )
+            )
+            .range(
+              _.concat(
+                range,
+                _.map(range, d => {
+                  const cl = d3.color(d)!;
+                  cl.opacity = 0.5;
+                  return cl.toString();
+                })
+              )
+            );
+        } else {
+          colorisator = grouper.color;
+        }
 
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(
@@ -123,11 +169,8 @@ export const MarkerClusterGroup: React.FC<{
           >
             <PieChart
               radius={radius}
-              counts={_(markers)
-                .countBy(grouper.countBy)
-                .toPairs()
-                .value()}
-              color={grouper.color}
+              counts={counts}
+              color={colorisator}
               donut={0}
             />
           </svg>,
