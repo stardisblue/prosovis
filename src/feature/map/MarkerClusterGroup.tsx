@@ -81,7 +81,28 @@ const selectGrouper = createSelector(
 
     const color = switcher === 'Actor' ? actor : main;
 
-    return { countBy, color };
+    const domain = color.domain();
+    const range = _.map(domain, (d: any) => color(d));
+    const sColor = d3
+      .scaleOrdinal<string | number, string>()
+      .domain(
+        _.concat(
+          _.map(domain, i => 's:' + i),
+          domain
+        )
+      )
+      .range(
+        _.concat(
+          range,
+          _.map(range, d => {
+            const cl = d3.color(d)!;
+            cl.opacity = 0.5;
+            return cl.toString();
+          })
+        )
+      );
+
+    return { countBy, color: _.isEmpty(selected) ? color : sColor, sColor };
   }
 );
 
@@ -132,34 +153,6 @@ export const MarkerClusterGroup: React.FC<{
 
         const hasSelected = _(counts).some(i => _.startsWith(i[0], 's:'));
 
-        let colorisator;
-        if (hasSelected) {
-          const domain = grouper.color.domain();
-          const range = _.map(domain, (d: any) => grouper.color(d));
-          console.log(domain, range);
-
-          colorisator = d3
-            .scaleOrdinal<string | number, string>()
-            .domain(
-              _.concat(
-                _.map(domain, i => 's:' + i),
-                domain
-              )
-            )
-            .range(
-              _.concat(
-                range,
-                _.map(range, d => {
-                  const cl = d3.color(d)!;
-                  cl.opacity = 0.5;
-                  return cl.toString();
-                })
-              )
-            );
-        } else {
-          colorisator = grouper.color;
-        }
-
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(
           <svg
@@ -170,7 +163,7 @@ export const MarkerClusterGroup: React.FC<{
             <PieChart
               radius={radius}
               counts={counts}
-              color={colorisator}
+              color={hasSelected ? grouper.sColor : grouper.color}
               donut={0}
             />
           </svg>,
