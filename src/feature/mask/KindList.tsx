@@ -10,7 +10,7 @@ const KindList: React.FC = function() {
   const kinds = useSelector(selectKinds);
 
   return (
-    <Flex className="ph2" justify="between" wrap>
+    <Flex className="ph2" wrap>
       {_.map(kinds, (kind: AnyEvent['kind']) => (
         <Kind key={kind} id={kind} />
       ))}

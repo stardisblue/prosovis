@@ -4,6 +4,7 @@ import StyledInput from './StyledInput';
 
 const StyledLabel = styled.label`
   margin-bottom: 0;
+  margin-right: 1em;
 `;
 
 const StyledSlider = styled.div`

@@ -9,7 +9,7 @@ const ActorList: React.FC = function() {
   const actors = useSelector(selectActors);
 
   return (
-    <Flex className="ph2" wrap justify="between">
+    <Flex className="ph2" wrap>
       {_.map(actors, actor => {
         return <Actor key={actor.id} actor={actor} />;
       })}
