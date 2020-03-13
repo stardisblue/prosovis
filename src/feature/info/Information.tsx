@@ -12,6 +12,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import { highlightsAsMap } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
+import MaskedInformation from './MaskedInformation';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
@@ -53,7 +54,7 @@ export const Information: React.FC<{ className?: string }> = function({
       <hr />
       {/* TODO  style */}
       {_.map(groups.yes, g => (
-        <InformationFold key={g.group.uri} {...g} />
+        <MaskedInformation key={g.group.uri} {...g} />
       ))}
     </Flex>
   );

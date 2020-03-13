@@ -45,4 +45,6 @@ export const eventSlice = createSlice({
   }
 });
 
+export const { addActor, deleteActor } = eventSlice.actions;
+
 export default eventSlice.reducer;
