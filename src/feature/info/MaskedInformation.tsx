@@ -8,8 +8,6 @@ import { Ressource } from '../../data';
 import { useDispatch } from 'react-redux';
 import { deleteActor } from '../../reducers/eventSlice';
 
-const Anyticon: any = Octicon;
-
 const MaskedInformation: React.FC<{
   group: Ressource;
   kind: 'Actor' | 'NamedPlace';
@@ -20,7 +18,7 @@ const MaskedInformation: React.FC<{
   const dispatch = useDispatch();
   const handleClick = useCallback(() => {
     dispatch(deleteActor(group.id));
-  }, [dispatch]);
+  }, [dispatch, group.id]);
 
   return (
     <Flex
@@ -37,21 +35,21 @@ const MaskedInformation: React.FC<{
         <StyledOcticon className="ma1 flex-shrink-0" icon={Location} />
       )}
       <div
-        className={classnames('flex-auto', {
-          b: selected,
-          'o-50': masked
+        className={classnames('flex-auto o-50', {
+          b: selected
         })}
       >
         {group.label}
       </div>
       {kind === 'Actor' && (
-        <Anyticon
-          className="ma1 flex-shrink-0"
-          verticalAlign="text-bottom"
-          icon={X}
-          ariaLabel={'Supprimer'}
-          onClick={handleClick}
-        />
+        <span onClick={handleClick}>
+          <Octicon
+            className="ma1 flex-shrink-0 red"
+            verticalAlign="text-bottom"
+            icon={X}
+            ariaLabel={'Supprimer'}
+          />
+        </span>
       )}
     </Flex>
   );
