@@ -20,7 +20,7 @@ const Kind: React.FC<{
 
   return (
     <CheckBoxSwitch
-      color={color ? color(id) : '#333'}
+      color={color ? color(id) : '#6c757d'}
       checked={kindMaskState(id, kindMask)}
       handleCheck={handleCheck}
     >

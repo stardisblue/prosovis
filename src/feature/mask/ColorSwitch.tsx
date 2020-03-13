@@ -19,7 +19,7 @@ const StyledSlider = styled.div`
   height: 100%;
   width: 100%;
   padding: 12.5%;
-  background-color: #333;
+  background-color: #6c757d;
   transition: 0.4s;
   border-radius: 999em;
 `;
