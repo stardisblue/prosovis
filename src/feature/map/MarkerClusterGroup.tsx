@@ -68,16 +68,15 @@ const selectGrouper = createSelector(
   selectActorColor,
   superSelectionAsMap,
   function(switcher, main, actor, selected) {
-    const countBy =
+    const groupBy =
       switcher === 'Actor'
-        ? ({ options }: any) =>
-            selected[options.id] !== undefined
-              ? 's:' + options.actor
-              : options.actor
-        : ({ options }: any) =>
-            selected[options.id] !== undefined
-              ? 's:' + options.kind
-              : options.kind;
+        ? ({ options }: any) => options.actor
+        : ({ options }: any) => options.kind;
+
+    const selectionFilter =
+      switcher === 'Actor'
+        ? ({ options }: any) => selected[options.id] !== undefined
+        : ({ options }: any) => selected[options.id] !== undefined;
 
     const color = switcher === 'Actor' ? actor : main;
 
@@ -102,7 +101,11 @@ const selectGrouper = createSelector(
         )
       );
 
-    return { countBy, color: _.isEmpty(selected) ? color : sColor, sColor };
+    return {
+      groupBy,
+      color: _.isEmpty(selected) ? color : sColor,
+      selectionFilter
+    };
   }
 );
 
@@ -146,12 +149,27 @@ export const MarkerClusterGroup: React.FC<{
         const markers = c.getAllChildMarkers();
         const radius = scale(markers.length);
         const size = radius * 2;
-        const counts = _(markers)
-          .countBy(grouper.countBy)
-          .toPairs()
+
+        const selected = _(markers)
+          .filter(grouper.selectionFilter)
+          .uniqBy(grouper.groupBy)
+          .map(grouper.groupBy)
+          .keyBy()
           .value();
 
-        const hasSelected = _(counts).some(i => _.startsWith(i[0], 's:'));
+        const groups = _(markers).groupBy(value => {
+          const key = grouper.groupBy(value);
+          if (selected[key]) {
+            return 's:' + key;
+          } else {
+            return key;
+          }
+        });
+
+        const counts = groups
+          .toPairs()
+          .sortBy(([key]) => (key.startsWith('s:') ? key.slice(2) : key))
+          .value();
 
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(
@@ -163,7 +181,7 @@ export const MarkerClusterGroup: React.FC<{
             <PieChart
               radius={radius}
               counts={counts}
-              color={hasSelected ? grouper.sColor : grouper.color}
+              color={grouper.color}
               donut={0}
             />
           </svg>,
