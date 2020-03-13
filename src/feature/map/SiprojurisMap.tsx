@@ -13,12 +13,13 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
   const dispatch = useDispatch();
 
   const $map = useRef<L.Map>(null as any);
-
-  const $markerLayer = useRef<any>();
   const handleRef = useCallback(function(dom: Map) {
     if (!dom) return;
     $map.current = dom.leafletElement;
+    $map.current.fitWorld();
   }, []);
+
+  const $markerLayer = useRef<any>();
   const handleMarkerLayerRef = useCallback(function(
     dom: LayersControl.Overlay
   ) {
@@ -28,8 +29,6 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
   []);
 
   useEffect(() => {
-    // if ($map.current === null) return;
-    //console.log($map.current.leafletElement.getBounds());
     $map.current.invalidateSize();
 
     $map.current.on('moveend', function() {

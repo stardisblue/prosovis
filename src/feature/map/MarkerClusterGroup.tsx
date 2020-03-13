@@ -96,7 +96,7 @@ const selectGrouper = createSelector(
           range,
           _.map(range, d => {
             const cl = d3.color(d)!;
-            cl.opacity = 0.5;
+            cl.opacity = 0.7;
             return cl.toString();
           })
         )
