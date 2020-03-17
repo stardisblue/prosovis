@@ -1,8 +1,8 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import L from 'leaflet';
 import { PrimaryKey } from '../../data';
 
-const DataMarker = L.Marker.extend({
+const DataMarker = L.CircleMarker.extend({
   options: { id: null, kind: null, actor: null }
 }) as any;
 
@@ -15,12 +15,12 @@ export const Marker: React.FC<{
     actor: PrimaryKey;
   };
 }> = function({ latlng, options, $l }) {
-  const $marker = useRef(new DataMarker(latlng, options));
   useEffect(function() {
-    $l.current.addLayer($marker.current);
+    const marker = new DataMarker(latlng, options);
+    $l.current.addLayer(marker);
     return function() {
       // eslint-disable-next-line
-      $l.current.removeLayer($marker.current);
+      $l.current.removeLayer(marker);
     };
     // eslint-disable-next-line
   }, []);
