@@ -37,7 +37,7 @@ const brushHandles = function(
 
       group
         .append('path')
-        .attr('fill', '#6e94ff')
+        .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
         .attr('transform', 'translate(0, 5)')
         .attr('d', path);
@@ -45,7 +45,7 @@ const brushHandles = function(
       // triangle down
       group
         .append('path')
-        .attr('fill', '#6e94ff')
+        .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
         .attr('transform', `translate(1, ${height - 5})`)
         .attr('d', d3.symbol().type(d3.symbolTriangle));
@@ -53,7 +53,7 @@ const brushHandles = function(
       // triangle up
       group
         .append('path')
-        .attr('fill', '#6e94ff')
+        .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
         .attr('transform', 'rotate(180) translate(-1, -5)')
         .attr('d', d3.symbol().type(d3.symbolTriangle));
