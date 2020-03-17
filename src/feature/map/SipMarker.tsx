@@ -69,7 +69,9 @@ const SipMarker: React.FC<{
         actor,
         fillColor: color.main(event),
         color: color.border(event),
-        fillOpacity: 1
+        fillOpacity: 1,
+        weight: 1,
+        radius: 5
       }}
     >
       {/* <Popup>{label}</Popup> */}
