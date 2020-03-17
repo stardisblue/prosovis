@@ -3,6 +3,9 @@ import { Marker } from './Marker';
 import L from 'leaflet';
 import { AnyEvent, NamedPlace, PrimaryKey } from '../../data';
 
+import { useSelector } from 'react-redux';
+import { selectMarkerColor } from '../../selectors/switch';
+
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
   event: {
@@ -12,8 +15,10 @@ const SipMarker: React.FC<{
     id: PrimaryKey;
     kind: AnyEvent['kind'];
   };
-}> = function({ $l, event: { id, actor, kind, label, localisation } }) {
+}> = function({ $l, event }) {
   // const dispatch = useDispatch();
+  const { id, actor, kind, localisation } = event;
+  const color = useSelector(selectMarkerColor);
 
   // const handleClick = useCallback(
   //   function() {
@@ -58,7 +63,14 @@ const SipMarker: React.FC<{
       //   onmouseover={handleMouseOver}
       //   onmouseout={handleMouseOut}
       latlng={[+localisation.lat!, +localisation.lng!]}
-      options={{ id, kind, actor }}
+      options={{
+        id,
+        kind,
+        actor,
+        fillColor: color.main(event),
+        color: color.border(event),
+        fillOpacity: 1
+      }}
     >
       {/* <Popup>{label}</Popup> */}
     </Marker>
