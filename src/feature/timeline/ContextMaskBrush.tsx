@@ -4,6 +4,69 @@ import { useDispatch } from 'react-redux';
 import { setIntervalMask } from '../../reducers/maskSlice';
 import _ from 'lodash';
 import ContextOptions from './ContextOptions';
+import styled from 'styled-components';
+
+const StyledG = styled.g`
+  .selection {
+    fill-opacity: 0;
+  }
+`;
+
+const height = ContextOptions.height - ContextOptions.margin.mask.bottom;
+
+const path = d3.line().context(null)([
+  [0, 0],
+  [2, 0],
+  [2, height - 10],
+  [0, height - 10],
+  [0, 0]
+])!;
+
+const brushHandles = function(
+  g: d3.Selection<SVGGElement, unknown, null, undefined>,
+  selection: any
+) {
+  const handles = g
+    .selectAll('.handle--custom')
+    .data<{ type: 'w' | 'e' }>([{ type: 'w' }, { type: 'e' }])
+    .join(function(enter) {
+      const group = enter
+        .append('g')
+        .attr('class', 'handle--custom')
+        .attr('shape-rendering', 'crispEdges');
+
+      group
+        .append('path')
+        .attr('fill', '#6e94ff')
+        .attr('cursor', 'ew-resize')
+        .attr('transform', 'translate(0, 5)')
+        .attr('d', path);
+
+      // triangle down
+      group
+        .append('path')
+        .attr('fill', '#6e94ff')
+        .attr('cursor', 'ew-resize')
+        .attr('transform', `translate(1, ${height - 5})`)
+        .attr('d', d3.symbol().type(d3.symbolTriangle));
+
+      // triangle up
+      group
+        .append('path')
+        .attr('fill', '#6e94ff')
+        .attr('cursor', 'ew-resize')
+        .attr('transform', 'rotate(180) translate(-1, -5)')
+        .attr('d', d3.symbol().type(d3.symbolTriangle));
+      return group;
+    });
+
+  selection === null
+    ? handles.attr('transform', null)
+    : handles.attr(
+        'transform',
+        (d: any, i: number) => `translate(${selection[i] - 1},0)`
+      );
+};
 
 export const ContextMaskBrush: React.FC<{
   width: number;
@@ -23,7 +86,6 @@ export const ContextMaskBrush: React.FC<{
     if (!dom) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
-
     mask.current = { dom, brush, selection };
   }, []);
 
@@ -51,21 +113,29 @@ export const ContextMaskBrush: React.FC<{
     [dispatch]
   );
 
-  useEffect(() => {
-    mask.current.brush.extent([
-      [ContextOptions.margin.mask.left, ContextOptions.margin.mask.top],
-      [
-        width - ContextOptions.margin.mask.right,
-        ContextOptions.height - ContextOptions.margin.mask.bottom
-      ]
-    ]);
-    mask.current.selection.call(mask.current.brush);
-  }, [width]);
+  useEffect(
+    function() {
+      mask.current.brush.extent([
+        [ContextOptions.margin.mask.left, ContextOptions.margin.mask.top],
+        [
+          width - ContextOptions.margin.mask.right,
+          ContextOptions.height - ContextOptions.margin.mask.bottom
+        ]
+      ]);
+      mask.current.selection.call(brushHandles, [
+        ContextOptions.margin.mask.left,
+        width - ContextOptions.margin.mask.right
+      ]);
+      mask.current.selection.call(mask.current.brush);
+    },
+    [width]
+  );
 
   useEffect(
     function() {
       if (!sync) return;
       mask.current.selection.call(mask.current.brush.move, sync.map(x));
+
       updateMask(sync[0], sync[1]);
     },
     [sync, updateMask, x]
@@ -73,18 +143,22 @@ export const ContextMaskBrush: React.FC<{
 
   useEffect(
     function() {
-      mask.current.brush.on('brush', function() {
-        if (d3.event.sourceEvent && d3.event.selection) {
-          const [start, end] = d3.event.selection.map(x.invert);
-          onBrush(start, end);
-          updateMask(start, end);
+      mask.current.brush.on('start brush end', function() {
+        if (d3.event.selection) {
+          d3.select(this).call(brushHandles, d3.event.selection);
+
+          if (d3.event.sourceEvent) {
+            const [start, end] = d3.event.selection.map(x.invert);
+            onBrush(start, end);
+            updateMask(start, end);
+          }
         }
       });
     },
     [onBrush, updateMask, x]
   );
 
-  return <g id="context-filter" className="brush" ref={ref}></g>;
+  return <StyledG id="context-filter" className="brush" ref={ref} />;
 };
 
 export default ContextMaskBrush;
