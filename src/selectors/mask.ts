@@ -18,10 +18,22 @@ export const selectBoundsMask = createSelector(selectMask, mask => mask.bounds);
 
 export const selectIntervalFun = createSelector(selectIntervalMask, res =>
   res
-    ? ({ datation }: AnyEvent) =>
-        _.some(datation, ({ clean_date }) =>
-          moment(clean_date).isBetween(res.start, res.end)
-        )
+    ? function({ datation }: AnyEvent) {
+        if (datation.length === 1) {
+          return moment(datation[0].clean_date).isBetween(res.start, res.end);
+        } else {
+          const datatStart = datation[0].clean_date;
+          const datatEnd = datation[1].clean_date;
+
+          return !(
+            moment(res.end).isBefore(datatStart) ||
+            moment(res.start).isAfter(datatEnd)
+          );
+        }
+        // return _.some(datation, function({ clean_date }) {
+        //   return moment(clean_date).isBetween(res.start, res.end);
+        // });
+      }
     : undefined
 );
 
