@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
 import { PrimaryKey } from '../../data';
-import { useLazyRef } from '../../hooks/useLazyRef';
+import useLazyRef from '../../hooks/useLazyRef';
 
 type DataMarkerOptions = L.CircleMarkerOptions & {
   id: PrimaryKey;
@@ -26,36 +26,119 @@ export const Marker: React.FC<{
     kind: string;
     actor: PrimaryKey;
   };
-}> = function({ latlng, options, $l }) {
+  onMouseOver?: L.LeafletEventHandlerFn;
+  onMouseOut?: L.LeafletEventHandlerFn;
+  onClick?: L.LeafletEventHandlerFn;
+}> = function({ latlng, options, $l, onMouseOut, onMouseOver, onClick }) {
   const marker = useLazyRef(() => new DataMarker(latlng, options));
+
   useEffect(function() {
     // marker.current = new DataMarker(latlng, options);
     // const marker = L.circleMarker(latlng, {fillColor: color.main()});
     $l.current.addLayer(marker.current);
     return function() {
       // eslint-disable-next-line
-      $l.current.removeLayer(marker.current!);
+      $l.current.removeLayer(marker.current);
     };
     // eslint-disable-next-line
   }, []);
 
-  useEffect(
-    function() {
-      marker.current.setStyle({
-        color: options.color,
-        fillColor: options.fillColor
-      });
-    },
-    [options.color, options.fillColor]
-  );
+  useColor(marker, options.color, options.fillColor);
 
-  useEffect(
-    function() {
-      marker.current.setStyle({
-        fillOpacity: options.fillOpacity
-      });
-    },
-    [options.fillOpacity]
-  );
+  useFillOpacity(marker, options.fillOpacity);
+
+  useMouseOver(marker, onMouseOver);
+
+  useMouseOut(marker, onMouseOut);
+
+  useClick(marker, onClick);
+
   return null;
 };
+function useColor(
+  marker: React.MutableRefObject<DataMarkerType>,
+  color?: string,
+  fillColor?: string
+) {
+  useEffect(
+    function() {
+      marker.current.setStyle({ color, fillColor });
+    }, // safely ignoring marker
+    // eslint-disable-next-line
+    [color, fillColor]
+  );
+}
+
+function useFillOpacity(
+  marker: React.MutableRefObject<DataMarkerType>,
+  fillOpacity?: number
+) {
+  useEffect(
+    function() {
+      marker.current.setStyle({ fillOpacity });
+    }, // safely ignoring marker
+    // eslint-disable-next-line
+    [fillOpacity]
+  );
+}
+
+function useMouseOver(
+  marker: React.MutableRefObject<DataMarkerType>,
+  onMouseOver?: L.LeafletEventHandlerFn
+) {
+  useEffect(
+    function() {
+      if (onMouseOver !== undefined) {
+        marker.current.on('mouseover', onMouseOver);
+        return function() {
+          // marker.current does not change
+          // eslint-disable-next-line
+          marker.current.off('mouseover');
+        };
+      }
+    }, // safely ignoring marker
+    // eslint-disable-next-line
+    [onMouseOver]
+  );
+}
+
+function useMouseOut(
+  marker: React.MutableRefObject<DataMarkerType>,
+  onMouseOut?: L.LeafletEventHandlerFn
+) {
+  useEffect(
+    function() {
+      if (onMouseOut !== undefined) {
+        marker.current.on('mouseout', onMouseOut);
+        return function() {
+          // marker.current does not change
+          // eslint-disable-next-line
+          marker.current.off('mouseout');
+        };
+      }
+    }, // safely ignoring marker
+    // eslint-disable-next-line
+    [onMouseOut]
+  );
+}
+
+function useClick(
+  marker: React.MutableRefObject<DataMarkerType>,
+  onMouseClick?: L.LeafletEventHandlerFn
+) {
+  useEffect(
+    function() {
+      if (onMouseClick !== undefined) {
+        marker.current.on('click', onMouseClick);
+
+        return function() {
+          // marker.current does not change
+          // eslint-disable-next-line
+          marker.current.off('click');
+        };
+      }
+    }, // safely ignoring marker
+    // eslint-disable-next-line
+    [onMouseClick]
+  );
+}

@@ -1,4 +1,4 @@
-import { useLazyRef } from '../../hooks/useLazyRef';
+import useLazyRef from '../../hooks/useLazyRef';
 export function useMouse() {
   return useLazyRef(() => ({
     click: false,

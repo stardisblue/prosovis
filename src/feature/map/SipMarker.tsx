@@ -1,12 +1,18 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
 import { AnyEvent, NamedPlace, PrimaryKey } from '../../data';
 
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 import _ from 'lodash';
+import { setSelection } from '../../reducers/selectionSlice';
+import { setHighlights, clearHighlights } from '../../reducers/highlightSlice';
+import {
+  setSuperHighlightThunk,
+  clearSuperHighlightThunk
+} from '../../thunks/highlights';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
@@ -18,52 +24,55 @@ const SipMarker: React.FC<{
     kind: AnyEvent['kind'];
   };
 }> = function({ $l, event }) {
-  // const dispatch = useDispatch();
+  const dispatch = useDispatch();
   const { id, actor, kind, localisation } = event;
   const color = useSelector(selectMarkerColor);
   const selected = useSelector(superSelectionAsMap);
-  // const handleClick = useCallback(
-  //   function() {
-  //     dispatch(
-  //       setSelection({
-  //         id: id,
-  //         kind: 'Event'
-  //       })
-  //     );
-  //   },
-  //   [id, dispatch]
-  // );
+  const handleClick = useCallback(
+    function() {
+      dispatch(
+        setSelection({
+          id: id,
+          kind: 'Event'
+        })
+      );
+    },
+    // safely ignoring dispatch
+    // eslint-disable-next-line
+    [id]
+  );
 
-  // const handleMouseOver = useCallback(
-  //   function() {
-  //     console.log('hover');
-  //     dispatch(
-  //       setHighlights({
-  //         id: id,
-  //         kind: 'Event'
-  //       })
-  //     );
-  //   },
-  //   [id, dispatch]
-  // );
+  const handleMouseOver = useCallback(
+    function() {
+      console.log('hover');
+      dispatch(
+        setSuperHighlightThunk({
+          id: id,
+          kind: 'Event'
+        })
+      );
+    },
+    // safely ignoring dispatch
+    // eslint-disable-next-line
+    [id]
+  );
 
-  // const handleMouseOut = useCallback(
-  //   function(e) {
-  //     console.log('out');
-  //     dispatch(clearHighlights());
-  //   },
-  //   [dispatch]
-  // );
+  const handleMouseOut = useCallback(
+    function() {
+      console.log('out');
+      dispatch(clearSuperHighlightThunk());
+    },
+    // safely ignoring dispatch
+    // eslint-disable-next-line
+    []
+  );
 
   return (
     <Marker
       $l={$l}
-      //   data-id={id}
-      //   data-kind={kind}
-      //   data-actor={actor}
-      //   onclick={handleClick}
-      //   onmouseover={handleMouseOver}
-      //   onmouseout={handleMouseOut}
+      onClick={handleClick}
+      onMouseOver={handleMouseOver}
+      onMouseOut={handleMouseOut}
       latlng={[+localisation.lat!, +localisation.lng!]}
       options={{
         id,

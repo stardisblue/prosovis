@@ -31,7 +31,6 @@ import {
 } from './timelineGroupSlice';
 import { Context } from './Context';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
-import { useLazyRef } from '../../hooks/useLazyRef';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -194,23 +193,26 @@ export const VisTimeline: React.FC = function() {
 
   // Syncs the context window view and the timeline view
 
-  const actions = useLazyRef<{
+  const actions = useRef<{
     click: (e: VisEvent) => void;
     changed: (e: VisEvent) => void;
     mouseOver: (e: VisEvent) => void;
     mouseOut: (e: VisEvent) => void;
     __click: (e: VisEvent) => void;
     __drag: (e: VisEvent) => void;
-  }>(() => ({
-    click: (_e: VisEvent) => {},
-    changed: (_e: VisEvent) => {},
-    mouseOver: (_e: VisEvent) => {},
-    mouseOut: (_e: VisEvent) => {},
-    /** @deprecated */
-    __click: (_e: VisEvent) => {},
-    /** @deprecated */
-    __drag: (_e: VisEvent) => {}
-  }));
+  }>(undefined as any);
+  if (actions.current === undefined) {
+    actions.current = {
+      click: (_e: VisEvent) => {},
+      changed: (_e: VisEvent) => {},
+      mouseOver: (_e: VisEvent) => {},
+      mouseOut: (_e: VisEvent) => {},
+      /** @deprecated */
+      __click: (_e: VisEvent) => {},
+      /** @deprecated */
+      __drag: (_e: VisEvent) => {}
+    };
+  }
 
   /*
    * Binds actions and mouse interactions to the timeline
