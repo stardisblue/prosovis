@@ -1108,7 +1108,6 @@ input[type='submit'] {
   border-radius: 100%;
 }
 
-/* TODO: singleColor !!! */
-.vis-custom-time.a {
+.vis-custom-time {
   background-color: #6c757d;
 }
