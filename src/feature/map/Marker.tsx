@@ -48,5 +48,14 @@ export const Marker: React.FC<{
     },
     [options.color, options.fillColor]
   );
+
+  useEffect(
+    function() {
+      marker.current.setStyle({
+        fillOpacity: options.fillOpacity
+      });
+    },
+    [options.fillOpacity]
+  );
   return null;
 };

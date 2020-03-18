@@ -74,10 +74,8 @@ const selectGrouper = createSelector(
         ? ({ options }: any) => options.actor
         : ({ options }: any) => options.kind;
 
-    const selectionFilter =
-      switcher === 'Actor'
-        ? ({ options }: any) => selected[options.id] !== undefined
-        : ({ options }: any) => selected[options.id] !== undefined;
+    const selectionFilter = ({ options: { id } }: any) =>
+      selected[id] !== undefined;
 
     const color = switcher === 'Actor' ? actor : main;
 

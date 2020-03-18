@@ -5,6 +5,8 @@ import { AnyEvent, NamedPlace, PrimaryKey } from '../../data';
 
 import { useSelector } from 'react-redux';
 import { selectMarkerColor } from '../../selectors/switch';
+import { superSelectionAsMap } from '../../selectors/superHighlights';
+import _ from 'lodash';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
@@ -19,7 +21,7 @@ const SipMarker: React.FC<{
   // const dispatch = useDispatch();
   const { id, actor, kind, localisation } = event;
   const color = useSelector(selectMarkerColor);
-
+  const selected = useSelector(superSelectionAsMap);
   // const handleClick = useCallback(
   //   function() {
   //     dispatch(
@@ -69,7 +71,8 @@ const SipMarker: React.FC<{
         actor,
         fillColor: color.main(event),
         color: color.border(event),
-        fillOpacity: 1,
+        fillOpacity:
+          _.isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,
         weight: 1,
         radius: 5
       }}
