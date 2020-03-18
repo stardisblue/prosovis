@@ -7,7 +7,7 @@ import { selectMainColor, selectActorColor } from '../../selectors/color';
 import * as d3 from 'd3';
 import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitch } from '../../selectors/switch';
+import { selectSwitch, selectSwitchColor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 
@@ -173,15 +173,15 @@ export const MarkerClusterGroup: React.FC<{
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(
           <svg
-            width={size}
-            height={size}
-            viewBox={`${-radius} ${-radius} ${size} ${size}`}
+            width={size + 10}
+            height={size + 10}
+            viewBox={`${-radius - 5} ${-radius - 5} ${size + 10} ${size + 10}`}
           >
             <PieChart
               radius={radius}
               counts={counts}
               color={grouper.color}
-              donut={0}
+              donut={5}
             />
           </svg>,
           c._svg

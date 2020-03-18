@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import React, { useMemo, useCallback } from 'react';
 import * as d3 from 'd3';
-import { clearSuperHighlightThunk } from '../../thunks/highlights';
+import {
+  clearSuperHighlightThunk,
+  setSuperHighlightThunk
+} from '../../thunks/highlights';
 import { useDispatch } from 'react-redux';
+import { setSelection } from '../../reducers/selectionSlice';
 
-type MouseEventFn = (
-  event: React.MouseEvent<SVGPathElement, MouseEvent>
-) => void;
 export const PieChart: React.FC<{
   radius: number;
   counts: [string, any[]][];
@@ -33,7 +34,7 @@ export const PieChart: React.FC<{
   return (
     <g stroke="white">
       {_.map(arcs, a => (
-        <PiePath a={a} color={color} arc={arc} />
+        <PiePath key={a.data[0]} a={a} color={color} arc={arc} />
       ))}
     </g>
   );
@@ -46,10 +47,26 @@ export const PiePath: React.FC<{
   arc: d3.Arc<any, d3.PieArcDatum<[string, any[]]>>;
 }> = function({ a, color, arc }) {
   const dispatch = useDispatch();
-  const handleMouseOver = useCallback<React.MouseEventHandler<SVGPathElement>>(
-    function() {}, // safely ignoring dispatch
+  const selectable = useMemo(
+    () =>
+      _.map(a.data[1], ({ options: { id } }) => ({ id: id, kind: 'Event' })),
+    [a.data[1]]
+  );
+
+  const handleMouseClick = useCallback<React.MouseEventHandler<SVGPathElement>>(
+    function() {
+      dispatch(setSelection(selectable));
+    }, // safely ignoring dispatch
     // eslint-disable-next-line
-    []
+    [selectable]
+  );
+
+  const handleMouseOver = useCallback<React.MouseEventHandler<SVGPathElement>>(
+    function() {
+      dispatch(setSuperHighlightThunk(selectable));
+    }, // safely ignoring dispatch
+    // eslint-disable-next-line
+    [selectable]
   );
 
   const handleMouseOut = useCallback<React.MouseEventHandler<SVGPathElement>>(
@@ -59,17 +76,9 @@ export const PiePath: React.FC<{
     // eslint-disable-next-line
     []
   );
-  const handleMouseClick = useCallback<React.MouseEventHandler<SVGPathElement>>(
-    function() {
-      dispatch(clearSuperHighlightThunk());
-    }, // safely ignoring dispatch
-    // eslint-disable-next-line
-    []
-  );
 
   return (
     <path
-      key={a.data[0]}
       fill={color(a.data[0])}
       d={arc(a)!}
       onMouseOver={handleMouseOver}
