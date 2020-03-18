@@ -14,14 +14,12 @@ import { useMouse } from './useMouse';
 import { Moment } from 'moment';
 import { useReferences } from './useReferences';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearHighlights, setHighlights } from '../../reducers/highlightSlice';
 import {
   addSelection,
   setSelection,
   clearSelection
 } from '../../reducers/selectionSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
-import { selectHighlights } from '../../selectors/highlight';
 import { selectEventColor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import {
@@ -30,7 +28,14 @@ import {
   selectTimelineEventGroups
 } from './timelineGroupSlice';
 import { Context } from './Context';
-import { superSelectionAsMap } from '../../selectors/superHighlights';
+import {
+  superSelectionAsMap,
+  selectSuperHighlight
+} from '../../selectors/superHighlights';
+import {
+  clearSuperHighlightThunk,
+  setSuperHighlightThunk
+} from '../../thunks/highlights';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -348,22 +353,22 @@ export const VisTimeline: React.FC = function() {
    * Highlights
    Events and Groups are highlighted
    */
-  const highlights = useSelector(selectHighlights);
+  const highlights = useSelector(selectSuperHighlight);
   const groupingKind = useSelector(selectTimelineGroup);
 
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        dispatch(setHighlights({ id: e.group, kind: groupingKind }));
+        dispatch(setSuperHighlightThunk({ id: e.group, kind: groupingKind }));
       } else if (e.what === 'item') {
-        dispatch(setHighlights({ id: e.item, kind: 'Event' }));
+        dispatch(setSuperHighlightThunk({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
-        dispatch(clearHighlights());
+        dispatch(clearSuperHighlightThunk());
       }
     };
 
     actions.current.mouseOut = () => {
-      if (highlights) dispatch(clearHighlights());
+      if (highlights) dispatch(clearSuperHighlightThunk());
     };
   }, [highlights, dispatch, groupingKind]);
 
