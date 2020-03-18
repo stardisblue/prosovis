@@ -7,7 +7,7 @@ import { selectMainColor, selectActorColor } from '../../selectors/color';
 import * as d3 from 'd3';
 import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitch, selectSwitchColor } from '../../selectors/switch';
+import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 

@@ -50,7 +50,7 @@ export const PiePath: React.FC<{
   const selectable = useMemo(
     () =>
       _.map(a.data[1], ({ options: { id } }) => ({ id: id, kind: 'Event' })),
-    [a.data[1]]
+    [a.data]
   );
 
   const handleMouseClick = useCallback<React.MouseEventHandler<SVGPathElement>>(
