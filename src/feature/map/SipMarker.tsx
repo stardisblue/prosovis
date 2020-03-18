@@ -8,7 +8,6 @@ import { selectMarkerColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 import _ from 'lodash';
 import { setSelection } from '../../reducers/selectionSlice';
-import { setHighlights, clearHighlights } from '../../reducers/highlightSlice';
 import {
   setSuperHighlightThunk,
   clearSuperHighlightThunk
