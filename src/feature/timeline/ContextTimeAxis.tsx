@@ -8,8 +8,7 @@ export const ContextTimeAxis: React.FC<{
   x: d3.ScaleTime<number, number>;
 }> = function({ x }) {
   // ! assuming that ref is instantaneously populated
-  const axis = useRef<AxisSelection>({} as any);
-
+  const axis = useRef<AxisSelection>(null as any);
   const handleRef = useCallback((dom: SVGGElement | null) => {
     if (!dom) return;
     axis.current = d3.select(dom);

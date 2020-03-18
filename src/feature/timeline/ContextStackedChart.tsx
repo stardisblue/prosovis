@@ -95,8 +95,7 @@ export const ContextStackedChart: React.FC<{
   x: d3.ScaleTime<number, number>;
 }> = function({ x }) {
   // ! assuming that ref is instantaneously populated
-  const chart = useRef<D3Selection>({} as any);
-
+  const chart = useRef<D3Selection>(null as any);
   const chartRef = useCallback(function(dom: SVGGElement) {
     if (!dom) return;
     chart.current = d3.select(dom);

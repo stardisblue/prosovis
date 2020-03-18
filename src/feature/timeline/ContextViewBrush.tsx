@@ -15,8 +15,7 @@ export const ContextViewBrush: React.FC<{
   sync?: [Date, Date];
 }> = function({ width, x, onBrush, sync }) {
   // ! assuming that ref is instantaneously populated
-  const view = useRef<ViewReference>({} as any);
-
+  const view = useRef<ViewReference>(null as any);
   const handleRef = useCallback(function(dom: SVGGElement | null) {
     if (dom === null) return;
     const brush = d3.brushX();

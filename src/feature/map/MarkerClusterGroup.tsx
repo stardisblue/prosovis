@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState, ReactPortal } from 'react';
+import React, { useEffect, useState, ReactPortal } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import _ from 'lodash';
@@ -10,6 +10,7 @@ import ReactDOM from 'react-dom';
 import { selectSwitch } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
+import { useLazyRef } from '../../hooks/useLazyRef';
 
 type Cluster = L.MarkerCluster & {
   _childClusters: Cluster[];
@@ -115,7 +116,7 @@ export const MarkerClusterGroup: React.FC<{
   options?: L.MarkerClusterGroupOptions;
   onClusterClick?: L.LeafletMouseEventHandlerFn;
 }> = function({ $l, markers, options, onClusterClick }) {
-  const $group = useRef(
+  const $group = useLazyRef(() =>
     L.markerClusterGroup({
       ...options,
       iconCreateFunction

@@ -79,15 +79,15 @@ export const ContextMaskBrush: React.FC<{
     dom: SVGGElement;
     selection: d3.Selection<SVGGElement, unknown, null, undefined>;
     brush: d3.BrushBehavior<unknown>;
-  }>({} as any);
-
-  const dispatch = useDispatch();
-  const ref = useCallback(function(dom: SVGGElement) {
+  }>(null as any);
+  const handleRef = useCallback(function(dom: SVGGElement) {
     if (!dom) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
     mask.current = { dom, brush, selection };
   }, []);
+
+  const dispatch = useDispatch();
 
   useEffect(
     function() {
@@ -158,7 +158,7 @@ export const ContextMaskBrush: React.FC<{
     [onBrush, updateMask, x]
   );
 
-  return <StyledG id="context-filter" className="brush" ref={ref} />;
+  return <StyledG id="context-filter" className="brush" ref={handleRef} />;
 };
 
 export default ContextMaskBrush;

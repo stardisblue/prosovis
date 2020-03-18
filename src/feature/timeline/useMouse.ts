@@ -1,6 +1,6 @@
-import { useRef } from 'react';
+import { useLazyRef } from '../../hooks/useLazyRef';
 export function useMouse() {
-  return useRef({
+  return useLazyRef(() => ({
     click: false,
     dragging: false,
     x: 0,
@@ -15,5 +15,5 @@ export function useMouse() {
         pageY: number;
       }
     ) => Math.abs(mouse.x - event.pageX) + Math.abs(mouse.y - event.pageY) > 6
-  });
+  }));
 }

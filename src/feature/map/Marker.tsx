@@ -1,6 +1,7 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import L from 'leaflet';
 import { PrimaryKey } from '../../data';
+import { useLazyRef } from '../../hooks/useLazyRef';
 
 type DataMarkerOptions = L.CircleMarkerOptions & {
   id: PrimaryKey;
@@ -26,9 +27,9 @@ export const Marker: React.FC<{
     actor: PrimaryKey;
   };
 }> = function({ latlng, options, $l }) {
-  const marker = useRef<DataMarkerType>();
+  const marker = useLazyRef(() => new DataMarker(latlng, options));
   useEffect(function() {
-    marker.current = new DataMarker(latlng, options);
+    // marker.current = new DataMarker(latlng, options);
     // const marker = L.circleMarker(latlng, {fillColor: color.main()});
     $l.current.addLayer(marker.current);
     return function() {
@@ -40,11 +41,10 @@ export const Marker: React.FC<{
 
   useEffect(
     function() {
-      if (marker.current)
-        marker.current.setStyle({
-          color: options.color,
-          fillColor: options.fillColor
-        });
+      marker.current.setStyle({
+        color: options.color,
+        fillColor: options.fillColor
+      });
     },
     [options.color, options.fillColor]
   );
