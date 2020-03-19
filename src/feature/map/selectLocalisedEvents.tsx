@@ -6,7 +6,8 @@ import {
   NamedPlace,
   Actor,
   PrimaryKey,
-  AnyEvent
+  AnyEvent,
+  Datation
 } from '../../data';
 
 export const selectLocalisedEvents = createSelector(
@@ -22,6 +23,7 @@ export const selectLocalisedEvents = createSelector(
             label: e.label,
             actor: e.actor.id,
             kind: e.kind,
+            datation: e.datation[0],
             localisation: l
           });
       },
@@ -31,6 +33,7 @@ export const selectLocalisedEvents = createSelector(
         actor: Actor['id'];
         id: PrimaryKey;
         kind: AnyEvent['kind'];
+        datation: Datation;
       }[]
     )
 );

@@ -132,17 +132,17 @@ export const MarkerClusterGroup: React.FC<{
     );
   }, [markers, groupBy]);
 
-  useEffect(
-    function() {
-      if (!onClusterClick) return;
-      const group = $group.current;
-      group.on('clusterclick' as any, onClusterClick);
-      return () => {
-        group.off('clusterclick' as any, onClusterClick);
-      };
-    },
-    [onClusterClick]
-  );
+  // useEffect(
+  //   function() {
+  //     if (!onClusterClick) return;
+  //     const group = $group.current;
+  //     group.on('clusterclick' as any, onClusterClick);
+  //     return () => {
+  //       group.off('clusterclick' as any, onClusterClick);
+  //     };
+  //   },
+  //   [onClusterClick]
+  // );
 
   return (
     <>

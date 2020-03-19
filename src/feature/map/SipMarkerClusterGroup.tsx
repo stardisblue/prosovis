@@ -63,7 +63,8 @@ export const SipMarkerClusterGroup: React.FC<{
         maxClusterRadius: 50,
         zoomToBoundsOnClick: false,
         showCoverageOnHover: false,
-        removeOutsideVisibleBounds: true
+        removeOutsideVisibleBounds: true,
+        spiderfyOnMaxZoom: false
       }}
       onClusterClick={onClusterClick}
     />

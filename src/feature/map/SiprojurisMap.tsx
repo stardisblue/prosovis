@@ -6,6 +6,7 @@ import './SiprojurisMap.css';
 import { setBoundsMask } from '../../reducers/maskSlice';
 import SipMarkerClusterGroup from './SipMarkerClusterGroup';
 import L from 'leaflet';
+import SipAnthPaths from './SipAnthPaths';
 
 export const SiprojurisMap: React.FC<{ className?: string }> = function({
   className
@@ -25,6 +26,15 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
   ) {
     if (!dom) return;
     $markerLayer.current = dom;
+  },
+  []);
+
+  const $antPathLayer = useRef<any>();
+  const handleAntPathLayerRef = useCallback(function(
+    dom: LayersControl.Overlay
+  ) {
+    if (!dom) return;
+    $antPathLayer.current = dom;
   },
   []);
 
@@ -98,21 +108,17 @@ var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest
             <SipMarkerClusterGroup $layer={$markerLayer} $map={$map} />
           </LayersControl.Overlay>
 
-          <LayersControl.Overlay name="AntPaths" checked>
-            <SipAnthPath />
+          <LayersControl.Overlay
+            ref={handleAntPathLayerRef}
+            name="AntPaths"
+            checked
+          >
+            <SipAnthPaths $layer={$antPathLayer} $map={$map} />
           </LayersControl.Overlay>
         </LayersControl>
       </Map>
     </div>
   );
-};
-
-const SipAnthPath: React.FC<{ $l?: any }> = function({ $l }) {
-  useEffect(function() {
-    // console.log($l.current.addLayer);
-  });
-
-  return null;
 };
 
 export default SiprojurisMap;
