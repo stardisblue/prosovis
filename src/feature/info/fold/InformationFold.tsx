@@ -101,7 +101,7 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
         _.isArray(e.events) ? (
           <KindGroup key={e.id} {...(e as any)} origin={kind} />
         ) : (
-          <EventInfo event={e.events} origin={kind} />
+          <EventInfo key={e.id} event={e.events} origin={kind} />
         )
       )}
     >

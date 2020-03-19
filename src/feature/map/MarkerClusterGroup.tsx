@@ -3,13 +3,16 @@ import L from 'leaflet';
 import 'leaflet.markercluster';
 import _ from 'lodash';
 import { useSelector } from 'react-redux';
-import { selectMainColor, selectActorColor } from '../../selectors/color';
 import * as d3 from 'd3';
 import PieChart from './PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitch } from '../../selectors/switch';
+import { selectSwitchIsActor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
-import { superSelectionAsMap } from '../../selectors/superHighlights';
+
+export const selectMarkerGroupBy = createSelector(
+  selectSwitchIsActor,
+  switcher => (switcher ? ({ actor }: any) => actor : ({ kind }: any) => kind)
+);
 
 type Cluster = L.MarkerCluster & {
   _childClusters: Cluster[];
@@ -62,51 +65,6 @@ function iconCreateFunction(cluster: L.MarkerCluster) {
   });
 }
 
-const selectGrouper = createSelector(
-  selectSwitch,
-  selectMainColor,
-  selectActorColor,
-  superSelectionAsMap,
-  function(switcher, main, actor, selected) {
-    const groupBy =
-      switcher === 'Actor'
-        ? ({ options }: any) => options.actor
-        : ({ options }: any) => options.kind;
-
-    const selectionFilter = ({ options: { id } }: any) =>
-      selected[id] !== undefined;
-
-    const color = switcher === 'Actor' ? actor : main;
-
-    const domain = color.domain();
-    const range = _.map(domain, (d: any) => color(d));
-    const sColor = d3
-      .scaleOrdinal<string | number, string>()
-      .domain(
-        _.concat(
-          _.map(domain, i => 's:' + i),
-          domain
-        )
-      )
-      .range(
-        _.concat(
-          range,
-          _.map(range, d => {
-            const cl = d3.color(d)!;
-            cl.opacity = 0.7;
-            return cl.toString();
-          })
-        )
-      );
-
-    return {
-      groupBy,
-      color: _.isEmpty(selected) ? color : sColor,
-      selectionFilter
-    };
-  }
-);
-
 export const MarkerClusterGroup: React.FC<{
   $l: React.MutableRefObject<any>;
   markers: (ref: React.MutableRefObject<L.MarkerClusterGroup>) => JSX.Element[];
@@ -134,7 +92,7 @@ export const MarkerClusterGroup: React.FC<{
     []
   );
 
-  const grouper = useSelector(selectGrouper);
+  const groupBy = useSelector(selectMarkerGroupBy);
 
   const [portals, setPortals] = useState<(ReactPortal | null)[]>([]);
   useEffect(() => {
@@ -149,25 +107,11 @@ export const MarkerClusterGroup: React.FC<{
         const radius = scale(markers.length);
         const size = radius * 2;
 
-        const selected = _(markers)
-          .filter(grouper.selectionFilter)
-          .uniqBy(grouper.groupBy)
-          .map(grouper.groupBy)
-          .keyBy()
-          .value();
-
-        const groups = _(markers).groupBy(value => {
-          const key = grouper.groupBy(value);
-          if (selected[key]) {
-            return 's:' + key;
-          } else {
-            return key;
-          }
-        });
-
-        const counts = groups
+        const counts = _(markers)
+          .map('options')
+          .groupBy(groupBy)
           .toPairs()
-          .sortBy(([key]) => (key.startsWith('s:') ? key.slice(2) : key))
+          .sortBy('[0]')
           .value();
 
         // if (!c._svg_is_child) {
@@ -177,12 +121,7 @@ export const MarkerClusterGroup: React.FC<{
             height={size + 10}
             viewBox={`${-radius - 5} ${-radius - 5} ${size + 10} ${size + 10}`}
           >
-            <PieChart
-              radius={radius}
-              counts={counts}
-              color={grouper.color}
-              donut={5}
-            />
+            <PieChart radius={radius} counts={counts} donut={5} />
           </svg>,
           c._svg
         );
@@ -191,7 +130,7 @@ export const MarkerClusterGroup: React.FC<{
         // return null;
       })
     );
-  }, [markers, grouper]);
+  }, [markers, groupBy]);
 
   useEffect(
     function() {

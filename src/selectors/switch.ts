@@ -6,36 +6,37 @@ import * as d3 from 'd3';
 
 export const selectSwitch = (state: RootState) => state.switch;
 
-export const selectSwitchColor = createSelector(
+export const selectSwitchIsActor = createSelector(
   selectSwitch,
+  switcher => switcher === 'Actor'
+);
+export const selectSwitchColor = createSelector(
+  selectSwitchIsActor,
   selectMainColor,
   selectActorColor,
   (switcher, main, actor) => {
-    return (switcher === 'Actor' ? actor : main) as d3.ScaleOrdinal<
-      PrimaryKey,
-      string
-    >;
+    return (switcher ? actor : main) as d3.ScaleOrdinal<PrimaryKey, string>;
   }
 );
 
 export const selectSwitchKindColor = createSelector(
-  selectSwitch,
+  selectSwitchIsActor,
   selectMainColor,
-  (switcher, main) => (switcher === 'Kind' ? main : null)
+  (switcher, main) => (!switcher ? main : null)
 );
 
 export const selectSwitchActorColor = createSelector(
-  selectSwitch,
+  selectSwitchIsActor,
   selectActorColor,
-  (switcher, actor) => (switcher === 'Actor' ? actor : null)
+  (switcher, actor) => (switcher ? actor : null)
 );
 
 export const selectMarkerColor = createSelector(
-  selectSwitch,
+  selectSwitchIsActor,
   selectActorColor,
   selectMainColor,
   (switcher, actor, main) => {
-    if (switcher === 'Actor') {
+    if (switcher) {
       const border = d3
         .scaleOrdinal<PrimaryKey, string>(
           actor.range().map(d =>
@@ -71,12 +72,12 @@ export const selectMarkerColor = createSelector(
   }
 );
 export const selectEventColor = createSelector(
-  selectSwitch,
+  selectSwitchIsActor,
   selectActorColor,
   selectMainColor,
   function(switcher, actorColor, mainColor) {
     switch (switcher) {
-      case 'Actor': {
+      case true: {
         const border = d3
           .scaleOrdinal<PrimaryKey, string>(
             actorColor.range().map(d =>
@@ -93,7 +94,7 @@ export const selectEventColor = createSelector(
           border: (e: AnyEvent) => border(e.actor.id)
         };
       }
-      case 'Kind':
+      case false:
       default: {
         const border = d3
           .scaleOrdinal<PrimaryKey, string>(
