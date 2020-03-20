@@ -107,7 +107,6 @@ var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest
           >
             <SipMarkerClusterGroup $layer={$markerLayer} $map={$map} />
           </LayersControl.Overlay>
-
           <LayersControl.Overlay
             ref={handleAntPathLayerRef}
             name="AntPaths"

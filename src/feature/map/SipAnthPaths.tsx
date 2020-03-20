@@ -17,7 +17,9 @@ const AntPath: React.FC<{
   const options = useMemo(
     () => ({
       color: color ? color(id) : '#6c757d',
-      pulseColor: '#FFFFFF'
+      pulseColor: '#FFFFFF',
+      pane: 'markerPane'
+      // opacity: 1
     }),
     [color, id]
   );
@@ -29,7 +31,7 @@ const AntPath: React.FC<{
         events,
         ({ localisation: { lat, lng } }) => [+lat!, +lng!]
       ),
-      { ...options, opacity: 1 }
+      options
     );
   }
 
@@ -39,7 +41,7 @@ const AntPath: React.FC<{
         events,
         ({ localisation: { lat, lng } }) => [+lat!, +lng!]
       ),
-      { ...options, opacity: 1 }
+      options
     );
 
     $path.current = path;
@@ -66,7 +68,7 @@ const SipAnthPaths: React.FC<{
 }> = function({ $map, $layer }) {
   const groupLayer = useRef<any>();
   if (groupLayer.current === undefined) {
-    groupLayer.current = L.layerGroup();
+    groupLayer.current = L.layerGroup(undefined, { pane: 'markerPane' });
   }
   useEffect(function() {
     $layer.current.addLayer(groupLayer.current);
@@ -99,5 +101,7 @@ const SipAnthPaths: React.FC<{
     </>
   );
 };
+
+// alpha
 
 export default SipAnthPaths;

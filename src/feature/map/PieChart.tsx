@@ -28,7 +28,7 @@ const selectDimmedColor = createSelector(selectSwitchColor, color => {
         range,
         _.map(range, d => {
           const cl = d3.color(d)!;
-          cl.opacity = 0.7;
+          cl.opacity = 0.3;
           return cl.toString();
         })
       )
