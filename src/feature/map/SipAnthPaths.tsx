@@ -18,8 +18,8 @@ const AntPath: React.FC<{
     () => ({
       color: color ? color(id) : '#6c757d',
       pulseColor: '#FFFFFF',
-      pane: 'markerPane'
-      // opacity: 1
+      pane: 'markerPane',
+      opacity: 1
     }),
     [color, id]
   );
@@ -102,6 +102,10 @@ const SipAnthPaths: React.FC<{
   );
 };
 
-// alpha
+// alpha lors de la selection
+// ou survol,
+// survol/ selection d'un acteur sur information
+// information supprimer la croix en trop
+// survol acteur dans timeline
 
 export default SipAnthPaths;

@@ -1,25 +1,17 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import classnames from 'classnames';
 import { Flex } from '../../components/ui/Flex/';
-import Octicon, { X, Location } from '@primer/octicons-react';
+import { Location } from '@primer/octicons-react';
 import ActorIcon from './fold/ActorIcon';
 import StyledOcticon from './StyledOcticon';
 import { Ressource } from '../../data';
-import { useDispatch } from 'react-redux';
-import { deleteActor } from '../../reducers/eventSlice';
 
 const MaskedInformation: React.FC<{
   group: Ressource;
   kind: 'Actor' | 'NamedPlace';
-  masked: boolean;
   selected: boolean;
   highlighted: boolean;
-}> = function({ group, kind, masked, selected, highlighted }) {
-  const dispatch = useDispatch();
-  const handleClick = useCallback(() => {
-    dispatch(deleteActor(group.id));
-  }, [dispatch, group.id]);
-
+}> = function({ group, kind, selected, highlighted }) {
   return (
     <Flex
       col
@@ -41,16 +33,6 @@ const MaskedInformation: React.FC<{
       >
         {group.label}
       </div>
-      {kind === 'Actor' && (
-        <span onClick={handleClick}>
-          <Octicon
-            className="ma1 flex-shrink-0 red"
-            verticalAlign="text-bottom"
-            icon={X}
-            ariaLabel={'Supprimer'}
-          />
-        </span>
-      )}
     </Flex>
   );
 };
