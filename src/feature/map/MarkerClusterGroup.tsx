@@ -51,7 +51,7 @@ const scale = d3.scaleSqrt().range([5, 10]);
 function iconCreateFunction(cluster: L.MarkerCluster) {
   const markers = cluster.getAllChildMarkers();
   const radius = scale(markers.length);
-  const size = radius * 2;
+  const size = radius * 2 + 10;
 
   if (!(cluster as any)._svg) {
     (cluster as any)._svg = d3.create('div').node();
@@ -69,8 +69,8 @@ export const MarkerClusterGroup: React.FC<{
   $l: React.MutableRefObject<any>;
   markers: (ref: React.MutableRefObject<L.MarkerClusterGroup>) => JSX.Element[];
   options?: L.MarkerClusterGroupOptions;
-  onClusterClick?: L.LeafletMouseEventHandlerFn;
-}> = function({ $l, markers, options, onClusterClick }) {
+  fRef: any;
+}> = function({ $l, markers, options, fRef }) {
   const $group = useRef<L.MarkerClusterGroup>(undefined as any);
   if ($group.current === undefined) {
     $group.current = L.markerClusterGroup({
@@ -83,6 +83,7 @@ export const MarkerClusterGroup: React.FC<{
     function() {
       const p = $l.current;
       p.addLayer($group.current);
+      fRef($group.current);
       return function() {
         // eslint-disable-next-line
         p.removeLayer($group.current);

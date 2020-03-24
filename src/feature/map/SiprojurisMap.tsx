@@ -54,13 +54,11 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
     });
   }, [dispatch]);
 
-  /**
-   * 
-var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-	attribution: ''
-});
-   * 
-   */
+  const clusterRef = useRef<any>();
+  const handleClusterRef = useCallback((dom: any) => {
+    clusterRef.current = dom;
+  }, []);
+
   return (
     <div className={className}>
       <Map
@@ -105,14 +103,22 @@ var Esri_WorldTopoMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest
             checked
             ref={handleMarkerLayerRef}
           >
-            <SipMarkerClusterGroup $layer={$markerLayer} $map={$map} />
+            <SipMarkerClusterGroup
+              $layer={$markerLayer}
+              $map={$map}
+              fRef={handleClusterRef}
+            />
           </LayersControl.Overlay>
           <LayersControl.Overlay
             ref={handleAntPathLayerRef}
             name="AntPaths"
             checked
           >
-            <SipAnthPaths $layer={$antPathLayer} $map={$map} />
+            <SipAnthPaths
+              $layer={$antPathLayer}
+              $map={$map}
+              clusterRef={clusterRef}
+            />
           </LayersControl.Overlay>
         </LayersControl>
       </Map>

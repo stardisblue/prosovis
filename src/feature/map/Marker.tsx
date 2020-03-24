@@ -29,11 +29,12 @@ export const Marker: React.FC<{
   onMouseOver?: L.LeafletEventHandlerFn;
   onMouseOut?: L.LeafletEventHandlerFn;
   onClick?: L.LeafletEventHandlerFn;
+  onMarkerAdd?: (marker: DataMarkerType) => void;
+  onMarkerRemove?: (marker: DataMarkerType) => void;
 }> = function({ latlng, options, $l, onMouseOut, onMouseOver, onClick }) {
   const marker = useLazyRef(() => new DataMarker(latlng, options));
 
   useEffect(function() {
-    // marker.current = new DataMarker(latlng, options);
     // const marker = L.circleMarker(latlng, {fillColor: color.main()});
     $l.current.addLayer(marker.current);
     return function() {

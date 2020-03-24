@@ -32,16 +32,42 @@ const EventsDiv = styled.div<{ height: string }>`
 type FoldProps = {
   events: JSX.Element[];
   className?: string;
+  onMouseEnter?: React.MouseEventHandler;
+  onMouseLeave?: React.MouseEventHandler;
+  onClick?: React.MouseEventHandler;
 };
 
 export const Fold: React.FC<FoldProps> = function({
   events,
   children,
-  className
+  className,
+  onMouseEnter,
+  onMouseLeave,
+  onClick
 }) {
   const [show, setShow] = useState(false);
 
-  const handleClick = useCallback(() => setShow(s => !s), []);
+  const handleClick = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShow(s => !s);
+  }, []);
+  const icon = onClick ? (
+    <div onClick={handleClick}>
+      <Octicon
+        className="ma1 flex-shrink-0"
+        verticalAlign="text-bottom"
+        icon={show ? ChevronUp : ChevronDown}
+        ariaLabel={show ? 'Etendre' : 'Réduire'}
+      />
+    </div>
+  ) : (
+    <Octicon
+      className="ma1 flex-shrink-0"
+      verticalAlign="text-bottom"
+      icon={show ? ChevronUp : ChevronDown}
+      ariaLabel={show ? 'Etendre' : 'Réduire'}
+    />
+  );
 
   return (
     <>
@@ -50,15 +76,12 @@ export const Fold: React.FC<FoldProps> = function({
         justify="between"
         className={classnames('b--moon-gray ph1 pt1 flex-grow-0', className)}
         items="baseline"
-        onClick={handleClick}
+        onClick={onClick || handleClick}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
       >
         {children}
-        <Octicon
-          className="ma1 flex-shrink-0"
-          verticalAlign="text-bottom"
-          icon={show ? ChevronUp : ChevronDown}
-          ariaLabel={show ? 'Etendre' : 'Réduire'}
-        />
+        {icon}
       </Flex>
 
       {show && (

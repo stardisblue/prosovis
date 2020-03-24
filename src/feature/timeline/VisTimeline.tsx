@@ -359,7 +359,13 @@ export const VisTimeline: React.FC = function() {
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        dispatch(setSuperHighlightThunk({ id: e.group, kind: groupingKind }));
+        const groupEvents = _(timelineEvents)
+          .filter({ group: e.group })
+          .map(({ id }) => ({ id, kind: 'Event' }))
+          .sortBy('id')
+          .value();
+
+        dispatch(setSuperHighlightThunk(groupEvents));
       } else if (e.what === 'item') {
         dispatch(setSuperHighlightThunk({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
@@ -370,7 +376,7 @@ export const VisTimeline: React.FC = function() {
     actions.current.mouseOut = () => {
       if (highlights) dispatch(clearSuperHighlightThunk());
     };
-  }, [highlights, dispatch, groupingKind]);
+  }, [highlights, dispatch, groupingKind, timelineEvents]);
 
   /*
    * Data change
