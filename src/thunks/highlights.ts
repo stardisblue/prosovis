@@ -1,18 +1,12 @@
 import { setHighlights, clearHighlights } from '../reducers/highlightSlice';
 import {
   setSuperHightlights,
-  clearSuperHighlights
+  clearSuperHighlights,
+  SuperHightlightEvent
 } from '../reducers/superHighlightSlice';
-import { PrimaryKey } from '../data';
-
-type Highlight = {
-  id: PrimaryKey;
-  kind: string;
-  type?: string;
-};
 
 export const setSuperHighlightThunk = function(
-  payload: Highlight | Highlight[]
+  payload: SuperHightlightEvent | SuperHightlightEvent[]
 ) {
   return (dispatch: any) => {
     dispatch(setHighlights(payload));

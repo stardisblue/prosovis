@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { PrimaryKey } from '../data';
 import _ from 'lodash';
 
-type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
+export type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
 
 const selectionSlice = createSlice({
   name: 'selection',

@@ -1,10 +1,12 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState } from 'react';
 
 import classnames from 'classnames';
 
 import { Flex } from '../../../components/ui/Flex';
 import styled from 'styled-components/macro';
 import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
+
+import { useFlatClick } from '../../../hooks/useClick';
 
 const EventsDiv = styled.div<{ height: string }>`
   margin-left: 0.8rem;
@@ -34,25 +36,25 @@ type FoldProps = {
   className?: string;
   onMouseEnter?: React.MouseEventHandler;
   onMouseLeave?: React.MouseEventHandler;
-  onClick?: React.MouseEventHandler;
+  handleClick?: { [k in 'onClick' | 'onMouseUp']: React.MouseEventHandler };
 };
 
 export const Fold: React.FC<FoldProps> = function({
   events,
   children,
   className,
+  handleClick,
   onMouseEnter,
-  onMouseLeave,
-  onClick
+  onMouseLeave
 }) {
   const [show, setShow] = useState(false);
 
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    e.stopPropagation();
+  const handleFoldClick = useFlatClick(() => {
     setShow(s => !s);
-  }, []);
-  const icon = onClick ? (
-    <div onClick={handleClick}>
+  });
+
+  const icon = handleClick ? (
+    <div {...handleFoldClick}>
       <Octicon
         className="ma1 flex-shrink-0"
         verticalAlign="text-bottom"
@@ -76,7 +78,7 @@ export const Fold: React.FC<FoldProps> = function({
         justify="between"
         className={classnames('b--moon-gray ph1 pt1 flex-grow-0', className)}
         items="baseline"
-        onClick={onClick || handleClick}
+        {...(handleClick || handleFoldClick)}
         onMouseEnter={onMouseEnter}
         onMouseLeave={onMouseLeave}
       >

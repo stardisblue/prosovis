@@ -1,26 +1,17 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import styled from 'styled-components/macro';
-import defaultActors from '../data/actors.json';
-import { getEvents, Actor } from '../data/';
+
 import SiprojurisTimeline from '../feature/timeline/SiprojurisTimeline';
 import Information from '../feature/info/Information';
 import SiprojurisMap from '../feature/map/SiprojurisMap';
 import Relation from '../feature/relation/Relation';
-import { configureStore } from '@reduxjs/toolkit';
-import { Provider } from 'react-redux';
-import rootReducer from '../reducers/';
+import { useDispatch } from 'react-redux';
 import _ from 'lodash';
 
 import Mask from '../feature/mask/Mask';
-
-const events = _.flatMap((defaultActors as any) as Actor[], getEvents);
-
-const store = configureStore({
-  reducer: rootReducer,
-  preloadedState: {
-    events
-  }
-});
+import { useFlatClick } from '../hooks/useClick';
+import { useMouse } from '../feature/timeline/useMouse';
+import { clearSelection } from '../reducers/selectionSlice';
 
 const Main = styled.main`
   display: grid;
@@ -52,21 +43,57 @@ const StyledTimeline = styled(SiprojurisTimeline)`
 `;
 
 function App() {
+  const mouse = useMouse();
+  const dispatch = useDispatch();
+  const { onClick } = useFlatClick(e => {
+    dispatch(clearSelection());
+  });
+  const bind = useMemo<
+    {
+      [key in
+        | 'onMouseDown'
+        | 'onMouseMove'
+        | 'onMouseUp']: React.MouseEventHandler;
+    }
+  >(
+    () => ({
+      onMouseDown: e => {
+        if (!mouse.current.click) {
+          mouse.current.click = true;
+          mouse.current.x = e.pageX;
+          mouse.current.y = e.pageY;
+        }
+      },
+      onMouseMove: e => {
+        if (
+          mouse.current.click &&
+          mouse.current.draggingTreshold(mouse.current, e)
+        ) {
+          mouse.current.dragging = true;
+          mouse.current.click = false;
+        }
+      },
+      onMouseUp: e => {
+        if (mouse.current.click) onClick(e);
+        mouse.current.dragging = false;
+        mouse.current.click = false;
+      }
+    }),
+    []
+  );
   return (
-    <Provider store={store}>
-      <Main>
-        <Mask />
-        <Search>
-          <input type="text" name="" id="" placeholder="Rechercher un acteur" />
-        </Search>
-        <StyledInformation />
-        <div style={{ gridArea: 'rel' }}>
-          <Relation />
-        </div>
-        <StyledMap />
-        <StyledTimeline />
-      </Main>
-    </Provider>
+    <Main {...bind}>
+      <Mask />
+      <Search>
+        <input type="text" name="" id="" placeholder="Rechercher un acteur" />
+      </Search>
+      <StyledInformation />
+      <div style={{ gridArea: 'rel' }}>
+        <Relation />
+      </div>
+      <StyledMap />
+      <StyledTimeline />
+    </Main>
   );
 }
 

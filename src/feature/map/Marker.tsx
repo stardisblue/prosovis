@@ -48,9 +48,7 @@ export const Marker: React.FC<{
 
   useFillOpacity(marker, options.fillOpacity);
 
-  useMouseOver(marker, onMouseOver);
-
-  useMouseOut(marker, onMouseOut);
+  useHover(marker, onMouseOver, onMouseOut);
 
   useClick(marker, onClick);
 
@@ -83,9 +81,10 @@ function useFillOpacity(
   );
 }
 
-function useMouseOver(
+function useHover(
   marker: React.MutableRefObject<DataMarkerType>,
-  onMouseOver?: L.LeafletEventHandlerFn
+  onMouseOver?: L.LeafletEventHandlerFn,
+  onMouseOut?: L.LeafletEventHandlerFn
 ) {
   useEffect(
     function() {
@@ -101,12 +100,7 @@ function useMouseOver(
     // eslint-disable-next-line
     [onMouseOver]
   );
-}
 
-function useMouseOut(
-  marker: React.MutableRefObject<DataMarkerType>,
-  onMouseOut?: L.LeafletEventHandlerFn
-) {
   useEffect(
     function() {
       if (onMouseOut !== undefined) {

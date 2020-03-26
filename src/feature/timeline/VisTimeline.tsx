@@ -260,7 +260,9 @@ export const VisTimeline: React.FC = function() {
       timeline.vis.on('mouseOver', (e: any) => actions.current.mouseOver(e));
 
       return () => timeline.vis.destroy();
-    }, [dispatch, timeline, mouse]);
+      // safely ignoring dispatch and mouse as they are references
+      // eslint-disable-next-line
+    }, [timeline]);
   }
 
   /*

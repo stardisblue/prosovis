@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import StyledInput from './StyledInput';
+import { stopEventPropagation } from '../../hooks/useClick';
 
 const StyledLabel = styled.label`
   margin-bottom: 0;
@@ -42,7 +43,7 @@ const CheckBoxSwitch: React.FC<{
   color: string;
 }> = function({ checked, handleCheck, children, color }) {
   return (
-    <StyledLabel>
+    <StyledLabel onMouseUp={stopEventPropagation}>
       <StyledInput type="checkbox" checked={checked} onChange={handleCheck} />
       <StyledSlider style={{ backgroundColor: checked ? color : undefined }}>
         <StyledKnob slide={checked} />

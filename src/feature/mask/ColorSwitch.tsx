@@ -5,6 +5,7 @@ import { RootState } from '../../reducers';
 import { toggleSwitch } from '../../reducers/switchSlice';
 import styled from 'styled-components/macro';
 import StyledInput from './StyledInput';
+import { stopEventPropagation } from '../../hooks/useClick';
 
 const StyledLabel = styled.label`
   position: relative;
@@ -44,7 +45,7 @@ const ColorSwitch: React.FC = function() {
   }, [dispatch]);
 
   return (
-    <StyledLabel>
+    <StyledLabel onMouseUp={stopEventPropagation}>
       <StyledInput
         type="checkbox"
         name="switch"

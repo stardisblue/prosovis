@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
@@ -6,15 +6,13 @@ import _ from 'lodash';
 import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
 import { ThumbnailEventInfo } from './EventInfo';
 import { EventDates } from './EventDates';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { StyledOcticon } from './StyledOcticon';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import getEventIcon from './event/getEventIcon';
-import {
-  setSuperHighlightThunk,
-  clearSuperHighlightThunk
-} from '../../thunks/highlights';
+import useHoverHighlight from '../../hooks/useHoverHighlight';
+import { useFlatClick } from '../../hooks/useClick';
 
 const MarginLeftDiv = styled<any>('div')`
   border-color: ${(props: any) => props.borderColor};
@@ -42,21 +40,12 @@ export const KindGroup: React.FC<{
 }) {
   const color = useSelector(selectSwitchKindColor);
   const [show, setShow] = useState(false);
-  const handleClick = useCallback(() => setShow(s => !s), []);
+
   useEffect(() => setShow(selected === true), [selected]);
-
-  const content = getKindString(kind);
-
-  const dispatch = useDispatch();
-  const handleMouseEnter = useCallback(() => {
-    dispatch(
-      setSuperHighlightThunk(_.map(events, ({ id }) => ({ id, kind: 'Event' })))
-    );
-  }, [dispatch, events]);
-
-  const handleMouseLeave = useCallback(() => {
-    dispatch(clearSuperHighlightThunk());
-  }, [dispatch]);
+  const interactive = useMemo(
+    () => _.map(events, ({ id }) => ({ id, kind: 'Event' })),
+    [events]
+  );
 
   return (
     <div className="pv1">
@@ -68,9 +57,8 @@ export const KindGroup: React.FC<{
           'o-50': masked,
           'bg-light-gray': highlighted
         })}
-        onClick={handleClick}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        {...useFlatClick(() => setShow(s => !s))}
+        {...useHoverHighlight(interactive)}
       >
         <span className="ph2">
           <StyledOcticon
@@ -81,7 +69,7 @@ export const KindGroup: React.FC<{
           />
         </span>
         <FlexItem auto>
-          {events.length} {content}
+          {events.length} {getKindString(kind)}
         </FlexItem>
         <EventDates dates={[start, end]} />
         <Octicon

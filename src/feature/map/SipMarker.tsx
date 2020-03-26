@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
 import { AnyEvent, NamedPlace, PrimaryKey } from '../../data';
@@ -27,51 +27,29 @@ const SipMarker: React.FC<{
   const { id, actor, kind, localisation } = event;
   const color = useSelector(selectMarkerColor);
   const selected = useSelector(superSelectionAsMap);
-  const handleClick = useCallback(
-    function() {
-      dispatch(
-        setSelection({
-          id: id,
-          kind: 'Event'
-        })
-      );
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    [id]
-  );
-
-  const handleMouseOver = useCallback(
-    function() {
-      console.log('hover');
-      dispatch(
-        setSuperHighlightThunk({
-          id: id,
-          kind: 'Event'
-        })
-      );
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    [id]
-  );
-
-  const handleMouseOut = useCallback(
-    function() {
-      console.log('out');
-      dispatch(clearSuperHighlightThunk());
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    []
-  );
+  const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
 
   return (
     <Marker
       $l={$l}
-      onClick={handleClick}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
+      onClick={useCallback(
+        () => dispatch(setSelection(interactive)),
+        // safely ignoring dispatch
+        // eslint-disable-next-line
+        [interactive]
+      )}
+      onMouseOver={useCallback(
+        () => dispatch(setSuperHighlightThunk(interactive)),
+        // safely ignoring dispatch
+        // eslint-disable-next-line
+        [interactive]
+      )}
+      onMouseOut={useCallback(
+        () => dispatch(clearSuperHighlightThunk()),
+        // safely ignoring dispatch
+        // eslint-disable-next-line
+        []
+      )}
       latlng={[+localisation.lat!, +localisation.lng!]}
       options={{
         id,

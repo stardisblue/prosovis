@@ -1,15 +1,12 @@
 import _ from 'lodash';
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import {
-  clearSuperHighlightThunk,
-  setSuperHighlightThunk
-} from '../../thunks/highlights';
-import { useDispatch, useSelector } from 'react-redux';
-import { setSelection } from '../../reducers/selectionSlice';
 import { selectSwitchColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 import { createSelector } from '@reduxjs/toolkit';
+import useHoverHighlight from '../../hooks/useHoverHighlight';
+import { useSelector } from 'react-redux';
+import { useClickSelect } from '../../hooks/useClick';
 
 const selectDimmedColor = createSelector(selectSwitchColor, color => {
   const domain = color.domain();
@@ -81,47 +78,17 @@ export const PiePath: React.FC<{
       : color('d:' + a.data[0]);
   }, [a.data, selected, color]);
 
-  const dispatch = useDispatch();
-
-  const selectable = useMemo(
+  const interactive = useMemo(
     () => _.map(a.data[1], ({ id }) => ({ id, kind: 'Event' })),
     [a.data]
-  );
-
-  const handleMouseClick = useCallback<React.MouseEventHandler<SVGPathElement>>(
-    function() {
-      dispatch(setSelection(selectable));
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    [selectable]
-  );
-
-  const handleMouseOver = useCallback<React.MouseEventHandler<SVGPathElement>>(
-    function() {
-      dispatch(setSuperHighlightThunk(selectable));
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    [selectable]
-  );
-
-  const handleMouseOut = useCallback<React.MouseEventHandler<SVGPathElement>>(
-    function() {
-      dispatch(clearSuperHighlightThunk());
-    },
-    // safely ignoring dispatch
-    // eslint-disable-next-line
-    []
   );
 
   return (
     <path
       fill={fill}
       d={arc(a)!}
-      onMouseOver={handleMouseOver}
-      onMouseOut={handleMouseOut}
-      onClick={handleMouseClick}
+      {...useClickSelect(interactive)}
+      {...useHoverHighlight(interactive)}
     >
       <title>{a.data[1].length}</title>
     </path>

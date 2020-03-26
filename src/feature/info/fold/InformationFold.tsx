@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo } from 'react';
 
 import { Ressource } from '../../../data';
 import classnames from 'classnames';
@@ -11,12 +11,8 @@ import { StyledOcticon } from '../StyledOcticon';
 import EventInfo from '../EventInfo';
 import Fold from './Fold';
 import ActorIcon from './ActorIcon';
-import {
-  setSuperHighlightThunk,
-  clearSuperHighlightThunk
-} from '../../../thunks/highlights';
-import { useDispatch } from 'react-redux';
-import { setSelection } from '../../../reducers/selectionSlice';
+import useHoverHighlight from '../../../hooks/useHoverHighlight';
+import { useClickSelect } from '../../../hooks/useClick';
 
 // TODO griser personnes
 // surlingé : survol
@@ -50,7 +46,6 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
   selected,
   highlighted
 }) {
-  const dispatch = useDispatch();
   const groupedEvents = useMemo(
     () =>
       _.reduce(
@@ -101,36 +96,9 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
     [events]
   );
 
-  const interactiveEvent = useMemo(
+  const interactive = useMemo(
     () => _.map(events, e => ({ id: e.id, kind: 'Event' })),
     [events]
-  );
-  const handleMouseEnter = useCallback(
-    function() {
-      dispatch(setSuperHighlightThunk(interactiveEvent));
-    },
-    // safely disabling dispatch
-    // eslint-disable-next-line
-    [interactiveEvent]
-  );
-
-  const handleMouseLeave = useCallback(
-    function() {
-      dispatch(clearSuperHighlightThunk());
-    },
-    // safely disabling dispatch
-    // eslint-disable-next-line
-    []
-  );
-
-  const handleClick = useCallback(
-    function() {
-      dispatch(setSelection(interactiveEvent));
-    },
-
-    // safely disabling dispatch
-    // eslint-disable-next-line
-    [interactiveEvent]
   );
 
   return (
@@ -143,9 +111,8 @@ export const InformationFold: React.FC<InfoGroupProps> = function({
           <EventInfo key={e.id} event={e.events} origin={kind} />
         )
       )}
-      onClick={handleClick}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      handleClick={useClickSelect(interactive)}
+      {...useHoverHighlight(interactive)}
     >
       {kind === 'Actor' ? (
         <ActorIcon id={group.id} />

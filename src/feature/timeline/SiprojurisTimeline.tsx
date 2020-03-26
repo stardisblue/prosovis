@@ -1,26 +1,18 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { VisTimeline } from './VisTimeline';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { useDispatch } from 'react-redux';
 import { setGroup } from './timelineGroupSlice';
+import { useFlatClick, stopEventPropagation } from '../../hooks/useClick';
 
 export const SiprojurisTimeline: React.FC<{ className?: string }> = function({
   className
 }) {
   const dispatch = useDispatch();
 
-  const handleClick = useMemo(
-    () => ({
-      actor: function() {
-        dispatch(setGroup('Actor'));
-      },
-      place: function() {
-        dispatch(setGroup('NamedPlace'));
-      }
-    }),
-    [dispatch]
-  );
+  const handleActorClick = useFlatClick(() => dispatch(setGroup('Actor')));
+  const handlePlaceClick = useFlatClick(() => dispatch(setGroup('NamedPlace')));
 
   return (
     <div className={className}>
@@ -38,7 +30,7 @@ export const SiprojurisTimeline: React.FC<{ className?: string }> = function({
                 type="button"
                 className="btn btn-secondary btn-sm text-wrap"
                 value="group_person"
-                onClick={handleClick.actor}
+                {...handleActorClick}
               >
                 Personnes
               </button>
@@ -46,14 +38,14 @@ export const SiprojurisTimeline: React.FC<{ className?: string }> = function({
                 type="button"
                 className="btn btn-secondary btn-sm text-wrap"
                 value="group_place"
-                onClick={handleClick.place}
+                {...handlePlaceClick}
               >
                 Lieux
               </button>
             </form>
           </FlexItem>
           <FlexItem auto>
-            <Flex wrap justify="between">
+            <Flex wrap justify="between" onMouseUp={stopEventPropagation}>
               <Flex tag="label" className="ph2" col items="baseline">
                 <input
                   id="no-end"
