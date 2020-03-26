@@ -34,7 +34,7 @@ export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function({
     <Flex
       justify="between"
       items="center"
-      className={classnames('pb1', 'br2', {
+      className={classnames('pb1 br2 pointer', {
         b: event.selected,
         'o-50': event.masked,
         'bg-light-gray': highlights[event.id]
@@ -64,7 +64,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
     <Flex
       justify="between"
       items="center"
-      className={classnames('pb1', 'br2', {
+      className={classnames('pb1 br2 pointer', {
         b: event.selected,
         'o-50': event.masked,
         'bg-light-gray': event.highlighted

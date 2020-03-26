@@ -43,7 +43,7 @@ const CheckBoxSwitch: React.FC<{
   color: string;
 }> = function({ checked, handleCheck, children, color }) {
   return (
-    <StyledLabel onMouseUp={stopEventPropagation}>
+    <StyledLabel className="pointer" onMouseUp={stopEventPropagation}>
       <StyledInput type="checkbox" checked={checked} onChange={handleCheck} />
       <StyledSlider style={{ backgroundColor: checked ? color : undefined }}>
         <StyledKnob slide={checked} />

@@ -52,7 +52,7 @@ export const KindGroup: React.FC<{
       <Flex
         justify="between"
         items="center"
-        className={classnames('sip-info--event', {
+        className={classnames('sip-info--event pointer', {
           b: selected,
           'o-50': masked,
           'bg-light-gray': highlighted

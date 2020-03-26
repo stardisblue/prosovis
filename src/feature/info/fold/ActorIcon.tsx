@@ -17,7 +17,7 @@ const ActorIcon: React.FC<{
   const color = useSelector(selectSwitchActorColor);
   return (
     <>
-      <span onClick={handleClick}>
+      <span className="pointer" onClick={handleClick}>
         <Octicon
           className="ma1 flex-shrink-0 red"
           verticalAlign="text-bottom"

@@ -45,7 +45,7 @@ const ColorSwitch: React.FC = function() {
   }, [dispatch]);
 
   return (
-    <StyledLabel onMouseUp={stopEventPropagation}>
+    <StyledLabel className="pointer" onMouseUp={stopEventPropagation}>
       <StyledInput
         type="checkbox"
         name="switch"

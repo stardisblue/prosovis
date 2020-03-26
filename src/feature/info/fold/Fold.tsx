@@ -54,7 +54,7 @@ export const Fold: React.FC<FoldProps> = function({
   });
 
   const icon = handleClick ? (
-    <div {...handleFoldClick}>
+    <div className="pointer" {...handleFoldClick}>
       <Octicon
         className="ma1 flex-shrink-0"
         verticalAlign="text-bottom"
@@ -76,7 +76,10 @@ export const Fold: React.FC<FoldProps> = function({
       <Flex
         col
         justify="between"
-        className={classnames('b--moon-gray ph1 pt1 flex-grow-0', className)}
+        className={classnames(
+          'b--moon-gray ph1 pt1 flex-grow-0 pointer',
+          className
+        )}
         items="baseline"
         {...(handleClick || handleFoldClick)}
         onMouseEnter={onMouseEnter}
