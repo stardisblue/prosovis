@@ -12,6 +12,7 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
   className
 }) {
   const dispatch = useDispatch();
+  const initialMarkerSet = useRef<any[]>([]);
 
   const $map = useRef<L.Map>(null as any);
   const handleRef = useCallback(function(dom: Map) {
@@ -51,6 +52,10 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
           { lat: ne.lat, lng: ne.lng }
         ])
       );
+    });
+
+    $map.current.on('sip-marker', function(e: any) {
+      initialMarkerSet.current.push(e.current);
     });
   }, [dispatch]);
 
@@ -118,6 +123,7 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
               $layer={$antPathLayer}
               $map={$map}
               clusterRef={clusterRef}
+              initialMarkerSet={initialMarkerSet}
             />
           </LayersControl.Overlay>
         </LayersControl>

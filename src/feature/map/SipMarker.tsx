@@ -1,7 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
-import { AnyEvent, NamedPlace, PrimaryKey } from '../../data';
+import { AnyEvent, NamedPlace, PrimaryKey, Datation, Actor } from '../../data';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../selectors/switch';
@@ -15,22 +15,25 @@ import {
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
+  $map: React.MutableRefObject<L.Map>;
   event: {
     localisation: NamedPlace;
     label: string;
-    actor: PrimaryKey;
+    actor: Actor['id'];
     id: PrimaryKey;
     kind: AnyEvent['kind'];
+    datation: Datation[];
   };
-}> = function({ $l, event }) {
+}> = function({ $l, $map, event }) {
   const dispatch = useDispatch();
-  const { id, actor, kind, localisation } = event;
+  const { id, actor, kind, localisation, datation } = event;
   const color = useSelector(selectMarkerColor);
   const selected = useSelector(superSelectionAsMap);
   const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
 
   return (
     <Marker
+      $map={$map}
       $l={$l}
       onClick={useCallback(
         () => dispatch(setSelection(interactive)),
@@ -55,6 +58,7 @@ const SipMarker: React.FC<{
         id,
         kind,
         actor,
+        dates: datation,
         fillColor: color.main(event),
         color: color.border(event),
         fillOpacity:

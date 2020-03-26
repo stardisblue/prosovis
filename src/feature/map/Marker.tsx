@@ -19,27 +19,32 @@ const DataMarker = (L.CircleMarker.extend({
 }) as any) as DataMarkerType;
 
 export const Marker: React.FC<{
+  $map: React.MutableRefObject<L.Map>;
   $l: React.MutableRefObject<L.LayerGroup>;
   latlng: L.LatLngExpression;
   options: L.CircleMarkerOptions & {
     id: PrimaryKey;
     kind: string;
     actor: PrimaryKey;
+    dates: any[];
   };
   onMouseOver?: L.LeafletEventHandlerFn;
   onMouseOut?: L.LeafletEventHandlerFn;
   onClick?: L.LeafletEventHandlerFn;
   onMarkerAdd?: (marker: DataMarkerType) => void;
   onMarkerRemove?: (marker: DataMarkerType) => void;
-}> = function({ latlng, options, $l, onMouseOut, onMouseOver, onClick }) {
+}> = function({ latlng, options, $l, $map, onMouseOut, onMouseOver, onClick }) {
   const marker = useLazyRef(() => new DataMarker(latlng, options));
 
   useEffect(function() {
     // const marker = L.circleMarker(latlng, {fillColor: color.main()});
     $l.current.addLayer(marker.current);
+    $map.current.fire('sip-marker', { current: marker.current }, true);
     return function() {
       // eslint-disable-next-line
       $l.current.removeLayer(marker.current);
+      // eslint-disable-next-line
+      $map.current.fire('sip-marker-off', { current: marker.current }, true);
     };
     // eslint-disable-next-line
   }, []);

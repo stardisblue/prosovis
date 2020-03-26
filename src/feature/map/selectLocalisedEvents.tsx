@@ -23,7 +23,7 @@ export const selectLocalisedEvents = createSelector(
             label: e.label,
             actor: e.actor.id,
             kind: e.kind,
-            datation: e.datation[0],
+            datation: e.datation,
             localisation: l
           });
       },
@@ -33,7 +33,7 @@ export const selectLocalisedEvents = createSelector(
         actor: Actor['id'];
         id: PrimaryKey;
         kind: AnyEvent['kind'];
-        datation: Datation;
+        datation: Datation[];
       }[]
     )
 );

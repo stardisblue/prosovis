@@ -1,71 +1,34 @@
-import React, { useMemo, useRef, useState } from 'react';
+import React, { useMemo, useRef, useState, useReducer } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { selectLocalisedEvents } from './selectLocalisedEvents';
 import _ from 'lodash';
-import { antPath } from 'leaflet-ant-path';
-import { selectSwitchActorColor } from '../../selectors/switch';
+import { AntPath } from './AntPath';
+import { PayloadAction } from '@reduxjs/toolkit';
 
-const AntPath: React.FC<{
-  $layer: React.MutableRefObject<any>;
-  id: string;
-  events: { event: any; latLng: { lat: number; lng: number } }[];
-}> = function({ id, $layer, events }) {
-  const color = useSelector(selectSwitchActorColor);
-  const options = useMemo(
-    () => ({
-      color: color ? color(id) : '#6c757d',
-      pulseColor: '#FFFFFF',
-      pane: 'markerPane',
-      opacity: 1
-    }),
-    [color, id]
-  );
-
-  const $path = useRef<any>();
-  if ($path.current === undefined) {
-    $path.current = antPath(
-      _.map<
-        { event: any; latLng: { lat: number; lng: number } },
-        [number, number]
-      >(events, ({ latLng: { lat, lng } }) => [+lat!, +lng!]),
-      options
-    );
+const markerReducer = function(state: any, action: PayloadAction<any>) {
+  switch (action.type) {
+    case 'set':
+      return action.payload;
+    case 'add':
+      return { ...state, [action.payload.options.id]: action.payload };
+    case 'remove':
+      return _.pickBy(state, (_value, key) => {
+        // weak equal to mitigate issues between number and string
+        return key != action.payload.options.id;
+      });
+    default:
+      throw new Error();
   }
-
-  useEffect(() => {
-    const path = antPath(
-      _.map<{ event: any; latLng: any }, [number, number]>(
-        events,
-        ({ latLng: { lat, lng } }) => [+lat!, +lng!]
-      ),
-      options
-    );
-
-    $path.current = path;
-    $layer.current.addLayer(path);
-    return function() {
-      // layer persists across time and space
-      // eslint-disable-next-line
-      $layer.current.removeLayer(path);
-    };
-    // ignoring options update
-    // eslint-disable-next-line
-  }, [events]);
-
-  useEffect(() => {
-    $path.current.setStyle(options);
-  }, [options]);
-
-  return null;
 };
 
 const SipAnthPaths: React.FC<{
   $map: React.MutableRefObject<L.Map>;
   $layer: React.MutableRefObject<any>;
   clusterRef: React.MutableRefObject<any>;
-}> = function({ $map, $layer, clusterRef }) {
+  initialMarkerSet: React.MutableRefObject<any[]>;
+}> = function({ $map, $layer, clusterRef, initialMarkerSet }) {
   const groupLayer = useRef<any>();
   if (groupLayer.current === undefined) {
     groupLayer.current = L.layerGroup(undefined, { pane: 'markerPane' });
@@ -81,44 +44,45 @@ const SipAnthPaths: React.FC<{
     // eslint-disable-next-line
   }, []);
 
-  const events = useSelector(selectLocalisedEvents);
-  const [markers, setMarkers] = useState<any>();
+  const [markers, dispatch] = useReducer(markerReducer, {});
+  const [zoom, setZoom] = useState($map.current.getZoom());
 
   useEffect(() => {
+    dispatch({
+      type: 'set',
+      payload: _(initialMarkerSet.current)
+        .keyBy('options.id')
+        .value()
+    });
+
     $map.current.on('zoomend', e => {
-      const zoom = $map.current.getZoom();
-      const ms = _(clusterRef.current.getLayers())
-        .map(marker => {
-          let cluster = marker.__parent;
-          // console.log(marker, cluster);
-          if (!cluster || cluster._zoom < zoom) {
-            return [marker.options.id, marker.getLatLng()];
-          }
-          while (cluster._zoom === undefined || cluster._zoom > zoom) {
-            cluster = cluster.__parent;
-          }
-          return [marker.options.id, cluster.getLatLng()];
-        })
-        .fromPairs()
-        .value();
-      setMarkers(ms);
+      setZoom($map.current.getZoom());
+    });
+
+    $map.current.on('sip-marker', (e: any) => {
+      dispatch({ type: 'add', payload: e.current });
+    });
+
+    $map.current.on('sip-marker-off', (e: any) => {
+      dispatch({ type: 'remove', payload: e.current });
     });
     // safely disabling $map and clusterRef
     // eslint-disable-next-line
   }, []);
+
   const groups = useMemo(() => {
-    return _(events)
-      .orderBy('datation.clean_date')
-      .map(e => ({
-        event: e,
-        latLng: (markers && markers[e.id]) || e.localisation
+    return _(markers)
+      .orderBy('datation[0].clean_date')
+      .map(marker => ({
+        event: marker.options,
+        latLng: getmarkerLatLng(marker, zoom)
       }))
       .groupBy('event.actor')
       .mapValues(p =>
         _.sortedUniqBy(p, ({ latLng: { lat, lng } }) => lat + ':' + lng)
       )
       .value();
-  }, [events, markers]);
+  }, [markers, zoom]);
   return (
     <>
       {_.map(groups, (events, key) => (
@@ -135,6 +99,16 @@ const SipAnthPaths: React.FC<{
 
 export default SipAnthPaths;
 
+function getmarkerLatLng(marker: any, zoom: number) {
+  let cluster = marker.__parent;
+  if (!cluster || cluster._zoom < zoom) {
+    return marker.getLatLng();
+  }
+  while (cluster._zoom === undefined || cluster._zoom > zoom) {
+    cluster = cluster.__parent;
+  }
+  return cluster.getLatLng();
+}
 // ! UNUSED
 // _(clusterRef.current.getLayers())
 //   .map(marker => {
