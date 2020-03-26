@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import styled from 'styled-components/macro';
 
 import SiprojurisTimeline from '../feature/timeline/SiprojurisTimeline';
@@ -6,10 +6,8 @@ import Information from '../feature/info/Information';
 import SiprojurisMap from '../feature/map/SiprojurisMap';
 import Relation from '../feature/relation/Relation';
 import { useDispatch } from 'react-redux';
-import _ from 'lodash';
 
 import Mask from '../feature/mask/Mask';
-import { useFlatClick } from '../hooks/useClick';
 import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 
@@ -43,11 +41,14 @@ const StyledTimeline = styled(SiprojurisTimeline)`
 `;
 
 function App() {
-  const mouse = useMouse();
   const dispatch = useDispatch();
-  const { onClick } = useFlatClick(e => {
+  const onClick = useCallback(e => {
     dispatch(clearSelection());
-  });
+    // safely ignoring dispatch
+    //eslint-disable-next-line
+  }, []);
+  const mouse = useMouse();
+
   const bind = useMemo<
     {
       [key in
@@ -79,6 +80,8 @@ function App() {
         mouse.current.click = false;
       }
     }),
+    // safely ignore onClick and mouse, onclick never changes and mouse is a reference
+    // eslint-disable-next-line
     []
   );
   return (
