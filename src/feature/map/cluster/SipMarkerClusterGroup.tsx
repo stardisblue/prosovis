@@ -5,9 +5,9 @@ import L from 'leaflet';
 import 'leaflet.markercluster';
 
 import { useSelector } from 'react-redux';
-import SipMarker from './SipMarker';
+import SipMarker from '../marker/SipMarker';
 import _ from 'lodash';
-import { selectLocalisedEvents } from './selectLocalisedEvents';
+import { selectLocalisedEvents } from '../selectLocalisedEvents';
 
 export const SipMarkerClusterGroup: React.FC<{
   $map: React.MutableRefObject<L.Map>;
@@ -52,6 +52,8 @@ export const SipMarkerClusterGroup: React.FC<{
         <SipMarker $map={$map} $l={ref} key={event.id} event={event} />
       ));
     },
+    // safely disabling $map ref
+    // eslint-disable-next-line
     [events]
   );
 

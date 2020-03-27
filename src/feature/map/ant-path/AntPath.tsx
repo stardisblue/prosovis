@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { antPath } from 'leaflet-ant-path';
-import { selectSwitchActorColor } from '../../selectors/switch';
+import { selectSwitchActorColor } from '../../../selectors/switch';
 
 export const AntPath: React.FC<{
   $layer: React.MutableRefObject<any>;

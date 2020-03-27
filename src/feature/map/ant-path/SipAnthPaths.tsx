@@ -1,8 +1,6 @@
 import React, { useMemo, useRef, useState, useReducer } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
-import { selectLocalisedEvents } from './selectLocalisedEvents';
 import _ from 'lodash';
 import { AntPath } from './AntPath';
 import { PayloadAction } from '@reduxjs/toolkit';
@@ -16,7 +14,7 @@ const markerReducer = function(state: any, action: PayloadAction<any>) {
     case 'remove':
       return _.pickBy(state, (_value, key) => {
         // weak equal to mitigate issues between number and string
-        return key != action.payload.options.id;
+        return key !== action.payload.options.id.toString();
       });
     default:
       throw new Error();
@@ -28,7 +26,7 @@ const SipAnthPaths: React.FC<{
   $layer: React.MutableRefObject<any>;
   clusterRef: React.MutableRefObject<any>;
   initialMarkerSet: React.MutableRefObject<any[]>;
-}> = function({ $map, $layer, clusterRef, initialMarkerSet }) {
+}> = function({ $map, $layer, initialMarkerSet }) {
   const groupLayer = useRef<any>();
   if (groupLayer.current === undefined) {
     groupLayer.current = L.layerGroup(undefined, { pane: 'markerPane' });
@@ -45,9 +43,11 @@ const SipAnthPaths: React.FC<{
   }, []);
 
   const [markers, dispatch] = useReducer(markerReducer, {});
-  const [zoom, setZoom] = useState($map.current.getZoom());
+  const [zoom, setZoom] = useState(() => $map.current.getZoom());
 
   useEffect(() => {
+    const map = $map.current;
+
     dispatch({
       type: 'set',
       payload: _(initialMarkerSet.current)
@@ -55,32 +55,41 @@ const SipAnthPaths: React.FC<{
         .value()
     });
 
-    $map.current.on('zoomend', e => {
-      setZoom($map.current.getZoom());
-    });
+    const handleZoom = () => setZoom(map.getZoom());
 
-    $map.current.on('sip-marker', (e: any) => {
+    const handleMarkerAdd = (e: any) =>
       dispatch({ type: 'add', payload: e.current });
-    });
 
-    $map.current.on('sip-marker-off', (e: any) => {
+    const handleMarkerRemove = (e: any) =>
       dispatch({ type: 'remove', payload: e.current });
-    });
-    // safely disabling $map and clusterRef
+
+    map.on('zoomend', handleZoom);
+    map.on('sip-marker', handleMarkerAdd);
+    map.on('sip-marker-off', handleMarkerRemove);
+
+    return () => {
+      map.off('zoomend', handleZoom);
+      map.off('sip-marker', handleMarkerAdd);
+      map.off('sip-marker-off', handleMarkerRemove);
+    };
+    // safely disabling $map and initialMarkerSet
     // eslint-disable-next-line
   }, []);
 
   const groups = useMemo(() => {
     return _(markers)
       .orderBy('datation[0].clean_date')
-      .map(marker => ({
-        event: marker.options,
-        latLng: getmarkerLatLng(marker, zoom)
-      }))
+      .map(marker => {
+        const [groupId, latLng] = getMarkerLatLng(marker, zoom);
+
+        return {
+          event: marker.options,
+          groupId,
+          latLng
+        };
+      })
       .groupBy('event.actor')
-      .mapValues(p =>
-        _.sortedUniqBy(p, ({ latLng: { lat, lng } }) => lat + ':' + lng)
-      )
+      .mapValues(p => _.sortedUniqBy(p, 'groupId'))
       .value();
   }, [markers, zoom]);
   return (
@@ -99,15 +108,15 @@ const SipAnthPaths: React.FC<{
 
 export default SipAnthPaths;
 
-function getmarkerLatLng(marker: any, zoom: number) {
+function getMarkerLatLng(marker: any, zoom: number) {
   let cluster = marker.__parent;
   if (!cluster || cluster._zoom < zoom) {
-    return marker.getLatLng();
+    return [marker._leaflet_id, marker.getLatLng()];
   }
   while (cluster._zoom === undefined || cluster._zoom > zoom) {
     cluster = cluster.__parent;
   }
-  return cluster.getLatLng();
+  return [cluster._leaflet_id, cluster.getLatLng()];
 }
 // ! UNUSED
 // _(clusterRef.current.getLayers())

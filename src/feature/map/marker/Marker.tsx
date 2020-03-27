@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
-import { PrimaryKey } from '../../data';
-import useLazyRef from '../../hooks/useLazyRef';
+import { PrimaryKey } from '../../../data';
+import useLazyRef from '../../../hooks/useLazyRef';
 
 type DataMarkerOptions = L.CircleMarkerOptions & {
   id: PrimaryKey;

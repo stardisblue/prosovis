@@ -1,17 +1,23 @@
 import React, { useCallback, useMemo } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
-import { AnyEvent, NamedPlace, PrimaryKey, Datation, Actor } from '../../data';
+import {
+  AnyEvent,
+  NamedPlace,
+  PrimaryKey,
+  Datation,
+  Actor
+} from '../../../data';
 
 import { useSelector, useDispatch } from 'react-redux';
-import { selectMarkerColor } from '../../selectors/switch';
-import { superSelectionAsMap } from '../../selectors/superHighlights';
+import { selectMarkerColor } from '../../../selectors/switch';
+import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import _ from 'lodash';
-import { setSelection } from '../../reducers/selectionSlice';
+import { setSelection } from '../../../reducers/selectionSlice';
 import {
   setSuperHighlightThunk,
   clearSuperHighlightThunk
-} from '../../thunks/highlights';
+} from '../../../thunks/highlights';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;

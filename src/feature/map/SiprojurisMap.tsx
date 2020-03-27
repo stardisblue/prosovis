@@ -4,9 +4,9 @@ import { LayersControl, TileLayer, Map } from 'react-leaflet';
 import { useDispatch } from 'react-redux';
 import './SiprojurisMap.css';
 import { setBoundsMask } from '../../reducers/maskSlice';
-import SipMarkerClusterGroup from './SipMarkerClusterGroup';
+import SipMarkerClusterGroup from './cluster/SipMarkerClusterGroup';
 import L from 'leaflet';
-import SipAnthPaths from './SipAnthPaths';
+import SipAnthPaths from './ant-path/SipAnthPaths';
 
 export const SiprojurisMap: React.FC<{ className?: string }> = function({
   className

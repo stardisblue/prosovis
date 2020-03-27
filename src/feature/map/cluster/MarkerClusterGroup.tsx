@@ -4,9 +4,9 @@ import 'leaflet.markercluster';
 import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
-import PieChart from './PieChart';
+import PieChart from '../PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitchIsActor } from '../../selectors/switch';
+import { selectSwitchIsActor } from '../../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 
 export const selectMarkerGroupBy = createSelector(
