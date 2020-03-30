@@ -12,7 +12,7 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
   className
 }) {
   const dispatch = useDispatch();
-  const initialMarkerSet = useRef<any[]>([]);
+  const defaultMarkerSet = useRef<any[]>([]);
 
   const $map = useRef<L.Map>(null as any);
   const handleRef = useCallback(function(dom: Map) {
@@ -55,7 +55,7 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
     });
 
     $map.current.on('sip-marker', function(e: any) {
-      initialMarkerSet.current.push(e.current);
+      defaultMarkerSet.current.push(e.current);
     });
   }, [dispatch]);
 
@@ -120,10 +120,9 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function({
             checked
           >
             <SipAnthPaths
-              $layer={$antPathLayer}
+              $l={$antPathLayer}
               $map={$map}
-              clusterRef={clusterRef}
-              initialMarkerSet={initialMarkerSet}
+              defaultMarkerSet={defaultMarkerSet}
             />
           </LayersControl.Overlay>
         </LayersControl>

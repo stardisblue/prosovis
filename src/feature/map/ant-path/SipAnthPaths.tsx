@@ -1,9 +1,11 @@
-import React, { useMemo, useRef, useState, useReducer } from 'react';
+import React, { useMemo, useState, useReducer } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import _ from 'lodash';
 import { AntPath } from './AntPath';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as d3 from 'd3-array';
+import useLazyRef from '../../../hooks/useLazyRef';
 
 const markerReducer = function(state: any, action: PayloadAction<any>) {
   switch (action.type) {
@@ -23,20 +25,19 @@ const markerReducer = function(state: any, action: PayloadAction<any>) {
 
 const SipAnthPaths: React.FC<{
   $map: React.MutableRefObject<L.Map>;
-  $layer: React.MutableRefObject<any>;
-  clusterRef: React.MutableRefObject<any>;
-  initialMarkerSet: React.MutableRefObject<any[]>;
-}> = function({ $map, $layer, initialMarkerSet }) {
-  const groupLayer = useRef<any>();
-  if (groupLayer.current === undefined) {
-    groupLayer.current = L.layerGroup(undefined, { pane: 'markerPane' });
-  }
+  $l: React.MutableRefObject<any>;
+  defaultMarkerSet: React.MutableRefObject<any[]>;
+}> = function({ $map, $l, defaultMarkerSet }) {
+  const $group = useLazyRef<L.LayerGroup<any>>(() =>
+    L.layerGroup(undefined, { pane: 'markerPane' })
+  );
+
   useEffect(function() {
-    $layer.current.addLayer(groupLayer.current);
+    $l.current.addLayer($group.current);
     return function() {
       // layer persists across time and space
       // eslint-disable-next-line
-      $layer.current.removeLayer(groupLayer.current);
+      $l.current.removeLayer($group.current);
     };
     // safely disabling $layer ref
     // eslint-disable-next-line
@@ -50,7 +51,7 @@ const SipAnthPaths: React.FC<{
 
     dispatch({
       type: 'set',
-      payload: _(initialMarkerSet.current)
+      payload: _(defaultMarkerSet.current)
         .keyBy('options.id')
         .value()
     });
@@ -76,27 +77,113 @@ const SipAnthPaths: React.FC<{
     // eslint-disable-next-line
   }, []);
 
-  const groups = useMemo(() => {
-    return _(markers)
-      .orderBy('datation[0].clean_date')
-      .map(marker => {
-        const [groupId, latLng] = getMarkerLatLng(marker, zoom);
-
-        return {
+  const chens = useMemo(
+    () =>
+      _(markers)
+        .map(marker => ({
+          // extracting current cluster or marker position and id
           event: marker.options,
-          groupId,
-          latLng
-        };
-      })
-      .groupBy('event.actor')
-      .mapValues(p => _.sortedUniqBy(p, 'groupId'))
-      .value();
-  }, [markers, zoom]);
+          ...getMarkerLatLng(marker, zoom)
+        }))
+        .groupBy('event.actor') // grouping by actors
+        .mapValues((
+          events // chaining values
+        ) =>
+          // 1. get first element in a cluster
+          _(events)
+            .sortBy(({ event }) => _.first<any>(event.dates).clean_date)
+            .sortedUniqBy('groupId')
+            // 3. zip them together :)
+            // .zip(
+            //   // 2. get last element in a cluster
+            //   _(events)
+            //     .orderBy(
+            //       ({ event }) => _.last<any>(event.dates).clean_date,
+            //       'desc'
+            //     )
+            //     .sortedUniqBy('groupId')
+            //     .reverse()
+            //     .value()
+            // )
+            // 4. chain them together \o/
+            .thru<
+              [
+                { groupId: any; latLng: any; event: any },
+                { groupId: any; latLng: any; event: any }
+              ][]
+            >(d3.pairs) //, ([, last], [first]) => [last, first]))
+            .value()
+        )
+        // 5. we obtain a chain for each actor
+        .value(),
+    [zoom, markers]
+  );
+
+  const reference = useMemo(
+    function() {
+      const flatChens = _(chens)
+        .flatMap(v => v)
+        .sortBy(([, { event }]) => _.first<any>(event.dates).clean_date)
+        .value();
+
+      const total = _(flatChens)
+        .map(v => _.map(v, 'groupId'))
+        .keyBy(v => v.join(':'))
+        .mapValues(
+          (ids, _key, reference) =>
+            reference[[...ids].reverse().join(':')] !== undefined
+        )
+        .value();
+
+      const offset = _(flatChens)
+        .groupBy(v =>
+          _(v)
+            .map('groupId')
+            .join(':')
+        )
+        .mapValues(chen =>
+          _(chen)
+            .map((segment, i) => [_.map(segment, 'event.id').join(':'), i])
+            .value()
+        )
+        .flatMap(v => v)
+        .fromPairs()
+        .value();
+
+      return { offset, total };
+    },
+    [chens]
+  );
+
   return (
     <>
-      {_.map(groups, (events, key) => (
-        <AntPath key={key} id={key} $layer={groupLayer} events={events} />
+      {/* {_.map(groups, (events, key) => (
+        <AntPath key={key} id={key} $l={$group} events={events} />
+      ))} */}
+      {_.map(chens, (chen, key) => (
+        <ActorPath key={key} id={key} $l={$group} chain={chen} {...reference} />
       ))}
+    </>
+  );
+};
+
+export const ActorPath: React.FC<any> = function({ $l, chain, offset, total }) {
+  return (
+    <>
+      {_.map(chain, segment => {
+        const key = _.map(segment, 'event.id').join(':');
+        const grp = _.map(segment, 'groupId').join(':');
+        return (
+          <AntPath
+            key={key}
+            id={key}
+            $l={$l}
+            events={segment}
+            offset={offset[key]}
+            twoWay={total[grp]}
+          />
+        );
+      })}
     </>
   );
 };
@@ -111,12 +198,12 @@ export default SipAnthPaths;
 function getMarkerLatLng(marker: any, zoom: number) {
   let cluster = marker.__parent;
   if (!cluster || cluster._zoom < zoom) {
-    return [marker._leaflet_id, marker.getLatLng()];
+    return { groupId: marker._leaflet_id, latLng: marker.getLatLng() };
   }
   while (cluster._zoom === undefined || cluster._zoom > zoom) {
     cluster = cluster.__parent;
   }
-  return [cluster._leaflet_id, cluster.getLatLng()];
+  return { groupId: cluster._leaflet_id, latLng: cluster.getLatLng() };
 }
 // ! UNUSED
 // _(clusterRef.current.getLayers())
