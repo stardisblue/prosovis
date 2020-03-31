@@ -1,73 +1,84 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import { antPath } from 'leaflet-ant-path';
 import '../../../polylineoffset/index';
-import { selectSwitchActorColor } from '../../../selectors/switch';
 import PolylineOffset from '../../../polylineoffset/index';
+import { useSelector } from 'react-redux';
+import { superSelectionAsMap } from '../../../selectors/superHighlights';
+
+export type AntPathEvent = {
+  event: { id: string; [k: string]: any };
+  groupId: any;
+  latLng: L.LatLng;
+};
 
 export const AntPath: React.FC<{
-  $l: React.MutableRefObject<any>;
+  $l: React.MutableRefObject<L.LayerGroup>;
   id: string;
-  events: {
-    event: any;
-    latLng: {
-      lat: number;
-      lng: number;
-    };
-  }[];
+  events: AntPathEvent[];
+  color?: string;
   offset?: number;
   twoWay?: boolean;
   weight?: number;
-}> = function({ id, $l, events, offset: jiggle, twoWay, weight = 5 }) {
-  const color = useSelector(selectSwitchActorColor);
-  const offset = useMemo(
-    () =>
-      jiggle !== undefined
-        ? jiggle * weight + (twoWay ? weight / 2 : 0)
-        : undefined,
-    [jiggle, twoWay, weight]
-  );
-  const options = useMemo(
-    () => ({
-      color: color ? color(id) : '#6c757d',
-      pulseColor: '#FFFFFF',
-      pane: 'markerPane',
-      opacity: 1,
-      weight,
-      offset,
-      use: (path: any, options: any) => new PolylineOffset(path, options)
-    }),
-    [color, id, offset, weight]
-  );
+}> = function({ $l, events, offset, twoWay, color, weight = 10 }) {
   const $antpath = useRef<any>();
 
   useEffect(() => {
-    const antpath = antPath(
-      _.map<
-        {
-          event: any;
-          latLng: any;
-        },
-        [number, number]
-      >(events, ({ latLng: { lat, lng } }) => [+lat!, +lng!]),
-      options
-    );
+    const antpath = antPath([], {
+      pulseColor: '#FFFFFF',
+      use: (path: any, options: any) => new PolylineOffset(path, options)
+    });
     $antpath.current = antpath;
     $l.current.addLayer(antpath);
-    return function() {
+
+    return () => {
       // layer persists across time and space
       // eslint-disable-next-line
       $l.current.removeLayer(antpath);
     };
     // ignoring options update
     // eslint-disable-next-line
+  }, []);
+
+  const selected = useSelector(superSelectionAsMap);
+
+  // update path
+  useEffect(() => {
+    $antpath.current.setLatLngs(_.map(events, 'latLng'));
   }, [events]);
 
+  // update color
   useEffect(() => {
-    $antpath.current.setStyle(options);
-  }, [options]);
+    $antpath.current.setStyle({ color });
+  }, [color]);
+
+  // update weight
+  useEffect(() => {
+    $antpath.current.setStyle({ weight });
+  }, [weight]);
+
+  // update opacity
+  useEffect(() => {
+    $antpath.current.setStyle({
+      opacity:
+        _.isEmpty(selected) ||
+        _.some(events, ({ event: { id } }) => selected[id] !== undefined)
+          ? undefined
+          : 0.3
+    });
+  }, [selected, events]);
+
+  // update offset
+  useEffect(() => {
+    $antpath.current.setStyle({
+      offset:
+        offset !== undefined
+          ? offset * weight + (twoWay ? weight / 2 : 0)
+          : undefined
+    });
+    $antpath.current.redraw();
+  }, [offset, twoWay, weight]);
 
   return null;
 };

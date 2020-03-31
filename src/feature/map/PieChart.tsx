@@ -52,7 +52,7 @@ export const PiePath: React.FC<{
       _.some(a.data[1], ({ id }) => selected[id] !== undefined)
         ? 1
         : 0.3,
-    [a.data, selected, color]
+    [a.data, selected]
   );
 
   const interactive = useMemo(

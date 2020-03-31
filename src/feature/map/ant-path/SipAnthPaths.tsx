@@ -1,22 +1,12 @@
-import React, {
-  useMemo,
-  useState,
-  useReducer,
-  useRef,
-  useCallback
-} from 'react';
+import React, { useMemo, useState, useReducer, useRef } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import _ from 'lodash';
-import { AntPath } from './AntPath';
 import { PayloadAction } from '@reduxjs/toolkit';
 import * as d3 from 'd3-array';
 import useLazyRef from '../../../hooks/useLazyRef';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectSwitchActorColor } from '../../../selectors/switch';
-import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { setSelection } from '../../../reducers/selectionSlice';
-import { superSelectionAsMap } from '../../../selectors/superHighlights';
+import { ActorPath } from './ActorPath';
+import { AntPathEvent } from './AntPath';
 
 const markerReducer = function(state: any, action: PayloadAction<any>) {
   switch (action.type) {
@@ -94,7 +84,7 @@ const SipAnthPaths: React.FC<{
   const chens = useMemo(
     () =>
       _(markers)
-        .map(marker => ({
+        .map<AntPathEvent>(marker => ({
           // extracting current cluster or marker position and id
           event: marker.options,
           ...getMarkerLatLng(marker, zoom)
@@ -109,12 +99,7 @@ const SipAnthPaths: React.FC<{
             chen: _(events)
               .sortBy(({ event }) => _.first<any>(event.dates).clean_date)
               .sortedUniqBy('groupId')
-              .thru<
-                [
-                  { groupId: any; latLng: any; event: any },
-                  { groupId: any; latLng: any; event: any }
-                ][]
-              >(d3.pairs) //, ([, last], [first]) => [last, first]))
+              .thru<[AntPathEvent, AntPathEvent][]>(d3.pairs) //, ([, last], [first]) => [last, first]))
               .value()
           })
         )
@@ -175,93 +160,6 @@ const SipAnthPaths: React.FC<{
           {...reference}
         />
       ))}
-    </>
-  );
-};
-
-export const ActorPath: React.FC<any> = function({
-  id,
-  $l,
-  chen,
-  offset,
-  total,
-  $hover,
-  events
-}) {
-  const dispatch = useDispatch();
-  const $group = useLazyRef<L.FeatureGroup<any>>(() => L.featureGroup());
-
-  useEffect(function() {
-    $l.current.addLayer($group.current);
-    return function() {
-      // layer persists across time and space
-      // eslint-disable-next-line
-      $l.current.removeLayer($group.current);
-    };
-    // safely disabling $layer ref
-    // eslint-disable-next-line
-  }, []);
-
-  const selected = useSelector(superSelectionAsMap);
-  const interactive = useMemo(
-    () => _.map(events, ({ id }) => ({ id, kind: 'Event' })),
-    [events]
-  );
-
-  const handleHover = useHoverHighlight(interactive);
-  const click = useCallback(() => dispatch(setSelection(interactive)), [
-    dispatch,
-    interactive
-  ]);
-  useEffect(
-    function() {
-      const debounceMouseOut = _.debounce(function(e) {
-        if ($hover.current === id) {
-          $hover.current = null;
-          handleHover.onMouseLeave();
-        }
-      }, 100);
-
-      const handlers: L.LeafletEventHandlerFnMap = {
-        mouseover: () => {
-          if ($hover.current !== id) {
-            handleHover.onMouseEnter();
-            $hover.current = id;
-          } else if ($hover.current === id) debounceMouseOut.cancel();
-        },
-        mouseout: debounceMouseOut,
-        click
-      };
-
-      $group.current.on(handlers);
-
-      return () => {
-        $group.current.off(handlers);
-      };
-    },
-    [id, $group, $hover, handleHover]
-  );
-
-  const colorFn = useSelector(selectSwitchActorColor);
-  const color = colorFn ? colorFn(id) : '#6c757d';
-
-  return (
-    <>
-      {_.map(chen, segment => {
-        const key = _.map(segment, 'event.id').join(':');
-        const grp = _.map(segment, 'groupId').join(':');
-        return (
-          <AntPath
-            key={key}
-            id={key}
-            $l={$group}
-            events={segment}
-            offset={offset[key]}
-            twoWay={total[grp]}
-            color={color}
-          />
-        );
-      })}
     </>
   );
 };
