@@ -14,10 +14,7 @@ import { selectMarkerColor } from '../../../selectors/switch';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import _ from 'lodash';
 import { setSelection } from '../../../reducers/selectionSlice';
-import {
-  setSuperHighlightThunk,
-  clearSuperHighlightThunk
-} from '../../../thunks/highlights';
+import useHoverHighlight from '../../../hooks/useHoverHighlight';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
@@ -36,6 +33,7 @@ const SipMarker: React.FC<{
   const color = useSelector(selectMarkerColor);
   const selected = useSelector(superSelectionAsMap);
   const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
+  const { onMouseEnter, onMouseLeave } = useHoverHighlight(interactive);
 
   return (
     <Marker
@@ -47,18 +45,8 @@ const SipMarker: React.FC<{
         // eslint-disable-next-line
         [interactive]
       )}
-      onMouseOver={useCallback(
-        () => dispatch(setSuperHighlightThunk(interactive)),
-        // safely ignoring dispatch
-        // eslint-disable-next-line
-        [interactive]
-      )}
-      onMouseOut={useCallback(
-        () => dispatch(clearSuperHighlightThunk()),
-        // safely ignoring dispatch
-        // eslint-disable-next-line
-        []
-      )}
+      onMouseOver={onMouseEnter}
+      onMouseOut={onMouseLeave}
       latlng={[+localisation.lat!, +localisation.lng!]}
       options={{
         id,
