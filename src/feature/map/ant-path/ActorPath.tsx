@@ -90,7 +90,7 @@ export const ActorPath: React.FC<{
             events={segment}
             offset={offset[key]}
             twoWay={total[grp]}
-            dashArray={[1, dashes]}
+            dashArray={[2, dashes - 2]}
             delay={500}
             color={colorFn ? colorFn(id) : '#6c757d'}
           />

@@ -135,26 +135,6 @@ const SipAnthPaths: React.FC<{
       )
       .value();
 
-    const extent = _(flatChens)
-      .map(
-        ({
-          segment: [
-            {
-              event: {
-                dates: [f]
-              }
-            },
-            {
-              event: {
-                dates: [l]
-              }
-            }
-          ]
-        }) => moment(l.clean_date).diff(f.clean_date, 'years', true)
-      )
-      .max();
-    console.log(extent);
-
     const offset = _(flatChens)
       .groupBy(chain =>
         _(chain.segment)

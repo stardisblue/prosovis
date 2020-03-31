@@ -48,11 +48,6 @@ function getChildClusters(current: Cluster, aggregator: Cluster[]) {
 
 const scale = d3.scaleSqrt().range([0, 5]);
 
-console.log(scale(1));
-console.log(scale(2));
-console.log(scale(3));
-console.log(scale(4));
-
 function iconCreateFunction(cluster: L.MarkerCluster) {
   const markers = cluster.getAllChildMarkers();
   const radius = scale(markers.length);
