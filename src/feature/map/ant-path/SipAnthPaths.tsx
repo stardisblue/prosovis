@@ -7,6 +7,7 @@ import * as d3 from 'd3-array';
 import useLazyRef from '../../../hooks/useLazyRef';
 import { ActorPath } from './ActorPath';
 import { AntPathEvent } from './AntPath';
+import moment from 'moment';
 
 const markerReducer = function(state: any, action: PayloadAction<any>) {
   switch (action.type) {
@@ -81,83 +82,118 @@ const SipAnthPaths: React.FC<{
     // eslint-disable-next-line
   }, []);
 
-  const chens = useMemo(
-    () =>
-      _(markers)
-        .map<AntPathEvent>(marker => ({
-          // extracting current cluster or marker position and id
-          event: marker.options,
-          ...getMarkerLatLng(marker, zoom)
-        }))
-        .groupBy('event.actor') // grouping by actors
-        .mapValues((
-          events // chaining values
-        ) =>
-          // 1. get first element in a cluster
-          ({
-            events: _.map(events, 'event'),
-            chen: _(events)
-              .sortBy(({ event }) => _.first<any>(event.dates).clean_date)
-              .sortedUniqBy('groupId')
-              .thru<[AntPathEvent, AntPathEvent][]>(d3.pairs) //, ([, last], [first]) => [last, first]))
-              .value()
-          })
-        )
-        // 5. we obtain a chain for each actor
-        .value(),
-    [zoom, markers]
-  );
-
-  const reference = useMemo(
-    function() {
-      const flatChens = _(chens)
-        .flatMap(({ chen }) => chen)
-        .sortBy(([, { event }]) => _.first<any>(event.dates).clean_date)
-        .value();
-
-      const total = _(flatChens)
-        .map(v => _.map(v, 'groupId'))
-        .keyBy(v => v.join(':'))
-        .mapValues(
-          (ids, _key, reference) =>
-            reference[[...ids].reverse().join(':')] !== undefined
-        )
-        .value();
-
-      const offset = _(flatChens)
-        .groupBy(v =>
-          _(v)
-            .map('groupId')
-            .join(':')
-        )
-        .mapValues(chen =>
-          _(chen)
-            .map((segment, i) => [_.map(segment, 'event.id').join(':'), i])
+  const { chens, offset, total } = useMemo(() => {
+    const chens = _(markers)
+      .map<AntPathEvent>(marker => ({
+        // extracting current cluster or marker position and id
+        event: marker.options,
+        ...getMarkerLatLng(marker, zoom)
+      }))
+      .groupBy('event.actor') // grouping by actors
+      .mapValues((
+        events // chaining values
+      ) =>
+        // 1. get first element in a cluster
+        ({
+          events: _.map(events, 'event'),
+          chain: _(events)
+            .sortBy(({ event }) => _.first<any>(event.dates).clean_date)
+            .sortedUniqBy('groupId')
+            .thru<[AntPathEvent, AntPathEvent][]>(d3.pairs) //, ([, last], [first]) => [last, first]))
+            .map(segment => {
+              const [
+                {
+                  event: {
+                    dates: [f]
+                  }
+                },
+                {
+                  event: {
+                    dates: [l]
+                  }
+                }
+              ] = segment;
+              const [p1, p2] = _.map(segment, v =>
+                $map.current.latLngToLayerPoint(v.latLng)
+              );
+              return {
+                segment,
+                diff: moment(l.clean_date).diff(f.clean_date, 'years', true),
+                dist: p1.distanceTo(p2)
+              };
+            })
             .value()
-        )
-        .flatMap(v => v)
-        .fromPairs()
-        .value();
+        })
+      )
+      // 5. we obtain a chain for each actor
+      .value();
 
-      return { offset, total };
-    },
-    [chens]
-  );
+    const flatChens = _(chens)
+      .flatMap(({ chain }) => chain)
+      .sortBy(
+        ({ segment: [, { event }] }) => _.first<any>(event.dates).clean_date
+      )
+      .value();
 
+    const extent = _(flatChens)
+      .map(
+        ({
+          segment: [
+            {
+              event: {
+                dates: [f]
+              }
+            },
+            {
+              event: {
+                dates: [l]
+              }
+            }
+          ]
+        }) => moment(l.clean_date).diff(f.clean_date, 'years', true)
+      )
+      .max();
+    console.log(extent);
+
+    const offset = _(flatChens)
+      .groupBy(chain =>
+        _(chain.segment)
+          .map('groupId')
+          .join(':')
+      )
+      .mapValues(chain =>
+        _(chain)
+          .map((chen, i) => [_.map(chen.segment, 'event.id').join(':'), i])
+          .value()
+      )
+      .flatMap(v => v)
+      .fromPairs()
+      .value();
+
+    const total = _(flatChens)
+      .map(({ segment }) => _.map(segment, 'groupId'))
+      .keyBy(ids => ids.join(':'))
+      .mapValues(
+        (ids, _key, reference) =>
+          reference[[...ids].reverse().join(':')] !== undefined
+      )
+      .value();
+    return { chens, offset, total };
+    // disabling $map ref
+    //eslint-disable-next-line
+  }, [zoom, markers]);
   return (
     <>
-      {/* {_.map(groups, (events, key) => (
-        <AntPath key={key} id={key} $l={$group} events={events} />
-      ))} */}
-      {_.map(chens, ({ chen, events }, key) => (
+      {_.map(chens, ({ chain, events }, key) => (
         <ActorPath
           key={key}
           id={key}
           $l={$group}
           $hover={$hover}
-          chen={chen}
+          chain={chain}
           events={events}
-          {...reference}
+          offset={offset}
+          total={total}
         />
       ))}
     </>

@@ -21,12 +21,26 @@ export const AntPath: React.FC<{
   offset?: number;
   twoWay?: boolean;
   weight?: number;
-}> = function({ $l, events, offset, twoWay, color, weight = 10 }) {
+  dashArray?: string | number[];
+  delay?: number;
+}> = function({
+  $l,
+  events,
+  offset,
+  twoWay,
+  color,
+  weight = 6,
+  dashArray = [10, 25],
+  delay = 400
+}) {
   const $antpath = useRef<any>();
 
   useEffect(() => {
     const antpath = antPath([], {
       pulseColor: '#FFFFFF',
+      lineCap: 'butt',
+      dashArray,
+      delay,
       use: (path: any, options: any) => new PolylineOffset(path, options)
     });
     $antpath.current = antpath;
@@ -57,6 +71,14 @@ export const AntPath: React.FC<{
   useEffect(() => {
     $antpath.current.setStyle({ weight });
   }, [weight]);
+
+  useEffect(() => {
+    $antpath.current.setStyle({ dashArray });
+  }, [dashArray]);
+
+  useEffect(() => {
+    $antpath.current.setStyle({ delay });
+  }, [delay]);
 
   // update opacity
   useEffect(() => {

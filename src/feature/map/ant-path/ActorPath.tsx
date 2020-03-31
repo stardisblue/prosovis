@@ -8,18 +8,24 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { setSelection } from '../../../reducers/selectionSlice';
+
 export const ActorPath: React.FC<{
   id: string;
   $l: React.MutableRefObject<L.LayerGroup>;
   $hover: React.MutableRefObject<string | null>;
-  chen: [AntPathEvent, AntPathEvent][];
+  chain: {
+    segment: [AntPathEvent, AntPathEvent];
+    diff: number;
+    dist: number;
+  }[];
   events: any[];
   offset: _.Dictionary<any>;
   total: {
     [x: string]: boolean;
   };
-}> = function({ id, $l, chen, offset, total, $hover, events }) {
+}> = function({ id, $l, chain, offset, total, $hover, events }) {
   const dispatch = useDispatch();
+
   const $group = useLazyRef<L.FeatureGroup<any>>(() => L.featureGroup());
   useEffect(function() {
     $l.current.addLayer($group.current);
@@ -31,6 +37,9 @@ export const ActorPath: React.FC<{
     // safely disabling $layer ref
     // eslint-disable-next-line
   }, []);
+
+  const colorFn = useSelector(selectSwitchActorColor);
+
   const interactive = useMemo(
     () => _.map(events, ({ id }) => ({ id, kind: 'Event' })),
     [events]
@@ -65,13 +74,14 @@ export const ActorPath: React.FC<{
       $group.current.off(handlers);
     };
   }, [id, $group, $hover, handleHover, click]);
-  const colorFn = useSelector(selectSwitchActorColor);
-  const color = colorFn ? colorFn(id) : '#6c757d';
+
   return (
     <>
-      {_.map(chen, segment => {
+      {_.map(chain, ({ segment, diff, dist }) => {
         const key = _.map(segment, 'event.id').join(':');
         const grp = _.map(segment, 'groupId').join(':');
+        diff = diff < 0.5 ? 0.5 : diff;
+        const dashes = dist / diff;
         return (
           <AntPath
             key={key}
@@ -80,7 +90,9 @@ export const ActorPath: React.FC<{
             events={segment}
             offset={offset[key]}
             twoWay={total[grp]}
-            color={color}
+            dashArray={[1, dashes]}
+            delay={500}
+            color={colorFn ? colorFn(id) : '#6c757d'}
           />
         );
       })}
