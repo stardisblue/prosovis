@@ -84,6 +84,7 @@ export const MarkerClusterGroup: React.FC<{
       const p = $l.current;
       p.addLayer($group.current);
       fRef($group.current);
+      console.log('MarkerClusterGroup :)');
       return function() {
         // eslint-disable-next-line
         p.removeLayer($group.current);

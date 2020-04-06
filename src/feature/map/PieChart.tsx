@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useMemo } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import * as d3 from 'd3';
 import { selectSwitchColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
@@ -43,32 +43,36 @@ export const PiePath: React.FC<{
   a: d3.PieArcDatum<[string, any[]]>;
   arc: d3.Arc<any, d3.PieArcDatum<[string, any[]]>>;
 }> = function({ a, arc }) {
+  const [id, values] = a.data;
   const color = useSelector(selectSwitchColor);
   const selected = useSelector(superSelectionAsMap);
+
+  const d = useMemo(() => arc(a)!, [arc, a]);
+  const fill = useMemo(() => color(id), [color, id]);
 
   const opacity = useMemo(
     () =>
       _.isEmpty(selected) ||
-      _.some(a.data[1], ({ id }) => selected[id] !== undefined)
+      _.some(values, ({ id }) => selected[id] !== undefined)
         ? 1
         : 0.3,
-    [a.data, selected]
+    [values, selected]
   );
 
   const interactive = useMemo(
-    () => _.map(a.data[1], ({ id }) => ({ id, kind: 'Event' })),
-    [a.data]
+    () => _.map(values, ({ id }) => ({ id, kind: 'Event' })),
+    [values]
   );
 
   return (
     <path
-      fill={color(a.data[0])}
+      fill={fill}
       opacity={opacity}
-      d={arc(a)!}
+      d={d}
       {...useClickSelect(interactive)}
       {...useHoverHighlight(interactive)}
     >
-      <title>{a.data[1].length}</title>
+      <title>{values.length}</title>
     </path>
   );
 };

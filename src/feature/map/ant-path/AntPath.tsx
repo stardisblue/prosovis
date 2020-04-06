@@ -29,8 +29,8 @@ export const AntPath: React.FC<{
   offset,
   twoWay,
   color,
-  weight = 6,
-  dashArray = [10, 25],
+  weight = 5,
+  dashArray = [2, 12],
   delay = 400
 }) {
   const $antpath = useRef<any>();
@@ -69,7 +69,7 @@ export const AntPath: React.FC<{
 
   // update weight
   useEffect(() => {
-    $antpath.current.setStyle({ weight });
+    $antpath.current.setStyle({ weight: weight - 1 });
   }, [weight]);
 
   useEffect(() => {
