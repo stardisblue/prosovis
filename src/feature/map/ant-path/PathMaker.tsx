@@ -11,7 +11,7 @@ type FlatAntPath = {
 export default class PathMaker {
   stack: AntPathEvent[] = [];
   results: FlatAntPath = [];
-  constructor() {}
+
   add = (event: AntPathEvent) => {
     const eventFirst = getFirstDate(event);
 

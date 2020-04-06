@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { useMemo, useEffect } from 'react';
+import React, { useMemo } from 'react';
 import * as d3 from 'd3';
 import { selectSwitchColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
@@ -11,13 +11,13 @@ export const PieChart: React.FC<{
   radius: number;
   counts: [string, any[]][];
   donut?: number;
-}> = function({ radius, counts, donut = 0 }) {
+}> = function ({ radius, counts, donut = 0 }) {
   const arcs = useMemo(
     () =>
       d3
         .pie<[string, any[]]>()
         .sort(null)
-        .value(d => d[1].length)(counts),
+        .value((d) => d[1].length)(counts),
     [counts]
   );
   const arc = useMemo(
@@ -31,7 +31,7 @@ export const PieChart: React.FC<{
 
   return (
     <g stroke="white" pointerEvents="initial">
-      {_.map(arcs, a => (
+      {_.map(arcs, (a) => (
         <PiePath key={a.data[0]} a={a} arc={arc} />
       ))}
     </g>
@@ -42,7 +42,7 @@ export default PieChart;
 export const PiePath: React.FC<{
   a: d3.PieArcDatum<[string, any[]]>;
   arc: d3.Arc<any, d3.PieArcDatum<[string, any[]]>>;
-}> = function({ a, arc }) {
+}> = function ({ a, arc }) {
   const [id, values] = a.data;
   const color = useSelector(selectSwitchColor);
   const selected = useSelector(superSelectionAsMap);
