@@ -8,7 +8,68 @@ type FlatAntPath = {
   end: string;
 }[];
 
-export default class PathMaker {
+export default function pathMaker(this: any) {
+  let stack: AntPathEvent[] = [];
+  let results: FlatAntPath = [];
+
+  function add(event: AntPathEvent) {
+    const eventFirst = getFirstDate(event);
+
+    solve(eventFirst);
+
+    const last = _.last(stack);
+    if (last) {
+      // case 2 or 3
+      results.push({
+        event: last,
+        start: getFirstDate(last),
+        end: eventFirst,
+      });
+    }
+
+    clean(getLastDate(event));
+    stack.push(event);
+    // console.log('add', _.map(this.stack), _.map(this.results));
+  }
+
+  function solve(threshold?: string) {
+    if (stack.length > 0) {
+      let previous = stack[stack.length - 1];
+      let prevLast = getLastDate(previous);
+
+      if (threshold === undefined || prevLast <= threshold) {
+        let start = getFirstDate(previous);
+        stack[stack.length - 1] = null!; // destroying from stack
+
+        for (let i = stack.length - 2; i >= 0; i--) {
+          if (threshold !== undefined && threshold < prevLast) break; //ignore next possibles
+
+          results.push({ event: previous, start, end: prevLast });
+          start = prevLast;
+          previous = stack[i];
+          prevLast = getLastDate(previous);
+          stack[i] = null!;
+        }
+
+        if (threshold === undefined || prevLast <= threshold) {
+          results.push({ event: previous, start, end: prevLast });
+        }
+
+        stack = _.compact(stack);
+      }
+    }
+    // console.log('solve', _.map(results));
+  }
+
+  function clean(threshold: string) {
+    stack = _.filter(stack, (s) => threshold < getLastDate(s));
+    // console.log('clean', _.map(stack));
+  }
+
+  return { solve, add, results: () => results };
+}
+
+export class PathMaker {
   stack: AntPathEvent[] = [];
   results: FlatAntPath = [];
 
@@ -69,14 +130,14 @@ export default class PathMaker {
 
 export function flatify(events: AntPathEvent[]) {
   // console.groupCollapsed('pathmaker');
-  const pathmaker = new PathMaker();
+  const { solve, add, results } = pathMaker();
 
-  _(events).sortBy(getFirstDate).forEach(pathmaker.add);
+  _(events).sortBy(getFirstDate).forEach(add);
 
-  pathmaker.solve();
+  solve();
 
   // console.groupEnd();
-  return pathmaker.results;
+  return results();
 }
 
 type SimpleAntPath = {
