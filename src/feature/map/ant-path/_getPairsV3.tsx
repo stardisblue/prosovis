@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { AntPathEvent } from './AntPath';
-import { getFirstDate, getLastDate } from './PathMaker';
+import { getFirstDate, getLastDate } from './path-maker';
 
 function getPairsV3(): (
   value: AntPathEvent[]

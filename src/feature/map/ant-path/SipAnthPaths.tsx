@@ -6,7 +6,7 @@ import { PayloadAction } from '@reduxjs/toolkit';
 import useLazyRef from '../../../hooks/useLazyRef';
 import { ActorPath } from './ActorPath';
 import { AntPathEvent } from './AntPath';
-import { flatify, simplify, segmentify } from './PathMaker';
+import { flatify, simplify, segmentify } from './path-maker';
 
 const markerReducer = function (state: any, action: PayloadAction<any>) {
   switch (action.type) {
