@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toggleKindMask } from '../../reducers/maskSlice';
 import { AnyEvent } from '../../data';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import CheckBoxSwitch from './CheckBoxSwitch';
 import { kindMaskState, selectKindMask } from '../../selectors/mask';
+import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 
 const Kind: React.FC<{
   id: AnyEvent['kind'];
-}> = function({ id }) {
+}> = function ({ id }) {
   const dispatch = useDispatch();
 
   const color = useSelector(selectSwitchKindColor);

@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import StyledInput from './StyledInput';
+import StyledInput from '../../feature/mask/StyledInput';
 import { stopEventPropagation } from '../../hooks/useClick';
 
-const StyledLabel = styled.label`
+export const StyledLabel = styled.label`
   margin-bottom: 0;
   margin-right: 1em;
 `;
 
-const StyledSlider = styled.div`
+export const StyledSlider = styled.div`
   display: inline-block;
   cursor: pointer;
   padding: 0.125em;
@@ -19,7 +19,7 @@ const StyledSlider = styled.div`
   background-color: #ccc;
 `;
 
-const StyledKnob = styled.div<{ slide: boolean }>`
+export const StyledKnob = styled.div<{ slide: boolean }>`
   height: 0.75em;
   width: 0.75em;
   background-color: white;
@@ -28,7 +28,7 @@ const StyledKnob = styled.div<{ slide: boolean }>`
   ${(props) => (props.slide ? 'transform:translateX(1em)' : '')};
 `;
 
-const StyledText = styled.div<{ sliderColor: string }>`
+export const StyledText = styled.div<{ sliderColor: string }>`
   display: inline-block;
   padding-bottom: 0.125em;
   vertical-align: bottom;

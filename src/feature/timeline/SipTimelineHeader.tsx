@@ -5,6 +5,12 @@ import { setGroup } from './timelineGroupSlice';
 import { stopEventPropagation } from '../../hooks/useClick';
 import styled from 'styled-components/macro';
 import StyledInput from '../mask/StyledInput';
+import {
+  StyledLabel,
+  StyledText,
+  StyledKnob,
+  StyledSlider,
+} from '../../components/ui/CheckBoxSwitch';
 
 const StyledDiv = styled.div`
   background-color: #f7f7f7;
@@ -140,38 +146,13 @@ const SipTimelineHeader: React.FC = function () {
   );
 };
 
-const StyledLabel = styled.label`
-  margin-bottom: 0;
-  margin-right: 1em;
+const PaddedStyledText = styled(StyledText)`
+  padding-left: 0.125em;
+  padding-right: 0.125em;
 `;
 
-const StyledSlider = styled.div`
-  display: inline-block;
-  cursor: pointer;
-  padding: 0.125em;
-  height: 1em;
-  width: 2em;
-  transition: 0.4s;
-  border-radius: 0.5em;
+const AdaptedSlider = styled(StyledSlider)`
   background-color: #6c757d;
-`;
-
-const StyledKnob = styled.div<{ slide: boolean }>`
-  height: 0.75em;
-  width: 0.75em;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 0.5em;
-  ${(props) => (props.slide ? 'transform:translateX(1em)' : '')};
-`;
-
-const StyledText = styled.div<{ sliderColor: string }>`
-  display: inline-block;
-  padding-bottom: 0.125em;
-  vertical-align: bottom;
-  margin-left: 0.125em;
-  color: ${(props) => props.sliderColor};
-  transition: 0.4s;
 `;
 
 export const CheckBoxSwitch: React.FC<{
@@ -183,11 +164,15 @@ export const CheckBoxSwitch: React.FC<{
   return (
     <StyledLabel className="pointer" onMouseUp={stopEventPropagation}>
       <StyledInput type="checkbox" checked={checked} onChange={handleCheck} />
-      <StyledText sliderColor={checked ? '#ccc' : ''}>{actor}</StyledText>
-      <StyledSlider>
+      <PaddedStyledText sliderColor={checked ? '#ccc' : ''}>
+        {actor}
+      </PaddedStyledText>
+      <AdaptedSlider>
         <StyledKnob slide={checked} />
-      </StyledSlider>
-      <StyledText sliderColor={checked ? '' : '#ccc'}>{place}</StyledText>
+      </AdaptedSlider>
+      <PaddedStyledText sliderColor={checked ? '' : '#ccc'}>
+        {place}
+      </PaddedStyledText>
     </StyledLabel>
   );
 };

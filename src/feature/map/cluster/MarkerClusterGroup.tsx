@@ -11,7 +11,7 @@ import { createSelector } from '@reduxjs/toolkit';
 
 export const selectMarkerGroupBy = createSelector(
   selectSwitchIsActor,
-  switcher => (switcher ? ({ actor }: any) => actor : ({ kind }: any) => kind)
+  (switcher) => (switcher ? ({ actor }: any) => actor : ({ kind }: any) => kind)
 );
 
 type Cluster = L.MarkerCluster & {
@@ -40,7 +40,7 @@ function getChildClusters(current: Cluster, aggregator: Cluster[]) {
       // childrens[0]._svg = current._svg;
       // childrens[0]._svg_is_child = true;
     }
-    _.forEach(childrens, c => getChildClusters(c, aggregator));
+    _.forEach(childrens, (c) => getChildClusters(c, aggregator));
   }
 
   return aggregator;
@@ -61,7 +61,7 @@ function iconCreateFunction(cluster: L.MarkerCluster) {
   return L.divIcon({
     html: (cluster as any)._svg,
     className: '',
-    iconSize: L.point(size, size)
+    iconSize: L.point(size, size),
   });
 }
 
@@ -69,23 +69,20 @@ export const MarkerClusterGroup: React.FC<{
   $l: React.MutableRefObject<any>;
   markers: (ref: React.MutableRefObject<L.MarkerClusterGroup>) => JSX.Element[];
   options?: L.MarkerClusterGroupOptions;
-  fRef: any;
-}> = function({ $l, markers, options, fRef }) {
+}> = function ({ $l, markers, options }) {
   const $group = useRef<L.MarkerClusterGroup>(undefined as any);
   if ($group.current === undefined) {
     $group.current = L.markerClusterGroup({
       ...options,
-      iconCreateFunction
+      iconCreateFunction,
     });
   }
 
   useEffect(
-    function() {
+    function () {
       const p = $l.current;
       p.addLayer($group.current);
-      fRef($group.current);
-      console.log('MarkerClusterGroup :)');
-      return function() {
+      return function () {
         // eslint-disable-next-line
         p.removeLayer($group.current);
       };
@@ -104,7 +101,7 @@ export const MarkerClusterGroup: React.FC<{
     );
 
     setPortals(
-      _.map(clusters, c => {
+      _.map(clusters, (c) => {
         const markers = c.getAllChildMarkers();
         const radius = scale(markers.length);
         const size = radius * 2;

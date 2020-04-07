@@ -285,16 +285,16 @@ const VisTimeline: React.FC = function () {
 
           if (_.isEmpty(selection)) {
             if (isDimmed) {
-              console.debug('timeline:opacity:undefined');
+              // console.debug('timeline:opacity:undefined');
               $event.classList.remove(OPACITY_CLASS);
             }
           } else {
             const inSelection = selection[$event.dataset.id!] !== undefined;
             if (isDimmed && inSelection) {
-              console.debug('timeline:opacity:remove');
+              // console.debug('timeline:opacity:remove');
               $event.classList.remove(OPACITY_CLASS);
             } else if (!isDimmed && !inSelection) {
-              console.debug('timeline:opacity:add');
+              // console.debug('timeline:opacity:add');
               $event.classList.add(OPACITY_CLASS);
             }
           }
@@ -312,7 +312,7 @@ const VisTimeline: React.FC = function () {
     (e: VisEvent) => {
       switch (e.what) {
         case 'group-label':
-          console.debug('selection:group', e.group);
+          // console.debug('selection:group', e.group);
           const groupEvents = _(timelineEvents)
             .filter({ group: e.group })
             .map(({ id }) => ({ id, kind: 'Event' }))
@@ -327,13 +327,13 @@ const VisTimeline: React.FC = function () {
         case 'item':
           if (e.event.ctrlKey || e.event.metaKey) {
             if (selection[e.item]) {
-              console.debug('selection:item:unselect', e.item);
+              // console.debug('selection:item:unselect', e.item);
               const filtered = _.filter(selection, (i) => i.id !== e.item);
               if (filtered) {
                 dispatch(setSelection(filtered));
               }
             } else {
-              console.debug('selection:item', e.item);
+              // console.debug('selection:item', e.item);
               // is not selected
               dispatch(addSelection({ id: e.item, kind: 'Event' }));
             }
@@ -343,7 +343,7 @@ const VisTimeline: React.FC = function () {
           break;
         default:
           if (!e.event.ctrlKey && !e.event.metaKey) {
-            console.debug('selection:reset');
+            // console.debug('selection:reset');
             dispatch(clearSelection());
           }
       }

@@ -60,11 +60,6 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function ({
     });
   }, [dispatch]);
 
-  const clusterRef = useRef<any>();
-  const handleClusterRef = useCallback((dom: any) => {
-    clusterRef.current = dom;
-  }, []);
-
   const $hover = useRef<{ id: string | null; cancel: any | null }>({
     id: null,
     cancel: null,
@@ -115,11 +110,7 @@ export const SiprojurisMap: React.FC<{ className?: string }> = function ({
               checked
               ref={handleMarkerLayerRef}
             >
-              <SipMarkerClusterGroup
-                $layer={$markerLayer}
-                $map={$map}
-                fRef={handleClusterRef}
-              />
+              <SipMarkerClusterGroup $layer={$markerLayer} $map={$map} />
             </LayersControl.Overlay>
             <LayersControl.Overlay
               ref={handleAntPathLayerRef}

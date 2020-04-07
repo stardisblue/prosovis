@@ -12,8 +12,7 @@ import { selectLocalisedEvents } from '../selectLocalisedEvents';
 export const SipMarkerClusterGroup: React.FC<{
   $map: React.MutableRefObject<L.Map>;
   $layer: React.MutableRefObject<any>;
-  fRef: any;
-}> = function({ $map, $layer, fRef }) {
+}> = function ({ $map, $layer }) {
   const events = useSelector(selectLocalisedEvents);
 
   // const onClusterClick = useCallback(
@@ -48,7 +47,7 @@ export const SipMarkerClusterGroup: React.FC<{
 
   const getMarkers = useCallback(
     (ref: React.MutableRefObject<L.MarkerClusterGroup>) => {
-      return _.map(events, event => (
+      return _.map(events, (event) => (
         <SipMarker $map={$map} $l={ref} key={event.id} event={event} />
       ));
     },
@@ -59,7 +58,6 @@ export const SipMarkerClusterGroup: React.FC<{
 
   return (
     <MarkerClusterGroup
-      fRef={fRef}
       $l={$layer}
       markers={getMarkers}
       options={{
@@ -68,7 +66,7 @@ export const SipMarkerClusterGroup: React.FC<{
         zoomToBoundsOnClick: false,
         showCoverageOnHover: false,
         removeOutsideVisibleBounds: true,
-        spiderfyOnMaxZoom: false
+        spiderfyOnMaxZoom: false,
       }}
     />
   );

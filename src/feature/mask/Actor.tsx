@@ -4,11 +4,11 @@ import { toggleActorMask } from '../../reducers/maskSlice';
 import { AnyEvent } from '../../data';
 import { selectSwitchActorColor } from '../../selectors/switch';
 import { actorMaskState, selectActorMask } from '../../selectors/mask';
-import CheckBoxSwitch from './CheckBoxSwitch';
+import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 
 const Actor: React.FC<{
   actor: AnyEvent['actor'];
-}> = function({ actor }) {
+}> = function ({ actor }) {
   const { id, label } = actor;
 
   const dispatch = useDispatch();
