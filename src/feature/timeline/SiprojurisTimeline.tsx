@@ -1,7 +1,7 @@
 import React from 'react';
 
 import VisTimeline from './VisTimeline';
-import SipTimelineHeader from './SipTimelineHeader';
+import SipTimelineHeader from './header/SipTimelineHeader';
 
 const SiprojurisTimeline: React.FC<{ className?: string }> = function ({
   className,
