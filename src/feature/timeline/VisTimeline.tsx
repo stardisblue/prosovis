@@ -3,7 +3,7 @@ import React, {
   useRef,
   useState,
   useMemo,
-  useCallback
+  useCallback,
 } from 'react';
 import classnames from 'classnames';
 import _ from 'lodash';
@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   addSelection,
   setSelection,
-  clearSelection
+  clearSelection,
 } from '../../reducers/selectionSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { selectEventColor } from '../../selectors/switch';
@@ -25,17 +25,17 @@ import { createSelector } from '@reduxjs/toolkit';
 import {
   selectTimelineGroupBy,
   selectTimelineGroup,
-  selectTimelineEventGroups
+  selectTimelineEventGroups,
 } from './timelineGroupSlice';
 import { Context } from './Context';
 import {
   superSelectionAsMap,
-  selectSuperHighlight
+  selectSuperHighlight,
 } from '../../selectors/superHighlights';
 import {
-  clearSuperHighlightThunk,
-  setSuperHighlightThunk
-} from '../../thunks/highlights';
+  clearSuperHighlights,
+  setSuperHighlights,
+} from '../../reducers/superHighlightSlice';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -80,7 +80,7 @@ function resolveDatation([start, end]: Datation[]): {
   return {
     start: start.clean_date,
     end: end ? end.clean_date : null,
-    type: end ? 'range' : 'box'
+    type: end ? 'range' : 'box',
   };
 }
 
@@ -93,7 +93,7 @@ function newLineLongString(str: string, maxLenght = 20): string {
 
   return _(parts)
     .chunk(half)
-    .map(i => _.join(i, ' '))
+    .map((i) => _.join(i, ' '))
     .join('<br/>');
 }
 
@@ -106,7 +106,7 @@ const selectTimelineEvents = createSelector(
   (events, groupBy, eventColor) => {
     return _.transform(
       events,
-      function(acc, e) {
+      function (acc, e) {
         if (e.datation && e.datation.length > 0) {
           const { id, actor, label, kind, datation } = e;
           acc.push({
@@ -119,7 +119,7 @@ const selectTimelineEvents = createSelector(
             style: `border:1px solid ${eventColor.border(e)};
             background-color: ${eventColor.main(e)}`,
             group: groupBy(e),
-            kind
+            kind,
           });
         }
       },
@@ -128,7 +128,7 @@ const selectTimelineEvents = createSelector(
   }
 );
 
-export const VisTimeline: React.FC = function() {
+export const VisTimeline: React.FC = function () {
   const dispatch = useDispatch();
 
   const groups = useSelector(selectTimelineEventGroups);
@@ -143,7 +143,7 @@ export const VisTimeline: React.FC = function() {
    * CONTEXT
    */
   const updateMarkers = useMemo(
-    function() {
+    function () {
       if (!timeline) return () => {};
       return _.throttle((start: Date, end: Date) => {
         timeline.vis.setCustomTime(start, 'a');
@@ -158,7 +158,7 @@ export const VisTimeline: React.FC = function() {
 
     return _.throttle((start: Date, end: Date) => {
       timeline.vis.setWindow(start, end, {
-        animation: false
+        animation: false,
       });
     }, 16);
   }, [timeline]);
@@ -170,17 +170,17 @@ export const VisTimeline: React.FC = function() {
     if (!timeline) return;
 
     // view sync with context
-    const viewSyncThrottle = _.throttle(function(start: Date, end: Date) {
+    const viewSyncThrottle = _.throttle(function (start: Date, end: Date) {
       setViewSync([start, end]);
     }, 16);
 
     // mask sync with context
-    const maskSyncThrottle = _.throttle(function(e: VisTimeMarker) {
+    const maskSyncThrottle = _.throttle(function (e: VisTimeMarker) {
       const interval = _.sortBy([
         e.time,
         e.id === 'a'
           ? timeline.vis.getCustomTime('b')
-          : timeline.vis.getCustomTime('a')
+          : timeline.vis.getCustomTime('a'),
       ]) as [Date, Date];
       setMaskSync(interval);
     }, 16);
@@ -215,7 +215,7 @@ export const VisTimeline: React.FC = function() {
       /** @deprecated */
       __click: (_e: VisEvent) => {},
       /** @deprecated */
-      __drag: (_e: VisEvent) => {}
+      __drag: (_e: VisEvent) => {},
     };
   }
 
@@ -272,7 +272,7 @@ export const VisTimeline: React.FC = function() {
   const selection = useSelector(superSelectionAsMap);
 
   useEffect(() => {
-    const change = function() {
+    const change = function () {
       if (timeline) {
         const boundingRect = timeline.dom.getBoundingClientRect();
         if (width !== boundingRect.width) {
@@ -280,7 +280,7 @@ export const VisTimeline: React.FC = function() {
         }
       }
       if ($events.current) {
-        _.forEach($events.current, $event => {
+        _.forEach($events.current, ($event) => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
           if (_.isEmpty(selection)) {
@@ -328,7 +328,7 @@ export const VisTimeline: React.FC = function() {
           if (e.event.ctrlKey || e.event.metaKey) {
             if (selection[e.item]) {
               console.debug('selection:item:unselect', e.item);
-              const filtered = _.filter(selection, i => i.id !== e.item);
+              const filtered = _.filter(selection, (i) => i.id !== e.item);
               if (filtered) {
                 dispatch(setSelection(filtered));
               }
@@ -367,16 +367,16 @@ export const VisTimeline: React.FC = function() {
           .sortBy('id')
           .value();
 
-        dispatch(setSuperHighlightThunk(groupEvents));
+        dispatch(setSuperHighlights(groupEvents));
       } else if (e.what === 'item') {
-        dispatch(setSuperHighlightThunk({ id: e.item, kind: 'Event' }));
+        dispatch(setSuperHighlights({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
-        dispatch(clearSuperHighlightThunk());
+        dispatch(clearSuperHighlights());
       }
     };
 
     actions.current.mouseOut = () => {
-      if (highlights) dispatch(clearSuperHighlightThunk());
+      if (highlights) dispatch(clearSuperHighlights());
     };
   }, [highlights, dispatch, groupingKind, timelineEvents]);
 
@@ -414,7 +414,7 @@ export const VisTimeline: React.FC = function() {
     timeline.vis.setGroups(
       _.map(groups, ({ id, label }) => ({
         id,
-        content: newLineLongString(label)
+        content: newLineLongString(label),
       }))
     );
     // visTimeline.current!.redraw();

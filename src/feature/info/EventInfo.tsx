@@ -4,7 +4,6 @@ import { AnyEvent } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';
-import { highlightsAsMap } from '../../selectors/highlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { StyledOcticon } from './StyledOcticon';
 import { EventDates } from './EventDates';
@@ -14,6 +13,7 @@ import getEventIcon from './event/getEventIcon';
 
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useClickSelect } from '../../hooks/useClick';
+import { superHighlightAsMap } from '../../selectors/superHighlights';
 
 type ThumbnailEventInfoProps<T = AnyEvent> = {
   event: SelectedEvent<T>;
@@ -21,13 +21,13 @@ type ThumbnailEventInfoProps<T = AnyEvent> = {
   icon?: boolean;
 };
 
-export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function({
+export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function ({
   event,
-  origin
+  origin,
 }) {
-  const highlights = useSelector(highlightsAsMap);
+  const highlights = useSelector(superHighlightAsMap);
   const dispatchable = useMemo(() => ({ id: event.id, kind: 'Event' }), [
-    event.id
+    event.id,
   ]);
 
   return (
@@ -37,7 +37,7 @@ export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function({
       className={classnames('pb1 br2 pointer', {
         b: event.selected,
         'o-50': event.masked,
-        'bg-light-gray': highlights[event.id]
+        'bg-light-gray': highlights[event.id],
       })}
       {...useClickSelect(dispatchable)}
       {...useHoverHighlight(dispatchable)}
@@ -54,10 +54,13 @@ type EventInfoProps<T = AnyEvent> = {
   origin: 'Actor' | 'NamedPlace';
 };
 
-export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
+export const EventInfo: React.FC<EventInfoProps> = function ({
+  event,
+  origin,
+}) {
   const color = useSelector(selectSwitchKindColor);
   const dispatchable = useMemo(() => ({ id: event.id, kind: 'Event' }), [
-    event.id
+    event.id,
   ]);
 
   return (
@@ -67,7 +70,7 @@ export const EventInfo: React.FC<EventInfoProps> = function({ event, origin }) {
       className={classnames('pb1 br2 pointer', {
         b: event.selected,
         'o-50': event.masked,
-        'bg-light-gray': event.highlighted
+        'bg-light-gray': event.highlighted,
       })}
       {...useHoverHighlight(dispatchable)}
       {...useClickSelect(dispatchable)}

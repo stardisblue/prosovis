@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useContext } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import _ from 'lodash';
@@ -8,11 +8,12 @@ import { useSelector, useDispatch } from 'react-redux';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { setSelection } from '../../../reducers/selectionSlice';
+import { HoverContext } from '../HoverContext';
 
 export const ActorPath: React.FC<{
   id: string;
   $l: React.MutableRefObject<L.LayerGroup>;
-  $hover: React.MutableRefObject<string | null>;
+  // $hover: React.MutableRefObject<string | null>;
   chain: {
     segment: [AntPathEvent, AntPathEvent];
     diff: number;
@@ -23,13 +24,14 @@ export const ActorPath: React.FC<{
   total: {
     [x: string]: boolean;
   };
-}> = function({ id, $l, chain, offset, total, $hover, events }) {
+}> = function ({ id, $l, chain, offset, total, events }) {
+  const $hover = useContext(HoverContext);
   const dispatch = useDispatch();
 
   const $group = useLazyRef<L.FeatureGroup<any>>(() => L.featureGroup());
-  useEffect(function() {
+  useEffect(function () {
     $l.current.addLayer($group.current);
-    return function() {
+    return function () {
       // layer persists across time and space
       // eslint-disable-next-line
       $l.current.removeLayer($group.current);
@@ -47,25 +49,29 @@ export const ActorPath: React.FC<{
   const handleHover = useHoverHighlight(interactive);
   const click = useCallback(() => dispatch(setSelection(interactive)), [
     dispatch,
-    interactive
+    interactive,
   ]);
   // event listeners
   useEffect(() => {
-    const debounceMouseOut = _.debounce(function(e) {
-      if ($hover.current === id) {
-        $hover.current = null;
+    const debounceMouseOut = _.debounce(function () {
+      if ($hover.current.id === id) {
+        $hover.current.id = null;
         handleHover.onMouseLeave();
       }
     }, 100);
+
     const handlers: L.LeafletEventHandlerFnMap = {
-      mouseover: () => {
-        if ($hover.current !== id) {
+      mouseover: function () {
+        if ($hover.current.id !== id) {
           handleHover.onMouseEnter();
-          $hover.current = id;
-        } else if ($hover.current === id) debounceMouseOut.cancel();
+          $hover.current.id = id;
+          $hover.current.cancel = debounceMouseOut.cancel;
+        } else if ($hover.current.id === id) {
+          $hover.current.cancel();
+        }
       },
       mouseout: debounceMouseOut,
-      click
+      click,
     };
     $group.current.on(handlers);
     return () => {

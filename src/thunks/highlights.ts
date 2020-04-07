@@ -1,20 +1,20 @@
 import { setHighlights, clearHighlights } from '../reducers/highlightSlice';
 import {
-  setSuperHightlights,
+  setSuperHighlights,
   clearSuperHighlights,
-  SuperHightlightEvent
+  SuperHightlightEvent,
 } from '../reducers/superHighlightSlice';
 
-export const setSuperHighlightThunk = function(
+export const setSuperHighlightThunk = function (
   payload: SuperHightlightEvent | SuperHightlightEvent[]
 ) {
   return (dispatch: any) => {
     dispatch(setHighlights(payload));
-    dispatch(setSuperHightlights(payload));
+    dispatch(setSuperHighlights(payload));
   };
 };
 
-export const clearSuperHighlightThunk = function() {
+export const clearSuperHighlightThunk = function () {
   return (dispatch: any) => {
     dispatch(clearHighlights());
     dispatch(clearSuperHighlights());

@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useReducer, useRef } from 'react';
+import React, { useMemo, useState, useReducer } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
 import _ from 'lodash';
@@ -30,7 +30,6 @@ const SipAnthPaths: React.FC<{
   defaultMarkerSet: React.MutableRefObject<any[]>;
 }> = function ({ $map, $l, defaultMarkerSet }) {
   const $group = useLazyRef<L.LayerGroup<any>>(() => L.layerGroup());
-  const $hover = useRef<any>(null);
 
   useEffect(function () {
     $l.current.addLayer($group.current);
@@ -133,7 +132,6 @@ const SipAnthPaths: React.FC<{
           key={key}
           id={key}
           $l={$group}
-          $hover={$hover}
           chain={chain}
           events={events}
           offset={offset}

@@ -12,7 +12,7 @@ export const superHighlightSlice = createSlice({
   name: 'super-highlight',
   initialState: null as SuperHightlightEvent[] | null,
   reducers: {
-    setSuperHightlights(
+    setSuperHighlights(
       _state,
       action: PayloadAction<SuperHightlightEvent | SuperHightlightEvent[]>
     ) {
@@ -20,13 +20,13 @@ export const superHighlightSlice = createSlice({
     },
     clearSuperHighlights() {
       return null;
-    }
-  }
+    },
+  },
 });
 
 export const {
-  setSuperHightlights,
-  clearSuperHighlights
+  setSuperHighlights,
+  clearSuperHighlights,
 } = superHighlightSlice.actions;
 
 export default superHighlightSlice.reducer;

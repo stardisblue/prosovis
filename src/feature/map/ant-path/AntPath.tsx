@@ -23,7 +23,7 @@ export const AntPath: React.FC<{
   weight?: number;
   dashArray?: string | number[];
   delay?: number;
-}> = function({
+}> = function ({
   $l,
   events,
   offset,
@@ -31,7 +31,7 @@ export const AntPath: React.FC<{
   color,
   weight = 5,
   dashArray = [2, 12],
-  delay = 400
+  delay = 400,
 }) {
   const $antpath = useRef<any>();
 
@@ -41,7 +41,7 @@ export const AntPath: React.FC<{
       lineCap: 'butt',
       dashArray,
       delay,
-      use: (path: any, options: any) => new PolylineOffset(path, options)
+      use: (path: any, options: any) => new PolylineOffset(path, options),
     });
     $antpath.current = antpath;
     $l.current.addLayer(antpath);
@@ -87,7 +87,7 @@ export const AntPath: React.FC<{
         _.isEmpty(selected) ||
         _.some(events, ({ event: { id } }) => selected[id] !== undefined)
           ? undefined
-          : 0.3
+          : 0.3,
     });
   }, [selected, events]);
 
@@ -97,7 +97,7 @@ export const AntPath: React.FC<{
       offset:
         offset !== undefined
           ? offset * weight + (twoWay ? weight / 2 : 0)
-          : undefined
+          : undefined,
     });
     $antpath.current.redraw();
   }, [offset, twoWay, weight]);

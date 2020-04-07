@@ -15,7 +15,7 @@ const rootReducer = combineReducers({
   mask,
   timelineGroup,
   switch: SwitchReducer,
-  superHighlight
+  superHighlight,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

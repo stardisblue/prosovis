@@ -10,13 +10,13 @@ import { selectEvents } from '../../selectors/event';
 import { maskedEventsAsMap } from '../../selectors/mask';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
-import { highlightsAsMap } from '../../selectors/highlight';
 import { selectionAsMap } from '../../selectors/selection';
 import MaskedInformation from './MaskedInformation';
+import { superHighlightAsMap } from '../../selectors/superHighlights';
 
 export function parseDates(dates: Datation[]) {
   return _(dates)
-    .map(date => date.value)
+    .map((date) => date.value)
     .join(' - ');
 }
 
@@ -24,23 +24,23 @@ const selectInformationEvents = createSelector(
   selectEvents,
   selectionAsMap,
   maskedEventsAsMap,
-  highlightsAsMap,
-  function(events, selected, masked, highlighted) {
+  superHighlightAsMap,
+  function (events, selected, masked, highlighted) {
     return _<SelectedEvent>(events)
       .chain()
-      .map<SelectedEvent>(e => ({
+      .map<SelectedEvent>((e) => ({
         ...e,
         highlighted: highlighted[e.id] !== undefined,
         selected: selected[e.id] !== undefined,
-        masked: masked[e.id] === undefined
+        masked: masked[e.id] === undefined,
       }))
       .orderBy(['datation[0].clean_date'])
       .value();
   }
 );
 
-export const Information: React.FC<{ className?: string }> = function({
-  className
+export const Information: React.FC<{ className?: string }> = function ({
+  className,
 }) {
   const selectedEvents = useSelector(selectInformationEvents);
 
@@ -48,12 +48,12 @@ export const Information: React.FC<{ className?: string }> = function({
 
   return (
     <Flex column className={classnames('pa1 h-100 overflow-y-auto', className)}>
-      {_.map(groups.no, g => (
+      {_.map(groups.no, (g) => (
         <InformationFold key={g.group.uri} {...g} />
       ))}
       <hr />
       {/* TODO  style */}
-      {_.map(groups.yes, g => (
+      {_.map(groups.yes, (g) => (
         <MaskedInformation key={g.group.uri} {...g} />
       ))}
     </Flex>
