@@ -25,7 +25,7 @@ const StyledKnob = styled.div<{ slide: boolean }>`
   background-color: white;
   transition: 0.4s;
   border-radius: 0.5em;
-  ${props => (props.slide ? 'transform:translateX(1em)' : '')};
+  ${(props) => (props.slide ? 'transform:translateX(1em)' : '')};
 `;
 
 const StyledText = styled.div<{ sliderColor: string }>`
@@ -33,15 +33,15 @@ const StyledText = styled.div<{ sliderColor: string }>`
   padding-bottom: 0.125em;
   vertical-align: bottom;
   margin-left: 0.125em;
-  color: ${props => props.sliderColor};
+  color: ${(props) => props.sliderColor};
   transition: 0.4s;
 `;
 
 const CheckBoxSwitch: React.FC<{
   checked: boolean;
-  handleCheck: () => void;
+  handleCheck: React.ChangeEventHandler;
   color: string;
-}> = function({ checked, handleCheck, children, color }) {
+}> = function ({ checked, handleCheck, children, color }) {
   return (
     <StyledLabel className="pointer" onMouseUp={stopEventPropagation}>
       <StyledInput type="checkbox" checked={checked} onChange={handleCheck} />

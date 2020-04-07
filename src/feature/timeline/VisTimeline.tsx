@@ -128,7 +128,7 @@ const selectTimelineEvents = createSelector(
   }
 );
 
-export const VisTimeline: React.FC = function () {
+const VisTimeline: React.FC = function () {
   const dispatch = useDispatch();
 
   const groups = useSelector(selectTimelineEventGroups);
@@ -435,3 +435,5 @@ export const VisTimeline: React.FC = function () {
     </>
   );
 };
+
+export default VisTimeline;

@@ -948,11 +948,6 @@ input[type='submit'] {
   color: #212529;
 }
 
-#timeline-top {
-  width: 100%;
-  background-color: #f7f7f7;
-}
-
 #group_filter {
   cursor: pointer;
 }
