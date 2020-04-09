@@ -166,11 +166,11 @@ export function simplify(flatPath: FlatAntPath) {
 type PathSegment = {
   segment: [AntPathEvent, AntPathEvent];
   diff: number;
-  dist: number;
+  // dist: number;
 };
 
 export function segmentify(
-  this: L.Map,
+  // this: L.Map,
   simplePath: SimpleAntPath
 ): PathSegment[] {
   return d3.pairs(
@@ -178,12 +178,12 @@ export function segmentify(
     ({ interval: [, first], end }, { interval: [last], start }) => {
       const segment: [AntPathEvent, AntPathEvent] = [first, last];
 
-      const [p1, p2] = _.map(segment, (v) => this.latLngToLayerPoint(v.latLng));
+      // const [p1, p2] = _.map(segment, (v) => this.latLngToLayerPoint(v.latLng));
 
       return {
         segment,
         diff: +start.slice(0, 4) - +end.slice(0, 4),
-        dist: p1.distanceTo(p2),
+        // dist: p1.distanceTo(p2),
       };
     }
   );

@@ -90,7 +90,8 @@ const SipAnthPaths: React.FC<{
         events // chaining values
       ) => ({
         events: _.map(events, 'event'),
-        chain: _.flow(flatify, simplify, segmentify.bind($map.current))(events),
+        chain: _.flow(flatify, simplify, segmentify)(events),
+        // chain: _.flow(flatify, simplify, segmentify.bind($map.current))(events),
       }))
       // 5. we obtain a chain for each actor
       .value();

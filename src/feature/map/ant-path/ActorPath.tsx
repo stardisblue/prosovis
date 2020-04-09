@@ -20,7 +20,7 @@ export const ActorPath: React.FC<{
   chain: {
     segment: [AntPathEvent, AntPathEvent];
     diff: number;
-    dist: number;
+    // dist: number;
   }[];
   events: any[];
   offset: _.Dictionary<any>;
@@ -86,11 +86,10 @@ export const ActorPath: React.FC<{
 
   return (
     <>
-      {_.map(chain, ({ segment, diff, dist }) => {
+      {_.map(chain, ({ segment, diff }) => {
         const key = _.map(segment, 'event.id').join(':');
         const grp = _.map(segment, 'groupId').join(':');
-        diff = diff < 1 ? 1 : diff;
-        const dashes = scale(diff);
+
         return (
           <AntPath
             key={key}
@@ -99,7 +98,7 @@ export const ActorPath: React.FC<{
             events={segment}
             offset={offset[key]}
             twoWay={total[grp]}
-            dashArray={[2, dashes]}
+            dashArray={[2, scale(diff < 1 ? 1 : diff)]}
             delay={500}
             color={colorFn ? colorFn(id) : '#6c757d'}
           />
