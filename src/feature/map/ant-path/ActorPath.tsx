@@ -9,6 +9,9 @@ import { selectSwitchActorColor } from '../../../selectors/switch';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { setSelection } from '../../../reducers/selectionSlice';
 import { HoverContext } from '../HoverContext';
+import * as d3 from 'd3-scale';
+
+const scale = d3.scaleLog().domain([1, 10]).range([2, 50]);
 
 export const ActorPath: React.FC<{
   id: string;
@@ -86,8 +89,8 @@ export const ActorPath: React.FC<{
       {_.map(chain, ({ segment, diff, dist }) => {
         const key = _.map(segment, 'event.id').join(':');
         const grp = _.map(segment, 'groupId').join(':');
-        diff = diff < 0.5 ? 0.5 : diff;
-        const dashes = dist / diff;
+        diff = diff < 1 ? 1 : diff;
+        const dashes = scale(diff);
         return (
           <AntPath
             key={key}
@@ -96,7 +99,7 @@ export const ActorPath: React.FC<{
             events={segment}
             offset={offset[key]}
             twoWay={total[grp]}
-            dashArray={[2, dashes - 2]}
+            dashArray={[2, dashes]}
             delay={500}
             color={colorFn ? colorFn(id) : '#6c757d'}
           />
@@ -105,3 +108,12 @@ export const ActorPath: React.FC<{
     </>
   );
 };
+
+// inverser les traits sur les déplacements
+// lieu et temps pour le graphe
+// baricentre des voisins
+// créer le graphe de connexité
+// charger en local le graphe de connexité
+// - utiliser les infos du graphe de connexité pour aider l'autocompletion
+// - permettre d'agrandir le graphe en fonction des voisins
+// - lors de la selection d'un fantome (voisin a ajouter) : proposer une popup pour supprimer les acteurs si supérieurs à 5
