@@ -127,8 +127,7 @@ export function getLocalisation(event: AnyEvent) {
     case 'PassageExamen':
       return (
         event.collective_actor &&
-        (event.collective_actor?.localisation ||
-          event.collective_actor?.creation)
+        (event.collective_actor.localisation || event.collective_actor.creation)
       );
     default:
       return null;
@@ -144,19 +143,19 @@ export function getEvents(actor: Actor): AnyEvent[] {
     ..._.map(actor.est_evalue_examen, ({ actor_evalue, ...rest }) => ({
       ...rest,
       actor_evalue,
-      actor: actor_evalue
+      actor: actor_evalue,
     })),
     ..._.map(actor.evaluer_examen, ({ actor_evaluer, ...rest }) => ({
       ...rest,
       actor_evaluer,
-      actor: actor_evaluer
+      actor: actor_evaluer,
     })),
     ...actor.retirement_set,
     ...actor.suspensionactivity_set,
     ...actor.obtainqualification_set
   );
 
-  return _.map(events, e => {
+  return _.map(events, (e) => {
     e.datation = _.sortBy(e.datation, 'clean_date');
     return e;
   });
