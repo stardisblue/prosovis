@@ -36,13 +36,17 @@ const StyledMap = styled(SiprojurisMap)`
   grid-area: map;
 `;
 
+const StyledRelation = styled(Relation)`
+  grid-area: rel;
+`;
+
 const StyledTimeline = styled(SiprojurisTimeline)`
   grid-area: timeline;
 `;
 
 function App() {
   const dispatch = useDispatch();
-  const onClick = useCallback(e => {
+  const onClick = useCallback((e) => {
     dispatch(clearSelection());
     // safely ignoring dispatch
     //eslint-disable-next-line
@@ -58,14 +62,14 @@ function App() {
     }
   >(
     () => ({
-      onMouseDown: e => {
+      onMouseDown: (e) => {
         if (!mouse.current.click) {
           mouse.current.click = true;
           mouse.current.x = e.pageX;
           mouse.current.y = e.pageY;
         }
       },
-      onMouseMove: e => {
+      onMouseMove: (e) => {
         if (
           mouse.current.click &&
           mouse.current.draggingTreshold(mouse.current, e)
@@ -74,11 +78,11 @@ function App() {
           mouse.current.click = false;
         }
       },
-      onMouseUp: e => {
+      onMouseUp: (e) => {
         if (mouse.current.click) onClick(e);
         mouse.current.dragging = false;
         mouse.current.click = false;
-      }
+      },
     }),
     // safely ignore onClick and mouse, onclick never changes and mouse is a reference
     // eslint-disable-next-line
@@ -91,9 +95,7 @@ function App() {
         <input type="text" name="" id="" placeholder="Rechercher un acteur" />
       </Search>
       <StyledInformation />
-      <div style={{ gridArea: 'rel' }}>
-        <Relation />
-      </div>
+      <StyledRelation />
       <StyledMap />
       <StyledTimeline />
     </Main>
