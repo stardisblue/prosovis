@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import classnames from 'classnames';
-import './style.sass';
+import './style.css';
 
 export type FlexItemProps = {
   auto?: boolean;
@@ -13,7 +13,7 @@ export type FlexItemProps = {
 
 export const FlexItem: React.FC<React.PropsWithChildren<
   FlexItemProps
->> = function(
+>> = function (
   { children, className, tag = 'div', ...flexItemProps } // items
 ) {
   const TagWrapper = tag;
@@ -36,6 +36,6 @@ export function flexItemClasses({ self, order, auto, col }: FlexItemProps) {
     [`self-${self}`]: self,
     [`order-${order}`]: order,
     'flex-auto': auto,
-    'flex-col': col
+    'flex-col': col,
   };
 }
