@@ -15,6 +15,8 @@ import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 
+const scale = d3.scaleSqrt().range([0, 5]);
+
 const selectNodes = createSelector(selectActors, (actors) => {
   return _.map(actors, (a) => {
     const node = _.get(rawNodes, a.id);
@@ -31,24 +33,52 @@ const selectRelations = createSelector(selectActors, (actors) => {
       if (actors[source] && actors[target]) {
         map.inners.set(link.actors.join(':'), link);
       } else if (actors[source]) {
-        map.outers.set(link.actors.join(':'), link);
-        if (!map.actors.has(target)) {
-          map.actors.set(target, _.get(rawNodes, target));
-        }
+        addRelation(map, rawNodes, source, target, link.actors.join(':'), link);
       } else if (actors[target]) {
-        map.outers.set(link.actors.join(':'), link);
-        if (!map.actors.has(source)) {
-          map.actors.set(source, _.get(rawNodes, source));
-        }
+        addRelation(map, rawNodes, target, source, link.actors.join(':'), link);
       }
     },
     {
-      outers: new Map(),
+      outers: new Map<
+        number,
+        { count: Set<number>; items: Map<number, Map<string, any>> }
+      >(),
       inners: new Map(),
       actors: new Map(),
     }
   );
 });
+
+function addRelation<T, N, Nodes>(
+  map: {
+    outers: Map<
+      number,
+      { count: Set<number>; items: Map<number, Map<string, T>> }
+    >;
+    actors: Map<number, N>;
+  },
+  rawNodes: Nodes,
+  nodeId: number,
+  other: number,
+  linkId: string,
+  link: any
+) {
+  if (!map.outers.has(nodeId)) {
+    map.outers.set(nodeId, { count: new Set(), items: new Map() });
+  }
+  map.outers.get(nodeId)!.count.add(other);
+  const nodegroup = map.outers.get(nodeId)!.items;
+
+  if (!nodegroup.has(link.loc)) {
+    nodegroup.set(link.loc, new Map());
+  }
+
+  nodegroup.get(link.loc)!.set(linkId, link);
+
+  if (!map.actors.has(nodeId)) {
+    map.actors.set(nodeId, _.get(rawNodes, nodeId));
+  }
+}
 
 const selectLinks = createSelector(selectRelations, ({ inners }) => {
   return Array.from(inners, ([key, value]) => ({
@@ -64,12 +94,12 @@ const Relation: React.FC = function () {
   const [dims, setDims] = useState<DOMRect>();
   const nodes = useSelector(selectNodes);
   const links = useSelector(selectLinks);
-  // const relations = useSelector(selectRelations);
+  const relations = useSelector(selectRelations);
   const color = useSelector(selectSwitchActorColor);
 
-  // useEffect(() => {
-  //   console.log(relations);
-  // }, [relations]);
+  useEffect(() => {
+    console.log(relations);
+  }, [relations]);
 
   useLayoutEffect(function () {
     const handleResize = _.debounce(function () {
@@ -106,29 +136,29 @@ const Relation: React.FC = function () {
       .force('y', d3.forceY())
       .on('tick', ticked);
 
-    const linkGroup = svg.select('g.links');
-    let link: any = linkGroup.selectAll('line');
-    const nodeGroup = svg.select('g.nodes');
-    let node: any = nodeGroup.selectAll('circle');
+    const linksNode: SVGGElement = svg.select<SVGGElement>('g.links').node()!;
+    let link: any = d3.selectAll(linksNode.childNodes as any);
+    const nodesNode: SVGGElement = svg.select<SVGGElement>('g.nodes').node()!;
+    let node: any = d3.selectAll(nodesNode.childNodes as any);
 
     updateRef.current = {
       nodes: function () {
-        node = nodeGroup.selectAll('circle');
+        node = d3.selectAll(nodesNode.childNodes as any);
 
+        console.log(node);
         simulation.nodes(node.data());
         simulation.alpha(1).restart();
       },
 
       links: function () {
-        link = linkGroup.selectAll('line');
-
+        link = d3.selectAll(linksNode.childNodes as any);
         (simulation.force('link') as any).links(link.data());
         simulation.alpha(1).restart();
       },
     };
 
     function ticked() {
-      node.attr('cx', (d: any) => d.x).attr('cy', (d: any) => d.y);
+      node.attr('transform', (d: any) => `translate(${d.x} ${d.y})`);
       link
         .attr('x1', (d: any) => d.source.x)
         .attr('y1', (d: any) => d.source.y)
@@ -164,9 +194,14 @@ const Relation: React.FC = function () {
   const nodeList = useMemo(
     () =>
       _.map(nodes, (datum) => (
-        <RelationNodes key={datum.id} datum={datum} color={color} />
+        <RelationNodes
+          key={datum.id}
+          datum={datum}
+          color={color}
+          outers={relations.outers.get(datum.id)}
+        />
       )),
-    [nodes, color]
+    [nodes, color, relations.outers]
   );
   return (
     <svg
@@ -199,15 +234,49 @@ export const RelationLinks: React.FC<any> = function ({ datum }) {
   return <line ref={$line}></line>;
 };
 
-export const RelationNodes: React.FC<any> = function ({ datum, color }) {
-  const $circle = useRef<SVGCircleElement>(null as any);
+export const RelationNodes: React.FC<any> = function ({
+  datum,
+  color,
+  outers,
+}) {
+  const $g = useRef<SVGCircleElement>(null as any);
 
   useEffect(function () {
-    ($circle.current as any).__data__ = datum;
+    // cheating d3.select($g.current).datum(datum)
+    ($g.current as any).__data__ = datum;
     // on first render
     // eslint-disable-next-line
   }, []);
-  return <circle ref={$circle} r="8" fill={color && color(datum.id)} />;
+
+  const arcs = useMemo(
+    () =>
+      d3
+        .pie<[string, any[]]>()
+        .sort(null)
+        .value((d) => d[1].length)(
+        Array.from(outers.items, ([k, v]) => [k, Array.from(v)])
+      ),
+    [outers.items]
+  );
+  const arc = useMemo(
+    () =>
+      d3
+        .arc<d3.PieArcDatum<[string, any[]]>>()
+        .innerRadius(5)
+        .outerRadius(scale(outers.count.size) + 5),
+    [outers.count.size]
+  );
+
+  return (
+    <g ref={$g} r="8" fill={color && color(datum.id)}>
+      {_.map(arcs, (a) => (
+        <path d={arc(a)!}>
+          <title>{a.data[1].length}</title>
+        </path>
+        // <PiePath key={a.data[0]} a={a} arc={arc} />
+      ))}
+    </g>
+  );
 };
 
 export default Relation;
