@@ -1,4 +1,10 @@
-import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
+import React, {
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useState,
+  useMemo,
+} from 'react';
 import * as d3 from 'd3';
 import rawNodes from '../../data/actor-nodes.json';
 import rawLinks from '../../data/known_links.json';
@@ -58,12 +64,12 @@ const Relation: React.FC = function () {
   const [dims, setDims] = useState<DOMRect>();
   const nodes = useSelector(selectNodes);
   const links = useSelector(selectLinks);
-  const relations = useSelector(selectRelations);
+  // const relations = useSelector(selectRelations);
   const color = useSelector(selectSwitchActorColor);
 
-  useEffect(() => {
-    console.log(relations);
-  }, [relations]);
+  // useEffect(() => {
+  //   console.log(relations);
+  // }, [relations]);
 
   useLayoutEffect(function () {
     const handleResize = _.debounce(function () {
@@ -79,18 +85,14 @@ const Relation: React.FC = function () {
   }, []);
 
   const updateRef = useRef<{
-    nodes: (nodes: any) => void;
-    links: (nodes: any) => void;
-    color: (color: any | null) => void;
+    nodes: () => void;
+    links: () => void;
   }>(null as any);
 
   useEffect(function () {
     const svg = d3.select($svg.current);
 
-    const simulation: d3.Simulation<
-      d3.SimulationNodeDatum,
-      d3.SimulationLinkDatum<d3.SimulationNodeDatum>
-    > = d3
+    const simulation = d3
       .forceSimulation()
       .force('charge', d3.forceManyBody().strength(-1000))
       .force(
@@ -104,50 +106,27 @@ const Relation: React.FC = function () {
       .force('y', d3.forceY())
       .on('tick', ticked);
 
-    let link: any = svg
-      .append('g')
-      .attr('stroke', '#000')
-      .attr('stroke-width', 1.5)
-      .selectAll('line');
-
-    let node: any = svg
-      .append('g')
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 1.5)
-      .selectAll('circle');
+    const linkGroup = svg.select('g.links');
+    let link: any = linkGroup.selectAll('line');
+    const nodeGroup = svg.select('g.nodes');
+    let node: any = nodeGroup.selectAll('circle');
 
     updateRef.current = {
-      nodes: function (nodes: any) {
-        node = node
-          .data(nodes, (d: any) => d.id)
-          .join((enter: any) => enter.append('circle').attr('r', 8));
-        console.log(node);
+      nodes: function () {
+        node = nodeGroup.selectAll('circle');
 
-        simulation.nodes(nodes);
+        simulation.nodes(node.data());
         simulation.alpha(1).restart();
       },
 
-      links: function (links: any) {
-        link = link.data(links, (d: any) => d.data.actors).join('line');
-        console.log(link.data());
-        simulation
-          .force<
-            d3.ForceLink<
-              d3.SimulationNodeDatum,
-              d3.SimulationLinkDatum<d3.SimulationNodeDatum>
-            >
-          >('link')!
-          .links(links);
+      links: function () {
+        link = linkGroup.selectAll('line');
+
+        (simulation.force('link') as any).links(link.data());
         simulation.alpha(1).restart();
-      },
-      color: function (color: any | null) {
-        if (color) {
-          node.attr('fill', (d: any) => color(d.id));
-        } else {
-          node.attr('fill', null);
-        }
       },
     };
+
     function ticked() {
       node.attr('cx', (d: any) => d.x).attr('cy', (d: any) => d.y);
       link
@@ -156,28 +135,39 @@ const Relation: React.FC = function () {
         .attr('x2', (d: any) => d.target.x)
         .attr('y2', (d: any) => d.target.y);
     }
+
+    return () => {
+      // if the graph is reredered kill the simulation
+      simulation.stop();
+    };
   }, []);
 
   useEffect(
     function () {
-      updateRef.current.nodes(nodes);
+      updateRef.current.nodes();
     },
     [nodes]
   );
   useEffect(
     function () {
-      updateRef.current.links(links);
+      updateRef.current.links();
     },
     [links]
   );
 
-  useEffect(
-    function () {
-      updateRef.current.color(color);
-    },
-    [color]
+  const linkList = useMemo(
+    () =>
+      _.map(links, (datum) => <RelationLinks key={datum.id} datum={datum} />),
+    [links]
   );
 
+  const nodeList = useMemo(
+    () =>
+      _.map(nodes, (datum) => (
+        <RelationNodes key={datum.id} datum={datum} color={color} />
+      )),
+    [nodes, color]
+  );
   return (
     <svg
       ref={$svg}
@@ -187,8 +177,37 @@ const Relation: React.FC = function () {
         dims &&
         `${-dims.width / 2},${-dims.height / 2},${dims.width},${dims.height}`
       }
-    ></svg>
+    >
+      <g className="links" stroke="#000" strokeWidth={1.5}>
+        {linkList}
+      </g>
+      <g className="nodes" stroke="#fff" strokeWidth={1.5}>
+        {nodeList}
+      </g>
+    </svg>
   );
+};
+
+export const RelationLinks: React.FC<any> = function ({ datum }) {
+  const $line = useRef<SVGLineElement>(null as any);
+
+  useEffect(function () {
+    ($line.current as any).__data__ = datum;
+    // on first render
+    // eslint-disable-next-line
+  }, []);
+  return <line ref={$line}></line>;
+};
+
+export const RelationNodes: React.FC<any> = function ({ datum, color }) {
+  const $circle = useRef<SVGCircleElement>(null as any);
+
+  useEffect(function () {
+    ($circle.current as any).__data__ = datum;
+    // on first render
+    // eslint-disable-next-line
+  }, []);
+  return <circle ref={$circle} r="8" fill={color && color(datum.id)} />;
 };
 
 export default Relation;
