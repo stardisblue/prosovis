@@ -14,15 +14,16 @@ import { selectSwitchActorColor } from '../../selectors/switch';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
+import { RelationNodes, RelationMap, RelationEvent } from './RelationNodes';
 
-const scale = d3.scaleSqrt().range([0, 5]);
-
-const selectNodes = createSelector(selectActors, (actors) => {
-  return _.map(actors, (a) => {
-    const node = _.get(rawNodes, a.id);
-    return { id: node.id, data: node };
-  });
-});
+type ActorRelationsMap = Map<number, RelationMap>;
+type RelationNode = {
+  kind: string;
+  id: number;
+  label: string;
+  uri: string;
+  url: string;
+};
 
 const selectRelations = createSelector(selectActors, (actors) => {
   return _.transform(
@@ -41,20 +42,24 @@ const selectRelations = createSelector(selectActors, (actors) => {
     {
       outers: new Map<
         number,
-        { count: Set<number>; items: Map<number, Map<string, any>> }
+        { count: Set<number>; items: ActorRelationsMap }
       >(),
-      inners: new Map(),
-      actors: new Map(),
+      inners: new Map<string, RelationEvent>(),
+      actors: new Map<number, any>(),
     }
   );
 });
 
-function addRelation<T, N, Nodes>(
+const selectNodes = createSelector(selectActors, (actors) => {
+  return _.map(actors, (a) => {
+    const node = _.get<RelationNode>(rawNodes, a.id as number);
+    return { id: node.id, data: node };
+  });
+});
+
+function addRelation<N, Nodes>(
   map: {
-    outers: Map<
-      number,
-      { count: Set<number>; items: Map<number, Map<string, T>> }
-    >;
+    outers: Map<number, { count: Set<number>; items: ActorRelationsMap }>;
     actors: Map<number, N>;
   },
   rawNodes: Nodes,
@@ -172,18 +177,13 @@ const Relation: React.FC = function () {
     };
   }, []);
 
-  useEffect(
-    function () {
-      updateRef.current.nodes();
-    },
-    [nodes]
-  );
-  useEffect(
-    function () {
-      updateRef.current.links();
-    },
-    [links]
-  );
+  useEffect(() => {
+    updateRef.current.nodes();
+  }, [nodes]);
+
+  useEffect(() => {
+    updateRef.current.links();
+  }, [links]);
 
   const linkList = useMemo(
     () =>
@@ -232,51 +232,6 @@ export const RelationLinks: React.FC<any> = function ({ datum }) {
     // eslint-disable-next-line
   }, []);
   return <line ref={$line}></line>;
-};
-
-export const RelationNodes: React.FC<any> = function ({
-  datum,
-  color,
-  outers,
-}) {
-  const $g = useRef<SVGCircleElement>(null as any);
-
-  useEffect(function () {
-    // cheating d3.select($g.current).datum(datum)
-    ($g.current as any).__data__ = datum;
-    // on first render
-    // eslint-disable-next-line
-  }, []);
-
-  const arcs = useMemo(
-    () =>
-      d3
-        .pie<[string, any[]]>()
-        .sort(null)
-        .value((d) => d[1].length)(
-        Array.from(outers.items, ([k, v]) => [k, Array.from(v)])
-      ),
-    [outers.items]
-  );
-  const arc = useMemo(
-    () =>
-      d3
-        .arc<d3.PieArcDatum<[string, any[]]>>()
-        .innerRadius(5)
-        .outerRadius(scale(outers.count.size) + 5),
-    [outers.count.size]
-  );
-
-  return (
-    <g ref={$g} r="8" fill={color && color(datum.id)}>
-      {_.map(arcs, (a) => (
-        <path d={arc(a)!}>
-          <title>{a.data[1].length}</title>
-        </path>
-        // <PiePath key={a.data[0]} a={a} arc={arc} />
-      ))}
-    </g>
-  );
 };
 
 export default Relation;
