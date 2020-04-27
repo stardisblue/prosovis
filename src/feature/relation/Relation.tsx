@@ -13,6 +13,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
 import { RelationNodes } from './RelationNodes';
 import { selectRelations } from './selectRelations';
+import { RelationMap, RelationEvent } from './models';
 
 const selectNodes = createSelector(selectRelations, ({ actors }) => actors);
 
@@ -34,10 +35,17 @@ const simulation = d3
   .force('x', d3.forceX())
   .force('y', d3.forceY());
 
+const x = d3.scaleBand().range([0, 2 * Math.PI]);
+
+const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
+
 const Relation: React.FC = function () {
   const $nodeGroup = useRef<SVGGElement>(null as any);
   const $linkGroup = useRef<SVGGElement>(null as any);
+  const $ghostRing = useRef<SVGGElement>(null as any);
+
   const [dims, setDims] = useState<DOMRect>();
+
   const nodes = useSelector(selectNodes);
   const links = useSelector(selectLinks);
   const outers = useSelector(selectOuters);
@@ -60,15 +68,18 @@ const Relation: React.FC = function () {
   const updateRef = useRef<{
     nodes: () => void;
     links: () => void;
+    // ghosts: (scale: d3.ScaleBand<string>) => void;
   }>(null as any);
 
   useEffect(function () {
     simulation.on('tick', ticked);
     const $links = $linkGroup.current.childNodes;
     const $nodes = $nodeGroup.current.childNodes;
+    // const $ghosts = $ghostRing.current.childNodes;
 
     let link: any = d3.selectAll($links as any);
     let node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
+    // let ghosts = d3.selectAll($ghosts as any);
 
     updateRef.current = {
       nodes: function () {
@@ -82,6 +93,9 @@ const Relation: React.FC = function () {
         (simulation.force('link') as any).links(link.data());
         simulation.alpha(1).restart();
       },
+      // ghosts: function () {
+      //   ghosts = d3.selectAll($ghosts as any);
+      // },
     };
 
     function ticked() {
@@ -107,26 +121,20 @@ const Relation: React.FC = function () {
     updateRef.current.links();
   }, [links]);
 
-  const linkList = useMemo(
+  const [ghosts, setGhosts] = useState<{ items: RelationMap; lock: boolean }>({
+    items: new Map(),
+    lock: false,
+  });
+
+  const handleAwayClick = useCallback(
     () =>
-      Array.from(links, ([key, datum]) => (
-        <RelationLinks key={key} datum={datum} />
-      )),
-    [links]
+      setGhosts({
+        items: new Map(),
+        lock: false,
+      }),
+    []
   );
 
-  const nodeList = useMemo(
-    () =>
-      Array.from(nodes, ([key, datum]) => (
-        <RelationNodes
-          key={key}
-          datum={datum}
-          color={color}
-          outers={outers.get(key)!}
-        />
-      )),
-    [nodes, color, outers]
-  );
   return (
     <svg
       ref={$svg}
@@ -136,25 +144,82 @@ const Relation: React.FC = function () {
         dims &&
         `${-dims.width / 2},${-dims.height / 2},${dims.width},${dims.height}`
       }
+      onMouseUp={handleAwayClick}
     >
       <g ref={$linkGroup} stroke="#6c757d" strokeWidth={1.5}>
-        {linkList}
+        {useMemo(
+          () =>
+            Array.from(links, ([key, datum]) => (
+              <RelationLinks key={key} datum={datum} />
+            )),
+          [links]
+        )}
       </g>
       <g ref={$nodeGroup} stroke="#fff" strokeWidth={1.5}>
-        {nodeList}
+        {useMemo(
+          () =>
+            Array.from(nodes, ([key, datum]) => (
+              <RelationNodes
+                key={key}
+                datum={datum}
+                color={color}
+                outers={outers.get(key)!}
+                setGhosts={setGhosts}
+              />
+            )),
+          [nodes, color, outers]
+        )}
+      </g>
+
+      <g ref={$ghostRing} fill="#6c757d">
+        {useMemo(() => {
+          const sorted = _.orderBy(Array.from(ghosts.items.values()), [
+            'med',
+            'd',
+          ]);
+
+          // console.log(sorted);
+          x.domain(_.map(sorted, 'id'));
+          const domain = d3.extent<number>(_.map(sorted, 'd')) as [
+            number,
+            number
+          ];
+          y.domain(domain);
+          return _.map(sorted, (datum) => (
+            <Ghost key={datum.id} datum={datum} />
+          ));
+        }, [ghosts.items])}
       </g>
     </svg>
   );
 };
 
+export const Ghost: React.FC<{ datum: RelationEvent }> = function ({ datum }) {
+  return (
+    <g
+      transform={`rotate(${
+        ((x(datum.id)! + x.bandwidth() / 2) * 180) / Math.PI + 90
+      })translate(200,0)`}
+    >
+      <circle r={5}></circle>
+      <rect x={6} y={-2.5} height={5} width={y(datum.d)}></rect>
+    </g>
+  );
+};
+
 export const RelationLinks: React.FC<any> = function ({ datum }) {
   const $line = useRef<SVGLineElement>(null as any);
-
+  // on first render
   useEffect(function () {
-    ($line.current as any).__data__ = datum;
-    // on first render
+    // ($line.current as any).__data__ = datum; // cheating
+    const d3G = d3.select($line.current).datum(datum);
+
+    return () => {
+      d3G.datum(null); // cleaning because i'm a good boy
+    };
     // eslint-disable-next-line
   }, []);
+
   return <line ref={$line}></line>;
 };
 

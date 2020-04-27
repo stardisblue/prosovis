@@ -1,15 +1,15 @@
 import rawNodes from '../../data/actor-nodes.json';
 import rawLinks from '../../data/known_links.json';
-import { selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
+import { createSelectorCreator, defaultMemoize } from 'reselect';
 import {
   RelationEvent,
   ActorRelationsMap,
   RelationNode,
   RawRelationLink,
 } from './models';
-
+import { selectMaskedEvents } from '../../selectors/mask';
 export type RelationType = {
   inners: Map<string, RelationEvent>; // link between actors
 
@@ -32,51 +32,65 @@ export type RelationType = {
   actors: Map<number, RelationNode>; // all people information ( actors)
 };
 
-export const selectRelations = createSelector(selectActors, (actors) => {
-  const defaultMap: RelationType = {
-    outers: new Map(),
-    inners: new Map(),
-    ghosts: new Map(),
-    actors: new Map(),
-  };
-  return _.transform(
-    rawLinks as RawRelationLink[],
-    (relations, raw) => {
-      if (_.some(raw.actors, (a) => actors[a] !== undefined)) {
-        const {
-          actors: [source, target],
-        } = raw;
+export const compareByKeySelector = createSelectorCreator(
+  defaultMemoize,
+  function (a, b) {
+    return _.isEqual(_.keys(a), _.keys(b));
+  }
+);
 
-        const link = {
-          id: raw.actors.join(':'),
-          source,
-          target,
-          loc: raw.loc,
-          events: raw.events,
-          d: raw.d,
-        };
+export const selectActorsFromMaskedEvents = createSelector(
+  selectMaskedEvents,
+  (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
+);
+export const selectRelations = compareByKeySelector(
+  selectActorsFromMaskedEvents,
+  (actors) => {
+    // console.log(actors);
+    const defaultMap: RelationType = {
+      outers: new Map(),
+      inners: new Map(),
+      ghosts: new Map(),
+      actors: new Map(),
+    };
+    return _.transform(
+      rawLinks as RawRelationLink[],
+      (relations, raw) => {
+        if (_.some(raw.actors, (a) => actors[a] !== undefined)) {
+          const {
+            actors: [source, target],
+            ...rest
+          } = raw;
 
-        if (actors[source] && actors[target]) {
-          // both are actors
-          if (!relations.actors.has(source))
-            relations.actors.set(source, _.get(rawNodes, source));
+          const link = {
+            id: raw.actors.join(':'),
+            source,
+            target,
+            ...rest,
+          };
 
-          if (!relations.actors.has(target))
-            relations.actors.set(target, _.get(rawNodes, target));
+          if (actors[source] && actors[target]) {
+            // both are actors
+            if (!relations.actors.has(source))
+              relations.actors.set(source, _.get(rawNodes, source));
 
-          relations.inners.set(link.id, link);
-        } else if (actors[source]) {
-          addRelation(relations, rawNodes, link);
-        } else if (actors[target]) {
-          link.source = target;
-          link.target = source;
-          addRelation(relations, rawNodes, link);
+            if (!relations.actors.has(target))
+              relations.actors.set(target, _.get(rawNodes, target));
+
+            relations.inners.set(link.id, link);
+          } else if (actors[source]) {
+            addRelation(relations, rawNodes, link);
+          } else if (actors[target]) {
+            link.source = target;
+            link.target = source;
+            addRelation(relations, rawNodes, link);
+          }
         }
-      }
-    },
-    defaultMap
-  );
-});
+      },
+      defaultMap
+    );
+  }
+);
 
 export function addRelation(
   map: RelationType,

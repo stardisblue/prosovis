@@ -2,7 +2,14 @@ import React, { useRef, useEffect, useMemo, useCallback } from 'react';
 import _ from 'lodash';
 
 import * as d3 from 'd3';
-import { LocEvents, RelationNode, ActorRelationsMap } from './models';
+import {
+  LocEvents,
+  RelationNode,
+  ActorRelationsMap,
+  RelationMap,
+} from './models';
+import { useFlatClick } from '../../hooks/useClick';
+import useHoverHighlight from '../../hooks/useHoverHighlight';
 const scale = d3.scaleSqrt().range([0, 3]);
 
 export const RelationNodes: React.FC<{
@@ -12,7 +19,10 @@ export const RelationNodes: React.FC<{
     count: Set<number>;
     items: ActorRelationsMap;
   };
-}> = function ({ datum, color, outers }) {
+  setGhosts: React.Dispatch<
+    React.SetStateAction<{ items: RelationMap; lock: boolean }>
+  >;
+}> = function ({ datum, color, outers, setGhosts }) {
   const $g = useRef<SVGCircleElement>(null as any);
   useEffect(function () {
     // ($g.current as any).__data__ = datum; // cheating
@@ -34,7 +44,7 @@ export const RelationNodes: React.FC<{
     [outers.items]
   );
 
-  console.log(arcs);
+  // console.log(arcs);
 
   const arc = useMemo(
     () =>
@@ -49,27 +59,56 @@ export const RelationNodes: React.FC<{
     <g ref={$g} fill={color ? color(datum.id) : '#6c757d'}>
       {/* <circle r={6} fill={color ? color(datum.id) : 'white'} /> */}
       {_.map(arcs, (a) => (
-        <PiePart key={a.data[0]} a={a} arc={arc} />
+        <PiePart key={a.data[0]} a={a} arc={arc} setGhosts={setGhosts} />
       ))}
     </g>
   );
 };
 
+export const emptyMap = { items: new Map(), lock: false };
 export const PiePart: React.FC<{
   a: d3.PieArcDatum<LocEvents>;
   arc: d3.Arc<any, d3.PieArcDatum<LocEvents>>;
-}> = function ({ arc, a }) {
+  setGhosts: React.Dispatch<
+    React.SetStateAction<{
+      items: RelationMap;
+      lock: boolean;
+    }>
+  >;
+}> = function ({ arc, a, setGhosts }) {
+  const handleClick = useCallback(() => {
+    setGhosts({ items: a.data[1], lock: true });
+  }, [a.data, setGhosts]);
+
+  const interactive = useMemo(
+    () =>
+      _.flatMap(
+        Array.from(a.data[1].values(), (v) =>
+          v.events.map((e) => ({ id: e, kind: 'Event' }))
+        )
+      ),
+    [a.data]
+  );
+
+  const hover = useHoverHighlight(interactive);
+
   const handleMouseEnter = useCallback(() => {
-    console.log(Array.from(a.data[1], ([k, v]) => v.target).sort());
-  }, [a.data]);
+    // console.log(Array.from(a.data[1], ([k, v]) => v).sort());
+    setGhosts((state) =>
+      !state.lock ? { items: a.data[1], lock: false } : state
+    );
+    hover.onMouseEnter();
+  }, [a.data, setGhosts, hover]);
 
   const handleMouseLeave = useCallback(() => {
-    // console.log(a.data);
-  }, []);
+    setGhosts((state) => (!state.lock ? emptyMap : state));
+    hover.onMouseLeave();
+  }, [setGhosts, hover]);
 
   return (
     <path
       d={arc(a)!}
+      {...useFlatClick(handleClick)}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     >

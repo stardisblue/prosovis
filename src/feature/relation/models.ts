@@ -12,6 +12,7 @@ export type RawRelationLink = {
   loc: number;
   events: number[];
   d: number;
+  med: number;
 };
 
 export type RelationEvent = {
