@@ -1,114 +1,52 @@
 import React, {
   useRef,
   useEffect,
-  useLayoutEffect,
   useState,
   useMemo,
+  useCallback,
 } from 'react';
 import * as d3 from 'd3';
-import rawNodes from '../../data/actor-nodes.json';
-import rawLinks from '../../data/known_links.json';
-import { selectActors } from '../../selectors/event';
 import { selectSwitchActorColor } from '../../selectors/switch';
 
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { useSelector } from 'react-redux';
-import { RelationNodes, RelationMap, RelationEvent } from './RelationNodes';
+import { RelationNodes } from './RelationNodes';
+import { selectRelations } from './selectRelations';
 
-type ActorRelationsMap = Map<number, RelationMap>;
-type RelationNode = {
-  kind: string;
-  id: number;
-  label: string;
-  uri: string;
-  url: string;
-};
+const selectNodes = createSelector(selectRelations, ({ actors }) => actors);
 
-const selectRelations = createSelector(selectActors, (actors) => {
-  return _.transform(
-    rawLinks,
-    (map, link) => {
-      const source = link.actors[0];
-      const target = link.actors[1];
-      if (actors[source] && actors[target]) {
-        map.inners.set(link.actors.join(':'), link);
-      } else if (actors[source]) {
-        addRelation(map, rawNodes, source, target, link.actors.join(':'), link);
-      } else if (actors[target]) {
-        addRelation(map, rawNodes, target, source, link.actors.join(':'), link);
-      }
-    },
-    {
-      outers: new Map<
-        number,
-        { count: Set<number>; items: ActorRelationsMap }
-      >(),
-      inners: new Map<string, RelationEvent>(),
-      actors: new Map<number, any>(),
-    }
-  );
-});
+const selectOuters = createSelector(selectRelations, ({ outers }) => outers);
 
-const selectNodes = createSelector(selectActors, (actors) => {
-  return _.map(actors, (a) => {
-    const node = _.get<RelationNode>(rawNodes, a.id as number);
-    return { id: node.id, data: node };
-  });
-});
+const selectLinks = createSelector(selectRelations, ({ inners }) => inners);
 
-function addRelation<N, Nodes>(
-  map: {
-    outers: Map<number, { count: Set<number>; items: ActorRelationsMap }>;
-    actors: Map<number, N>;
-  },
-  rawNodes: Nodes,
-  nodeId: number,
-  other: number,
-  linkId: string,
-  link: any
-) {
-  if (!map.outers.has(nodeId)) {
-    map.outers.set(nodeId, { count: new Set(), items: new Map() });
-  }
-  map.outers.get(nodeId)!.count.add(other);
-  const nodegroup = map.outers.get(nodeId)!.items;
-
-  if (!nodegroup.has(link.loc)) {
-    nodegroup.set(link.loc, new Map());
-  }
-
-  nodegroup.get(link.loc)!.set(linkId, link);
-
-  if (!map.actors.has(nodeId)) {
-    map.actors.set(nodeId, _.get(rawNodes, nodeId));
-  }
-}
-
-const selectLinks = createSelector(selectRelations, ({ inners }) => {
-  return Array.from(inners, ([key, value]) => ({
-    id: key,
-    source: value.actors[0],
-    target: value.actors[1],
-    data: value,
-  }));
-});
+const simulation = d3
+  .forceSimulation()
+  .force('charge', d3.forceManyBody().strength(-300))
+  .force(
+    'link',
+    d3
+      .forceLink()
+      .id((d: any) => d.id)
+      .distance(100)
+  )
+  // .force('center', d3.forceCenter())
+  .force('x', d3.forceX())
+  .force('y', d3.forceY());
 
 const Relation: React.FC = function () {
-  const $svg = useRef<SVGSVGElement>(null as any);
+  const $nodeGroup = useRef<SVGGElement>(null as any);
+  const $linkGroup = useRef<SVGGElement>(null as any);
   const [dims, setDims] = useState<DOMRect>();
   const nodes = useSelector(selectNodes);
   const links = useSelector(selectLinks);
-  const relations = useSelector(selectRelations);
+  const outers = useSelector(selectOuters);
   const color = useSelector(selectSwitchActorColor);
 
-  useEffect(() => {
-    console.log(relations);
-  }, [relations]);
-
-  useLayoutEffect(function () {
+  const $svg = useCallback(function (dom: SVGSVGElement | null) {
+    if (!dom) return;
     const handleResize = _.debounce(function () {
-      setDims($svg.current.getBoundingClientRect());
+      setDims(dom.getBoundingClientRect());
     }, 100);
 
     window.addEventListener('resize', handleResize);
@@ -125,38 +63,22 @@ const Relation: React.FC = function () {
   }>(null as any);
 
   useEffect(function () {
-    const svg = d3.select($svg.current);
+    simulation.on('tick', ticked);
+    const $links = $linkGroup.current.childNodes;
+    const $nodes = $nodeGroup.current.childNodes;
 
-    const simulation = d3
-      .forceSimulation()
-      .force('charge', d3.forceManyBody().strength(-1000))
-      .force(
-        'link',
-        d3
-          .forceLink()
-          .id((d: any) => d.id)
-          .distance(200)
-      )
-      .force('x', d3.forceX())
-      .force('y', d3.forceY())
-      .on('tick', ticked);
-
-    const linksNode: SVGGElement = svg.select<SVGGElement>('g.links').node()!;
-    let link: any = d3.selectAll(linksNode.childNodes as any);
-    const nodesNode: SVGGElement = svg.select<SVGGElement>('g.nodes').node()!;
-    let node: any = d3.selectAll(nodesNode.childNodes as any);
+    let link: any = d3.selectAll($links as any);
+    let node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
 
     updateRef.current = {
       nodes: function () {
-        node = d3.selectAll(nodesNode.childNodes as any);
-
-        console.log(node);
+        node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
         simulation.nodes(node.data());
         simulation.alpha(1).restart();
       },
 
       links: function () {
-        link = d3.selectAll(linksNode.childNodes as any);
+        link = d3.selectAll($links as any);
         (simulation.force('link') as any).links(link.data());
         simulation.alpha(1).restart();
       },
@@ -187,21 +109,23 @@ const Relation: React.FC = function () {
 
   const linkList = useMemo(
     () =>
-      _.map(links, (datum) => <RelationLinks key={datum.id} datum={datum} />),
+      Array.from(links, ([key, datum]) => (
+        <RelationLinks key={key} datum={datum} />
+      )),
     [links]
   );
 
   const nodeList = useMemo(
     () =>
-      _.map(nodes, (datum) => (
+      Array.from(nodes, ([key, datum]) => (
         <RelationNodes
-          key={datum.id}
+          key={key}
           datum={datum}
           color={color}
-          outers={relations.outers.get(datum.id)}
+          outers={outers.get(key)!}
         />
       )),
-    [nodes, color, relations.outers]
+    [nodes, color, outers]
   );
   return (
     <svg
@@ -213,10 +137,10 @@ const Relation: React.FC = function () {
         `${-dims.width / 2},${-dims.height / 2},${dims.width},${dims.height}`
       }
     >
-      <g className="links" stroke="#000" strokeWidth={1.5}>
+      <g ref={$linkGroup} stroke="#6c757d" strokeWidth={1.5}>
         {linkList}
       </g>
-      <g className="nodes" stroke="#fff" strokeWidth={1.5}>
+      <g ref={$nodeGroup} stroke="#fff" strokeWidth={1.5}>
         {nodeList}
       </g>
     </svg>
