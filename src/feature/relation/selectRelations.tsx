@@ -6,38 +6,61 @@ import { createSelectorCreator, defaultMemoize } from 'reselect';
 import {
   RelationEvent,
   ActorRelationsMap,
-  RelationNode,
+  RelationNodeType,
   RawRelationLink,
 } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
+
 export type RelationType = {
-  inners: Map<string, RelationEvent>; // link between actors
+  locLinks: Map<number, Map<string, RelationEvent>>;
+  links: Map<string, RelationEvent>; // link between actors
 
   /**
    * ```
    * { actorId => {
-   *   count: uniq_ghosts,
-   *   items: {
+   *   ghosts: uniq_ghosts,
+   *   locsLinks: {
    *     locId => { linkId => RelationLink }}}}
    * ```
    */
-  outers: Map<
-    number, // actorId
-    {
-      count: Set<number>; // number of unique ghosts
-      items: ActorRelationsMap; // links from actor to ghosts grouped by localisation
-    }
-  >;
-  ghosts: Map<number, RelationNode>;
-  actors: Map<number, RelationNode>; // all people information ( actors)
+  actorRing: Map<number, { ghosts: Set<number>; locsLinks: ActorRelationsMap }>;
+  ghosts: Map<number, RelationNodeType>;
+  actors: Map<number, RelationNodeType>; // all people information ( actors)
 };
 
-export const compareByKeySelector = createSelectorCreator(
-  defaultMemoize,
-  function (a, b) {
-    return _.isEqual(_.keys(a), _.keys(b));
+function addRelation(
+  relations: RelationType,
+  rawNodes: _.Dictionary<RelationNodeType>,
+  link: RelationEvent
+) {
+  let outer = relations.actorRing.get(link.source);
+  if (!outer) {
+    relations.actorRing.set(
+      link.source,
+      (outer = { ghosts: new Set(), locsLinks: new Map() })
+    );
   }
-);
+  outer.ghosts.add(link.target);
+
+  const locsLinks = outer.locsLinks;
+
+  let locLinks = locsLinks.get(link.loc);
+  if (!locLinks) locsLinks.set(link.loc, (locLinks = new Map()));
+  locLinks.set(link.id, link);
+
+  if (!relations.ghosts.has(link.target))
+    relations.ghosts.set(link.target, rawNodes[link.target]);
+
+  if (!relations.actors.has(link.source))
+    relations.actors.set(link.source, rawNodes[link.source]);
+}
+
+const compareByKeySelector = createSelectorCreator(defaultMemoize, function (
+  a,
+  b
+) {
+  return _.isEqual(_.keys(a), _.keys(b));
+});
 
 export const selectActorsFromMaskedEvents = createSelector(
   selectMaskedEvents,
@@ -45,23 +68,15 @@ export const selectActorsFromMaskedEvents = createSelector(
 );
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
-  (actors) => {
-    // console.log(actors);
-    const defaultMap: RelationType = {
-      outers: new Map(),
-      inners: new Map(),
-      ghosts: new Map(),
-      actors: new Map(),
-    };
-    return _.transform(
+  (actors) =>
+    _.transform(
       rawLinks as RawRelationLink[],
-      (relations, raw) => {
+      function (relations, raw) {
         if (_.some(raw.actors, (a) => actors[a] !== undefined)) {
           const {
             actors: [source, target],
             ...rest
           } = raw;
-
           const link = {
             id: raw.actors.join(':'),
             source,
@@ -73,11 +88,9 @@ export const selectRelations = compareByKeySelector(
             // both are actors
             if (!relations.actors.has(source))
               relations.actors.set(source, _.get(rawNodes, source));
-
             if (!relations.actors.has(target))
               relations.actors.set(target, _.get(rawNodes, target));
-
-            relations.inners.set(link.id, link);
+            relations.links.set(link.id, link);
           } else if (actors[source]) {
             addRelation(relations, rawNodes, link);
           } else if (actors[target]) {
@@ -85,35 +98,40 @@ export const selectRelations = compareByKeySelector(
             link.target = source;
             addRelation(relations, rawNodes, link);
           }
+
+          let l = relations.locLinks.get(link.loc);
+          if (!l) {
+            relations.locLinks.set(link.loc, (l = new Map()));
+          }
+          l.set(link.id, link);
         }
       },
-      defaultMap
-    );
-  }
+      {
+        locLinks: new Map(),
+        actorRing: new Map(),
+        links: new Map(),
+        ghosts: new Map(),
+        actors: new Map(),
+      } as RelationType
+    )
 );
 
-export function addRelation(
-  map: RelationType,
-  rawNodes: _.Dictionary<RelationNode>,
-  link: RelationEvent
-) {
-  let outer = map.outers.get(link.source);
-  if (!outer)
-    map.outers.set(
-      link.source,
-      (outer = { count: new Set(), items: new Map() })
-    );
-  outer.count.add(link.target);
+export const selectRelationNodes = createSelector(
+  selectRelations,
+  ({ actors }) => actors
+);
 
-  const nodegroup = map.outers.get(link.source)!.items;
+export const selectRelationActorRing = createSelector(
+  selectRelations,
+  ({ actorRing }) => actorRing
+);
 
-  let locs = nodegroup.get(link.loc);
-  if (!locs) nodegroup.set(link.loc, (locs = new Map()));
-  locs.set(link.id, link);
+export const selectRelationLinks = createSelector(
+  selectRelations,
+  ({ links: inners }) => inners
+);
 
-  if (!map.ghosts.has(link.target))
-    map.ghosts.set(link.target, rawNodes[link.target]);
-
-  if (!map.actors.has(link.source))
-    map.actors.set(link.source, rawNodes[link.source]);
-}
+export const selectRelationGhosts = createSelector(
+  selectRelations,
+  ({ ghosts }) => ghosts
+);
