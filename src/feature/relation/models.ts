@@ -22,6 +22,12 @@ export type RelationEvent = {
   loc: number;
   events: number[];
   d: number;
+  med: number;
 };
 export type RelationMap = Map<string, RelationEvent>;
 export type LocEvents = [number, RelationMap];
+
+export type Emphase = {
+  actor: number;
+  loc: number;
+};

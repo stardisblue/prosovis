@@ -13,7 +13,7 @@ import RelationNode from './node/RelationNode';
 import { selectRelationNodes, selectRelationLinks } from './selectRelations';
 import { clearRelationSelection, selectSelectedGhosts } from './selectionSlice';
 import useD3 from '../../hooks/useD3';
-import { RingLink } from './ring/RingLink';
+import { ActorRingLink } from './ring/ActorRingLink';
 import { RingNode } from './ring/RingNode';
 import { getSimulation } from './utils/simulation';
 import { selectSwitchActorColor } from '../../selectors/switch';
@@ -22,6 +22,7 @@ import {
   selectHighlightedGhosts,
   selectRelationEmphasis,
 } from './highlightSlice';
+import RingLink from './ring/RingLink';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -170,12 +171,22 @@ const Relation: React.FC = function () {
       <g ref={$ghostRingLinks} stroke="#ccc" strokeWidth={1.5}>
         {useMemo(
           () =>
-            Array.from(ghosts.links, ([key, datum]) => (
-              <RingLink key={key} datum={datum} x={x} data={ghosts.links} />
+            Array.from(ghosts.actorRingLinks, ([key, datum]) => (
+              <ActorRingLink key={key} datum={datum} x={x} />
             )),
-          [ghosts.links]
+          [ghosts.actorRingLinks]
         )}
       </g>
+      <g stroke="#ccc" fill="none">
+        {useMemo(
+          () =>
+            Array.from(ghosts.ringLinks, ([key, datum]) => (
+              <RingLink key={key} datum={datum} x={x} />
+            )),
+          [ghosts.ringLinks]
+        )}
+      </g>
+
       <g ref={$linkGroup} stroke="#6c757d" strokeWidth={1.5}>
         {useMemo(
           () =>
@@ -194,7 +205,7 @@ const Relation: React.FC = function () {
           [nodes]
         )}
       </g>
-      <g /*ref={$ghostRing}*/ fill={color || undefined}>
+      <g /*ref={$ghostRing}*/ fill={color || '#6c757d'}>
         {useMemo(() => {
           const sorted = _.orderBy(Array.from(ghosts.ghosts.values()), [
             'med',

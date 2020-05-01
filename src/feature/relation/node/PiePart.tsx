@@ -1,7 +1,7 @@
 import React, { useMemo, useCallback } from 'react';
 import _ from 'lodash';
 import { LocEvents } from '../models';
-import { useClickSelect, useFlatClick } from '../../../hooks/useClick';
+import { useFlatClick } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { useDispatch, useSelector } from 'react-redux';
 import { setRelationSelection } from '../selectionSlice';
