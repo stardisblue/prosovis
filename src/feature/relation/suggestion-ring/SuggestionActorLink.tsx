@@ -8,6 +8,7 @@ import { selectSwitchActorColor } from '../../../selectors/switch';
 import { line } from 'd3-shape';
 import { curveBundle } from 'd3-shape';
 import _ from 'lodash';
+import { selectIntersection } from './selectors';
 
 export const SuggestionActorLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
@@ -17,6 +18,9 @@ export const SuggestionActorLinks: React.FC<{
 }> = function ({ $g, links, nodes, x }) {
   const quarter = Math.floor(nodes.length / 4);
   const targets = _.map(nodes, 'target');
+
+  const active = useSelector(selectIntersection);
+  console.log(active);
 
   const clusters = _(Array.from(links.values()))
     .groupBy('source')
@@ -90,6 +94,8 @@ export const SuggestionActorLink: React.FC<{
   const color = useSelector(selectSwitchActorColor);
   // const { locLinks } = useSelector(selectRelations);
   // const activeRelation = useSelector(selectRelationSelection);
+  const active = useSelector(selectIntersection);
+  // if (active) console.log(active);
 
   const nodes = useSelector(selectRelationNodes);
 
@@ -112,6 +118,7 @@ export const SuggestionActorLink: React.FC<{
       d={path(points)!}
       style={{ mixBlendMode: 'multiply' }}
       stroke={color ? color(datum.source) : undefined}
+      opacity={!active ? 1 : active.actor === datum.source ? 1 : 0.5}
       // fill="none"
       // stroke="#ccc"
     />

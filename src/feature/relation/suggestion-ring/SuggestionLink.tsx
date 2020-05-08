@@ -7,7 +7,7 @@ import { RelationEvent } from '../models';
 // import _ from 'lodash';
 import { line, curveBundle } from 'd3-shape';
 
-const path = line().curve(curveBundle.beta(0.75));
+const path = line().curve(curveBundle.beta(1));
 
 export const SuggestionLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
