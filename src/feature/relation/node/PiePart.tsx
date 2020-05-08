@@ -10,6 +10,7 @@ import {
   clearRelationHighligh,
   selectRelationEmphasis,
 } from '../highlightSlice';
+
 export const PiePart: React.FC<{
   a: d3.PieArcDatum<LocEvents>;
   arc: d3.Arc<any, d3.PieArcDatum<LocEvents>>;
@@ -33,7 +34,7 @@ export const PiePart: React.FC<{
   const hover = useHoverHighlight(interactive);
 
   const handleClick = useCallback(
-    (event: React.MouseEvent) => {
+    () => {
       dispatch(setRelationSelection({ actor: parent, loc: key }));
       // onClick(event);
     },

@@ -11,18 +11,11 @@ import _ from 'lodash';
 import { useSelector, useDispatch } from 'react-redux';
 import RelationNode from './node/RelationNode';
 import { selectRelationNodes, selectRelationLinks } from './selectRelations';
-import { clearRelationSelection, selectSelectedGhosts } from './selectionSlice';
+import { clearRelationSelection } from './selectionSlice';
 import useD3 from '../../hooks/useD3';
-import { ActorRingLink } from './ring/ActorRingLink';
-import { RingNode } from './ring/RingNode';
 import { getSimulation } from './utils/simulation';
-import { selectSwitchActorColor } from '../../selectors/switch';
-import { createSelector } from 'reselect';
-import {
-  selectHighlightedGhosts,
-  selectRelationEmphasis,
-} from './highlightSlice';
-import RingLink from './ring/RingLink';
+
+import SuggestionRing from './suggestion-ring/SuggestionRing';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -42,25 +35,8 @@ function useDimensions() {
   return { dims, $svg };
 }
 
-const x = d3.scaleBand<number>().range([0, 2 * Math.PI]);
-const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
-
 const simulation = getSimulation((d: any) => d.id);
-
-const selectActiveActorColor = createSelector(
-  selectSwitchActorColor,
-  selectRelationEmphasis,
-  (color, emph) => {
-    if (!color) return null;
-    if (emph) return color(emph.actor);
-  }
-);
-
-const selectDisplayedRing = createSelector(
-  selectSelectedGhosts,
-  selectHighlightedGhosts,
-  (sel, high) => (sel.ghosts.size > 0 ? sel : high)
-);
+const path = d3.line().curve(d3.curveBundle.beta(0.75));
 
 const Relation: React.FC = function () {
   const dispatch = useDispatch();
@@ -68,7 +44,7 @@ const Relation: React.FC = function () {
   const $nodeGroup = useRef<SVGGElement>(null as any);
   const $linkGroup = useRef<SVGGElement>(null as any);
   // const $ghostRing = useRef<SVGGElement>(null as any);
-  const $ghostRingLinks = useRef<SVGGElement>(null as any);
+  const $ringLinksGroup = useRef<SVGGElement>(null as any);
 
   const { dims, $svg } = useDimensions();
 
@@ -78,18 +54,20 @@ const Relation: React.FC = function () {
   const updateRef = useRef<{
     nodes: () => void;
     links: () => void;
-    ghostLinks: () => void;
+    ringLinks: () => void;
   }>(null as any);
 
   useEffect(function () {
     simulation.on('tick', ticked);
+
     const $links = $linkGroup.current.childNodes;
     const $nodes = $nodeGroup.current.childNodes;
-    const $ghostLinks = $ghostRingLinks.current.childNodes;
+    const ringLinks = $ringLinksGroup.current.childNodes;
 
     let link: any = d3.selectAll($links as any);
     let node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
-    let ghostLink = d3.selectAll($ghostLinks as any);
+    let ringLink = d3.selectAll(ringLinks as any);
+
     let nodeMap = new Map();
 
     updateRef.current = {
@@ -112,8 +90,8 @@ const Relation: React.FC = function () {
         >).links(link.data());
         simulation.alpha(1).restart();
       },
-      ghostLinks: function () {
-        ghostLink = d3.selectAll($ghostLinks as any);
+      ringLinks: function () {
+        ringLink = d3.selectAll(ringLinks as any);
       },
     };
 
@@ -126,9 +104,12 @@ const Relation: React.FC = function () {
         .attr('x2', (d: any) => d.target.x)
         .attr('y2', (d: any) => d.target.y);
 
-      ghostLink
-        .attr('x2', (d: any) => (nodeMap.get(d.source) as any)!.x)
-        .attr('y2', (d: any) => (nodeMap.get(d.source) as any)!.y);
+      ringLink.attr('d', ([d, points]: any) => {
+        const { x, y } = nodeMap.get(d.source) as any;
+
+        return path([[x, y], ...points]);
+      });
+      // .attr('y2', (d: any) => (nodeMap.get(d.source) as any)!.y);
     }
 
     return () => {
@@ -145,13 +126,6 @@ const Relation: React.FC = function () {
     updateRef.current.links();
   }, [links]);
 
-  const ghosts = useSelector(selectDisplayedRing);
-
-  useEffect(() => {
-    updateRef.current.ghostLinks();
-  }, [ghosts]);
-
-  const color = useSelector(selectActiveActorColor);
   const handleAwayClick = useCallback(
     () => dispatch(clearRelationSelection()),
     [dispatch]
@@ -168,24 +142,11 @@ const Relation: React.FC = function () {
       }
       onMouseUp={handleAwayClick}
     >
-      <g ref={$ghostRingLinks} stroke="#ccc" strokeWidth={1.5}>
-        {useMemo(
-          () =>
-            Array.from(ghosts.actorRingLinks, ([key, datum]) => (
-              <ActorRingLink key={key} datum={datum} x={x} />
-            )),
-          [ghosts.actorRingLinks]
-        )}
-      </g>
-      <g stroke="#ccc" fill="none">
-        {useMemo(
-          () =>
-            Array.from(ghosts.ringLinks, ([key, datum]) => (
-              <RingLink key={key} datum={datum} x={x} />
-            )),
-          [ghosts.ringLinks]
-        )}
-      </g>
+      <SuggestionRing
+        /*$nodes={$ghostRing}*/
+        $links={$ringLinksGroup}
+        updateLinkPosition={updateRef}
+      />
 
       <g ref={$linkGroup} stroke="#6c757d" strokeWidth={1.5}>
         {useMemo(
@@ -204,24 +165,6 @@ const Relation: React.FC = function () {
             )),
           [nodes]
         )}
-      </g>
-      <g /*ref={$ghostRing}*/ fill={color || '#6c757d'}>
-        {useMemo(() => {
-          const sorted = _.orderBy(Array.from(ghosts.ghosts.values()), [
-            'med',
-            'd',
-          ]);
-
-          x.domain(_.map(sorted, 'target'));
-          const domain = d3.extent<number>(_.map(sorted, 'd')) as [
-            number,
-            number
-          ];
-          y.domain(domain);
-          return _.map(sorted, (datum) => (
-            <RingNode key={datum.target} datum={datum} x={x} y={y} />
-          ));
-        }, [ghosts.ghosts])}
       </g>
     </svg>
   );

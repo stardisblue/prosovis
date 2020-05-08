@@ -3,12 +3,7 @@ import rawLinks from '../../data/known_links.json';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import {
-  RelationEvent,
-  ActorRelationsMap,
-  RelationNodeType,
-  RawRelationLink,
-} from './models';
+import { RelationEvent, ActorRelationsMap, RelationNodeType } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
 
 export type RelationType = {
@@ -66,24 +61,28 @@ export const selectActorsFromMaskedEvents = createSelector(
   selectMaskedEvents,
   (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
+
+const links: RelationEvent[] = _.map(
+  rawLinks,
+  ({ actors, loc, events, d, med }) => ({
+    id: actors.join(':'),
+    source: actors[0],
+    target: actors[1],
+    loc,
+    events,
+    d,
+    med,
+  })
+);
+
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
   (actors) =>
     _.transform(
-      rawLinks as RawRelationLink[],
-      function (relations, raw) {
-        if (_.some(raw.actors, (a) => actors[a] !== undefined)) {
-          const {
-            actors: [source, target],
-            ...rest
-          } = raw;
-          const link = {
-            id: raw.actors.join(':'),
-            source,
-            target,
-            ...rest,
-          };
-
+      links,
+      function (relations, link) {
+        const { source, target } = link;
+        if (actors[source] || actors[target]) {
           if (actors[source] && actors[target]) {
             // both are actors
             if (!relations.actors.has(source))
@@ -94,17 +93,19 @@ export const selectRelations = compareByKeySelector(
           } else if (actors[source]) {
             addRelation(relations, rawNodes, link);
           } else if (actors[target]) {
+            link = { ...link };
             link.source = target;
             link.target = source;
             addRelation(relations, rawNodes, link);
           }
-
-          let l = relations.locLinks.get(link.loc);
-          if (!l) {
-            relations.locLinks.set(link.loc, (l = new Map()));
-          }
-          l.set(link.id, link);
         }
+
+        // TODO should be all links.
+        let l = relations.locLinks.get(link.loc);
+        if (!l) {
+          relations.locLinks.set(link.loc, (l = new Map()));
+        }
+        l.set(link.id, link);
       },
       {
         locLinks: new Map(),
@@ -128,7 +129,7 @@ export const selectRelationActorRing = createSelector(
 
 export const selectRelationLinks = createSelector(
   selectRelations,
-  ({ links: inners }) => inners
+  ({ links }) => links
 );
 
 export const selectRelationGhosts = createSelector(

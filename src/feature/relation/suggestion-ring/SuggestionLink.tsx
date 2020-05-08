@@ -3,16 +3,29 @@ import { toCartesian } from '../../../utils';
 import useD3 from '../../../hooks/useD3';
 // import { selectRelationNodes } from '../selectRelations';
 // import { useSelector } from 'react-redux';
-import { ScaleBand } from 'd3-scale';
 import { RelationEvent } from '../models';
 // import _ from 'lodash';
-import * as d3 from 'd3-shape';
+import { line, curveBundle } from 'd3-shape';
 
-const path = d3.line().curve(d3.curveBundle.beta(0.75));
+const path = line().curve(curveBundle.beta(0.75));
 
-export const RingLink: React.FC<{
+export const SuggestionLinks: React.FC<{
+  $g?: React.MutableRefObject<SVGGElement>;
+  links: any;
+  x: d3.ScalePoint<number>;
+}> = function ({ $g, links, x }) {
+  return (
+    <g ref={$g} stroke="#bbb" fill="none">
+      {Array.from(links, ([key, datum]) => (
+        <SuggestionLink key={key} datum={datum} x={x} />
+      ))}
+    </g>
+  );
+};
+
+export const SuggestionLink: React.FC<{
   datum: RelationEvent;
-  x: ScaleBand<number>;
+  x: d3.ScalePoint<number>;
 }> = function ({ datum, x }) {
   // const { locLinks } = useSelector(selectRelations);
   // const activeRelation = useSelector(selectRelationSelection);
@@ -41,21 +54,11 @@ export const RingLink: React.FC<{
           [x2, y2],
         ])!
       }
-      style={{ mixBlendMode: 'darken' }}
+      style={{ mixBlendMode: 'multiply' }}
       // fill="none"
       // stroke="#ccc"
     />
-    // <line
-    //   style={{ mixBlendMode: 'darken' }}
-    //   ref={$line}
-    //   x1={x1}
-    //   y1={y1}
-    //   x2={x2}
-    //   y2={y2}
-    //   // strokeWidth={activeRelation!.actor === datum.source ? 2 : 1}
-    //   // opacity={activeRelation!.actor === datum.source ? 1 : 0.5}
-    // />
   );
 };
 
-export default RingLink;
+export default SuggestionLink;

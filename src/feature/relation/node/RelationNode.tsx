@@ -41,7 +41,7 @@ export const RelationNode: React.FC<{
 
   return (
     <g ref={$g} fill={color ? color(datum.id) : '#6c757d'}>
-      {/* <circle r={6} fill={color ? color(datum.id) : 'white'} /> */}
+      <circle r={scale(ghosts.size)} fill={'white'} />
       {_.map(arcs, (a) => (
         <PiePart key={a.data[0]} parent={datum.id} a={a} arc={arc} />
       ))}
