@@ -1,23 +1,14 @@
 import React, { useEffect } from 'react';
 import { SuggestionNodes } from './SuggestionNode';
-import { scalePoint } from 'd3-scale';
+import { scaleBand } from 'd3-scale';
 import { SuggestionActorLinks } from './SuggestionActorLink';
 import { SuggestionLinks } from './SuggestionLink';
 import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
-import { selectSelectedGhosts } from '../selectionSlice';
-import {
-  selectHighlightedGhosts,
-  selectRelationEmphasis,
-} from '../highlightSlice';
+import { selectRelationEmphasis } from '../highlightSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-
-const selectDisplayedRing = createSelector(
-  selectSelectedGhosts,
-  selectHighlightedGhosts,
-  (sel, high) => (sel.ghosts.size > 0 ? sel : high)
-);
+import { selectSortedGhosts, selectDisplayedActorRingLinks } from './selectors';
 
 const selectActiveActorColor = createSelector(
   selectSwitchActorColor,
@@ -28,7 +19,9 @@ const selectActiveActorColor = createSelector(
   }
 );
 
-const x = scalePoint<number>().range([0, 2 * Math.PI]);
+const xBand = scaleBand<number>().range([0, 2 * Math.PI]);
+
+const x = (value: number) => xBand(value)! + (xBand.bandwidth() - Math.PI) / 2;
 
 export const SuggestionRing: React.FC<{
   $nodes?: React.MutableRefObject<SVGGElement>;
@@ -45,27 +38,19 @@ export const SuggestionRing: React.FC<{
 }) {
   const color = useSelector(selectActiveActorColor);
 
-  const { ghosts, ringLinks, actorRingLinks } = useSelector(
-    selectDisplayedRing
-  );
+  const sorted = useSelector(selectSortedGhosts);
+  xBand.domain(_.map(sorted, 'target'));
 
+  const actorRingLinks = useSelector(selectDisplayedActorRingLinks);
   useEffect(() => {
     if (updateLinkPosition.current) updateLinkPosition.current.ringLinks();
   }, [actorRingLinks, updateLinkPosition]);
 
-  const sorted = _.orderBy(Array.from(ghosts.values()), ['med', 'd']);
-  x.domain(_.map(sorted, 'target'));
-
   return (
     <g>
-      <SuggestionLinks links={ringLinks} x={x} />
-      <SuggestionActorLinks
-        $g={$links}
-        nodes={sorted}
-        links={actorRingLinks}
-        x={x}
-      />
-      <SuggestionNodes /*$g={$nodes}*/ color={color} sorted={sorted} x={x} />
+      <SuggestionLinks x={x} />
+      <SuggestionActorLinks $g={$links} x={x} />
+      <SuggestionNodes /*$g={$nodes}*/ color={color} x={x} />
     </g>
   );
 };

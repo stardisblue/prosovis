@@ -1,0 +1,3432 @@
+{
+  "91": {
+    "kind": "CollectiveActor",
+    "id": 91,
+    "label": "Collège de France",
+    "uri": "http://symogih.org/resource/CoAc91",
+    "url": "http://127.0.0.1:8000/api/collective-actor/91/?format=json"
+  },
+  "838": {
+    "kind": "NamedPlace",
+    "id": 838,
+    "label": "Bruxelles",
+    "uri": "http://symogih.org/resource/NaPl838",
+    "url": "http://127.0.0.1:8000/api/named-place/838/?format=json"
+  },
+  "847": {
+    "kind": "NamedPlace",
+    "id": 847,
+    "label": "Namur",
+    "uri": "http://symogih.org/resource/NaPl847",
+    "url": "http://127.0.0.1:8000/api/named-place/847/?format=json"
+  },
+  "1064": {
+    "kind": "NamedPlace",
+    "id": 1064,
+    "label": "Ruse",
+    "uri": "http://symogih.org/resource/NaPl1064",
+    "url": "http://127.0.0.1:8000/api/named-place/1064/?format=json"
+  },
+  "1424": {
+    "kind": "CollectiveActor",
+    "id": 1424,
+    "label": "Chausson Frères",
+    "uri": "http://symogih.org/resource/CoAc1424",
+    "url": "http://127.0.0.1:8000/api/collective-actor/1424/?format=json"
+  },
+  "1661": {
+    "kind": "NamedPlace",
+    "id": 1661,
+    "label": "Agen",
+    "uri": "http://symogih.org/resource/NaPl1661",
+    "url": "http://127.0.0.1:8000/api/named-place/1661/?format=json"
+  },
+  "1664": {
+    "kind": "NamedPlace",
+    "id": 1664,
+    "label": "Aix-en-Provence",
+    "uri": "http://symogih.org/resource/NaPl1664",
+    "url": "http://127.0.0.1:8000/api/named-place/1664/?format=json"
+  },
+  "1668": {
+    "kind": "NamedPlace",
+    "id": 1668,
+    "label": "Albertville",
+    "uri": "http://symogih.org/resource/NaPl1668",
+    "url": "http://127.0.0.1:8000/api/named-place/1668/?format=json"
+  },
+  "1669": {
+    "kind": "NamedPlace",
+    "id": 1669,
+    "label": "Albi",
+    "uri": "http://symogih.org/resource/NaPl1669",
+    "url": "http://127.0.0.1:8000/api/named-place/1669/?format=json"
+  },
+  "1670": {
+    "kind": "NamedPlace",
+    "id": 1670,
+    "label": "Alençon",
+    "uri": "http://symogih.org/resource/NaPl1670",
+    "url": "http://127.0.0.1:8000/api/named-place/1670/?format=json"
+  },
+  "1671": {
+    "kind": "NamedPlace",
+    "id": 1671,
+    "label": "Alès",
+    "uri": "http://symogih.org/resource/NaPl1671",
+    "url": "http://127.0.0.1:8000/api/named-place/1671/?format=json"
+  },
+  "1681": {
+    "kind": "NamedPlace",
+    "id": 1681,
+    "label": "Angoulême",
+    "uri": "http://symogih.org/resource/NaPl1681",
+    "url": "http://127.0.0.1:8000/api/named-place/1681/?format=json"
+  },
+  "1682": {
+    "kind": "NamedPlace",
+    "id": 1682,
+    "label": "Annecy",
+    "uri": "http://symogih.org/resource/NaPl1682",
+    "url": "http://127.0.0.1:8000/api/named-place/1682/?format=json"
+  },
+  "1690": {
+    "kind": "NamedPlace",
+    "id": 1690,
+    "label": "Arras",
+    "uri": "http://symogih.org/resource/NaPl1690",
+    "url": "http://127.0.0.1:8000/api/named-place/1690/?format=json"
+  },
+  "1696": {
+    "kind": "NamedPlace",
+    "id": 1696,
+    "label": "Auch",
+    "uri": "http://symogih.org/resource/NaPl1696",
+    "url": "http://127.0.0.1:8000/api/named-place/1696/?format=json"
+  },
+  "1699": {
+    "kind": "NamedPlace",
+    "id": 1699,
+    "label": "Auray",
+    "uri": "http://symogih.org/resource/NaPl1699",
+    "url": "http://127.0.0.1:8000/api/named-place/1699/?format=json"
+  },
+  "1701": {
+    "kind": "NamedPlace",
+    "id": 1701,
+    "label": "Autun",
+    "uri": "http://symogih.org/resource/NaPl1701",
+    "url": "http://127.0.0.1:8000/api/named-place/1701/?format=json"
+  },
+  "1702": {
+    "kind": "NamedPlace",
+    "id": 1702,
+    "label": "Auxerre",
+    "uri": "http://symogih.org/resource/NaPl1702",
+    "url": "http://127.0.0.1:8000/api/named-place/1702/?format=json"
+  },
+  "1707": {
+    "kind": "NamedPlace",
+    "id": 1707,
+    "label": "Baccarat",
+    "uri": "http://symogih.org/resource/NaPl1707",
+    "url": "http://127.0.0.1:8000/api/named-place/1707/?format=json"
+  },
+  "1708": {
+    "kind": "NamedPlace",
+    "id": 1708,
+    "label": "Bagnères de Bigorre",
+    "uri": "http://symogih.org/resource/NaPl1708",
+    "url": "http://127.0.0.1:8000/api/named-place/1708/?format=json"
+  },
+  "1718": {
+    "kind": "NamedPlace",
+    "id": 1718,
+    "label": "Baume-les-Dames",
+    "uri": "http://symogih.org/resource/NaPl1718",
+    "url": "http://127.0.0.1:8000/api/named-place/1718/?format=json"
+  },
+  "1719": {
+    "kind": "NamedPlace",
+    "id": 1719,
+    "label": "Bayonne",
+    "uri": "http://symogih.org/resource/NaPl1719",
+    "url": "http://127.0.0.1:8000/api/named-place/1719/?format=json"
+  },
+  "1724": {
+    "kind": "NamedPlace",
+    "id": 1724,
+    "label": "Beaune",
+    "uri": "http://symogih.org/resource/NaPl1724",
+    "url": "http://127.0.0.1:8000/api/named-place/1724/?format=json"
+  },
+  "1726": {
+    "kind": "NamedPlace",
+    "id": 1726,
+    "label": "Beauvais",
+    "uri": "http://symogih.org/resource/NaPl1726",
+    "url": "http://127.0.0.1:8000/api/named-place/1726/?format=json"
+  },
+  "1728": {
+    "kind": "NamedPlace",
+    "id": 1728,
+    "label": "Belley",
+    "uri": "http://symogih.org/resource/NaPl1728",
+    "url": "http://127.0.0.1:8000/api/named-place/1728/?format=json"
+  },
+  "1729": {
+    "kind": "NamedPlace",
+    "id": 1729,
+    "label": "Bergerac",
+    "uri": "http://symogih.org/resource/NaPl1729",
+    "url": "http://127.0.0.1:8000/api/named-place/1729/?format=json"
+  },
+  "1732": {
+    "kind": "NamedPlace",
+    "id": 1732,
+    "label": "Besançon",
+    "uri": "http://symogih.org/resource/NaPl1732",
+    "url": "http://127.0.0.1:8000/api/named-place/1732/?format=json"
+  },
+  "1733": {
+    "kind": "NamedPlace",
+    "id": 1733,
+    "label": "Béziers",
+    "uri": "http://symogih.org/resource/NaPl1733",
+    "url": "http://127.0.0.1:8000/api/named-place/1733/?format=json"
+  },
+  "1737": {
+    "kind": "NamedPlace",
+    "id": 1737,
+    "label": "Blois",
+    "uri": "http://symogih.org/resource/NaPl1737",
+    "url": "http://127.0.0.1:8000/api/named-place/1737/?format=json"
+  },
+  "1742": {
+    "kind": "NamedPlace",
+    "id": 1742,
+    "label": "Bordeaux",
+    "uri": "http://symogih.org/resource/NaPl1742",
+    "url": "http://127.0.0.1:8000/api/named-place/1742/?format=json"
+  },
+  "1745": {
+    "kind": "NamedPlace",
+    "id": 1745,
+    "label": "Bourbonne-les-Bains",
+    "uri": "http://symogih.org/resource/NaPl1745",
+    "url": "http://127.0.0.1:8000/api/named-place/1745/?format=json"
+  },
+  "1748": {
+    "kind": "NamedPlace",
+    "id": 1748,
+    "label": "Bourges",
+    "uri": "http://symogih.org/resource/NaPl1748",
+    "url": "http://127.0.0.1:8000/api/named-place/1748/?format=json"
+  },
+  "1754": {
+    "kind": "NamedPlace",
+    "id": 1754,
+    "label": "Brest",
+    "uri": "http://symogih.org/resource/NaPl1754",
+    "url": "http://127.0.0.1:8000/api/named-place/1754/?format=json"
+  },
+  "1762": {
+    "kind": "NamedPlace",
+    "id": 1762,
+    "label": "Cadenet",
+    "uri": "http://symogih.org/resource/NaPl1762",
+    "url": "http://127.0.0.1:8000/api/named-place/1762/?format=json"
+  },
+  "1763": {
+    "kind": "NamedPlace",
+    "id": 1763,
+    "label": "Caen",
+    "uri": "http://symogih.org/resource/NaPl1763",
+    "url": "http://127.0.0.1:8000/api/named-place/1763/?format=json"
+  },
+  "1765": {
+    "kind": "NamedPlace",
+    "id": 1765,
+    "label": "Cahors",
+    "uri": "http://symogih.org/resource/NaPl1765",
+    "url": "http://127.0.0.1:8000/api/named-place/1765/?format=json"
+  },
+  "1766": {
+    "kind": "NamedPlace",
+    "id": 1766,
+    "label": "Calais",
+    "uri": "http://symogih.org/resource/NaPl1766",
+    "url": "http://127.0.0.1:8000/api/named-place/1766/?format=json"
+  },
+  "1768": {
+    "kind": "NamedPlace",
+    "id": 1768,
+    "label": "Cambrai",
+    "uri": "http://symogih.org/resource/NaPl1768",
+    "url": "http://127.0.0.1:8000/api/named-place/1768/?format=json"
+  },
+  "1770": {
+    "kind": "NamedPlace",
+    "id": 1770,
+    "label": "Cannes",
+    "uri": "http://symogih.org/resource/NaPl1770",
+    "url": "http://127.0.0.1:8000/api/named-place/1770/?format=json"
+  },
+  "1772": {
+    "kind": "NamedPlace",
+    "id": 1772,
+    "label": "Carcassonne",
+    "uri": "http://symogih.org/resource/NaPl1772",
+    "url": "http://127.0.0.1:8000/api/named-place/1772/?format=json"
+  },
+  "1777": {
+    "kind": "NamedPlace",
+    "id": 1777,
+    "label": "Castelnaudary",
+    "uri": "http://symogih.org/resource/NaPl1777",
+    "url": "http://127.0.0.1:8000/api/named-place/1777/?format=json"
+  },
+  "1779": {
+    "kind": "NamedPlace",
+    "id": 1779,
+    "label": "Castres",
+    "uri": "http://symogih.org/resource/NaPl1779",
+    "url": "http://127.0.0.1:8000/api/named-place/1779/?format=json"
+  },
+  "1785": {
+    "kind": "NamedPlace",
+    "id": 1785,
+    "label": "Châlons-en-Champagne",
+    "uri": "http://symogih.org/resource/NaPl1785",
+    "url": "http://127.0.0.1:8000/api/named-place/1785/?format=json"
+  },
+  "1786": {
+    "kind": "NamedPlace",
+    "id": 1786,
+    "label": "Chalon-sur-Saône",
+    "uri": "http://symogih.org/resource/NaPl1786",
+    "url": "http://127.0.0.1:8000/api/named-place/1786/?format=json"
+  },
+  "1787": {
+    "kind": "NamedPlace",
+    "id": 1787,
+    "label": "Chambéry",
+    "uri": "http://symogih.org/resource/NaPl1787",
+    "url": "http://127.0.0.1:8000/api/named-place/1787/?format=json"
+  },
+  "1792": {
+    "kind": "NamedPlace",
+    "id": 1792,
+    "label": "Chartres",
+    "uri": "http://symogih.org/resource/NaPl1792",
+    "url": "http://127.0.0.1:8000/api/named-place/1792/?format=json"
+  },
+  "1793": {
+    "kind": "NamedPlace",
+    "id": 1793,
+    "label": "Châteauroux",
+    "uri": "http://symogih.org/resource/NaPl1793",
+    "url": "http://127.0.0.1:8000/api/named-place/1793/?format=json"
+  },
+  "1797": {
+    "kind": "NamedPlace",
+    "id": 1797,
+    "label": "Châteaubriant",
+    "uri": "http://symogih.org/resource/NaPl1797",
+    "url": "http://127.0.0.1:8000/api/named-place/1797/?format=json"
+  },
+  "1806": {
+    "kind": "NamedPlace",
+    "id": 1806,
+    "label": "Chatillon-sur-seine",
+    "uri": "http://symogih.org/resource/NaPl1806",
+    "url": "http://127.0.0.1:8000/api/named-place/1806/?format=json"
+  },
+  "1813": {
+    "kind": "NamedPlace",
+    "id": 1813,
+    "label": "Civray",
+    "uri": "http://symogih.org/resource/NaPl1813",
+    "url": "http://127.0.0.1:8000/api/named-place/1813/?format=json"
+  },
+  "1820": {
+    "kind": "NamedPlace",
+    "id": 1820,
+    "label": "Colmar",
+    "uri": "http://symogih.org/resource/NaPl1820",
+    "url": "http://127.0.0.1:8000/api/named-place/1820/?format=json"
+  },
+  "1822": {
+    "kind": "NamedPlace",
+    "id": 1822,
+    "label": "Compiègne",
+    "uri": "http://symogih.org/resource/NaPl1822",
+    "url": "http://127.0.0.1:8000/api/named-place/1822/?format=json"
+  },
+  "1824": {
+    "kind": "NamedPlace",
+    "id": 1824,
+    "label": "Condom",
+    "uri": "http://symogih.org/resource/NaPl1824",
+    "url": "http://127.0.0.1:8000/api/named-place/1824/?format=json"
+  },
+  "1836": {
+    "kind": "NamedPlace",
+    "id": 1836,
+    "label": "Crest",
+    "uri": "http://symogih.org/resource/NaPl1836",
+    "url": "http://127.0.0.1:8000/api/named-place/1836/?format=json"
+  },
+  "1844": {
+    "kind": "NamedPlace",
+    "id": 1844,
+    "label": "Dieuze",
+    "uri": "http://symogih.org/resource/NaPl1844",
+    "url": "http://127.0.0.1:8000/api/named-place/1844/?format=json"
+  },
+  "1846": {
+    "kind": "NamedPlace",
+    "id": 1846,
+    "label": "Dijon",
+    "uri": "http://symogih.org/resource/NaPl1846",
+    "url": "http://127.0.0.1:8000/api/named-place/1846/?format=json"
+  },
+  "1849": {
+    "kind": "NamedPlace",
+    "id": 1849,
+    "label": "Douai",
+    "uri": "http://symogih.org/resource/NaPl1849",
+    "url": "http://127.0.0.1:8000/api/named-place/1849/?format=json"
+  },
+  "1851": {
+    "kind": "NamedPlace",
+    "id": 1851,
+    "label": "Draguignan",
+    "uri": "http://symogih.org/resource/NaPl1851",
+    "url": "http://127.0.0.1:8000/api/named-place/1851/?format=json"
+  },
+  "1859": {
+    "kind": "NamedPlace",
+    "id": 1859,
+    "label": "Epernay",
+    "uri": "http://symogih.org/resource/NaPl1859",
+    "url": "http://127.0.0.1:8000/api/named-place/1859/?format=json"
+  },
+  "1860": {
+    "kind": "NamedPlace",
+    "id": 1860,
+    "label": "Épinal",
+    "uri": "http://symogih.org/resource/NaPl1860",
+    "url": "http://127.0.0.1:8000/api/named-place/1860/?format=json"
+  },
+  "1871": {
+    "kind": "NamedPlace",
+    "id": 1871,
+    "label": "Florac",
+    "uri": "http://symogih.org/resource/NaPl1871",
+    "url": "http://127.0.0.1:8000/api/named-place/1871/?format=json"
+  },
+  "1872": {
+    "kind": "NamedPlace",
+    "id": 1872,
+    "label": "Foix",
+    "uri": "http://symogih.org/resource/NaPl1872",
+    "url": "http://127.0.0.1:8000/api/named-place/1872/?format=json"
+  },
+  "1873": {
+    "kind": "NamedPlace",
+    "id": 1873,
+    "label": "Fontenay-le-Comte",
+    "uri": "http://symogih.org/resource/NaPl1873",
+    "url": "http://127.0.0.1:8000/api/named-place/1873/?format=json"
+  },
+  "1877": {
+    "kind": "NamedPlace",
+    "id": 1877,
+    "label": "Gap",
+    "uri": "http://symogih.org/resource/NaPl1877",
+    "url": "http://127.0.0.1:8000/api/named-place/1877/?format=json"
+  },
+  "1885": {
+    "kind": "NamedPlace",
+    "id": 1885,
+    "label": "Grasse",
+    "uri": "http://symogih.org/resource/NaPl1885",
+    "url": "http://127.0.0.1:8000/api/named-place/1885/?format=json"
+  },
+  "1887": {
+    "kind": "NamedPlace",
+    "id": 1887,
+    "label": "Gray",
+    "uri": "http://symogih.org/resource/NaPl1887",
+    "url": "http://127.0.0.1:8000/api/named-place/1887/?format=json"
+  },
+  "1888": {
+    "kind": "NamedPlace",
+    "id": 1888,
+    "label": "Grenoble",
+    "uri": "http://symogih.org/resource/NaPl1888",
+    "url": "http://127.0.0.1:8000/api/named-place/1888/?format=json"
+  },
+  "1907": {
+    "kind": "NamedPlace",
+    "id": 1907,
+    "label": "Jonzac",
+    "uri": "http://symogih.org/resource/NaPl1907",
+    "url": "http://127.0.0.1:8000/api/named-place/1907/?format=json"
+  },
+  "1914": {
+    "kind": "NamedPlace",
+    "id": 1914,
+    "label": "La Ciotat",
+    "uri": "http://symogih.org/resource/NaPl1914",
+    "url": "http://127.0.0.1:8000/api/named-place/1914/?format=json"
+  },
+  "1926": {
+    "kind": "NamedPlace",
+    "id": 1926,
+    "label": "La Roche-sur-Yon",
+    "uri": "http://symogih.org/resource/NaPl1926",
+    "url": "http://127.0.0.1:8000/api/named-place/1926/?format=json"
+  },
+  "1938": {
+    "kind": "NamedPlace",
+    "id": 1938,
+    "label": "Laon",
+    "uri": "http://symogih.org/resource/NaPl1938",
+    "url": "http://127.0.0.1:8000/api/named-place/1938/?format=json"
+  },
+  "1952": {
+    "kind": "NamedPlace",
+    "id": 1952,
+    "label": "Le Mans",
+    "uri": "http://symogih.org/resource/NaPl1952",
+    "url": "http://127.0.0.1:8000/api/named-place/1952/?format=json"
+  },
+  "1965": {
+    "kind": "NamedPlace",
+    "id": 1965,
+    "label": "Lesparre-Medoc",
+    "uri": "http://symogih.org/resource/NaPl1965",
+    "url": "http://127.0.0.1:8000/api/named-place/1965/?format=json"
+  },
+  "1970": {
+    "kind": "NamedPlace",
+    "id": 1970,
+    "label": "Libourne",
+    "uri": "http://symogih.org/resource/NaPl1970",
+    "url": "http://127.0.0.1:8000/api/named-place/1970/?format=json"
+  },
+  "1971": {
+    "kind": "NamedPlace",
+    "id": 1971,
+    "label": "Lille",
+    "uri": "http://symogih.org/resource/NaPl1971",
+    "url": "http://127.0.0.1:8000/api/named-place/1971/?format=json"
+  },
+  "1972": {
+    "kind": "NamedPlace",
+    "id": 1972,
+    "label": "Limoges",
+    "uri": "http://symogih.org/resource/NaPl1972",
+    "url": "http://127.0.0.1:8000/api/named-place/1972/?format=json"
+  },
+  "1987": {
+    "kind": "NamedPlace",
+    "id": 1987,
+    "label": "Loudun",
+    "uri": "http://symogih.org/resource/NaPl1987",
+    "url": "http://127.0.0.1:8000/api/named-place/1987/?format=json"
+  },
+  "1988": {
+    "kind": "NamedPlace",
+    "id": 1988,
+    "label": "Louhans",
+    "uri": "http://symogih.org/resource/NaPl1988",
+    "url": "http://127.0.0.1:8000/api/named-place/1988/?format=json"
+  },
+  "1992": {
+    "kind": "NamedPlace",
+    "id": 1992,
+    "label": "Lunéville",
+    "uri": "http://symogih.org/resource/NaPl1992",
+    "url": "http://127.0.0.1:8000/api/named-place/1992/?format=json"
+  },
+  "1994": {
+    "kind": "NamedPlace",
+    "id": 1994,
+    "label": "Lusignan",
+    "uri": "http://symogih.org/resource/NaPl1994",
+    "url": "http://127.0.0.1:8000/api/named-place/1994/?format=json"
+  },
+  "1998": {
+    "kind": "NamedPlace",
+    "id": 1998,
+    "label": "Lyon",
+    "uri": "http://symogih.org/resource/NaPl1998",
+    "url": "http://127.0.0.1:8000/api/named-place/1998/?format=json"
+  },
+  "2000": {
+    "kind": "NamedPlace",
+    "id": 2000,
+    "label": "Mâcon",
+    "uri": "http://symogih.org/resource/NaPl2000",
+    "url": "http://127.0.0.1:8000/api/named-place/2000/?format=json"
+  },
+  "2011": {
+    "kind": "NamedPlace",
+    "id": 2011,
+    "label": "Marmande",
+    "uri": "http://symogih.org/resource/NaPl2011",
+    "url": "http://127.0.0.1:8000/api/named-place/2011/?format=json"
+  },
+  "2012": {
+    "kind": "NamedPlace",
+    "id": 2012,
+    "label": "Marseille",
+    "uri": "http://symogih.org/resource/NaPl2012",
+    "url": "http://127.0.0.1:8000/api/named-place/2012/?format=json"
+  },
+  "2019": {
+    "kind": "NamedPlace",
+    "id": 2019,
+    "label": "Mayenne",
+    "uri": "http://symogih.org/resource/NaPl2019",
+    "url": "http://127.0.0.1:8000/api/named-place/2019/?format=json"
+  },
+  "2023": {
+    "kind": "NamedPlace",
+    "id": 2023,
+    "label": "Melle",
+    "uri": "http://symogih.org/resource/NaPl2023",
+    "url": "http://127.0.0.1:8000/api/named-place/2023/?format=json"
+  },
+  "2032": {
+    "kind": "NamedPlace",
+    "id": 2032,
+    "label": "Mirande",
+    "uri": "http://symogih.org/resource/NaPl2032",
+    "url": "http://127.0.0.1:8000/api/named-place/2032/?format=json"
+  },
+  "2033": {
+    "kind": "NamedPlace",
+    "id": 2033,
+    "label": "Mirebeau",
+    "uri": "http://symogih.org/resource/NaPl2033",
+    "url": "http://127.0.0.1:8000/api/named-place/2033/?format=json"
+  },
+  "2037": {
+    "kind": "NamedPlace",
+    "id": 2037,
+    "label": "Montauban",
+    "uri": "http://symogih.org/resource/NaPl2037",
+    "url": "http://127.0.0.1:8000/api/named-place/2037/?format=json"
+  },
+  "2039": {
+    "kind": "NamedPlace",
+    "id": 2039,
+    "label": "Montbéliard",
+    "uri": "http://symogih.org/resource/NaPl2039",
+    "url": "http://127.0.0.1:8000/api/named-place/2039/?format=json"
+  },
+  "2049": {
+    "kind": "NamedPlace",
+    "id": 2049,
+    "label": "Montpellier",
+    "uri": "http://symogih.org/resource/NaPl2049",
+    "url": "http://127.0.0.1:8000/api/named-place/2049/?format=json"
+  },
+  "2058": {
+    "kind": "NamedPlace",
+    "id": 2058,
+    "label": "Mulhouse",
+    "uri": "http://symogih.org/resource/NaPl2058",
+    "url": "http://127.0.0.1:8000/api/named-place/2058/?format=json"
+  },
+  "2062": {
+    "kind": "NamedPlace",
+    "id": 2062,
+    "label": "Nancy",
+    "uri": "http://symogih.org/resource/NaPl2062",
+    "url": "http://127.0.0.1:8000/api/named-place/2062/?format=json"
+  },
+  "2063": {
+    "kind": "NamedPlace",
+    "id": 2063,
+    "label": "Nantes",
+    "uri": "http://symogih.org/resource/NaPl2063",
+    "url": "http://127.0.0.1:8000/api/named-place/2063/?format=json"
+  },
+  "2064": {
+    "kind": "NamedPlace",
+    "id": 2064,
+    "label": "Narbonne",
+    "uri": "http://symogih.org/resource/NaPl2064",
+    "url": "http://127.0.0.1:8000/api/named-place/2064/?format=json"
+  },
+  "2069": {
+    "kind": "NamedPlace",
+    "id": 2069,
+    "label": "Nice",
+    "uri": "http://symogih.org/resource/NaPl2069",
+    "url": "http://127.0.0.1:8000/api/named-place/2069/?format=json"
+  },
+  "2070": {
+    "kind": "NamedPlace",
+    "id": 2070,
+    "label": "Nîmes",
+    "uri": "http://symogih.org/resource/NaPl2070",
+    "url": "http://127.0.0.1:8000/api/named-place/2070/?format=json"
+  },
+  "2071": {
+    "kind": "NamedPlace",
+    "id": 2071,
+    "label": "Niort",
+    "uri": "http://symogih.org/resource/NaPl2071",
+    "url": "http://127.0.0.1:8000/api/named-place/2071/?format=json"
+  },
+  "2077": {
+    "kind": "NamedPlace",
+    "id": 2077,
+    "label": "Orléans",
+    "uri": "http://symogih.org/resource/NaPl2077",
+    "url": "http://127.0.0.1:8000/api/named-place/2077/?format=json"
+  },
+  "2078": {
+    "kind": "NamedPlace",
+    "id": 2078,
+    "label": "Ornans",
+    "uri": "http://symogih.org/resource/NaPl2078",
+    "url": "http://127.0.0.1:8000/api/named-place/2078/?format=json"
+  },
+  "2085": {
+    "kind": "NamedPlace",
+    "id": 2085,
+    "label": "Paris",
+    "uri": "http://symogih.org/resource/NaPl2085",
+    "url": "http://127.0.0.1:8000/api/named-place/2085/?format=json"
+  },
+  "2086": {
+    "kind": "NamedPlace",
+    "id": 2086,
+    "label": "Parthenay",
+    "uri": "http://symogih.org/resource/NaPl2086",
+    "url": "http://127.0.0.1:8000/api/named-place/2086/?format=json"
+  },
+  "2087": {
+    "kind": "NamedPlace",
+    "id": 2087,
+    "label": "Pau",
+    "uri": "http://symogih.org/resource/NaPl2087",
+    "url": "http://127.0.0.1:8000/api/named-place/2087/?format=json"
+  },
+  "2088": {
+    "kind": "NamedPlace",
+    "id": 2088,
+    "label": "Périgueux",
+    "uri": "http://symogih.org/resource/NaPl2088",
+    "url": "http://127.0.0.1:8000/api/named-place/2088/?format=json"
+  },
+  "2089": {
+    "kind": "NamedPlace",
+    "id": 2089,
+    "label": "Pernes-les-Fontaines",
+    "uri": "http://symogih.org/resource/NaPl2089",
+    "url": "http://127.0.0.1:8000/api/named-place/2089/?format=json"
+  },
+  "2090": {
+    "kind": "NamedPlace",
+    "id": 2090,
+    "label": "Perpignan",
+    "uri": "http://symogih.org/resource/NaPl2090",
+    "url": "http://127.0.0.1:8000/api/named-place/2090/?format=json"
+  },
+  "2094": {
+    "kind": "NamedPlace",
+    "id": 2094,
+    "label": "Pont-Saint-Esprit",
+    "uri": "http://symogih.org/resource/NaPl2094",
+    "url": "http://127.0.0.1:8000/api/named-place/2094/?format=json"
+  },
+  "2095": {
+    "kind": "NamedPlace",
+    "id": 2095,
+    "label": "Poitiers",
+    "uri": "http://symogih.org/resource/NaPl2095",
+    "url": "http://127.0.0.1:8000/api/named-place/2095/?format=json"
+  },
+  "2115": {
+    "kind": "NamedPlace",
+    "id": 2115,
+    "label": "Quimper",
+    "uri": "http://symogih.org/resource/NaPl2115",
+    "url": "http://127.0.0.1:8000/api/named-place/2115/?format=json"
+  },
+  "2118": {
+    "kind": "NamedPlace",
+    "id": 2118,
+    "label": "Redon",
+    "uri": "http://symogih.org/resource/NaPl2118",
+    "url": "http://127.0.0.1:8000/api/named-place/2118/?format=json"
+  },
+  "2119": {
+    "kind": "NamedPlace",
+    "id": 2119,
+    "label": "Reims",
+    "uri": "http://symogih.org/resource/NaPl2119",
+    "url": "http://127.0.0.1:8000/api/named-place/2119/?format=json"
+  },
+  "2121": {
+    "kind": "NamedPlace",
+    "id": 2121,
+    "label": "Rennes",
+    "uri": "http://symogih.org/resource/NaPl2121",
+    "url": "http://127.0.0.1:8000/api/named-place/2121/?format=json"
+  },
+  "2123": {
+    "kind": "NamedPlace",
+    "id": 2123,
+    "label": "Revel",
+    "uri": "http://symogih.org/resource/NaPl2123",
+    "url": "http://127.0.0.1:8000/api/named-place/2123/?format=json"
+  },
+  "2126": {
+    "kind": "NamedPlace",
+    "id": 2126,
+    "label": "Ribérac",
+    "uri": "http://symogih.org/resource/NaPl2126",
+    "url": "http://127.0.0.1:8000/api/named-place/2126/?format=json"
+  },
+  "2140": {
+    "kind": "NamedPlace",
+    "id": 2140,
+    "label": "Rouen",
+    "uri": "http://symogih.org/resource/NaPl2140",
+    "url": "http://127.0.0.1:8000/api/named-place/2140/?format=json"
+  },
+  "2141": {
+    "kind": "NamedPlace",
+    "id": 2141,
+    "label": "Royan",
+    "uri": "http://symogih.org/resource/NaPl2141",
+    "url": "http://127.0.0.1:8000/api/named-place/2141/?format=json"
+  },
+  "2148": {
+    "kind": "NamedPlace",
+    "id": 2148,
+    "label": "Saint-Étienne",
+    "uri": "http://symogih.org/resource/NaPl2148",
+    "url": "http://127.0.0.1:8000/api/named-place/2148/?format=json"
+  },
+  "2151": {
+    "kind": "NamedPlace",
+    "id": 2151,
+    "label": "Saint-Jean-de-Maurienne",
+    "uri": "http://symogih.org/resource/NaPl2151",
+    "url": "http://127.0.0.1:8000/api/named-place/2151/?format=json"
+  },
+  "2169": {
+    "kind": "NamedPlace",
+    "id": 2169,
+    "label": "Saint Flour",
+    "uri": "http://symogih.org/resource/NaPl2169",
+    "url": "http://127.0.0.1:8000/api/named-place/2169/?format=json"
+  },
+  "2187": {
+    "kind": "NamedPlace",
+    "id": 2187,
+    "label": "Saint-Sever",
+    "uri": "http://symogih.org/resource/NaPl2187",
+    "url": "http://127.0.0.1:8000/api/named-place/2187/?format=json"
+  },
+  "2192": {
+    "kind": "NamedPlace",
+    "id": 2192,
+    "label": "Salins-les-bains",
+    "uri": "http://symogih.org/resource/NaPl2192",
+    "url": "http://127.0.0.1:8000/api/named-place/2192/?format=json"
+  },
+  "2195": {
+    "kind": "NamedPlace",
+    "id": 2195,
+    "label": "Sarlat-la-Caneda",
+    "uri": "http://symogih.org/resource/NaPl2195",
+    "url": "http://127.0.0.1:8000/api/named-place/2195/?format=json"
+  },
+  "2196": {
+    "kind": "NamedPlace",
+    "id": 2196,
+    "label": "Sarrebourg",
+    "uri": "http://symogih.org/resource/NaPl2196",
+    "url": "http://127.0.0.1:8000/api/named-place/2196/?format=json"
+  },
+  "2200": {
+    "kind": "NamedPlace",
+    "id": 2200,
+    "label": "Saumur",
+    "uri": "http://symogih.org/resource/NaPl2200",
+    "url": "http://127.0.0.1:8000/api/named-place/2200/?format=json"
+  },
+  "2202": {
+    "kind": "NamedPlace",
+    "id": 2202,
+    "label": "Sedan",
+    "uri": "http://symogih.org/resource/NaPl2202",
+    "url": "http://127.0.0.1:8000/api/named-place/2202/?format=json"
+  },
+  "2205": {
+    "kind": "NamedPlace",
+    "id": 2205,
+    "label": "Sens",
+    "uri": "http://symogih.org/resource/NaPl2205",
+    "url": "http://127.0.0.1:8000/api/named-place/2205/?format=json"
+  },
+  "2214": {
+    "kind": "NamedPlace",
+    "id": 2214,
+    "label": "Saint-Dié-des-Vosges",
+    "uri": "http://symogih.org/resource/NaPl2214",
+    "url": "http://127.0.0.1:8000/api/named-place/2214/?format=json"
+  },
+  "2215": {
+    "kind": "NamedPlace",
+    "id": 2215,
+    "label": "Saint-Lô",
+    "uri": "http://symogih.org/resource/NaPl2215",
+    "url": "http://127.0.0.1:8000/api/named-place/2215/?format=json"
+  },
+  "2216": {
+    "kind": "NamedPlace",
+    "id": 2216,
+    "label": "Saint-Quentin",
+    "uri": "http://symogih.org/resource/NaPl2216",
+    "url": "http://127.0.0.1:8000/api/named-place/2216/?format=json"
+  },
+  "2217": {
+    "kind": "NamedPlace",
+    "id": 2217,
+    "label": "Strasbourg",
+    "uri": "http://symogih.org/resource/NaPl2217",
+    "url": "http://127.0.0.1:8000/api/named-place/2217/?format=json"
+  },
+  "2218": {
+    "kind": "NamedPlace",
+    "id": 2218,
+    "label": "Surgères",
+    "uri": "http://symogih.org/resource/NaPl2218",
+    "url": "http://127.0.0.1:8000/api/named-place/2218/?format=json"
+  },
+  "2233": {
+    "kind": "NamedPlace",
+    "id": 2233,
+    "label": "Toulon",
+    "uri": "http://symogih.org/resource/NaPl2233",
+    "url": "http://127.0.0.1:8000/api/named-place/2233/?format=json"
+  },
+  "2234": {
+    "kind": "NamedPlace",
+    "id": 2234,
+    "label": "Toulouse",
+    "uri": "http://symogih.org/resource/NaPl2234",
+    "url": "http://127.0.0.1:8000/api/named-place/2234/?format=json"
+  },
+  "2235": {
+    "kind": "NamedPlace",
+    "id": 2235,
+    "label": "Tournon-sur-Rhône",
+    "uri": "http://symogih.org/resource/NaPl2235",
+    "url": "http://127.0.0.1:8000/api/named-place/2235/?format=json"
+  },
+  "2236": {
+    "kind": "NamedPlace",
+    "id": 2236,
+    "label": "Tournus",
+    "uri": "http://symogih.org/resource/NaPl2236",
+    "url": "http://127.0.0.1:8000/api/named-place/2236/?format=json"
+  },
+  "2237": {
+    "kind": "NamedPlace",
+    "id": 2237,
+    "label": "Tours",
+    "uri": "http://symogih.org/resource/NaPl2237",
+    "url": "http://127.0.0.1:8000/api/named-place/2237/?format=json"
+  },
+  "2239": {
+    "kind": "NamedPlace",
+    "id": 2239,
+    "label": "Troyes",
+    "uri": "http://symogih.org/resource/NaPl2239",
+    "url": "http://127.0.0.1:8000/api/named-place/2239/?format=json"
+  },
+  "2240": {
+    "kind": "NamedPlace",
+    "id": 2240,
+    "label": "Tulle",
+    "uri": "http://symogih.org/resource/NaPl2240",
+    "url": "http://127.0.0.1:8000/api/named-place/2240/?format=json"
+  },
+  "2244": {
+    "kind": "NamedPlace",
+    "id": 2244,
+    "label": "Uzès",
+    "uri": "http://symogih.org/resource/NaPl2244",
+    "url": "http://127.0.0.1:8000/api/named-place/2244/?format=json"
+  },
+  "2246": {
+    "kind": "NamedPlace",
+    "id": 2246,
+    "label": "Valenciennes",
+    "uri": "http://symogih.org/resource/NaPl2246",
+    "url": "http://127.0.0.1:8000/api/named-place/2246/?format=json"
+  },
+  "2249": {
+    "kind": "NamedPlace",
+    "id": 2249,
+    "label": "Vendôme",
+    "uri": "http://symogih.org/resource/NaPl2249",
+    "url": "http://127.0.0.1:8000/api/named-place/2249/?format=json"
+  },
+  "2250": {
+    "kind": "NamedPlace",
+    "id": 2250,
+    "label": "Verdun",
+    "uri": "http://symogih.org/resource/NaPl2250",
+    "url": "http://127.0.0.1:8000/api/named-place/2250/?format=json"
+  },
+  "2255": {
+    "kind": "NamedPlace",
+    "id": 2255,
+    "label": "Vichy",
+    "uri": "http://symogih.org/resource/NaPl2255",
+    "url": "http://127.0.0.1:8000/api/named-place/2255/?format=json"
+  },
+  "2265": {
+    "kind": "NamedPlace",
+    "id": 2265,
+    "label": "Voiron",
+    "uri": "http://symogih.org/resource/NaPl2265",
+    "url": "http://127.0.0.1:8000/api/named-place/2265/?format=json"
+  },
+  "3368": {
+    "kind": "NamedPlace",
+    "id": 3368,
+    "label": "Carrara",
+    "uri": "http://symogih.org/resource/NaPl3368",
+    "url": "http://127.0.0.1:8000/api/named-place/3368/?format=json"
+  },
+  "3596": {
+    "kind": "NamedPlace",
+    "id": 3596,
+    "label": "Naples",
+    "uri": "http://symogih.org/resource/NaPl3596",
+    "url": "http://127.0.0.1:8000/api/named-place/3596/?format=json"
+  },
+  "3697": {
+    "kind": "NamedPlace",
+    "id": 3697,
+    "label": "Roma",
+    "uri": "http://symogih.org/resource/NaPl3697",
+    "url": "http://127.0.0.1:8000/api/named-place/3697/?format=json"
+  },
+  "3794": {
+    "kind": "NamedPlace",
+    "id": 3794,
+    "label": "Torino",
+    "uri": "http://symogih.org/resource/NaPl3794",
+    "url": "http://127.0.0.1:8000/api/named-place/3794/?format=json"
+  },
+  "4255": {
+    "kind": "NamedPlace",
+    "id": 4255,
+    "label": "La Haye",
+    "uri": "http://symogih.org/resource/NaPl4255",
+    "url": "http://127.0.0.1:8000/api/named-place/4255/?format=json"
+  },
+  "9267": {
+    "kind": "CollectiveActor",
+    "id": 9267,
+    "label": "Ecole centrale des arts et manufactures (Paris)",
+    "uri": "http://symogih.org/resource/CoAc9267",
+    "url": "http://127.0.0.1:8000/api/collective-actor/9267/?format=json"
+  },
+  "9296": {
+    "kind": "CollectiveActor",
+    "id": 9296,
+    "label": "ENS (École Normale Supérieure)",
+    "uri": "http://symogih.org/resource/CoAc9296",
+    "url": "http://127.0.0.1:8000/api/collective-actor/9296/?format=json"
+  },
+  "10144": {
+    "kind": "CollectiveActor",
+    "id": 10144,
+    "label": "Sciences politiques (École libre des)",
+    "uri": "http://symogih.org/resource/CoAc10144",
+    "url": "http://127.0.0.1:8000/api/collective-actor/10144/?format=json"
+  },
+  "10734": {
+    "kind": "NamedPlace",
+    "id": 10734,
+    "label": "BERN",
+    "uri": "http://symogih.org/resource/NaPl10734",
+    "url": "http://127.0.0.1:8000/api/named-place/10734/?format=json"
+  },
+  "11397": {
+    "kind": "NamedPlace",
+    "id": 11397,
+    "label": "Odessa",
+    "uri": "http://symogih.org/resource/NaPl11397",
+    "url": "http://127.0.0.1:8000/api/named-place/11397/?format=json"
+  },
+  "12246": {
+    "kind": "NamedPlace",
+    "id": 12246,
+    "label": "Versailles",
+    "uri": "http://symogih.org/resource/NaPl12246",
+    "url": "http://127.0.0.1:8000/api/named-place/12246/?format=json"
+  },
+  "12248": {
+    "kind": "NamedPlace",
+    "id": 12248,
+    "label": "Montargis",
+    "uri": "http://symogih.org/resource/NaPl12248",
+    "url": "http://127.0.0.1:8000/api/named-place/12248/?format=json"
+  },
+  "12291": {
+    "kind": "NamedPlace",
+    "id": 12291,
+    "label": "Mens",
+    "uri": "http://symogih.org/resource/NaPl12291",
+    "url": "http://127.0.0.1:8000/api/named-place/12291/?format=json"
+  },
+  "12294": {
+    "kind": "NamedPlace",
+    "id": 12294,
+    "label": "Nevers",
+    "uri": "http://symogih.org/resource/NaPl12294",
+    "url": "http://127.0.0.1:8000/api/named-place/12294/?format=json"
+  },
+  "12313": {
+    "kind": "NamedPlace",
+    "id": 12313,
+    "label": "Vizille",
+    "uri": "http://symogih.org/resource/NaPl12313",
+    "url": "http://127.0.0.1:8000/api/named-place/12313/?format=json"
+  },
+  "12372": {
+    "kind": "NamedPlace",
+    "id": 12372,
+    "label": "Oullins",
+    "uri": "http://symogih.org/resource/NaPl12372",
+    "url": "http://127.0.0.1:8000/api/named-place/12372/?format=json"
+  },
+  "12392": {
+    "kind": "NamedPlace",
+    "id": 12392,
+    "label": "Saverne",
+    "uri": "http://symogih.org/resource/NaPl12392",
+    "url": "http://127.0.0.1:8000/api/named-place/12392/?format=json"
+  },
+  "12421": {
+    "kind": "NamedPlace",
+    "id": 12421,
+    "label": "Genève",
+    "uri": "http://symogih.org/resource/NaPl12421",
+    "url": "http://127.0.0.1:8000/api/named-place/12421/?format=json"
+  },
+  "12439": {
+    "kind": "CollectiveActor",
+    "id": 12439,
+    "label": "Université de Caen",
+    "uri": "http://symogih.org/resource/CoAc12439",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12439/?format=json"
+  },
+  "12491": {
+    "kind": "CollectiveActor",
+    "id": 12491,
+    "label": "Collège Louis-le-Grand (Paris)",
+    "uri": "http://symogih.org/resource/CoAc12491",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12491/?format=json"
+  },
+  "12528": {
+    "kind": "CollectiveActor",
+    "id": 12528,
+    "label": "Université de Toulouse",
+    "uri": "http://symogih.org/resource/CoAc12528",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12528/?format=json"
+  },
+  "12531": {
+    "kind": "CollectiveActor",
+    "id": 12531,
+    "label": "Faculté de droit de Toulouse",
+    "uri": "http://symogih.org/resource/CoAc12531",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12531/?format=json"
+  },
+  "12706": {
+    "kind": "NamedPlace",
+    "id": 12706,
+    "label": "Molsheim",
+    "uri": "http://symogih.org/resource/NaPl12706",
+    "url": "http://127.0.0.1:8000/api/named-place/12706/?format=json"
+  },
+  "12825": {
+    "kind": "CollectiveActor",
+    "id": 12825,
+    "label": "Université d'Aix-en-Provence",
+    "uri": "http://symogih.org/resource/CoAc12825",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12825/?format=json"
+  },
+  "12829": {
+    "kind": "CollectiveActor",
+    "id": 12829,
+    "label": "Université de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc12829",
+    "url": "http://127.0.0.1:8000/api/collective-actor/12829/?format=json"
+  },
+  "13127": {
+    "kind": "CollectiveActor",
+    "id": 13127,
+    "label": "Université de Bologne",
+    "uri": "http://symogih.org/resource/CoAc13127",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13127/?format=json"
+  },
+  "13319": {
+    "kind": "CollectiveActor",
+    "id": 13319,
+    "label": "Faculté de droit de Paris",
+    "uri": "http://symogih.org/resource/CoAc13319",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13319/?format=json"
+  },
+  "13366": {
+    "kind": "CollectiveActor",
+    "id": 13366,
+    "label": "Faculté de droit de Caen",
+    "uri": "http://symogih.org/resource/CoAc13366",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13366/?format=json"
+  },
+  "13367": {
+    "kind": "CollectiveActor",
+    "id": 13367,
+    "label": "Faculté de droit de Poitiers",
+    "uri": "http://symogih.org/resource/CoAc13367",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13367/?format=json"
+  },
+  "13561": {
+    "kind": "CollectiveActor",
+    "id": 13561,
+    "label": "Faculté de droit de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc13561",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13561/?format=json"
+  },
+  "13562": {
+    "kind": "CollectiveActor",
+    "id": 13562,
+    "label": "Faculté de droit d'Aix-en-Provence",
+    "uri": "http://symogih.org/resource/CoAc13562",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13562/?format=json"
+  },
+  "13627": {
+    "kind": "CollectiveActor",
+    "id": 13627,
+    "label": "Faculté de droit de Dijon",
+    "uri": "http://symogih.org/resource/CoAc13627",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13627/?format=json"
+  },
+  "13628": {
+    "kind": "CollectiveActor",
+    "id": 13628,
+    "label": "Faculté de droit de Rennes",
+    "uri": "http://symogih.org/resource/CoAc13628",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13628/?format=json"
+  },
+  "13669": {
+    "kind": "CollectiveActor",
+    "id": 13669,
+    "label": "Faculté de médecine de Paris",
+    "uri": "http://symogih.org/resource/CoAc13669",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13669/?format=json"
+  },
+  "13771": {
+    "kind": "CollectiveActor",
+    "id": 13771,
+    "label": "Ecole nationale des Chartes",
+    "uri": "http://symogih.org/resource/CoAc13771",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13771/?format=json"
+  },
+  "13957": {
+    "kind": "CollectiveActor",
+    "id": 13957,
+    "label": "Faculté des lettres de Paris",
+    "uri": "http://symogih.org/resource/CoAc13957",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13957/?format=json"
+  },
+  "13964": {
+    "kind": "CollectiveActor",
+    "id": 13964,
+    "label": "Université de Nancy",
+    "uri": "http://symogih.org/resource/CoAc13964",
+    "url": "http://127.0.0.1:8000/api/collective-actor/13964/?format=json"
+  },
+  "14237": {
+    "kind": "CollectiveActor",
+    "id": 14237,
+    "label": "Faculté de droit de Lille",
+    "uri": "http://symogih.org/resource/CoAc14237",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14237/?format=json"
+  },
+  "14238": {
+    "kind": "CollectiveActor",
+    "id": 14238,
+    "label": "Faculté de droit de Nancy",
+    "uri": "http://symogih.org/resource/CoAc14238",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14238/?format=json"
+  },
+  "14239": {
+    "kind": "CollectiveActor",
+    "id": 14239,
+    "label": "Faculté de droit de Grenoble",
+    "uri": "http://symogih.org/resource/CoAc14239",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14239/?format=json"
+  },
+  "14240": {
+    "kind": "CollectiveActor",
+    "id": 14240,
+    "label": "Faculté de droit de Lyon",
+    "uri": "http://symogih.org/resource/CoAc14240",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14240/?format=json"
+  },
+  "14241": {
+    "kind": "CollectiveActor",
+    "id": 14241,
+    "label": "Faculté de droit de Bordeaux",
+    "uri": "http://symogih.org/resource/CoAc14241",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14241/?format=json"
+  },
+  "14246": {
+    "kind": "CollectiveActor",
+    "id": 14246,
+    "label": "Académie de Lausanne",
+    "uri": "http://symogih.org/resource/CoAc14246",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14246/?format=json"
+  },
+  "14248": {
+    "kind": "CollectiveActor",
+    "id": 14248,
+    "label": "Faculté de droit d'Alger",
+    "uri": "http://symogih.org/resource/CoAc14248",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14248/?format=json"
+  },
+  "14254": {
+    "kind": "CollectiveActor",
+    "id": 14254,
+    "label": "Faculté de droit de Montpellier",
+    "uri": "http://symogih.org/resource/CoAc14254",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14254/?format=json"
+  },
+  "14511": {
+    "kind": "CollectiveActor",
+    "id": 14511,
+    "label": "Université Paris 2 (Panthéon-Assas)",
+    "uri": "http://symogih.org/resource/CoAc14511",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14511/?format=json"
+  },
+  "14726": {
+    "kind": "CollectiveActor",
+    "id": 14726,
+    "label": "Université Paris 1 (Panthéon-Sorbonne)",
+    "uri": "http://symogih.org/resource/CoAc14726",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14726/?format=json"
+  },
+  "14807": {
+    "kind": "CollectiveActor",
+    "id": 14807,
+    "label": "École supérieure de droit de Hanoï",
+    "uri": "http://symogih.org/resource/CoAc14807",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14807/?format=json"
+  },
+  "14808": {
+    "kind": "CollectiveActor",
+    "id": 14808,
+    "label": "École Khédiviale de droit du Caire",
+    "uri": "http://symogih.org/resource/CoAc14808",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14808/?format=json"
+  },
+  "14809": {
+    "kind": "CollectiveActor",
+    "id": 14809,
+    "label": "École française de droit du Caire",
+    "uri": "http://symogih.org/resource/CoAc14809",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14809/?format=json"
+  },
+  "14810": {
+    "kind": "CollectiveActor",
+    "id": 14810,
+    "label": "École française de droit de Beyrouth",
+    "uri": "http://symogih.org/resource/CoAc14810",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14810/?format=json"
+  },
+  "14811": {
+    "kind": "CollectiveActor",
+    "id": 14811,
+    "label": "École pratique des hautes études (EPHE)",
+    "uri": "http://symogih.org/resource/CoAc14811",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14811/?format=json"
+  },
+  "14842": {
+    "kind": "CollectiveActor",
+    "id": 14842,
+    "label": "Faculté des sciences de Marseille",
+    "uri": "http://symogih.org/resource/CoAc14842",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14842/?format=json"
+  },
+  "14843": {
+    "kind": "CollectiveActor",
+    "id": 14843,
+    "label": "Faculté de droit de Coblenz",
+    "uri": "http://symogih.org/resource/CoAc14843",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14843/?format=json"
+  },
+  "14844": {
+    "kind": "CollectiveActor",
+    "id": 14844,
+    "label": "Faculté des lettres de Poitiers",
+    "uri": "http://symogih.org/resource/CoAc14844",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14844/?format=json"
+  },
+  "14845": {
+    "kind": "CollectiveActor",
+    "id": 14845,
+    "label": "Université de Besançon (Ancien Régime)",
+    "uri": "http://symogih.org/resource/CoAc14845",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14845/?format=json"
+  },
+  "14854": {
+    "kind": "CollectiveActor",
+    "id": 14854,
+    "label": "Université de Rennes (Ancien Régime)",
+    "uri": "http://symogih.org/resource/CoAc14854",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14854/?format=json"
+  },
+  "14855": {
+    "kind": "CollectiveActor",
+    "id": 14855,
+    "label": "Université de Poitiers (Ancien Régime)",
+    "uri": "http://symogih.org/resource/CoAc14855",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14855/?format=json"
+  },
+  "14856": {
+    "kind": "CollectiveActor",
+    "id": 14856,
+    "label": "Université de Paris (Ancien Régime)",
+    "uri": "http://symogih.org/resource/CoAc14856",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14856/?format=json"
+  },
+  "14857": {
+    "kind": "CollectiveActor",
+    "id": 14857,
+    "label": "Faculté de théologie de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc14857",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14857/?format=json"
+  },
+  "14859": {
+    "kind": "CollectiveActor",
+    "id": 14859,
+    "label": "Académie de législation de Paris",
+    "uri": "http://symogih.org/resource/CoAc14859",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14859/?format=json"
+  },
+  "14860": {
+    "kind": "CollectiveActor",
+    "id": 14860,
+    "label": "Université de législation (Paris)",
+    "uri": "http://symogih.org/resource/CoAc14860",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14860/?format=json"
+  },
+  "14861": {
+    "kind": "CollectiveActor",
+    "id": 14861,
+    "label": "Faculté de droit d'Abidjan",
+    "uri": "http://symogih.org/resource/CoAc14861",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14861/?format=json"
+  },
+  "14862": {
+    "kind": "CollectiveActor",
+    "id": 14862,
+    "label": "Faculté de Droit et des Sciences Economiques de Dakar",
+    "uri": "http://symogih.org/resource/CoAc14862",
+    "url": "http://127.0.0.1:8000/api/collective-actor/14862/?format=json"
+  },
+  "15343": {
+    "kind": "CollectiveActor",
+    "id": 15343,
+    "label": "Faculté de pharmacie de Montpellier",
+    "uri": "http://symogih.org/resource/CoAc15343",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15343/?format=json"
+  },
+  "15344": {
+    "kind": "CollectiveActor",
+    "id": 15344,
+    "label": "Université de Valence",
+    "uri": "http://symogih.org/resource/CoAc15344",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15344/?format=json"
+  },
+  "15345": {
+    "kind": "CollectiveActor",
+    "id": 15345,
+    "label": "Faculté des lettres de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc15345",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15345/?format=json"
+  },
+  "15359": {
+    "kind": "CollectiveActor",
+    "id": 15359,
+    "label": "Académie protestante de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc15359",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15359/?format=json"
+  },
+  "15363": {
+    "kind": "CollectiveActor",
+    "id": 15363,
+    "label": "Faculté des lettres de Grenoble",
+    "uri": "http://symogih.org/resource/CoAc15363",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15363/?format=json"
+  },
+  "15378": {
+    "kind": "CollectiveActor",
+    "id": 15378,
+    "label": "Faculté des sciences de Lille",
+    "uri": "http://symogih.org/resource/CoAc15378",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15378/?format=json"
+  },
+  "15380": {
+    "kind": "CollectiveActor",
+    "id": 15380,
+    "label": "Faculté des lettres de Dijon",
+    "uri": "http://symogih.org/resource/CoAc15380",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15380/?format=json"
+  },
+  "15381": {
+    "kind": "CollectiveActor",
+    "id": 15381,
+    "label": "Faculté des lettres de Lille (faculté de lettres de Douai, 1808-1887)",
+    "uri": "http://symogih.org/resource/CoAc15381",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15381/?format=json"
+  },
+  "15382": {
+    "kind": "CollectiveActor",
+    "id": 15382,
+    "label": "Faculté des lettres de Lyon",
+    "uri": "http://symogih.org/resource/CoAc15382",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15382/?format=json"
+  },
+  "15383": {
+    "kind": "CollectiveActor",
+    "id": 15383,
+    "label": "Faculté des lettres de Montpellier",
+    "uri": "http://symogih.org/resource/CoAc15383",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15383/?format=json"
+  },
+  "15389": {
+    "kind": "CollectiveActor",
+    "id": 15389,
+    "label": "Kaiser-Wilhelms-Universität (Strasbourg)",
+    "uri": "http://symogih.org/resource/CoAc15389",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15389/?format=json"
+  },
+  "15396": {
+    "kind": "CollectiveActor",
+    "id": 15396,
+    "label": "Fondation Thiers",
+    "uri": "http://symogih.org/resource/CoAc15396",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15396/?format=json"
+  },
+  "15398": {
+    "kind": "CollectiveActor",
+    "id": 15398,
+    "label": "Faculté de droit de Nice",
+    "uri": "http://symogih.org/resource/CoAc15398",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15398/?format=json"
+  },
+  "15401": {
+    "kind": "CollectiveActor",
+    "id": 15401,
+    "label": "Institut des Hautes Etudes Françaises (Egypte)",
+    "uri": "http://symogih.org/resource/CoAc15401",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15401/?format=json"
+  },
+  "15403": {
+    "kind": "CollectiveActor",
+    "id": 15403,
+    "label": "Faculté des lettres de Caen",
+    "uri": "http://symogih.org/resource/CoAc15403",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15403/?format=json"
+  },
+  "15407": {
+    "kind": "CollectiveActor",
+    "id": 15407,
+    "label": "Ecole des hautes études sociales",
+    "uri": "http://symogih.org/resource/CoAc15407",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15407/?format=json"
+  },
+  "15573": {
+    "kind": "CollectiveActor",
+    "id": 15573,
+    "label": "Faculté des Lettres de Nancy",
+    "uri": "http://symogih.org/resource/CoAc15573",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15573/?format=json"
+  },
+  "15599": {
+    "kind": "CollectiveActor",
+    "id": 15599,
+    "label": "Faculté de droit de Turin",
+    "uri": "http://symogih.org/resource/CoAc15599",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15599/?format=json"
+  },
+  "15602": {
+    "kind": "CollectiveActor",
+    "id": 15602,
+    "label": "Faculté des lettres de Strasbourg",
+    "uri": "http://symogih.org/resource/CoAc15602",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15602/?format=json"
+  },
+  "15615": {
+    "kind": "CollectiveActor",
+    "id": 15615,
+    "label": "Ecole préparatoire de l'enseignement du droit de Fort de France",
+    "uri": "http://symogih.org/resource/CoAc15615",
+    "url": "http://127.0.0.1:8000/api/collective-actor/15615/?format=json"
+  },
+  "49926": {
+    "kind": "NamedPlace",
+    "id": 49926,
+    "label": "Bucy-lès-Pierrepont",
+    "uri": "http://symogih.org/resource/NaPl49926",
+    "url": "http://127.0.0.1:8000/api/named-place/49926/?format=json"
+  },
+  "49961": {
+    "kind": "NamedPlace",
+    "id": 49961,
+    "label": "Château-Thierry",
+    "uri": "http://symogih.org/resource/NaPl49961",
+    "url": "http://127.0.0.1:8000/api/named-place/49961/?format=json"
+  },
+  "50093": {
+    "kind": "NamedPlace",
+    "id": 50093,
+    "label": "Fère, La",
+    "uri": "http://symogih.org/resource/NaPl50093",
+    "url": "http://127.0.0.1:8000/api/named-place/50093/?format=json"
+  },
+  "50585": {
+    "kind": "NamedPlace",
+    "id": 50585,
+    "label": "Villers-Cotterêts",
+    "uri": "http://symogih.org/resource/NaPl50585",
+    "url": "http://127.0.0.1:8000/api/named-place/50585/?format=json"
+  },
+  "50630": {
+    "kind": "NamedPlace",
+    "id": 50630,
+    "label": "Bellenaves",
+    "uri": "http://symogih.org/resource/NaPl50630",
+    "url": "http://127.0.0.1:8000/api/named-place/50630/?format=json"
+  },
+  "50651": {
+    "kind": "NamedPlace",
+    "id": 50651,
+    "label": "Broût-Vernet",
+    "uri": "http://symogih.org/resource/NaPl50651",
+    "url": "http://127.0.0.1:8000/api/named-place/50651/?format=json"
+  },
+  "50701": {
+    "kind": "NamedPlace",
+    "id": 50701,
+    "label": "Cusset",
+    "uri": "http://symogih.org/resource/NaPl50701",
+    "url": "http://127.0.0.1:8000/api/named-place/50701/?format=json"
+  },
+  "50947": {
+    "kind": "NamedPlace",
+    "id": 50947,
+    "label": "Le Caire",
+    "uri": "http://symogih.org/resource/NaPl50947",
+    "url": "http://127.0.0.1:8000/api/named-place/50947/?format=json"
+  },
+  "51040": {
+    "kind": "NamedPlace",
+    "id": 51040,
+    "label": "Quinson",
+    "uri": "http://symogih.org/resource/NaPl51040",
+    "url": "http://127.0.0.1:8000/api/named-place/51040/?format=json"
+  },
+  "51110": {
+    "kind": "NamedPlace",
+    "id": 51110,
+    "label": "Volonne",
+    "uri": "http://symogih.org/resource/NaPl51110",
+    "url": "http://127.0.0.1:8000/api/named-place/51110/?format=json"
+  },
+  "51430": {
+    "kind": "NamedPlace",
+    "id": 51430,
+    "label": "Vence",
+    "uri": "http://symogih.org/resource/NaPl51430",
+    "url": "http://127.0.0.1:8000/api/named-place/51430/?format=json"
+  },
+  "51690": {
+    "kind": "NamedPlace",
+    "id": 51690,
+    "label": "Saint-Martin-de-Valamas",
+    "uri": "http://symogih.org/resource/NaPl51690",
+    "url": "http://127.0.0.1:8000/api/named-place/51690/?format=json"
+  },
+  "51913": {
+    "kind": "NamedPlace",
+    "id": 51913,
+    "label": "Faissault",
+    "uri": "http://symogih.org/resource/NaPl51913",
+    "url": "http://127.0.0.1:8000/api/named-place/51913/?format=json"
+  },
+  "52057": {
+    "kind": "NamedPlace",
+    "id": 52057,
+    "label": "Neuvizy",
+    "uri": "http://symogih.org/resource/NaPl52057",
+    "url": "http://127.0.0.1:8000/api/named-place/52057/?format=json"
+  },
+  "52097": {
+    "kind": "NamedPlace",
+    "id": 52097,
+    "label": "Rocroi",
+    "uri": "http://symogih.org/resource/NaPl52097",
+    "url": "http://127.0.0.1:8000/api/named-place/52097/?format=json"
+  },
+  "52486": {
+    "kind": "NamedPlace",
+    "id": 52486,
+    "label": "Saint-Martin-d'Oydes",
+    "uri": "http://symogih.org/resource/NaPl52486",
+    "url": "http://127.0.0.1:8000/api/named-place/52486/?format=json"
+  },
+  "52493": {
+    "kind": "NamedPlace",
+    "id": 52493,
+    "label": "Saint-Ybars",
+    "uri": "http://symogih.org/resource/NaPl52493",
+    "url": "http://127.0.0.1:8000/api/named-place/52493/?format=json"
+  },
+  "52892": {
+    "kind": "NamedPlace",
+    "id": 52892,
+    "label": "Saint-Lyé",
+    "uri": "http://symogih.org/resource/NaPl52892",
+    "url": "http://127.0.0.1:8000/api/named-place/52892/?format=json"
+  },
+  "53530": {
+    "kind": "NamedPlace",
+    "id": 53530,
+    "label": "Lapanouse",
+    "uri": "http://symogih.org/resource/NaPl53530",
+    "url": "http://127.0.0.1:8000/api/named-place/53530/?format=json"
+  },
+  "53654": {
+    "kind": "NamedPlace",
+    "id": 53654,
+    "label": "Salles-Curan",
+    "uri": "http://symogih.org/resource/NaPl53654",
+    "url": "http://127.0.0.1:8000/api/named-place/53654/?format=json"
+  },
+  "53663": {
+    "kind": "NamedPlace",
+    "id": 53663,
+    "label": "Sauveterre-de-Rouergue",
+    "uri": "http://symogih.org/resource/NaPl53663",
+    "url": "http://127.0.0.1:8000/api/named-place/53663/?format=json"
+  },
+  "53671": {
+    "kind": "NamedPlace",
+    "id": 53671,
+    "label": "Sévérac-le-Château",
+    "uri": "http://symogih.org/resource/NaPl53671",
+    "url": "http://127.0.0.1:8000/api/named-place/53671/?format=json"
+  },
+  "53678": {
+    "kind": "NamedPlace",
+    "id": 53678,
+    "label": "Taussac",
+    "uri": "http://symogih.org/resource/NaPl53678",
+    "url": "http://127.0.0.1:8000/api/named-place/53678/?format=json"
+  },
+  "53709": {
+    "kind": "NamedPlace",
+    "id": 53709,
+    "label": "Aubagne",
+    "uri": "http://symogih.org/resource/NaPl53709",
+    "url": "http://127.0.0.1:8000/api/named-place/53709/?format=json"
+  },
+  "53743": {
+    "kind": "NamedPlace",
+    "id": 53743,
+    "label": "Gardanne",
+    "uri": "http://symogih.org/resource/NaPl53743",
+    "url": "http://127.0.0.1:8000/api/named-place/53743/?format=json"
+  },
+  "53833": {
+    "kind": "NamedPlace",
+    "id": 53833,
+    "label": "Argences",
+    "uri": "http://symogih.org/resource/NaPl53833",
+    "url": "http://127.0.0.1:8000/api/named-place/53833/?format=json"
+  },
+  "53839": {
+    "kind": "NamedPlace",
+    "id": 53839,
+    "label": "Audrieu",
+    "uri": "http://symogih.org/resource/NaPl53839",
+    "url": "http://127.0.0.1:8000/api/named-place/53839/?format=json"
+  },
+  "53976": {
+    "kind": "NamedPlace",
+    "id": 53976,
+    "label": "Condé-sur-Seulles",
+    "uri": "http://symogih.org/resource/NaPl53976",
+    "url": "http://127.0.0.1:8000/api/named-place/53976/?format=json"
+  },
+  "54055": {
+    "kind": "NamedPlace",
+    "id": 54055,
+    "label": "Falaise",
+    "uri": "http://symogih.org/resource/NaPl54055",
+    "url": "http://127.0.0.1:8000/api/named-place/54055/?format=json"
+  },
+  "54066": {
+    "kind": "NamedPlace",
+    "id": 54066,
+    "label": "Folie, La",
+    "uri": "http://symogih.org/resource/NaPl54066",
+    "url": "http://127.0.0.1:8000/api/named-place/54066/?format=json"
+  },
+  "54169": {
+    "kind": "NamedPlace",
+    "id": 54169,
+    "label": "Luc-sur-Mer",
+    "uri": "http://symogih.org/resource/NaPl54169",
+    "url": "http://127.0.0.1:8000/api/named-place/54169/?format=json"
+  },
+  "54234": {
+    "kind": "NamedPlace",
+    "id": 54234,
+    "label": "Mouen",
+    "uri": "http://symogih.org/resource/NaPl54234",
+    "url": "http://127.0.0.1:8000/api/named-place/54234/?format=json"
+  },
+  "54286": {
+    "kind": "NamedPlace",
+    "id": 54286,
+    "label": "Pont-l'Évêque",
+    "uri": "http://symogih.org/resource/NaPl54286",
+    "url": "http://127.0.0.1:8000/api/named-place/54286/?format=json"
+  },
+  "54443": {
+    "kind": "NamedPlace",
+    "id": 54443,
+    "label": "Thaon",
+    "uri": "http://symogih.org/resource/NaPl54443",
+    "url": "http://127.0.0.1:8000/api/named-place/54443/?format=json"
+  },
+  "54479": {
+    "kind": "NamedPlace",
+    "id": 54479,
+    "label": "Vacognes-Neuilly",
+    "uri": "http://symogih.org/resource/NaPl54479",
+    "url": "http://127.0.0.1:8000/api/named-place/54479/?format=json"
+  },
+  "54494": {
+    "kind": "NamedPlace",
+    "id": 54494,
+    "label": "Verson",
+    "uri": "http://symogih.org/resource/NaPl54494",
+    "url": "http://127.0.0.1:8000/api/named-place/54494/?format=json"
+  },
+  "54510": {
+    "kind": "NamedPlace",
+    "id": 54510,
+    "label": "Villers-sur-Mer",
+    "uri": "http://symogih.org/resource/NaPl54510",
+    "url": "http://127.0.0.1:8000/api/named-place/54510/?format=json"
+  },
+  "54514": {
+    "kind": "NamedPlace",
+    "id": 54514,
+    "label": "Villons-les-Buissons",
+    "uri": "http://symogih.org/resource/NaPl54514",
+    "url": "http://127.0.0.1:8000/api/named-place/54514/?format=json"
+  },
+  "54796": {
+    "kind": "NamedPlace",
+    "id": 54796,
+    "label": "Aussac-Vadalle",
+    "uri": "http://symogih.org/resource/NaPl54796",
+    "url": "http://127.0.0.1:8000/api/named-place/54796/?format=json"
+  },
+  "54850": {
+    "kind": "NamedPlace",
+    "id": 54850,
+    "label": "Chapelle, La",
+    "uri": "http://symogih.org/resource/NaPl54850",
+    "url": "http://127.0.0.1:8000/api/named-place/54850/?format=json"
+  },
+  "54940": {
+    "kind": "NamedPlace",
+    "id": 54940,
+    "label": "Ladiville",
+    "uri": "http://symogih.org/resource/NaPl54940",
+    "url": "http://127.0.0.1:8000/api/named-place/54940/?format=json"
+  },
+  "55130": {
+    "kind": "NamedPlace",
+    "id": 55130,
+    "label": "Touvérac",
+    "uri": "http://symogih.org/resource/NaPl55130",
+    "url": "http://127.0.0.1:8000/api/named-place/55130/?format=json"
+  },
+  "55324": {
+    "kind": "NamedPlace",
+    "id": 55324,
+    "label": "Flotte, La",
+    "uri": "http://symogih.org/resource/NaPl55324",
+    "url": "http://127.0.0.1:8000/api/named-place/55324/?format=json"
+  },
+  "55498": {
+    "kind": "NamedPlace",
+    "id": 55498,
+    "label": "Saint-Jean-d'Angély",
+    "uri": "http://symogih.org/resource/NaPl55498",
+    "url": "http://127.0.0.1:8000/api/named-place/55498/?format=json"
+  },
+  "55545": {
+    "kind": "NamedPlace",
+    "id": 55545,
+    "label": "Saint-Sauveur-d'Aunis",
+    "uri": "http://symogih.org/resource/NaPl55545",
+    "url": "http://127.0.0.1:8000/api/named-place/55545/?format=json"
+  },
+  "55733": {
+    "kind": "NamedPlace",
+    "id": 55733,
+    "label": "Henrichemont",
+    "uri": "http://symogih.org/resource/NaPl55733",
+    "url": "http://127.0.0.1:8000/api/named-place/55733/?format=json"
+  },
+  "55739": {
+    "kind": "NamedPlace",
+    "id": 55739,
+    "label": "Ivoy-le-Pré",
+    "uri": "http://symogih.org/resource/NaPl55739",
+    "url": "http://127.0.0.1:8000/api/named-place/55739/?format=json"
+  },
+  "55783": {
+    "kind": "NamedPlace",
+    "id": 55783,
+    "label": "Nérondes",
+    "uri": "http://symogih.org/resource/NaPl55783",
+    "url": "http://127.0.0.1:8000/api/named-place/55783/?format=json"
+  },
+  "55861": {
+    "kind": "NamedPlace",
+    "id": 55861,
+    "label": "Sancerre",
+    "uri": "http://symogih.org/resource/NaPl55861",
+    "url": "http://127.0.0.1:8000/api/named-place/55861/?format=json"
+  },
+  "56230": {
+    "kind": "NamedPlace",
+    "id": 56230,
+    "label": "Bard-le-Régulier",
+    "uri": "http://symogih.org/resource/NaPl56230",
+    "url": "http://127.0.0.1:8000/api/named-place/56230/?format=json"
+  },
+  "56473": {
+    "kind": "NamedPlace",
+    "id": 56473,
+    "label": "Gevrey-Chambertin",
+    "uri": "http://symogih.org/resource/NaPl56473",
+    "url": "http://127.0.0.1:8000/api/named-place/56473/?format=json"
+  },
+  "56593": {
+    "kind": "NamedPlace",
+    "id": 56593,
+    "label": "Mirebeau-sur-Bèze",
+    "uri": "http://symogih.org/resource/NaPl56593",
+    "url": "http://127.0.0.1:8000/api/named-place/56593/?format=json"
+  },
+  "56761": {
+    "kind": "NamedPlace",
+    "id": 56761,
+    "label": "Savigny-lès-Beaune",
+    "uri": "http://symogih.org/resource/NaPl56761",
+    "url": "http://127.0.0.1:8000/api/named-place/56761/?format=json"
+  },
+  "56882": {
+    "kind": "NamedPlace",
+    "id": 56882,
+    "label": "Vosne-Romanée",
+    "uri": "http://symogih.org/resource/NaPl56882",
+    "url": "http://127.0.0.1:8000/api/named-place/56882/?format=json"
+  },
+  "56892": {
+    "kind": "NamedPlace",
+    "id": 56892,
+    "label": "Binic",
+    "uri": "http://symogih.org/resource/NaPl56892",
+    "url": "http://127.0.0.1:8000/api/named-place/56892/?format=json"
+  },
+  "56951": {
+    "kind": "NamedPlace",
+    "id": 56951,
+    "label": "Guingamp",
+    "uri": "http://symogih.org/resource/NaPl56951",
+    "url": "http://127.0.0.1:8000/api/named-place/56951/?format=json"
+  },
+  "57036": {
+    "kind": "NamedPlace",
+    "id": 57036,
+    "label": "Paimpol",
+    "uri": "http://symogih.org/resource/NaPl57036",
+    "url": "http://127.0.0.1:8000/api/named-place/57036/?format=json"
+  },
+  "57538": {
+    "kind": "NamedPlace",
+    "id": 57538,
+    "label": "Belvès",
+    "uri": "http://symogih.org/resource/NaPl57538",
+    "url": "http://127.0.0.1:8000/api/named-place/57538/?format=json"
+  },
+  "57654": {
+    "kind": "NamedPlace",
+    "id": 57654,
+    "label": "Dussac",
+    "uri": "http://symogih.org/resource/NaPl57654",
+    "url": "http://127.0.0.1:8000/api/named-place/57654/?format=json"
+  },
+  "57772": {
+    "kind": "NamedPlace",
+    "id": 57772,
+    "label": "Montagnac-la-Crempse",
+    "uri": "http://symogih.org/resource/NaPl57772",
+    "url": "http://127.0.0.1:8000/api/named-place/57772/?format=json"
+  },
+  "58015": {
+    "kind": "NamedPlace",
+    "id": 58015,
+    "label": "Terrasson-Lavilledieu",
+    "uri": "http://symogih.org/resource/NaPl58015",
+    "url": "http://127.0.0.1:8000/api/named-place/58015/?format=json"
+  },
+  "58112": {
+    "kind": "NamedPlace",
+    "id": 58112,
+    "label": "Bolandoz",
+    "uri": "http://symogih.org/resource/NaPl58112",
+    "url": "http://127.0.0.1:8000/api/named-place/58112/?format=json"
+  },
+  "58167": {
+    "kind": "NamedPlace",
+    "id": 58167,
+    "label": "Chasnans",
+    "uri": "http://symogih.org/resource/NaPl58167",
+    "url": "http://127.0.0.1:8000/api/named-place/58167/?format=json"
+  },
+  "58192": {
+    "kind": "NamedPlace",
+    "id": 58192,
+    "label": "Clerval",
+    "uri": "http://symogih.org/resource/NaPl58192",
+    "url": "http://127.0.0.1:8000/api/named-place/58192/?format=json"
+  },
+  "58193": {
+    "kind": "NamedPlace",
+    "id": 58193,
+    "label": "Cluse-et-Mijoux, La",
+    "uri": "http://symogih.org/resource/NaPl58193",
+    "url": "http://127.0.0.1:8000/api/named-place/58193/?format=json"
+  },
+  "58333": {
+    "kind": "NamedPlace",
+    "id": 58333,
+    "label": "Huanne-Montmartin",
+    "uri": "http://symogih.org/resource/NaPl58333",
+    "url": "http://127.0.0.1:8000/api/named-place/58333/?format=json"
+  },
+  "58357": {
+    "kind": "NamedPlace",
+    "id": 58357,
+    "label": "Levier",
+    "uri": "http://symogih.org/resource/NaPl58357",
+    "url": "http://127.0.0.1:8000/api/named-place/58357/?format=json"
+  },
+  "58688": {
+    "kind": "NamedPlace",
+    "id": 58688,
+    "label": "Bourg-de-Péage",
+    "uri": "http://symogih.org/resource/NaPl58688",
+    "url": "http://127.0.0.1:8000/api/named-place/58688/?format=json"
+  },
+  "58768": {
+    "kind": "NamedPlace",
+    "id": 58768,
+    "label": "Grane",
+    "uri": "http://symogih.org/resource/NaPl58768",
+    "url": "http://127.0.0.1:8000/api/named-place/58768/?format=json"
+  },
+  "58851": {
+    "kind": "NamedPlace",
+    "id": 58851,
+    "label": "Pierrelatte",
+    "uri": "http://symogih.org/resource/NaPl58851",
+    "url": "http://127.0.0.1:8000/api/named-place/58851/?format=json"
+  },
+  "59354": {
+    "kind": "NamedPlace",
+    "id": 59354,
+    "label": "Mainneville",
+    "uri": "http://symogih.org/resource/NaPl59354",
+    "url": "http://127.0.0.1:8000/api/named-place/59354/?format=json"
+  },
+  "59551": {
+    "kind": "NamedPlace",
+    "id": 59551,
+    "label": "Saint-Philbert-sur-Risle",
+    "uri": "http://symogih.org/resource/NaPl59551",
+    "url": "http://127.0.0.1:8000/api/named-place/59551/?format=json"
+  },
+  "60103": {
+    "kind": "NamedPlace",
+    "id": 60103,
+    "label": "Coray",
+    "uri": "http://symogih.org/resource/NaPl60103",
+    "url": "http://127.0.0.1:8000/api/named-place/60103/?format=json"
+  },
+  "60699": {
+    "kind": "NamedPlace",
+    "id": 60699,
+    "label": "Alzon",
+    "uri": "http://symogih.org/resource/NaPl60699",
+    "url": "http://127.0.0.1:8000/api/named-place/60699/?format=json"
+  },
+  "61186": {
+    "kind": "NamedPlace",
+    "id": 61186,
+    "label": "Cugnaux",
+    "uri": "http://symogih.org/resource/NaPl61186",
+    "url": "http://127.0.0.1:8000/api/named-place/61186/?format=json"
+  },
+  "61298": {
+    "kind": "NamedPlace",
+    "id": 61298,
+    "label": "Lanta",
+    "uri": "http://symogih.org/resource/NaPl61298",
+    "url": "http://127.0.0.1:8000/api/named-place/61298/?format=json"
+  },
+  "61426": {
+    "kind": "NamedPlace",
+    "id": 61426,
+    "label": "Nogaret",
+    "uri": "http://symogih.org/resource/NaPl61426",
+    "url": "http://127.0.0.1:8000/api/named-place/61426/?format=json"
+  },
+  "61570": {
+    "kind": "NamedPlace",
+    "id": 61570,
+    "label": "Seysses",
+    "uri": "http://symogih.org/resource/NaPl61570",
+    "url": "http://127.0.0.1:8000/api/named-place/61570/?format=json"
+  },
+  "61606": {
+    "kind": "NamedPlace",
+    "id": 61606,
+    "label": "Villemur-sur-Tarn",
+    "uri": "http://symogih.org/resource/NaPl61606",
+    "url": "http://127.0.0.1:8000/api/named-place/61606/?format=json"
+  },
+  "61610": {
+    "kind": "NamedPlace",
+    "id": 61610,
+    "label": "Villeneuve-Tolosane",
+    "uri": "http://symogih.org/resource/NaPl61610",
+    "url": "http://127.0.0.1:8000/api/named-place/61610/?format=json"
+  },
+  "61691": {
+    "kind": "NamedPlace",
+    "id": 61691,
+    "label": "Castelnau-d'Auzan",
+    "uri": "http://symogih.org/resource/NaPl61691",
+    "url": "http://127.0.0.1:8000/api/named-place/61691/?format=json"
+  },
+  "61892": {
+    "kind": "NamedPlace",
+    "id": 61892,
+    "label": "Montestruc-sur-Gers",
+    "uri": "http://symogih.org/resource/NaPl61892",
+    "url": "http://127.0.0.1:8000/api/named-place/61892/?format=json"
+  },
+  "61902": {
+    "kind": "NamedPlace",
+    "id": 61902,
+    "label": "Nogaro",
+    "uri": "http://symogih.org/resource/NaPl61902",
+    "url": "http://127.0.0.1:8000/api/named-place/61902/?format=json"
+  },
+  "62178": {
+    "kind": "NamedPlace",
+    "id": 62178,
+    "label": "Caumont",
+    "uri": "http://symogih.org/resource/NaPl62178",
+    "url": "http://127.0.0.1:8000/api/named-place/62178/?format=json"
+  },
+  "62314": {
+    "kind": "NamedPlace",
+    "id": 62314,
+    "label": "Loupiac",
+    "uri": "http://symogih.org/resource/NaPl62314",
+    "url": "http://127.0.0.1:8000/api/named-place/62314/?format=json"
+  },
+  "62567": {
+    "kind": "NamedPlace",
+    "id": 62567,
+    "label": "Talence",
+    "uri": "http://symogih.org/resource/NaPl62567",
+    "url": "http://127.0.0.1:8000/api/named-place/62567/?format=json"
+  },
+  "62957": {
+    "kind": "NamedPlace",
+    "id": 62957,
+    "label": "Bouëxière, La",
+    "uri": "http://symogih.org/resource/NaPl62957",
+    "url": "http://127.0.0.1:8000/api/named-place/62957/?format=json"
+  },
+  "63017": {
+    "kind": "NamedPlace",
+    "id": 63017,
+    "label": "Dol-de-Bretagne",
+    "uri": "http://symogih.org/resource/NaPl63017",
+    "url": "http://127.0.0.1:8000/api/named-place/63017/?format=json"
+  },
+  "63043": {
+    "kind": "NamedPlace",
+    "id": 63043,
+    "label": "Gouesnière, La",
+    "uri": "http://symogih.org/resource/NaPl63043",
+    "url": "http://127.0.0.1:8000/api/named-place/63043/?format=json"
+  },
+  "63046": {
+    "kind": "NamedPlace",
+    "id": 63046,
+    "label": "Guerche-de-Bretagne, La",
+    "uri": "http://symogih.org/resource/NaPl63046",
+    "url": "http://127.0.0.1:8000/api/named-place/63046/?format=json"
+  },
+  "63193": {
+    "kind": "NamedPlace",
+    "id": 63193,
+    "label": "Saint-Grégoire",
+    "uri": "http://symogih.org/resource/NaPl63193",
+    "url": "http://127.0.0.1:8000/api/named-place/63193/?format=json"
+  },
+  "63228": {
+    "kind": "NamedPlace",
+    "id": 63228,
+    "label": "Saint-Sulpice-la-Forêt",
+    "uri": "http://symogih.org/resource/NaPl63228",
+    "url": "http://127.0.0.1:8000/api/named-place/63228/?format=json"
+  },
+  "63250": {
+    "kind": "NamedPlace",
+    "id": 63250,
+    "label": "Tinténiac",
+    "uri": "http://symogih.org/resource/NaPl63250",
+    "url": "http://127.0.0.1:8000/api/named-place/63250/?format=json"
+  },
+  "63578": {
+    "kind": "NamedPlace",
+    "id": 63578,
+    "label": "Chinon",
+    "uri": "http://symogih.org/resource/NaPl63578",
+    "url": "http://127.0.0.1:8000/api/named-place/63578/?format=json"
+  },
+  "63786": {
+    "kind": "NamedPlace",
+    "id": 63786,
+    "label": "Allevard",
+    "uri": "http://symogih.org/resource/NaPl63786",
+    "url": "http://127.0.0.1:8000/api/named-place/63786/?format=json"
+  },
+  "63892": {
+    "kind": "NamedPlace",
+    "id": 63892,
+    "label": "Corbelin",
+    "uri": "http://symogih.org/resource/NaPl63892",
+    "url": "http://127.0.0.1:8000/api/named-place/63892/?format=json"
+  },
+  "63896": {
+    "kind": "NamedPlace",
+    "id": 63896,
+    "label": "Corps",
+    "uri": "http://symogih.org/resource/NaPl63896",
+    "url": "http://127.0.0.1:8000/api/named-place/63896/?format=json"
+  },
+  "64137": {
+    "kind": "NamedPlace",
+    "id": 64137,
+    "label": "Saint-Jean-de-Bournay",
+    "uri": "http://symogih.org/resource/NaPl64137",
+    "url": "http://127.0.0.1:8000/api/named-place/64137/?format=json"
+  },
+  "64142": {
+    "kind": "NamedPlace",
+    "id": 64142,
+    "label": "Saint-Jean-le-Vieux",
+    "uri": "http://symogih.org/resource/NaPl64142",
+    "url": "http://127.0.0.1:8000/api/named-place/64142/?format=json"
+  },
+  "64157": {
+    "kind": "NamedPlace",
+    "id": 64157,
+    "label": "Saint-Martin-d'Hères",
+    "uri": "http://symogih.org/resource/NaPl64157",
+    "url": "http://127.0.0.1:8000/api/named-place/64157/?format=json"
+  },
+  "64213": {
+    "kind": "NamedPlace",
+    "id": 64213,
+    "label": "Sérézin-de-la-Tour",
+    "uri": "http://symogih.org/resource/NaPl64213",
+    "url": "http://127.0.0.1:8000/api/named-place/64213/?format=json"
+  },
+  "64286": {
+    "kind": "NamedPlace",
+    "id": 64286,
+    "label": "Voreppe",
+    "uri": "http://symogih.org/resource/NaPl64286",
+    "url": "http://127.0.0.1:8000/api/named-place/64286/?format=json"
+  },
+  "64603": {
+    "kind": "NamedPlace",
+    "id": 64603,
+    "label": "Molunes, Les",
+    "uri": "http://symogih.org/resource/NaPl64603",
+    "url": "http://127.0.0.1:8000/api/named-place/64603/?format=json"
+  },
+  "64626": {
+    "kind": "NamedPlace",
+    "id": 64626,
+    "label": "Morbier",
+    "uri": "http://symogih.org/resource/NaPl64626",
+    "url": "http://127.0.0.1:8000/api/named-place/64626/?format=json"
+  },
+  "64709": {
+    "kind": "NamedPlace",
+    "id": 64709,
+    "label": "Rix",
+    "uri": "http://symogih.org/resource/NaPl64709",
+    "url": "http://127.0.0.1:8000/api/named-place/64709/?format=json"
+  },
+  "64725": {
+    "kind": "NamedPlace",
+    "id": 64725,
+    "label": "Saint-Claude",
+    "uri": "http://symogih.org/resource/NaPl64725",
+    "url": "http://127.0.0.1:8000/api/named-place/64725/?format=json"
+  },
+  "65296": {
+    "kind": "NamedPlace",
+    "id": 65296,
+    "label": "Oucques",
+    "uri": "http://symogih.org/resource/NaPl65296",
+    "url": "http://127.0.0.1:8000/api/named-place/65296/?format=json"
+  },
+  "65415": {
+    "kind": "NamedPlace",
+    "id": 65415,
+    "label": "Vineuil",
+    "uri": "http://symogih.org/resource/NaPl65415",
+    "url": "http://127.0.0.1:8000/api/named-place/65415/?format=json"
+  },
+  "65624": {
+    "kind": "NamedPlace",
+    "id": 65624,
+    "label": "Saint-Genest-Malifaux",
+    "uri": "http://symogih.org/resource/NaPl65624",
+    "url": "http://127.0.0.1:8000/api/named-place/65624/?format=json"
+  },
+  "65885": {
+    "kind": "NamedPlace",
+    "id": 65885,
+    "label": "Puy-en-Velay, Le",
+    "uri": "http://symogih.org/resource/NaPl65885",
+    "url": "http://127.0.0.1:8000/api/named-place/65885/?format=json"
+  },
+  "66079": {
+    "kind": "NamedPlace",
+    "id": 66079,
+    "label": "Moisdon-la-Rivière",
+    "uri": "http://symogih.org/resource/NaPl66079",
+    "url": "http://127.0.0.1:8000/api/named-place/66079/?format=json"
+  },
+  "66734": {
+    "kind": "NamedPlace",
+    "id": 66734,
+    "label": "Payrignac",
+    "uri": "http://symogih.org/resource/NaPl66734",
+    "url": "http://127.0.0.1:8000/api/named-place/66734/?format=json"
+  },
+  "66850": {
+    "kind": "NamedPlace",
+    "id": 66850,
+    "label": "Vigan, Le",
+    "uri": "http://symogih.org/resource/NaPl66850",
+    "url": "http://127.0.0.1:8000/api/named-place/66850/?format=json"
+  },
+  "67019": {
+    "kind": "NamedPlace",
+    "id": 67019,
+    "label": "Moncaut",
+    "uri": "http://symogih.org/resource/NaPl67019",
+    "url": "http://127.0.0.1:8000/api/named-place/67019/?format=json"
+  },
+  "67049": {
+    "kind": "NamedPlace",
+    "id": 67049,
+    "label": "Penne-d'Agenais",
+    "uri": "http://symogih.org/resource/NaPl67049",
+    "url": "http://127.0.0.1:8000/api/named-place/67049/?format=json"
+  },
+  "67064": {
+    "kind": "NamedPlace",
+    "id": 67064,
+    "label": "Puysserampion",
+    "uri": "http://symogih.org/resource/NaPl67064",
+    "url": "http://127.0.0.1:8000/api/named-place/67064/?format=json"
+  },
+  "67079": {
+    "kind": "NamedPlace",
+    "id": 67079,
+    "label": "Sainte-Bazeille",
+    "uri": "http://symogih.org/resource/NaPl67079",
+    "url": "http://127.0.0.1:8000/api/named-place/67079/?format=json"
+  },
+  "67521": {
+    "kind": "NamedPlace",
+    "id": 67521,
+    "label": "Martigné-Briand",
+    "uri": "http://symogih.org/resource/NaPl67521",
+    "url": "http://127.0.0.1:8000/api/named-place/67521/?format=json"
+  },
+  "67720": {
+    "kind": "NamedPlace",
+    "id": 67720,
+    "label": "Avranches",
+    "uri": "http://symogih.org/resource/NaPl67720",
+    "url": "http://127.0.0.1:8000/api/named-place/67720/?format=json"
+  },
+  "67772": {
+    "kind": "NamedPlace",
+    "id": 67772,
+    "label": "Bricquebec",
+    "uri": "http://symogih.org/resource/NaPl67772",
+    "url": "http://127.0.0.1:8000/api/named-place/67772/?format=json"
+  },
+  "67900": {
+    "kind": "NamedPlace",
+    "id": 67900,
+    "label": "Granville",
+    "uri": "http://symogih.org/resource/NaPl67900",
+    "url": "http://127.0.0.1:8000/api/named-place/67900/?format=json"
+  },
+  "68092": {
+    "kind": "NamedPlace",
+    "id": 68092,
+    "label": "Reffuveille",
+    "uri": "http://symogih.org/resource/NaPl68092",
+    "url": "http://127.0.0.1:8000/api/named-place/68092/?format=json"
+  },
+  "68195": {
+    "kind": "NamedPlace",
+    "id": 68195,
+    "label": "Saint-Pierre-Église",
+    "uri": "http://symogih.org/resource/NaPl68195",
+    "url": "http://127.0.0.1:8000/api/named-place/68195/?format=json"
+  },
+  "68265": {
+    "kind": "NamedPlace",
+    "id": 68265,
+    "label": "Valognes",
+    "uri": "http://symogih.org/resource/NaPl68265",
+    "url": "http://127.0.0.1:8000/api/named-place/68265/?format=json"
+  },
+  "68620": {
+    "kind": "NamedPlace",
+    "id": 68620,
+    "label": "Mareuil-le-Port",
+    "uri": "http://symogih.org/resource/NaPl68620",
+    "url": "http://127.0.0.1:8000/api/named-place/68620/?format=json"
+  },
+  "68811": {
+    "kind": "NamedPlace",
+    "id": 68811,
+    "label": "Souain-Perthes-lès-Hurlus",
+    "uri": "http://symogih.org/resource/NaPl68811",
+    "url": "http://127.0.0.1:8000/api/named-place/68811/?format=json"
+  },
+  "68983": {
+    "kind": "NamedPlace",
+    "id": 68983,
+    "label": "Chalancey",
+    "uri": "http://symogih.org/resource/NaPl68983",
+    "url": "http://127.0.0.1:8000/api/named-place/68983/?format=json"
+  },
+  "69215": {
+    "kind": "NamedPlace",
+    "id": 69215,
+    "label": "Perthes",
+    "uri": "http://symogih.org/resource/NaPl69215",
+    "url": "http://127.0.0.1:8000/api/named-place/69215/?format=json"
+  },
+  "69917": {
+    "kind": "NamedPlace",
+    "id": 69917,
+    "label": "Longuyon",
+    "uri": "http://symogih.org/resource/NaPl69917",
+    "url": "http://127.0.0.1:8000/api/named-place/69917/?format=json"
+  },
+  "70021": {
+    "kind": "NamedPlace",
+    "id": 70021,
+    "label": "Pont-à-Mousson",
+    "uri": "http://symogih.org/resource/NaPl70021",
+    "url": "http://127.0.0.1:8000/api/named-place/70021/?format=json"
+  },
+  "70022": {
+    "kind": "NamedPlace",
+    "id": 70022,
+    "label": "Pont-Saint-Vincent",
+    "uri": "http://symogih.org/resource/NaPl70022",
+    "url": "http://127.0.0.1:8000/api/named-place/70022/?format=json"
+  },
+  "70213": {
+    "kind": "NamedPlace",
+    "id": 70213,
+    "label": "Bar-le-Duc",
+    "uri": "http://symogih.org/resource/NaPl70213",
+    "url": "http://127.0.0.1:8000/api/named-place/70213/?format=json"
+  },
+  "70314": {
+    "kind": "NamedPlace",
+    "id": 70314,
+    "label": "Damvillers",
+    "uri": "http://symogih.org/resource/NaPl70314",
+    "url": "http://127.0.0.1:8000/api/named-place/70314/?format=json"
+  },
+  "70329": {
+    "kind": "NamedPlace",
+    "id": 70329,
+    "label": "Douaumont",
+    "uri": "http://symogih.org/resource/NaPl70329",
+    "url": "http://127.0.0.1:8000/api/named-place/70329/?format=json"
+  },
+  "70337": {
+    "kind": "NamedPlace",
+    "id": 70337,
+    "label": "Éparges, Les",
+    "uri": "http://symogih.org/resource/NaPl70337",
+    "url": "http://127.0.0.1:8000/api/named-place/70337/?format=json"
+  },
+  "70497": {
+    "kind": "NamedPlace",
+    "id": 70497,
+    "label": "Mouzay",
+    "uri": "http://symogih.org/resource/NaPl70497",
+    "url": "http://127.0.0.1:8000/api/named-place/70497/?format=json"
+  },
+  "70645": {
+    "kind": "NamedPlace",
+    "id": 70645,
+    "label": "Vaucouleurs",
+    "uri": "http://symogih.org/resource/NaPl70645",
+    "url": "http://127.0.0.1:8000/api/named-place/70645/?format=json"
+  },
+  "70697": {
+    "kind": "NamedPlace",
+    "id": 70697,
+    "label": "Baud",
+    "uri": "http://symogih.org/resource/NaPl70697",
+    "url": "http://127.0.0.1:8000/api/named-place/70697/?format=json"
+  },
+  "70855": {
+    "kind": "NamedPlace",
+    "id": 70855,
+    "label": "Pontivy",
+    "uri": "http://symogih.org/resource/NaPl70855",
+    "url": "http://127.0.0.1:8000/api/named-place/70855/?format=json"
+  },
+  "71329": {
+    "kind": "NamedPlace",
+    "id": 71329,
+    "label": "Longeville-lès-Metz",
+    "uri": "http://symogih.org/resource/NaPl71329",
+    "url": "http://127.0.0.1:8000/api/named-place/71329/?format=json"
+  },
+  "71449": {
+    "kind": "NamedPlace",
+    "id": 71449,
+    "label": "Phalsbourg",
+    "uri": "http://symogih.org/resource/NaPl71449",
+    "url": "http://127.0.0.1:8000/api/named-place/71449/?format=json"
+  },
+  "71752": {
+    "kind": "NamedPlace",
+    "id": 71752,
+    "label": "Decize",
+    "uri": "http://symogih.org/resource/NaPl71752",
+    "url": "http://127.0.0.1:8000/api/named-place/71752/?format=json"
+  },
+  "71766": {
+    "kind": "NamedPlace",
+    "id": 71766,
+    "label": "Entrains-sur-Nohain",
+    "uri": "http://symogih.org/resource/NaPl71766",
+    "url": "http://127.0.0.1:8000/api/named-place/71766/?format=json"
+  },
+  "72185": {
+    "kind": "NamedPlace",
+    "id": 72185,
+    "label": "Feignies",
+    "uri": "http://symogih.org/resource/NaPl72185",
+    "url": "http://127.0.0.1:8000/api/named-place/72185/?format=json"
+  },
+  "72821": {
+    "kind": "NamedPlace",
+    "id": 72821,
+    "label": "Ermenonville",
+    "uri": "http://symogih.org/resource/NaPl72821",
+    "url": "http://127.0.0.1:8000/api/named-place/72821/?format=json"
+  },
+  "73025": {
+    "kind": "NamedPlace",
+    "id": 73025,
+    "label": "Mont-l'Évêque",
+    "uri": "http://symogih.org/resource/NaPl73025",
+    "url": "http://127.0.0.1:8000/api/named-place/73025/?format=json"
+  },
+  "73074": {
+    "kind": "NamedPlace",
+    "id": 73074,
+    "label": "Noyon",
+    "uri": "http://symogih.org/resource/NaPl73074",
+    "url": "http://127.0.0.1:8000/api/named-place/73074/?format=json"
+  },
+  "73337": {
+    "kind": "NamedPlace",
+    "id": 73337,
+    "label": "Bellême",
+    "uri": "http://symogih.org/resource/NaPl73337",
+    "url": "http://127.0.0.1:8000/api/named-place/73337/?format=json"
+  },
+  "73362": {
+    "kind": "NamedPlace",
+    "id": 73362,
+    "label": "Briouze",
+    "uri": "http://symogih.org/resource/NaPl73362",
+    "url": "http://127.0.0.1:8000/api/named-place/73362/?format=json"
+  },
+  "73372": {
+    "kind": "NamedPlace",
+    "id": 73372,
+    "label": "Carneille, La",
+    "uri": "http://symogih.org/resource/NaPl73372",
+    "url": "http://127.0.0.1:8000/api/named-place/73372/?format=json"
+  },
+  "73510": {
+    "kind": "NamedPlace",
+    "id": 73510,
+    "label": "Aigle, L'",
+    "uri": "http://symogih.org/resource/NaPl73510",
+    "url": "http://127.0.0.1:8000/api/named-place/73510/?format=json"
+  },
+  "73517": {
+    "kind": "NamedPlace",
+    "id": 73517,
+    "label": "Landigou",
+    "uri": "http://symogih.org/resource/NaPl73517",
+    "url": "http://127.0.0.1:8000/api/named-place/73517/?format=json"
+  },
+  "73588": {
+    "kind": "NamedPlace",
+    "id": 73588,
+    "label": "Mortagne-au-Perche",
+    "uri": "http://symogih.org/resource/NaPl73588",
+    "url": "http://127.0.0.1:8000/api/named-place/73588/?format=json"
+  },
+  "73921": {
+    "kind": "NamedPlace",
+    "id": 73921,
+    "label": "Béthune",
+    "uri": "http://symogih.org/resource/NaPl73921",
+    "url": "http://127.0.0.1:8000/api/named-place/73921/?format=json"
+  },
+  "74376": {
+    "kind": "NamedPlace",
+    "id": 74376,
+    "label": "Montreuil",
+    "uri": "http://symogih.org/resource/NaPl74376",
+    "url": "http://127.0.0.1:8000/api/named-place/74376/?format=json"
+  },
+  "74397": {
+    "kind": "NamedPlace",
+    "id": 74397,
+    "label": "Neuville-Saint-Vaast",
+    "uri": "http://symogih.org/resource/NaPl74397",
+    "url": "http://127.0.0.1:8000/api/named-place/74397/?format=json"
+  },
+  "74399": {
+    "kind": "NamedPlace",
+    "id": 74399,
+    "label": "Neuville-Vitasse",
+    "uri": "http://symogih.org/resource/NaPl74399",
+    "url": "http://127.0.0.1:8000/api/named-place/74399/?format=json"
+  },
+  "74703": {
+    "kind": "NamedPlace",
+    "id": 74703,
+    "label": "Arlanc",
+    "uri": "http://symogih.org/resource/NaPl74703",
+    "url": "http://127.0.0.1:8000/api/named-place/74703/?format=json"
+  },
+  "74797": {
+    "kind": "NamedPlace",
+    "id": 74797,
+    "label": "Chauriat",
+    "uri": "http://symogih.org/resource/NaPl74797",
+    "url": "http://127.0.0.1:8000/api/named-place/74797/?format=json"
+  },
+  "74992": {
+    "kind": "NamedPlace",
+    "id": 74992,
+    "label": "Royat",
+    "uri": "http://symogih.org/resource/NaPl74992",
+    "url": "http://127.0.0.1:8000/api/named-place/74992/?format=json"
+  },
+  "75092": {
+    "kind": "NamedPlace",
+    "id": 75092,
+    "label": "Sauvetat, La",
+    "uri": "http://symogih.org/resource/NaPl75092",
+    "url": "http://127.0.0.1:8000/api/named-place/75092/?format=json"
+  },
+  "75116": {
+    "kind": "NamedPlace",
+    "id": 75116,
+    "label": "Usson",
+    "uri": "http://symogih.org/resource/NaPl75116",
+    "url": "http://127.0.0.1:8000/api/named-place/75116/?format=json"
+  },
+  "75273": {
+    "kind": "NamedPlace",
+    "id": 75273,
+    "label": "Bilhères",
+    "uri": "http://symogih.org/resource/NaPl75273",
+    "url": "http://127.0.0.1:8000/api/named-place/75273/?format=json"
+  },
+  "76393": {
+    "kind": "NamedPlace",
+    "id": 76393,
+    "label": "Barr",
+    "uri": "http://symogih.org/resource/NaPl76393",
+    "url": "http://127.0.0.1:8000/api/named-place/76393/?format=json"
+  },
+  "76399": {
+    "kind": "NamedPlace",
+    "id": 76399,
+    "label": "Benfeld",
+    "uri": "http://symogih.org/resource/NaPl76399",
+    "url": "http://127.0.0.1:8000/api/named-place/76399/?format=json"
+  },
+  "76416": {
+    "kind": "NamedPlace",
+    "id": 76416,
+    "label": "Bischwiller",
+    "uri": "http://symogih.org/resource/NaPl76416",
+    "url": "http://127.0.0.1:8000/api/named-place/76416/?format=json"
+  },
+  "76431": {
+    "kind": "NamedPlace",
+    "id": 76431,
+    "label": "Bouxwiller",
+    "uri": "http://symogih.org/resource/NaPl76431",
+    "url": "http://127.0.0.1:8000/api/named-place/76431/?format=json"
+  },
+  "76565": {
+    "kind": "NamedPlace",
+    "id": 76565,
+    "label": "Hochfelden",
+    "uri": "http://symogih.org/resource/NaPl76565",
+    "url": "http://127.0.0.1:8000/api/named-place/76565/?format=json"
+  },
+  "76779": {
+    "kind": "NamedPlace",
+    "id": 76779,
+    "label": "Sarre-Union",
+    "uri": "http://symogih.org/resource/NaPl76779",
+    "url": "http://127.0.0.1:8000/api/named-place/76779/?format=json"
+  },
+  "76884": {
+    "kind": "NamedPlace",
+    "id": 76884,
+    "label": "Wissembourg",
+    "uri": "http://symogih.org/resource/NaPl76884",
+    "url": "http://127.0.0.1:8000/api/named-place/76884/?format=json"
+  },
+  "76945": {
+    "kind": "NamedPlace",
+    "id": 76945,
+    "label": "Bouxwiller",
+    "uri": "http://symogih.org/resource/NaPl76945",
+    "url": "http://127.0.0.1:8000/api/named-place/76945/?format=json"
+  },
+  "77044": {
+    "kind": "NamedPlace",
+    "id": 77044,
+    "label": "Husseren-Wesserling",
+    "uri": "http://symogih.org/resource/NaPl77044",
+    "url": "http://127.0.0.1:8000/api/named-place/77044/?format=json"
+  },
+  "77117": {
+    "kind": "NamedPlace",
+    "id": 77117,
+    "label": "Munster",
+    "uri": "http://symogih.org/resource/NaPl77117",
+    "url": "http://127.0.0.1:8000/api/named-place/77117/?format=json"
+  },
+  "77219": {
+    "kind": "NamedPlace",
+    "id": 77219,
+    "label": "Stosswihr",
+    "uri": "http://symogih.org/resource/NaPl77219",
+    "url": "http://127.0.0.1:8000/api/named-place/77219/?format=json"
+  },
+  "77393": {
+    "kind": "NamedPlace",
+    "id": 77393,
+    "label": "Nuelles",
+    "uri": "http://symogih.org/resource/NaPl77393",
+    "url": "http://127.0.0.1:8000/api/named-place/77393/?format=json"
+  },
+  "77508": {
+    "kind": "NamedPlace",
+    "id": 77508,
+    "label": "Meyzieu",
+    "uri": "http://symogih.org/resource/NaPl77508",
+    "url": "http://127.0.0.1:8000/api/named-place/77508/?format=json"
+  },
+  "77623": {
+    "kind": "NamedPlace",
+    "id": 77623,
+    "label": "Bucey-lès-Gy",
+    "uri": "http://symogih.org/resource/NaPl77623",
+    "url": "http://127.0.0.1:8000/api/named-place/77623/?format=json"
+  },
+  "77936": {
+    "kind": "NamedPlace",
+    "id": 77936,
+    "label": "Rochelle, La",
+    "uri": "http://symogih.org/resource/NaPl77936",
+    "url": "http://127.0.0.1:8000/api/named-place/77936/?format=json"
+  },
+  "77973": {
+    "kind": "NamedPlace",
+    "id": 77973,
+    "label": "Servance",
+    "uri": "http://symogih.org/resource/NaPl77973",
+    "url": "http://127.0.0.1:8000/api/named-place/77973/?format=json"
+  },
+  "78070": {
+    "kind": "NamedPlace",
+    "id": 78070,
+    "label": "Anost",
+    "uri": "http://symogih.org/resource/NaPl78070",
+    "url": "http://127.0.0.1:8000/api/named-place/78070/?format=json"
+  },
+  "78145": {
+    "kind": "NamedPlace",
+    "id": 78145,
+    "label": "Chapelle-de-Guinchay, La",
+    "uri": "http://symogih.org/resource/NaPl78145",
+    "url": "http://127.0.0.1:8000/api/named-place/78145/?format=json"
+  },
+  "78161": {
+    "kind": "NamedPlace",
+    "id": 78161,
+    "label": "Charolles",
+    "uri": "http://symogih.org/resource/NaPl78161",
+    "url": "http://127.0.0.1:8000/api/named-place/78161/?format=json"
+  },
+  "78182": {
+    "kind": "NamedPlace",
+    "id": 78182,
+    "label": "Chissey-en-Morvan",
+    "uri": "http://symogih.org/resource/NaPl78182",
+    "url": "http://127.0.0.1:8000/api/named-place/78182/?format=json"
+  },
+  "78271": {
+    "kind": "NamedPlace",
+    "id": 78271,
+    "label": "Gourdon",
+    "uri": "http://symogih.org/resource/NaPl78271",
+    "url": "http://127.0.0.1:8000/api/named-place/78271/?format=json"
+  },
+  "78652": {
+    "kind": "NamedPlace",
+    "id": 78652,
+    "label": "Bessé-sur-Braye",
+    "uri": "http://symogih.org/resource/NaPl78652",
+    "url": "http://127.0.0.1:8000/api/named-place/78652/?format=json"
+  },
+  "78780": {
+    "kind": "NamedPlace",
+    "id": 78780,
+    "label": "Loué",
+    "uri": "http://symogih.org/resource/NaPl78780",
+    "url": "http://127.0.0.1:8000/api/named-place/78780/?format=json"
+  },
+  "79058": {
+    "kind": "NamedPlace",
+    "id": 79058,
+    "label": "Châtelard, Le",
+    "uri": "http://symogih.org/resource/NaPl79058",
+    "url": "http://127.0.0.1:8000/api/named-place/79058/?format=json"
+  },
+  "79140": {
+    "kind": "NamedPlace",
+    "id": 79140,
+    "label": "Montmélian",
+    "uri": "http://symogih.org/resource/NaPl79140",
+    "url": "http://127.0.0.1:8000/api/named-place/79140/?format=json"
+  },
+  "79291": {
+    "kind": "NamedPlace",
+    "id": 79291,
+    "label": "Allinges",
+    "uri": "http://symogih.org/resource/NaPl79291",
+    "url": "http://127.0.0.1:8000/api/named-place/79291/?format=json"
+  },
+  "79510": {
+    "kind": "NamedPlace",
+    "id": 79510,
+    "label": "Saint-Julien-en-Genevois",
+    "uri": "http://symogih.org/resource/NaPl79510",
+    "url": "http://127.0.0.1:8000/api/named-place/79510/?format=json"
+  },
+  "79544": {
+    "kind": "NamedPlace",
+    "id": 79544,
+    "label": "Thusy",
+    "uri": "http://symogih.org/resource/NaPl79544",
+    "url": "http://127.0.0.1:8000/api/named-place/79544/?format=json"
+  },
+  "79560": {
+    "kind": "NamedPlace",
+    "id": 79560,
+    "label": "Veyrier-du-Lac",
+    "uri": "http://symogih.org/resource/NaPl79560",
+    "url": "http://127.0.0.1:8000/api/named-place/79560/?format=json"
+  },
+  "79823": {
+    "kind": "NamedPlace",
+    "id": 79823,
+    "label": "Eu",
+    "uri": "http://symogih.org/resource/NaPl79823",
+    "url": "http://127.0.0.1:8000/api/named-place/79823/?format=json"
+  },
+  "79918": {
+    "kind": "NamedPlace",
+    "id": 79918,
+    "label": "Le Havre",
+    "uri": "http://symogih.org/resource/NaPl79918",
+    "url": "http://127.0.0.1:8000/api/named-place/79918/?format=json"
+  },
+  "79940": {
+    "kind": "NamedPlace",
+    "id": 79940,
+    "label": "Imbleville",
+    "uri": "http://symogih.org/resource/NaPl79940",
+    "url": "http://127.0.0.1:8000/api/named-place/79940/?format=json"
+  },
+  "79967": {
+    "kind": "NamedPlace",
+    "id": 79967,
+    "label": "Luneray",
+    "uri": "http://symogih.org/resource/NaPl79967",
+    "url": "http://127.0.0.1:8000/api/named-place/79967/?format=json"
+  },
+  "80338": {
+    "kind": "NamedPlace",
+    "id": 80338,
+    "label": "Barbizon",
+    "uri": "http://symogih.org/resource/NaPl80338",
+    "url": "http://127.0.0.1:8000/api/named-place/80338/?format=json"
+  },
+  "80420": {
+    "kind": "NamedPlace",
+    "id": 80420,
+    "label": "Chelles",
+    "uri": "http://symogih.org/resource/NaPl80420",
+    "url": "http://127.0.0.1:8000/api/named-place/80420/?format=json"
+  },
+  "80496": {
+    "kind": "NamedPlace",
+    "id": 80496,
+    "label": "Fontainebleau",
+    "uri": "http://symogih.org/resource/NaPl80496",
+    "url": "http://127.0.0.1:8000/api/named-place/80496/?format=json"
+  },
+  "80560": {
+    "kind": "NamedPlace",
+    "id": 80560,
+    "label": "Limoges-Fourches",
+    "uri": "http://symogih.org/resource/NaPl80560",
+    "url": "http://127.0.0.1:8000/api/named-place/80560/?format=json"
+  },
+  "80707": {
+    "kind": "NamedPlace",
+    "id": 80707,
+    "label": "Saint-Fargeau-Ponthierry",
+    "uri": "http://symogih.org/resource/NaPl80707",
+    "url": "http://127.0.0.1:8000/api/named-place/80707/?format=json"
+  },
+  "80917": {
+    "kind": "NamedPlace",
+    "id": 80917,
+    "label": "Fontenay-le-Fleury",
+    "uri": "http://symogih.org/resource/NaPl80917",
+    "url": "http://127.0.0.1:8000/api/named-place/80917/?format=json"
+  },
+  "81042": {
+    "kind": "NamedPlace",
+    "id": 81042,
+    "label": "Saint-Germain-en-Laye",
+    "uri": "http://symogih.org/resource/NaPl81042",
+    "url": "http://127.0.0.1:8000/api/named-place/81042/?format=json"
+  },
+  "81089": {
+    "kind": "NamedPlace",
+    "id": 81089,
+    "label": "Absie, L'",
+    "uri": "http://symogih.org/resource/NaPl81089",
+    "url": "http://127.0.0.1:8000/api/named-place/81089/?format=json"
+  },
+  "81247": {
+    "kind": "NamedPlace",
+    "id": 81247,
+    "label": "Mothe-Saint-Héray, La",
+    "uri": "http://symogih.org/resource/NaPl81247",
+    "url": "http://127.0.0.1:8000/api/named-place/81247/?format=json"
+  },
+  "81339": {
+    "kind": "NamedPlace",
+    "id": 81339,
+    "label": "Saivres",
+    "uri": "http://symogih.org/resource/NaPl81339",
+    "url": "http://127.0.0.1:8000/api/named-place/81339/?format=json"
+  },
+  "81383": {
+    "kind": "NamedPlace",
+    "id": 81383,
+    "label": "Vitré",
+    "uri": "http://symogih.org/resource/NaPl81383",
+    "url": "http://127.0.0.1:8000/api/named-place/81383/?format=json"
+  },
+  "81609": {
+    "kind": "NamedPlace",
+    "id": 81609,
+    "label": "Curlu",
+    "uri": "http://symogih.org/resource/NaPl81609",
+    "url": "http://127.0.0.1:8000/api/named-place/81609/?format=json"
+  },
+  "81909": {
+    "kind": "NamedPlace",
+    "id": 81909,
+    "label": "Monchy-Lagache",
+    "uri": "http://symogih.org/resource/NaPl81909",
+    "url": "http://127.0.0.1:8000/api/named-place/81909/?format=json"
+  },
+  "82015": {
+    "kind": "NamedPlace",
+    "id": 82015,
+    "label": "Revelles",
+    "uri": "http://symogih.org/resource/NaPl82015",
+    "url": "http://127.0.0.1:8000/api/named-place/82015/?format=json"
+  },
+  "82232": {
+    "kind": "NamedPlace",
+    "id": 82232,
+    "label": "Cordes-sur-Ciel",
+    "uri": "http://symogih.org/resource/NaPl82232",
+    "url": "http://127.0.0.1:8000/api/named-place/82232/?format=json"
+  },
+  "82492": {
+    "kind": "NamedPlace",
+    "id": 82492,
+    "label": "Bardigues",
+    "uri": "http://symogih.org/resource/NaPl82492",
+    "url": "http://127.0.0.1:8000/api/named-place/82492/?format=json"
+  },
+  "82786": {
+    "kind": "NamedPlace",
+    "id": 82786,
+    "label": "Seillans",
+    "uri": "http://symogih.org/resource/NaPl82786",
+    "url": "http://127.0.0.1:8000/api/named-place/82786/?format=json"
+  },
+  "82797": {
+    "kind": "NamedPlace",
+    "id": 82797,
+    "label": "Tavernes",
+    "uri": "http://symogih.org/resource/NaPl82797",
+    "url": "http://127.0.0.1:8000/api/named-place/82797/?format=json"
+  },
+  "82806": {
+    "kind": "NamedPlace",
+    "id": 82806,
+    "label": "Varages",
+    "uri": "http://symogih.org/resource/NaPl82806",
+    "url": "http://127.0.0.1:8000/api/named-place/82806/?format=json"
+  },
+  "82841": {
+    "kind": "NamedPlace",
+    "id": 82841,
+    "label": "Carpentras",
+    "uri": "http://symogih.org/resource/NaPl82841",
+    "url": "http://127.0.0.1:8000/api/named-place/82841/?format=json"
+  },
+  "83078": {
+    "kind": "NamedPlace",
+    "id": 83078,
+    "label": "Marsais-Sainte-Radégonde",
+    "uri": "http://symogih.org/resource/NaPl83078",
+    "url": "http://127.0.0.1:8000/api/named-place/83078/?format=json"
+  },
+  "83211": {
+    "kind": "NamedPlace",
+    "id": 83211,
+    "label": "Thiré",
+    "uri": "http://symogih.org/resource/NaPl83211",
+    "url": "http://127.0.0.1:8000/api/named-place/83211/?format=json"
+  },
+  "83279": {
+    "kind": "NamedPlace",
+    "id": 83279,
+    "label": "Champagné-Saint-Hilaire",
+    "uri": "http://symogih.org/resource/NaPl83279",
+    "url": "http://127.0.0.1:8000/api/named-place/83279/?format=json"
+  },
+  "83284": {
+    "kind": "NamedPlace",
+    "id": 83284,
+    "label": "Chapelle-Moulière, La",
+    "uri": "http://symogih.org/resource/NaPl83284",
+    "url": "http://127.0.0.1:8000/api/named-place/83284/?format=json"
+  },
+  "83288": {
+    "kind": "NamedPlace",
+    "id": 83288,
+    "label": "Chasseneuil-du-Poitou",
+    "uri": "http://symogih.org/resource/NaPl83288",
+    "url": "http://127.0.0.1:8000/api/named-place/83288/?format=json"
+  },
+  "83390": {
+    "kind": "NamedPlace",
+    "id": 83390,
+    "label": "Neuville-de-Poitou",
+    "uri": "http://symogih.org/resource/NaPl83390",
+    "url": "http://127.0.0.1:8000/api/named-place/83390/?format=json"
+  },
+  "83482": {
+    "kind": "NamedPlace",
+    "id": 83482,
+    "label": "Verrue",
+    "uri": "http://symogih.org/resource/NaPl83482",
+    "url": "http://127.0.0.1:8000/api/named-place/83482/?format=json"
+  },
+  "83718": {
+    "kind": "NamedPlace",
+    "id": 83718,
+    "label": "Bains-les-Bains",
+    "uri": "http://symogih.org/resource/NaPl83718",
+    "url": "http://127.0.0.1:8000/api/named-place/83718/?format=json"
+  },
+  "83836": {
+    "kind": "NamedPlace",
+    "id": 83836,
+    "label": "Dompaire",
+    "uri": "http://symogih.org/resource/NaPl83836",
+    "url": "http://127.0.0.1:8000/api/named-place/83836/?format=json"
+  },
+  "83879": {
+    "kind": "NamedPlace",
+    "id": 83879,
+    "label": "Gérardmer",
+    "uri": "http://symogih.org/resource/NaPl83879",
+    "url": "http://127.0.0.1:8000/api/named-place/83879/?format=json"
+  },
+  "84001": {
+    "kind": "NamedPlace",
+    "id": 84001,
+    "label": "Neufchâteau",
+    "uri": "http://symogih.org/resource/NaPl84001",
+    "url": "http://127.0.0.1:8000/api/named-place/84001/?format=json"
+  },
+  "84264": {
+    "kind": "NamedPlace",
+    "id": 84264,
+    "label": "Chamoux",
+    "uri": "http://symogih.org/resource/NaPl84264",
+    "url": "http://127.0.0.1:8000/api/named-place/84264/?format=json"
+  },
+  "84456": {
+    "kind": "NamedPlace",
+    "id": 84456,
+    "label": "Noyers",
+    "uri": "http://symogih.org/resource/NaPl84456",
+    "url": "http://127.0.0.1:8000/api/named-place/84456/?format=json"
+  },
+  "84610": {
+    "kind": "NamedPlace",
+    "id": 84610,
+    "label": "Villeblevin",
+    "uri": "http://symogih.org/resource/NaPl84610",
+    "url": "http://127.0.0.1:8000/api/named-place/84610/?format=json"
+  },
+  "84815": {
+    "kind": "NamedPlace",
+    "id": 84815,
+    "label": "Étampes",
+    "uri": "http://symogih.org/resource/NaPl84815",
+    "url": "http://127.0.0.1:8000/api/named-place/84815/?format=json"
+  },
+  "84818": {
+    "kind": "NamedPlace",
+    "id": 84818,
+    "label": "Évry",
+    "uri": "http://symogih.org/resource/NaPl84818",
+    "url": "http://127.0.0.1:8000/api/named-place/84818/?format=json"
+  },
+  "84876": {
+    "kind": "NamedPlace",
+    "id": 84876,
+    "label": "Orsay",
+    "uri": "http://symogih.org/resource/NaPl84876",
+    "url": "http://127.0.0.1:8000/api/named-place/84876/?format=json"
+  },
+  "84925": {
+    "kind": "NamedPlace",
+    "id": 84925,
+    "label": "Verrières-le-Buisson",
+    "uri": "http://symogih.org/resource/NaPl84925",
+    "url": "http://127.0.0.1:8000/api/named-place/84925/?format=json"
+  },
+  "84960": {
+    "kind": "NamedPlace",
+    "id": 84960,
+    "label": "Issy-les-Moulineaux",
+    "uri": "http://symogih.org/resource/NaPl84960",
+    "url": "http://127.0.0.1:8000/api/named-place/84960/?format=json"
+  },
+  "84967": {
+    "kind": "NamedPlace",
+    "id": 84967,
+    "label": "Neuilly-sur-Seine",
+    "uri": "http://symogih.org/resource/NaPl84967",
+    "url": "http://127.0.0.1:8000/api/named-place/84967/?format=json"
+  },
+  "85007": {
+    "kind": "NamedPlace",
+    "id": 85007,
+    "label": "Raincy, Le",
+    "uri": "http://symogih.org/resource/NaPl85007",
+    "url": "http://127.0.0.1:8000/api/named-place/85007/?format=json"
+  },
+  "85026": {
+    "kind": "NamedPlace",
+    "id": 85026,
+    "label": "Charenton-le-Pont",
+    "uri": "http://symogih.org/resource/NaPl85026",
+    "url": "http://127.0.0.1:8000/api/named-place/85026/?format=json"
+  },
+  "85051": {
+    "kind": "NamedPlace",
+    "id": 85051,
+    "label": "Saint-Mandé",
+    "uri": "http://symogih.org/resource/NaPl85051",
+    "url": "http://127.0.0.1:8000/api/named-place/85051/?format=json"
+  },
+  "85204": {
+    "kind": "NamedPlace",
+    "id": 85204,
+    "label": "Pontoise",
+    "uri": "http://symogih.org/resource/NaPl85204",
+    "url": "http://127.0.0.1:8000/api/named-place/85204/?format=json"
+  },
+  "85295": {
+    "kind": "NamedPlace",
+    "id": 85295,
+    "label": "Macouba",
+    "uri": "http://symogih.org/resource/NaPl85295",
+    "url": "http://127.0.0.1:8000/api/named-place/85295/?format=json"
+  },
+  "85305": {
+    "kind": "NamedPlace",
+    "id": 85305,
+    "label": "Saint-Pierre",
+    "uri": "http://symogih.org/resource/NaPl85305",
+    "url": "http://127.0.0.1:8000/api/named-place/85305/?format=json"
+  },
+  "89787": {
+    "kind": "NamedPlace",
+    "id": 89787,
+    "label": "Alger",
+    "uri": "http://symogih.org/resource/NaPl89787",
+    "url": "http://127.0.0.1:8000/api/named-place/89787/?format=json"
+  },
+  "89914": {
+    "kind": "NamedPlace",
+    "id": 89914,
+    "label": "Grandbourg",
+    "uri": "http://symogih.org/resource/NaPl89914",
+    "url": "http://127.0.0.1:8000/api/named-place/89914/?format=json"
+  },
+  "89972": {
+    "kind": "NamedPlace",
+    "id": 89972,
+    "label": "Cherbourg",
+    "uri": "http://symogih.org/resource/NaPl89972",
+    "url": "http://127.0.0.1:8000/api/named-place/89972/?format=json"
+  },
+  "90318": {
+    "kind": "NamedPlace",
+    "id": 90318,
+    "label": "La Guillotière",
+    "uri": "http://symogih.org/resource/NaPl90318",
+    "url": "http://127.0.0.1:8000/api/named-place/90318/?format=json"
+  },
+  "121333": {
+    "kind": "NamedPlace",
+    "id": 121333,
+    "label": "Auschwitz (complexe concentrationnaire)",
+    "uri": "http://symogih.org/resource/NaPl121333",
+    "url": "http://127.0.0.1:8000/api/named-place/121333/?format=json"
+  },
+  "122144": {
+    "kind": "NamedPlace",
+    "id": 122144,
+    "label": "Monaco",
+    "uri": "http://symogih.org/resource/NaPl122144",
+    "url": "http://127.0.0.1:8000/api/named-place/122144/?format=json"
+  },
+  "122145": {
+    "kind": "NamedPlace",
+    "id": 122145,
+    "label": "Zonnebeke",
+    "uri": "http://symogih.org/resource/NaPl122145",
+    "url": "http://127.0.0.1:8000/api/named-place/122145/?format=json"
+  },
+  "122146": {
+    "kind": "NamedPlace",
+    "id": 122146,
+    "label": "Prilly",
+    "uri": "http://symogih.org/resource/NaPl122146",
+    "url": "http://127.0.0.1:8000/api/named-place/122146/?format=json"
+  },
+  "122147": {
+    "kind": "NamedPlace",
+    "id": 122147,
+    "label": "Mahelma",
+    "uri": "http://symogih.org/resource/NaPl122147",
+    "url": "http://127.0.0.1:8000/api/named-place/122147/?format=json"
+  },
+  "122148": {
+    "kind": "NamedPlace",
+    "id": 122148,
+    "label": "Lo-Reninge",
+    "uri": "http://symogih.org/resource/NaPl122148",
+    "url": "http://127.0.0.1:8000/api/named-place/122148/?format=json"
+  },
+  "122149": {
+    "kind": "NamedPlace",
+    "id": 122149,
+    "label": "Dora",
+    "uri": "http://symogih.org/resource/NaPl122149",
+    "url": "http://127.0.0.1:8000/api/named-place/122149/?format=json"
+  },
+  "122151": {
+    "kind": "NamedPlace",
+    "id": 122151,
+    "label": "Bouzareah",
+    "uri": "http://symogih.org/resource/NaPl122151",
+    "url": "http://127.0.0.1:8000/api/named-place/122151/?format=json"
+  },
+  "122419": {
+    "kind": "NamedPlace",
+    "id": 122419,
+    "label": "Frisange",
+    "uri": "http://symogih.org/resource/NaPl122419",
+    "url": "http://127.0.0.1:8000/api/named-place/122419/?format=json"
+  },
+  "122420": {
+    "kind": "NamedPlace",
+    "id": 122420,
+    "label": "Rochefort sur Mer",
+    "uri": "http://symogih.org/resource/NaPl122420",
+    "url": "http://127.0.0.1:8000/api/named-place/122420/?format=json"
+  },
+  "122421": {
+    "kind": "NamedPlace",
+    "id": 122421,
+    "label": "Dissais",
+    "uri": "http://symogih.org/resource/NaPl122421",
+    "url": "http://127.0.0.1:8000/api/named-place/122421/?format=json"
+  },
+  "122475": {
+    "kind": "NamedPlace",
+    "id": 122475,
+    "label": "Paris 1er arrondissement",
+    "uri": "http://symogih.org/resource/NaPl122475",
+    "url": "http://127.0.0.1:8000/api/named-place/122475/?format=json"
+  },
+  "122479": {
+    "kind": "NamedPlace",
+    "id": 122479,
+    "label": "Paris 5ème arrondissement",
+    "uri": "http://symogih.org/resource/NaPl122479",
+    "url": "http://127.0.0.1:8000/api/named-place/122479/?format=json"
+  },
+  "122480": {
+    "kind": "NamedPlace",
+    "id": 122480,
+    "label": "Paris 6ème arrondissement",
+    "uri": "http://symogih.org/resource/NaPl122480",
+    "url": "http://127.0.0.1:8000/api/named-place/122480/?format=json"
+  },
+  "122496": {
+    "kind": "NamedPlace",
+    "id": 122496,
+    "label": "Lang Son",
+    "uri": "http://symogih.org/resource/NaPl122496",
+    "url": "http://127.0.0.1:8000/api/named-place/122496/?format=json"
+  },
+  "122497": {
+    "kind": "NamedPlace",
+    "id": 122497,
+    "label": "Pregny-Chambésy",
+    "uri": "http://symogih.org/resource/NaPl122497",
+    "url": "http://127.0.0.1:8000/api/named-place/122497/?format=json"
+  }
+}

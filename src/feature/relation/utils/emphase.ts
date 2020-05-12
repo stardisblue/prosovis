@@ -33,12 +33,11 @@ export function parseEmphase(
       if (found) actorRingLinks.set(found.id, found);
     });
 
-    // ghosts.forEach((l2) => {
-    //   if (l1.target === l2.target) return;
-    //   const found = linksForPlace.get([l1.target, l2.target].sort().join(':'));
-    //   if (found) ringLinks.set(found.id, found);
-    // });
+    ghosts.forEach((l2) => {
+      if (l1.target === l2.target) return;
+      const found = linksForPlace.get([l1.target, l2.target].sort().join(':'));
+      if (found) ringLinks.set(found.id, found);
+    });
   });
-  console.log();
   return { ghosts, actorRingLinks, ringLinks };
 }

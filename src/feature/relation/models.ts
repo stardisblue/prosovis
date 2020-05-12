@@ -1,4 +1,5 @@
 export type ActorRelationsMap = Map<number, RelationMap>;
+
 export type RelationNodeType = {
   kind: string;
   id: number;

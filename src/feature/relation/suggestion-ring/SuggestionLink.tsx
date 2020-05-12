@@ -6,17 +6,20 @@ import useD3 from '../../../hooks/useD3';
 import { RelationEvent } from '../models';
 // import _ from 'lodash';
 import { line, curveBundle } from 'd3-shape';
+import { useSelector } from 'react-redux';
+import { selectDisplayedRingLinks } from './selectors';
 
 const path = line().curve(curveBundle.beta(1));
 
 export const SuggestionLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
-  links: any;
-  x: d3.ScalePoint<number>;
-}> = function ({ $g, links, x }) {
+  x: (value: number) => number;
+}> = function ({ $g, x }) {
+  // const links = useSelector(selectDisplayedRingLinks);
+
   return (
     <g ref={$g} stroke="#bbb" fill="none">
-      {Array.from(links, ([key, datum]) => (
+      {Array.from([], ([key, datum]) => (
         <SuggestionLink key={key} datum={datum} x={x} />
       ))}
     </g>
@@ -25,7 +28,7 @@ export const SuggestionLinks: React.FC<{
 
 export const SuggestionLink: React.FC<{
   datum: RelationEvent;
-  x: d3.ScalePoint<number>;
+  x: (value: number) => number;
 }> = function ({ datum, x }) {
   // const { locLinks } = useSelector(selectRelations);
   // const activeRelation = useSelector(selectRelationSelection);
@@ -35,12 +38,12 @@ export const SuggestionLink: React.FC<{
   const $line = useD3<SVGPathElement>(datum);
 
   const { x: x1, y: y1 } = toCartesian({
-    theta: x(datum.target)! + (x.bandwidth() + Math.PI) / 2,
+    theta: x(datum.target),
     length: 200,
   });
 
   const { x: x2, y: y2 } = toCartesian({
-    theta: x(datum.source)! + (x.bandwidth() + Math.PI) / 2,
+    theta: x(datum.source),
     length: 200,
   });
 

@@ -1,10 +1,14 @@
+import rawLocs from '../../data/loc-nodes.json';
 import rawNodes from '../../data/actor-nodes.json';
+
 import rawLinks from '../../data/known_links.json';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { RelationEvent, ActorRelationsMap, RelationNodeType } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
+
+const locs: Map<number, RelationNodeType> = new Map(_.toPairs(rawLocs)) as any;
 
 export type RelationType = {
   locLinks: Map<number, Map<string, RelationEvent>>;
@@ -21,6 +25,7 @@ export type RelationType = {
   actorRing: Map<number, { ghosts: Set<number>; locsLinks: ActorRelationsMap }>;
   ghosts: Map<number, RelationNodeType>;
   actors: Map<number, RelationNodeType>; // all people information ( actors)
+  locs: Map<number, RelationNodeType>;
 };
 
 function addRelation(
@@ -100,7 +105,6 @@ export const selectRelations = compareByKeySelector(
           }
         }
 
-        // TODO should be all links.
         let l = relations.locLinks.get(link.loc);
         if (!l) {
           relations.locLinks.set(link.loc, (l = new Map()));
@@ -108,6 +112,7 @@ export const selectRelations = compareByKeySelector(
         l.set(link.id, link);
       },
       {
+        locs,
         locLinks: new Map(),
         actorRing: new Map(),
         links: new Map(),

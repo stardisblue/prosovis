@@ -14,6 +14,7 @@ function useD3<E extends Element, Datum = any>(datum: Datum) {
     };
     // eslint-disable-next-line
   }, []);
+
   return $dom;
 }
 
