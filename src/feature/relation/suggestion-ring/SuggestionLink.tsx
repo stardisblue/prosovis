@@ -6,8 +6,8 @@ import useD3 from '../../../hooks/useD3';
 import { RelationEvent } from '../models';
 // import _ from 'lodash';
 import { line, curveBundle } from 'd3-shape';
-import { useSelector } from 'react-redux';
-import { selectDisplayedRingLinks } from './selectors';
+// import { useSelector } from 'react-redux';
+// import { selectDisplayedRingLinks } from './selectors';
 
 const path = line().curve(curveBundle.beta(1));
 
