@@ -9,7 +9,7 @@ export const colorSlice = createSlice({
       'Retirement',
       'SuspensionActivity',
       'Death',
-      'ObtainQualification'
+      'ObtainQualification',
     ],
     kindRange: [
       '#a6cee3',
@@ -18,20 +18,20 @@ export const colorSlice = createSlice({
       '#33a02c',
       '#fb9a99',
       '#e31a1c',
-      '#fdbf6f'
+      '#fdbf6f',
     ],
     actorRange: [
       '#66c2a5',
       '#fc8d62',
       '#8da0cb',
       '#e78ac3',
+      '#e5c494',
       '#a6d854',
       '#ffd92f',
-      '#e5c494',
-      '#b3b3b3'
-    ] //
+      '#b3b3b3',
+    ], //
   },
-  reducers: {}
+  reducers: {},
 });
 
 export default colorSlice.reducer;

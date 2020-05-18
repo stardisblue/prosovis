@@ -972,7 +972,7 @@ input[type='submit'] {
 .vis-item.vis-range {
   background-color: rgba(0, 0, 0, 0);
   box-sizing: border-box;
-  height: 12px;
+  height: 10px;
   border: 0px;
   border-radius: 2px;
   border-style: solid;
@@ -1099,7 +1099,7 @@ input[type='submit'] {
 
 .vis-item.vis-box {
   width: 12px;
-  height: 12px;
+  height: 10px;
   border-radius: 100%;
 }
 

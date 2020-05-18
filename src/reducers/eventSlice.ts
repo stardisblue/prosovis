@@ -7,6 +7,7 @@ export const eventSlice = createSlice({
   initialState: [] as AnyEvent[],
   reducers: {
     addActor(state, action: PayloadAction<Actor | Actor[]>) {
+      console.log(action.payload);
       if (_.isArray(action.payload)) {
         return state.concat(_.flatMap(action.payload, getEvents));
       }

@@ -53,7 +53,8 @@ export const PiePart: React.FC<{
   }, [hover, dispatch]);
 
   const opacity =
-    (emph && (emph.loc === key ? (emph.actor === parent ? 1 : 0.8) : 0.3)) ||
+    (emph &&
+      (emph.loc === key ? (emph.actor === parent ? undefined : 0.6) : 0.3)) ||
     undefined;
 
   return (
@@ -64,7 +65,8 @@ export const PiePart: React.FC<{
       // onMouseUp={onMouseUp}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-      opacity={opacity}
+      fillOpacity={opacity}
+      // stroke={(emph && '#6c757d') || undefined}
     >
       <title>{value.size}</title>
     </path>

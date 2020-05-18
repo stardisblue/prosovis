@@ -8,7 +8,12 @@ import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { RelationEvent, ActorRelationsMap, RelationNodeType } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
 
-const locs: Map<number, RelationNodeType> = new Map(_.toPairs(rawLocs)) as any;
+const locs: Map<number, RelationNodeType> = new Map<number, RelationNodeType>(
+  _(rawLocs)
+    .toPairs()
+    .map(([k, v]) => [+k, v] as [number, RelationNodeType])
+    .value()
+) as any;
 
 export type RelationType = {
   locLinks: Map<number, Map<string, RelationEvent>>;
@@ -25,7 +30,6 @@ export type RelationType = {
   actorRing: Map<number, { ghosts: Set<number>; locsLinks: ActorRelationsMap }>;
   ghosts: Map<number, RelationNodeType>;
   actors: Map<number, RelationNodeType>; // all people information ( actors)
-  locs: Map<number, RelationNodeType>;
 };
 
 function addRelation(
@@ -82,13 +86,19 @@ const links: RelationEvent[] = _.map(
 
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
-  (actors) =>
-    _.transform(
+  (actors) => {
+    console.log(actors, links);
+
+    return _.transform(
       links,
       function (relations, link) {
         const { source, target } = link;
         if (actors[source] || actors[target]) {
+          link = { ...link };
+
           if (actors[source] && actors[target]) {
+            console.log(source, target);
+
             // both are actors
             if (!relations.actors.has(source))
               relations.actors.set(source, _.get(rawNodes, source));
@@ -98,13 +108,11 @@ export const selectRelations = compareByKeySelector(
           } else if (actors[source]) {
             addRelation(relations, rawNodes, link);
           } else if (actors[target]) {
-            link = { ...link };
             link.source = target;
             link.target = source;
             addRelation(relations, rawNodes, link);
           }
         }
-
         let l = relations.locLinks.get(link.loc);
         if (!l) {
           relations.locLinks.set(link.loc, (l = new Map()));
@@ -112,16 +120,17 @@ export const selectRelations = compareByKeySelector(
         l.set(link.id, link);
       },
       {
-        locs,
         locLinks: new Map(),
         actorRing: new Map(),
         links: new Map(),
         ghosts: new Map(),
         actors: new Map(),
       } as RelationType
-    )
+    );
+  }
 );
 
+export const selectLocalisations = () => locs;
 export const selectRelationNodes = createSelector(
   selectRelations,
   ({ actors }) => actors

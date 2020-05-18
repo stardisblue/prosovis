@@ -10,12 +10,18 @@ import _ from 'lodash';
 
 import { useSelector, useDispatch } from 'react-redux';
 import RelationNode from './node/RelationNode';
-import { selectRelationNodes, selectRelationLinks } from './selectRelations';
+import {
+  selectRelationNodes,
+  selectRelationLinks,
+  selectLocalisations,
+  selectRelations,
+} from './selectRelations';
 import { clearRelationSelection } from './selectionSlice';
 import useD3 from '../../hooks/useD3';
 import { getSimulation } from './utils/simulation';
 
 import SuggestionRing from './suggestion-ring/SuggestionRing';
+import { selectRelationEmphasis } from './highlightSlice';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -49,7 +55,8 @@ const Relation: React.FC = function () {
   const { dims, $svg } = useDimensions();
 
   const nodes = useSelector(selectRelationNodes);
-  const links = useSelector(selectRelationLinks);
+  const { links } = useSelector(selectRelations);
+  console.log(links);
 
   const updateRef = useRef<{
     nodes: () => void;
@@ -105,9 +112,12 @@ const Relation: React.FC = function () {
         .attr('y2', (d: any) => d.target.y);
 
       ringLink.attr('d', ([d, points]: any) => {
-        const { x, y } = nodeMap.get(d.source) as any;
+        if (nodeMap.get(d.source)) {
+          const { x, y } = nodeMap.get(d.source) as any;
 
-        return path([[x, y], ...points]);
+          return path([[x, y], ...points]);
+        }
+        return '';
       });
       // .attr('y2', (d: any) => (nodeMap.get(d.source) as any)!.y);
     }
@@ -142,6 +152,7 @@ const Relation: React.FC = function () {
       }
       onMouseUp={handleAwayClick}
     >
+      <PlaceText offset={dims} />
       <SuggestionRing
         /*$nodes={$ghostRing}*/
         $links={$ringLinksGroup}
@@ -167,6 +178,21 @@ const Relation: React.FC = function () {
         )}
       </g>
     </svg>
+  );
+};
+
+export const PlaceText: React.FC<any> = function ({ offset }) {
+  const emph = useSelector(selectRelationEmphasis);
+  const localisations = useSelector(selectLocalisations);
+
+  return (
+    <text
+      x={offset && -offset.width / 2}
+      y={offset && 32 - offset.height / 2}
+      fontSize="1em"
+    >
+      {emph && localisations.get(emph.loc)?.label}
+    </text>
   );
 };
 
