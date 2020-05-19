@@ -12,7 +12,6 @@ import { useSelector, useDispatch } from 'react-redux';
 import RelationNode from './node/RelationNode';
 import {
   selectRelationNodes,
-  selectRelationLinks,
   selectLocalisations,
   selectRelations,
 } from './selectRelations';

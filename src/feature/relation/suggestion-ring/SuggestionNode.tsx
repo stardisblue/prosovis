@@ -11,7 +11,7 @@ import {
 } from './selectors';
 import { createSelector } from 'reselect';
 import { useFlatClick } from '../../../hooks/useClick';
-import { selectActors } from '../../../selectors/event';
+// import { selectActors } from '../../../selectors/event';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components';
 import Octicon, { X, Plus } from '@primer/octicons-react';
@@ -147,7 +147,7 @@ export const SuggestionPopup: React.FC<any> = function ({
   color,
   label,
 }) {
-  const activeActors = useSelector(selectActors);
+  // const activeActors = useSelector(selectActors);
   return (
     <AbsoluteDiv
       style={{
