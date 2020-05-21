@@ -16,8 +16,8 @@ const events = _.flatMap((defaultActors as any) as Actor[], getEvents);
 const store = configureStore({
   reducer: rootReducer,
   preloadedState: {
-    events
-  }
+    events,
+  },
 });
 
 ReactDOM.render(

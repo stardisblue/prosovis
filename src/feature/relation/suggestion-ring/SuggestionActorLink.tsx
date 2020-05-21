@@ -5,8 +5,6 @@ import { selectRelationNodes } from '../selectRelations';
 import { useSelector } from 'react-redux';
 import { RelationEvent } from '../models';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-import { line } from 'd3-shape';
-import { curveBundle } from 'd3-shape';
 import _ from 'lodash';
 import {
   selectIntersection,
@@ -15,6 +13,7 @@ import {
 } from './selectors';
 import { select } from 'd3';
 import { createSelector } from 'reselect';
+import path from './path';
 
 export const selectClusteredSuggestionActorLinks = createSelector(
   selectDisplayedActorRingLinks,
@@ -94,8 +93,6 @@ export const SuggestionActorLinks: React.FC<{
     </g>
   );
 };
-
-const path = line().curve(curveBundle.beta(1));
 
 export const SuggestionActorLink: React.FC<{
   datum: RelationEvent;

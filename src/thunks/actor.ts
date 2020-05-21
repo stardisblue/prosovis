@@ -6,7 +6,7 @@ export const addActorThunk = function (payload: PrimaryKey) {
     axios
       .get('http://advanse.lirmm.fr/siprojuris/api/actor/' + payload)
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         dispatch(addActor(response.data));
       });
   };

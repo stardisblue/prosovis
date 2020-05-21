@@ -14,8 +14,7 @@ import { useFlatClick } from '../../../hooks/useClick';
 // import { selectActors } from '../../../selectors/event';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components';
-import Octicon, { X, Plus } from '@primer/octicons-react';
-import { deleteActor } from '../../../reducers/eventSlice';
+import Octicon, { Plus } from '@primer/octicons-react';
 import { addActorThunk } from '../../../thunks/actor';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
@@ -167,26 +166,6 @@ export const SuggestionPopup: React.FC<any> = function ({
       ))} */}
       </StyledDiv>
     </AbsoluteDiv>
-  );
-};
-export const ActorLine: React.FC<any> = function ({ actor }) {
-  const dispatch = useDispatch();
-  const handleClick = useCallback(() => {
-    dispatch(deleteActor(actor.id));
-  }, [dispatch, actor.id]);
-
-  return (
-    <div>
-      <span className="pointer" onClick={handleClick}>
-        <Octicon
-          className="ma1 flex-shrink-0 red"
-          verticalAlign="text-bottom"
-          icon={X}
-          ariaLabel={'Supprimer'}
-        />
-      </span>
-      {actor.label}
-    </div>
   );
 };
 

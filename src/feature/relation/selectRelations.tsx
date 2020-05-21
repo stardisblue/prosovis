@@ -87,8 +87,6 @@ const links: RelationEvent[] = _.map(
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
   (actors) => {
-    console.log(actors, links);
-
     return _.transform(
       links,
       function (relations, link) {
@@ -97,8 +95,6 @@ export const selectRelations = compareByKeySelector(
           link = { ...link };
 
           if (actors[source] && actors[target]) {
-            console.log(source, target);
-
             // both are actors
             if (!relations.actors.has(source))
               relations.actors.set(source, _.get(rawNodes, source));

@@ -4,12 +4,7 @@ import useD3 from '../../../hooks/useD3';
 // import { selectRelationNodes } from '../selectRelations';
 // import { useSelector } from 'react-redux';
 import { RelationEvent } from '../models';
-// import _ from 'lodash';
-import { line, curveBundle } from 'd3-shape';
-// import { useSelector } from 'react-redux';
-// import { selectDisplayedRingLinks } from './selectors';
-
-const path = line().curve(curveBundle.beta(1));
+import path from './path';
 
 export const SuggestionLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;

@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import Mask from '../feature/mask/Mask';
 import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
+import { ActorModal } from '../feature/modal/ActorModal';
 
 const Main = styled.main`
   display: grid;
@@ -89,16 +90,19 @@ function App() {
     []
   );
   return (
-    <Main {...bind}>
-      <Mask />
-      <Search>
-        <input type="text" name="" id="" placeholder="Rechercher un acteur" />
-      </Search>
-      <StyledInformation />
-      <StyledRelation />
-      <StyledMap />
-      <StyledTimeline />
-    </Main>
+    <>
+      <Main {...bind}>
+        <Mask />
+        <Search>
+          <input type="text" name="" id="" placeholder="Rechercher un acteur" />
+        </Search>
+        <StyledInformation />
+        <StyledRelation />
+        <StyledMap />
+        <StyledTimeline />
+      </Main>
+      <ActorModal />
+    </>
   );
 }
 

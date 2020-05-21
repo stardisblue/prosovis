@@ -140,7 +140,8 @@ export function getEvents(actor: Actor): AnyEvent[] {
     ...actor.birth_set,
     ...actor.death_set,
     ...actor.education_set,
-    ..._.map(actor.est_evalue_examen, ({ actor_evalue, ...rest }) => ({
+    ..._.map(actor.est_evalue_examen, ({ id, actor_evalue, ...rest }) => ({
+      id: -id,
       ...rest,
       actor_evalue,
       actor: actor_evalue,

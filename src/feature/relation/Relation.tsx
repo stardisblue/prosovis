@@ -13,7 +13,7 @@ import RelationNode from './node/RelationNode';
 import {
   selectRelationNodes,
   selectLocalisations,
-  selectRelations,
+  selectRelationLinks,
 } from './selectRelations';
 import { clearRelationSelection } from './selectionSlice';
 import useD3 from '../../hooks/useD3';
@@ -21,6 +21,7 @@ import { getSimulation } from './utils/simulation';
 
 import SuggestionRing from './suggestion-ring/SuggestionRing';
 import { selectRelationEmphasis } from './highlightSlice';
+import path from './suggestion-ring/path';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -41,7 +42,6 @@ function useDimensions() {
 }
 
 const simulation = getSimulation((d: any) => d.id);
-const path = d3.line().curve(d3.curveBundle.beta(0.75));
 
 const Relation: React.FC = function () {
   const dispatch = useDispatch();
@@ -54,8 +54,7 @@ const Relation: React.FC = function () {
   const { dims, $svg } = useDimensions();
 
   const nodes = useSelector(selectRelationNodes);
-  const { links } = useSelector(selectRelations);
-  console.log(links);
+  const links = useSelector(selectRelationLinks);
 
   const updateRef = useRef<{
     nodes: () => void;
