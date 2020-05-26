@@ -15,7 +15,7 @@ import { useFlatClick } from '../../../hooks/useClick';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components';
 import Octicon, { Plus } from '@primer/octicons-react';
-import { addActorThunk } from '../../../thunks/actor';
+import { fetchActorThunk } from '../../../thunks/actor';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
@@ -72,7 +72,7 @@ export const SuggestionNode: React.FC<{
   const [showModal, setShow] = useState({ show: false, x: 0, y: 0 });
 
   const { onClick, onMouseUp } = useFlatClick((e) => {
-    dispatch(addActorThunk(datum.target));
+    dispatch(fetchActorThunk(datum.target));
   });
 
   const handleMouseEnter = useCallback(

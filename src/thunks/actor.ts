@@ -1,13 +1,43 @@
-import { addActor } from '../reducers/eventSlice';
 import axios from 'axios';
-import { PrimaryKey } from '../data';
-export const addActorThunk = function (payload: PrimaryKey) {
-  return (dispatch: any) => {
+import { PrimaryKey, Actor, ActorCard } from '../data';
+import { setCurrent, resetCurrent } from '../reducers/maxActorsSlice';
+import { ThunkAction, Action } from '@reduxjs/toolkit';
+import { RootState } from '../reducers';
+import { selectActors } from '../selectors/event';
+import _ from 'lodash';
+import { addActor, deleteAddActors } from '../reducers/eventSlice';
+import { selectMaxActors } from '../selectors/maxActors';
+export const fetchActorThunk = function (
+  payload: PrimaryKey
+): ThunkAction<void, RootState, unknown, Action<string>> {
+  return (dispatch, getState) => {
+    const state = getState();
+    const actors = selectActors(state);
+    const maxSize = selectMaxActors(state);
     axios
       .get('http://advanse.lirmm.fr/siprojuris/api/actor/' + payload)
       .then((response) => {
         // console.log(response);
-        dispatch(addActor(response.data));
+        if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
+        else dispatch(addActor(response.data));
       });
+  };
+};
+
+export const addActorsThunk = function (payload: {
+  current: Actor;
+  checkboxs: { actor: ActorCard; checked: boolean }[];
+}): ThunkAction<void, RootState, unknown, Action<string>> {
+  return (dispatch) => {
+    dispatch(
+      deleteAddActors({
+        delete: _(payload.checkboxs)
+          .filter((v) => !v.checked)
+          .map('actor.id')
+          .value(),
+        add: payload.current,
+      })
+    );
+    dispatch(resetCurrent());
   };
 };

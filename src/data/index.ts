@@ -8,7 +8,7 @@ export type Ressource = {
   uri: string;
   label: string;
 };
-type ActorCard = Ressource;
+export type ActorCard = Ressource;
 type AbstractObject = Ressource;
 
 export type Nullable<T> = T | null;
@@ -157,6 +157,7 @@ export function getEvents(actor: Actor): AnyEvent[] {
   );
 
   return _.map(events, (e) => {
+    e = _.clone(e);
     e.datation = _.sortBy(e.datation, 'clean_date');
     return e;
   });

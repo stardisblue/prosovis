@@ -3,9 +3,10 @@ import styled from 'styled-components/macro';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
 import _ from 'lodash';
-import Octicon, { X } from '@primer/octicons-react';
-import { deleteActor } from '../../reducers/eventSlice';
-import { selectMaxActors } from '../../selectors/maxActors';
+import Octicon, { X, Plus } from '@primer/octicons-react';
+import { selectMaxActors, selectCurrent } from '../../selectors/maxActors';
+import { addActorsThunk } from '../../thunks/actor';
+import { resetCurrent } from '../../reducers/maxActorsSlice';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -37,34 +38,76 @@ export const ModalDiv = styled.div`
 `;
 
 export const ActorModal: React.FC = function () {
+  const dispatch = useDispatch();
   const actors = useSelector(selectActors);
   const maxActors = useSelector(selectMaxActors);
+  const current = useSelector(selectCurrent);
   const [show, setShow] = useState(false);
+
   useEffect(() => {
-    if (_.size(actors) > maxActors) {
+    if (_.size(actors) >= maxActors && current != null) {
       setShow(true);
+      setCheckboxs(_.mapValues(actors, (actor) => ({ actor, checked: true })));
     }
-  }, [actors, maxActors]);
-  const handleClick = useCallback(() => {
-    setShow(false);
+  }, [actors, maxActors, current]);
+
+  const [checkboxs, setCheckboxs] = useState({} as any);
+
+  useEffect(() => {
+    setCheckboxs(_.mapValues(actors, (actor) => ({ actor, checked: true })));
+  }, [actors]);
+
+  const switchCheckBox = useCallback((key: string) => {
+    setCheckboxs((state: any) =>
+      _.mapValues(state, (v, id) =>
+        id.toString() === key.toString()
+          ? { actor: v.actor, checked: !v.checked }
+          : v
+      )
+    );
   }, []);
-  const color = _.size(actors) <= maxActors || show ? 'green' : undefined;
-  if (_.size(actors) > maxActors || show)
+
+  const handleClick = useCallback(() => {
+    if (current !== null) dispatch(addActorsThunk({ current, checkboxs }));
+    setShow(false);
+  }, [dispatch, current, checkboxs]);
+
+  const handleCancel = useCallback(() => {
+    dispatch(resetCurrent());
+    setShow(false);
+  }, [dispatch]);
+
+  const color = _.size(actors) < maxActors ? 'green' : undefined;
+  if (show)
     return (
       <AbsolDiv style={{ position: 'absolute' }}>
         <GreyPlane></GreyPlane>
         <Flexible>
           <ModalDiv color={color}>
-            <h3>Veuillez supprimer au moins un acteur pour continuer</h3>
+            <h3>
+              Impossible d'avoir plus de 5 acteurs: veuillez en supprimer un.
+            </h3>
+            <hr />
+            {current && <div>Nouvel acteur : {current.label}</div>}
             <hr />
             <ul>
-              {_.map(actors, (a) => (
-                <ActorLine key={a.id} actor={a}></ActorLine>
+              {_.map(checkboxs, ({ actor, checked }, key) => (
+                <ActorLine
+                  key={key}
+                  actor={actor}
+                  switcher={switchCheckBox}
+                  checked={checked}
+                ></ActorLine>
               ))}
             </ul>
-            {_.size(actors) <= maxActors && (
-              <button onClick={handleClick}>Terminé</button>
-            )}
+            <hr />
+
+            <button onClick={handleClick}>
+              Terminer
+              {_.filter(checkboxs, 'checked').length >= maxActors &&
+                " sans supprimer d'acteurs"}
+            </button>
+            <button onClick={handleCancel}>Annuler</button>
           </ModalDiv>
         </Flexible>
       </AbsolDiv>
@@ -72,18 +115,26 @@ export const ActorModal: React.FC = function () {
   else return null;
 };
 
-export const ActorLine: React.FC<any> = function ({ actor }) {
-  const dispatch = useDispatch();
+export const ActorLine: React.FC<any> = function ({
+  actor,
+  checked,
+  switcher,
+}) {
   const handleClick = useCallback(() => {
-    dispatch(deleteActor(actor.id));
-  }, [dispatch, actor.id]);
+    switcher(actor.id);
+  }, [switcher, actor.id]);
+
   return (
-    <div>
+    <div
+      style={{
+        opacity: checked ? undefined : 0.3,
+      }}
+    >
       <span className="pointer" onClick={handleClick}>
         <Octicon
           className="ma1 flex-shrink-0 red"
           verticalAlign="text-bottom"
-          icon={X}
+          icon={checked ? X : Plus}
           ariaLabel={'Supprimer'}
         />
       </span>
