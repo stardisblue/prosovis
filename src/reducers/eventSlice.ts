@@ -14,8 +14,6 @@ export const eventSlice = createSlice({
     },
     deleteActor(state, { payload }: PayloadAction<PrimaryKey | PrimaryKey[]>) {
       if (_.isArray(payload)) {
-        console.log(payload);
-        console.log(state);
         return state.filter(({ actor: { id } }) =>
           _.every(payload, (actor) => actor.toString() !== id.toString())
         );
@@ -34,8 +32,6 @@ export const eventSlice = createSlice({
       let cleaned;
       const deletes = payload.delete;
       if (_.isArray(deletes)) {
-        console.log(payload);
-        console.log(state);
         cleaned = state.filter(({ actor: { id } }) =>
           _.every(deletes, (actor) => actor.toString() !== id.toString())
         );

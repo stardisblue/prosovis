@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components/macro';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
@@ -7,6 +7,7 @@ import Octicon, { X, Plus } from '@primer/octicons-react';
 import { selectMaxActors, selectCurrent } from '../../selectors/maxActors';
 import { addActorsThunk } from '../../thunks/actor';
 import { resetCurrent } from '../../reducers/maxActorsSlice';
+import { Flex } from '../../components/ui/Flex';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -77,7 +78,11 @@ export const ActorModal: React.FC = function () {
     setShow(false);
   }, [dispatch]);
 
-  const color = _.size(actors) < maxActors ? 'green' : undefined;
+  const checkedSize = useMemo(() => _.filter(checkboxs, 'checked').length, [
+    checkboxs,
+  ]);
+
+  const color = checkedSize < maxActors ? 'green' : undefined;
   if (show)
     return (
       <AbsolDiv style={{ position: 'absolute' }}>
@@ -102,12 +107,14 @@ export const ActorModal: React.FC = function () {
             </ul>
             <hr />
 
-            <button onClick={handleClick}>
-              Terminer
-              {_.filter(checkboxs, 'checked').length >= maxActors &&
-                " sans supprimer d'acteurs"}
-            </button>
-            <button onClick={handleCancel}>Annuler</button>
+            <Flex justify="around">
+              <button onClick={handleClick} disabled={checkedSize >= maxActors}>
+                Terminer
+                {/* {checkedSize >= maxActors &&
+                  " sans supprimer d'acteurs" */}
+              </button>
+              <button onClick={handleCancel}>Annuler</button>
+            </Flex>
           </ModalDiv>
         </Flexible>
       </AbsolDiv>

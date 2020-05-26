@@ -7,6 +7,10 @@ import { selectActors } from '../selectors/event';
 import _ from 'lodash';
 import { addActor, deleteAddActors } from '../reducers/eventSlice';
 import { selectMaxActors } from '../selectors/maxActors';
+import {
+  clearRelationSelection,
+  selectRelationSelection,
+} from '../feature/relation/selectionSlice';
 export const fetchActorThunk = function (
   payload: PrimaryKey
 ): ThunkAction<void, RootState, unknown, Action<string>> {
@@ -28,7 +32,8 @@ export const addActorsThunk = function (payload: {
   current: Actor;
   checkboxs: { actor: ActorCard; checked: boolean }[];
 }): ThunkAction<void, RootState, unknown, Action<string>> {
-  return (dispatch) => {
+  return (dispatch, getState) => {
+    const relationSelection = selectRelationSelection(getState());
     dispatch(
       deleteAddActors({
         delete: _(payload.checkboxs)
@@ -38,6 +43,14 @@ export const addActorsThunk = function (payload: {
         add: payload.current,
       })
     );
+    if (
+      relationSelection &&
+      !_.find(
+        payload.checkboxs,
+        (chk) => chk.actor.id.toString() === relationSelection.actor.toString()
+      )?.checked
+    )
+      dispatch(clearRelationSelection());
     dispatch(resetCurrent());
   };
 };
