@@ -90,7 +90,8 @@ export const ActorModal: React.FC = function () {
         <Flexible>
           <ModalDiv color={color}>
             <h3>
-              Impossible d'avoir plus de 5 acteurs: veuillez en supprimer un.
+              Impossible d'avoir plus de 5 acteurs : veuillez en supprimer au
+              moins un.
             </h3>
             <hr />
             {current && <div>Nouvel acteur : {current.label}</div>}
@@ -108,12 +109,12 @@ export const ActorModal: React.FC = function () {
             <hr />
 
             <Flex justify="around">
+              <button onClick={handleCancel}>Annuler</button>
               <button onClick={handleClick} disabled={checkedSize >= maxActors}>
                 Terminer
                 {/* {checkedSize >= maxActors &&
                   " sans supprimer d'acteurs" */}
               </button>
-              <button onClick={handleCancel}>Annuler</button>
             </Flex>
           </ModalDiv>
         </Flexible>
