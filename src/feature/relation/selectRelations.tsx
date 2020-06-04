@@ -1,5 +1,5 @@
 import rawLocs from '../../data/loc-nodes.json';
-import rawNodes from '../../data/actor-nodes.json';
+import rawNodes from '../../data/actor-nodes';
 
 import rawLinks from '../../data/known_links.json';
 import _ from 'lodash';

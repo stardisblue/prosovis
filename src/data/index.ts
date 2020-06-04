@@ -69,7 +69,7 @@ export type EducationEvent = Event & {
 export type ExamenEvent = Event & {
   kind: 'PassageExamen';
   actor_evalue: ActorCard;
-  actor_evaluer: ActorCard;
+  actor_evaluer: Nullable<ActorCard>;
   abstract_object: AbstractObject;
   collective_actor: CollectiveActor;
 };
@@ -146,11 +146,14 @@ export function getEvents(actor: Actor): AnyEvent[] {
       actor_evalue,
       actor: actor_evalue,
     })),
-    ..._.map(actor.evaluer_examen, ({ actor_evaluer, ...rest }) => ({
-      ...rest,
-      actor_evaluer,
-      actor: actor_evaluer,
-    })),
+    ..._(actor.evaluer_examen)
+      .filter('actor_evaluer')
+      .map(({ actor_evaluer, ...rest }) => ({
+        ...rest,
+        actor_evaluer,
+        actor: actor_evaluer!,
+      }))
+      .value(),
     ...actor.retirement_set,
     ...actor.suspensionactivity_set,
     ...actor.obtainqualification_set

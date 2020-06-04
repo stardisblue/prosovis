@@ -39,7 +39,9 @@ function getEventInfo(
     case 'PassageExamen': {
       const _ = showificator(event);
       const eva = (yes: string, no: string) =>
-        event.actor.id === event.actor_evaluer.id ? yes : no;
+        event.actor_evaluer && event.actor.id === event.actor_evaluer.id
+          ? yes
+          : no;
       const rest = _` pour ${'abstract_object'}` + _` à ${'collective_actor'}`;
       return (
         act(

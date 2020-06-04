@@ -11,6 +11,7 @@ import Mask from '../feature/mask/Mask';
 import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
+import Autocomplete from '../feature/search/Autocomplete';
 
 const Main = styled.main`
   display: grid;
@@ -94,7 +95,7 @@ function App() {
       <Main {...bind}>
         <Mask />
         <Search>
-          <input type="text" name="" id="" placeholder="Rechercher un acteur" />
+          <Autocomplete />
         </Search>
         <StyledInformation />
         <StyledRelation />

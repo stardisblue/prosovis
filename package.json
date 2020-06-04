@@ -25,6 +25,7 @@
     "classnames": "^2.2.6",
     "d3": "^5.14.2",
     "element-resize-detector": "^1.2.1",
+    "fuzzysort": "^1.1.4",
     "he": "^1.2.0",
     "jquery": "^3.4.1",
     "leaflet": "^1.5.1",
