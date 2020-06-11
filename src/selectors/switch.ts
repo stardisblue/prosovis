@@ -8,7 +8,7 @@ export const selectSwitch = (state: RootState) => state.switch;
 
 export const selectSwitchIsActor = createSelector(
   selectSwitch,
-  switcher => switcher === 'Actor'
+  (switcher) => switcher === 'Actor'
 );
 export const selectSwitchColor = createSelector(
   selectSwitchIsActor,
@@ -39,34 +39,24 @@ export const selectMarkerColor = createSelector(
     if (switcher) {
       const border = d3
         .scaleOrdinal<PrimaryKey, string>(
-          actor.range().map(d =>
-            d3
-              .color(d)!
-              .darker(2)
-              .toString()
-          )
+          actor.range().map((d) => d3.color(d)!.darker(2).toString())
         )
         .domain(actor.domain());
 
       return {
         main: (e: any) => actor(e.actor),
-        border: (e: any) => border(e.actor)
+        border: (e: any) => border(e.actor),
       };
     } else {
       const border = d3
         .scaleOrdinal<PrimaryKey, string>(
-          main.range().map(d =>
-            d3
-              .color(d)!
-              .darker(2)
-              .toString()
-          )
+          main.range().map((d) => d3.color(d)!.darker(2).toString())
         )
         .domain(main.domain());
 
       return {
         main: (e: any) => main(e.kind),
-        border: (e: any) => border(e.kind)
+        border: (e: any) => border(e.kind),
       };
     }
   }
@@ -75,40 +65,31 @@ export const selectEventColor = createSelector(
   selectSwitchIsActor,
   selectActorColor,
   selectMainColor,
-  function(switcher, actorColor, mainColor) {
+  function (switcher, actorColor, mainColor) {
     switch (switcher) {
       case true: {
+        console.log(actorColor.range());
+
         const border = d3
           .scaleOrdinal<PrimaryKey, string>(
-            actorColor.range().map(d =>
-              d3
-                .color(d)!
-                .darker(2)
-                .toString()
-            )
+            actorColor.range().map((d) => d3.color(d)!.darker(2).toString())
           )
           .domain(actorColor.domain());
-
         return {
           main: (e: AnyEvent) => actorColor(e.actor.id),
-          border: (e: AnyEvent) => border(e.actor.id)
+          border: (e: AnyEvent) => border(e.actor.id),
         };
       }
       case false:
       default: {
         const border = d3
           .scaleOrdinal<PrimaryKey, string>(
-            mainColor.range().map(d =>
-              d3
-                .color(d)!
-                .darker(2)
-                .toString()
-            )
+            mainColor.range().map((d) => d3.color(d)!.darker(2).toString())
           )
           .domain(mainColor.domain());
         return {
           main: (e: AnyEvent) => mainColor(e.kind),
-          border: (e: AnyEvent) => border(e.kind)
+          border: (e: AnyEvent) => border(e.kind),
         };
       }
     }

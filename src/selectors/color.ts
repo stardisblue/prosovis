@@ -60,7 +60,6 @@ export const selectActorColor = createSelector(
         PrimaryKey[],
         string[]
       ];
-
       keep.push(
         ...(_.zip(_.map(add, 'id'), _.slice(rainbow, 0, add.length)) as [
           PrimaryKey,
@@ -69,6 +68,10 @@ export const selectActorColor = createSelector(
       );
 
       const [newDomain, newRange] = _.unzip(keep) as [PrimaryKey[], string[]];
+
+      if (!newDomain && !newRange) {
+        return actorColor.range([]).domain([]).copy();
+      }
 
       actorColor
         .range(_.concat(newRange, _.slice(rainbow, add.length), left))
