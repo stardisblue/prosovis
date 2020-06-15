@@ -1,22 +1,22 @@
 import { AnyEvent } from '../../../data';
 import {
   Plus,
-  X,
   MortarBoard,
   Book,
   Bookmark,
-  Home
+  Home,
 } from '@primer/octicons-react';
 import Pause from './Pause';
+import Grave from './Grave';
 
 export const kindMap = {
   Birth: Plus,
-  Death: X,
+  Death: Grave,
   Education: Book,
   ObtainQualification: MortarBoard,
   PassageExamen: Bookmark,
   Retirement: Home,
-  SuspensionActivity: Pause
+  SuspensionActivity: Pause,
 };
 
 function getEventIcon(kind: AnyEvent['kind']) {
