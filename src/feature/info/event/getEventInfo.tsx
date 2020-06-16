@@ -72,7 +72,7 @@ function getEventInfo(
     }
     case 'SuspensionActivity': {
       const _ = showificator(event);
-      return [act('', _`${'actor'}`), _`${'abstract_object'}`];
+      return [act('', _`${'actor'}`), _` ${'abstract_object'}`];
     }
   }
 }

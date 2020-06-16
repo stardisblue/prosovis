@@ -17,7 +17,7 @@ export const colorSlice = createSlice({
       '#b2df8a',
       '#33a02c',
       '#fb9a99',
-      '#e31a1c',
+      '#6d071a',
       '#fdbf6f',
     ],
     actorRange: [
