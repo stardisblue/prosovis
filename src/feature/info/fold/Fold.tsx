@@ -4,8 +4,7 @@ import classnames from 'classnames';
 
 import { Flex } from '../../../components/ui/Flex';
 import styled from 'styled-components/macro';
-import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
-
+import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { useFlatClick } from '../../../hooks/useClick';
 
 const EventsDiv = styled.div<{ height: string }>`
@@ -39,38 +38,36 @@ type FoldProps = {
   handleClick?: { [k in 'onClick' | 'onMouseUp']: React.MouseEventHandler };
 };
 
-export const Fold: React.FC<FoldProps> = function({
+export const Fold: React.FC<FoldProps> = function ({
   events,
   children,
   className,
   handleClick,
   onMouseEnter,
-  onMouseLeave
+  onMouseLeave,
 }) {
   const [show, setShow] = useState(false);
 
   const handleFoldClick = useFlatClick(() => {
-    setShow(s => !s);
+    setShow((s) => !s);
   });
+  const Chevron = show ? ChevronUpIcon : ChevronDownIcon;
 
-  const icon = handleClick ? (
-    <div className="pointer" {...handleFoldClick}>
-      <Octicon
-        className="ma1 flex-shrink-0"
-        verticalAlign="text-bottom"
-        icon={show ? ChevronUp : ChevronDown}
-        ariaLabel={show ? 'Etendre' : 'Réduire'}
-      />
-    </div>
-  ) : (
-    <Octicon
+  const chevronShow = (
+    <Chevron
       className="ma1 flex-shrink-0"
       verticalAlign="text-bottom"
-      icon={show ? ChevronUp : ChevronDown}
-      ariaLabel={show ? 'Etendre' : 'Réduire'}
+      aria-label={show ? 'Etendre' : 'Réduire'}
     />
   );
 
+  const icon = handleClick ? (
+    <div className="pointer" {...handleFoldClick}>
+      {chevronShow}
+    </div>
+  ) : (
+    { chevronShow }
+  );
   return (
     <>
       <Flex

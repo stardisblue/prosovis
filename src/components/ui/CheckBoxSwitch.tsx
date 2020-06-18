@@ -25,7 +25,7 @@ export const StyledKnob = styled.div<{ slide: boolean }>`
   background-color: white;
   transition: 0.4s;
   border-radius: 0.5em;
-  ${(props) => (props.slide ? 'transform:translateX(1em)' : '')};
+  ${(props) => (props.slide ? 'transform: translate3d(1em, 0, 0)' : '')};
 `;
 
 export const StyledText = styled.div<{ sliderColor: string }>`

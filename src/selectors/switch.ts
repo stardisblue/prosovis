@@ -68,8 +68,6 @@ export const selectEventColor = createSelector(
   function (switcher, actorColor, mainColor) {
     switch (switcher) {
       case true: {
-        console.log(actorColor.range());
-
         const border = d3
           .scaleOrdinal<PrimaryKey, string>(
             actorColor.range().map((d) => d3.color(d)!.darker(2).toString())

@@ -16,7 +16,7 @@ import {
   selectRelationLinks,
 } from './selectRelations';
 import { clearRelationSelection } from './selectionSlice';
-import useD3 from '../../hooks/useD3';
+import { useDatum } from '../../hooks/useD3';
 import { getSimulation } from './utils/simulation';
 
 import SuggestionRing from './suggestion-ring/SuggestionRing';
@@ -101,7 +101,8 @@ const Relation: React.FC = function () {
     };
 
     function ticked() {
-      node.attr('transform', (d: any) => `translate(${d.x} ${d.y})`);
+      // node.attr('transform', (d: any) => `translate(${d.x}, ${d.y}, 0)`);
+      node.style('transform', (d: any) => `translate3d(${d.x}px, ${d.y}px, 0)`);
 
       link
         .attr('x1', (d: any) => d.source.x)
@@ -196,7 +197,7 @@ export const PlaceText: React.FC<any> = function ({ offset }) {
 
 export const RelationLink: React.FC<any> = function ({ datum }) {
   // on first render
-  const $line = useD3<SVGLineElement>(datum);
+  const $line = useDatum<SVGLineElement>(datum);
 
   return <line ref={$line}></line>;
 };

@@ -4,10 +4,9 @@ import { Ressource } from '../../../data';
 import classnames from 'classnames';
 import _ from 'lodash';
 
-import { Location } from '@primer/octicons-react';
+import { LocationIcon } from '@primer/octicons-react';
 import KindGroup from '../KindGroup';
 import { EventGroup, SelectedEvent } from '../models';
-import { StyledOcticon } from '../StyledOcticon';
 import EventInfo from '../EventInfo';
 import Fold from './Fold';
 import ActorIcon from './ActorIcon';
@@ -137,7 +136,7 @@ export const InformationFold: React.FC<InfoGroupProps> = function ({
       {kind === 'Actor' ? (
         <ActorIcon id={group.id} />
       ) : (
-        <StyledOcticon className="ma1 flex-shrink-0" icon={Location} />
+        <LocationIcon className="ma1 flex-shrink-0" />
       )}
       <LocationDiv
         showQuestion={kind === 'NamedPlace' && !hasCoordinates(group)}

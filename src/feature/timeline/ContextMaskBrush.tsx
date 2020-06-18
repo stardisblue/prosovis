@@ -19,17 +19,17 @@ const path = d3.line().context(null)([
   [2, 0],
   [2, height - 10],
   [0, height - 10],
-  [0, 0]
+  [0, 0],
 ])!;
 
-const brushHandles = function(
+const brushHandles = function (
   g: d3.Selection<SVGGElement, unknown, null, undefined>,
   selection: any
 ) {
   const handles = g
     .selectAll('.handle--custom')
     .data<{ type: 'w' | 'e' }>([{ type: 'w' }, { type: 'e' }])
-    .join(function(enter) {
+    .join(function (enter) {
       const group = enter
         .append('g')
         .attr('class', 'handle--custom')
@@ -39,32 +39,32 @@ const brushHandles = function(
         .append('path')
         .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
-        .attr('transform', 'translate(0, 5)')
-        .attr('d', path);
+        .attr('d', path)
+        .style('transform', 'translate3d(0, 5px, 0)');
 
       // triangle down
       group
         .append('path')
         .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
-        .attr('transform', `translate(1, ${height - 5})`)
-        .attr('d', d3.symbol().type(d3.symbolTriangle));
+        .attr('d', d3.symbol().type(d3.symbolTriangle))
+        .style('transform', `translate3d(1px, ${height - 5}px, 0)`);
 
       // triangle up
       group
         .append('path')
         .attr('fill', '#6c757d')
         .attr('cursor', 'ew-resize')
-        .attr('transform', 'rotate(180) translate(-1, -5)')
-        .attr('d', d3.symbol().type(d3.symbolTriangle));
+        .attr('d', d3.symbol().type(d3.symbolTriangle))
+        .style('transform', 'rotate(180deg) translate3d(-1px, -5px, 0)');
       return group;
     });
 
   selection === null
-    ? handles.attr('transform', null)
-    : handles.attr(
+    ? handles.style('transform', null)
+    : handles.style(
         'transform',
-        (d: any, i: number) => `translate(${selection[i] - 1},0)`
+        (d: any, i: number) => `translate3d(${selection[i] - 1}px, 0, 0)`
       );
 };
 
@@ -73,14 +73,14 @@ export const ContextMaskBrush: React.FC<{
   x: d3.ScaleTime<number, number>;
   onBrush: (start: Date, end: Date) => void;
   sync?: [Date, Date];
-}> = function({ width, onBrush, x, sync }) {
+}> = function ({ width, onBrush, x, sync }) {
   // ! assuming that ref is instantaneously populated
   const mask = useRef<{
     dom: SVGGElement;
     selection: d3.Selection<SVGGElement, unknown, null, undefined>;
     brush: d3.BrushBehavior<unknown>;
   }>(null as any);
-  const handleRef = useCallback(function(dom: SVGGElement) {
+  const handleRef = useCallback(function (dom: SVGGElement) {
     if (!dom) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
@@ -90,22 +90,22 @@ export const ContextMaskBrush: React.FC<{
   const dispatch = useDispatch();
 
   useEffect(
-    function() {
+    function () {
       mask.current.selection.call(mask.current.brush.move, [
         ContextOptions.margin.mask.left,
-        width - ContextOptions.margin.mask.right
+        width - ContextOptions.margin.mask.right,
       ]);
     },
     [width]
   );
 
   const updateMask = useMemo(
-    function() {
+    function () {
       return _.throttle((start: Date, end: Date) => {
         dispatch(
           setIntervalMask({
             start: start.toDateString(),
-            end: end.toDateString()
+            end: end.toDateString(),
           })
         );
       }, 100);
@@ -114,17 +114,17 @@ export const ContextMaskBrush: React.FC<{
   );
 
   useEffect(
-    function() {
+    function () {
       mask.current.brush.extent([
         [ContextOptions.margin.mask.left, ContextOptions.margin.mask.top],
         [
           width - ContextOptions.margin.mask.right,
-          ContextOptions.height - ContextOptions.margin.mask.bottom
-        ]
+          ContextOptions.height - ContextOptions.margin.mask.bottom,
+        ],
       ]);
       mask.current.selection.call(brushHandles, [
         ContextOptions.margin.mask.left,
-        width - ContextOptions.margin.mask.right
+        width - ContextOptions.margin.mask.right,
       ]);
       mask.current.selection.call(mask.current.brush);
     },
@@ -132,7 +132,7 @@ export const ContextMaskBrush: React.FC<{
   );
 
   useEffect(
-    function() {
+    function () {
       if (!sync) return;
       mask.current.selection.call(mask.current.brush.move, sync.map(x));
 
@@ -142,8 +142,8 @@ export const ContextMaskBrush: React.FC<{
   );
 
   useEffect(
-    function() {
-      mask.current.brush.on('start brush end', function() {
+    function () {
+      mask.current.brush.on('start brush end', function () {
         if (d3.event.selection) {
           d3.select(this).call(brushHandles, d3.event.selection);
 

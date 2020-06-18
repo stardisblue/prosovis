@@ -30,12 +30,12 @@ const StyledKnob = styled.div<{ slide: boolean }>`
   background-color: white;
   transition: 0.4s;
   border-radius: 999em;
-  transform: translateY(${props => (props.slide ? '0%' : '100%')});
+  transform: translate3d(0, ${(props) => (props.slide ? '0%' : '100%')}, 0);
 `;
 
 const switchIsActor = (state: RootState) => state.switch === 'Actor';
 
-const ColorSwitch: React.FC = function() {
+const ColorSwitch: React.FC = function () {
   const dispatch = useDispatch();
 
   const switchState = useSelector(switchIsActor);

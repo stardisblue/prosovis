@@ -1,22 +1,29 @@
 import { AnyEvent } from '../../../data';
 import {
-  Plus,
-  MortarBoard,
-  Book,
-  Bookmark,
-  Home,
+  PlusIcon,
+  MortarBoardIcon,
+  BookIcon,
+  BookmarkIcon,
+  HomeIcon,
+  Icon,
 } from '@primer/octicons-react';
 import Pause from './Pause';
 import Grave from './Grave';
 
+import styled from 'styled-components/macro';
+
+export const styleIcon = (icon: Icon) =>
+  styled(icon)<{
+    iconColor?: string;
+  }>(({ iconColor }) => (iconColor ? `color: ${iconColor};` : ''));
 export const kindMap = {
-  Birth: Plus,
-  Death: Grave,
-  Education: Book,
-  ObtainQualification: MortarBoard,
-  PassageExamen: Bookmark,
-  Retirement: Home,
-  SuspensionActivity: Pause,
+  Birth: styleIcon(PlusIcon),
+  Death: styleIcon(Grave),
+  Education: styleIcon(BookIcon),
+  ObtainQualification: styleIcon(MortarBoardIcon),
+  PassageExamen: styleIcon(BookmarkIcon),
+  Retirement: styleIcon(HomeIcon),
+  SuspensionActivity: styleIcon(Pause),
 };
 
 function getEventIcon(kind: AnyEvent['kind']) {

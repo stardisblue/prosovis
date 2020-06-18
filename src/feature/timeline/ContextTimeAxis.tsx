@@ -6,7 +6,7 @@ type AxisSelection = d3.Selection<SVGGElement, unknown, null, undefined>;
 
 export const ContextTimeAxis: React.FC<{
   x: d3.ScaleTime<number, number>;
-}> = function({ x }) {
+}> = function ({ x }) {
   // ! assuming that ref is instantaneously populated
   const axis = useRef<AxisSelection>(null as any);
   const handleRef = useCallback((dom: SVGGElement | null) => {
@@ -23,9 +23,12 @@ export const ContextTimeAxis: React.FC<{
       id="context-axis"
       className="axis"
       ref={handleRef}
-      transform={`translate(0, ${ContextOptions.height -
-        ContextOptions.margin.bottom})`}
       pointerEvents="none"
+      style={{
+        transform: `translate3d(0, ${
+          ContextOptions.height - ContextOptions.margin.bottom
+        }px, 0)`,
+      }}
     ></g>
   );
 };

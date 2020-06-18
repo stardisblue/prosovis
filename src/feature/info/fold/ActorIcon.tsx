@@ -1,14 +1,19 @@
 import React, { useCallback } from 'react';
-import StyledOcticon from '../StyledOcticon';
-import Octicon, { Person, X } from '@primer/octicons-react';
+
+import { PersonIcon, XIcon } from '@primer/octicons-react';
 import { useSelector, useDispatch } from 'react-redux';
 import { PrimaryKey } from '../../../data';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { deleteActor } from '../../../reducers/eventSlice';
+import styled from 'styled-components/macro';
+
+const StyledPersonIcon = styled(PersonIcon)<{
+  iconColor?: string;
+}>(({ iconColor }) => (iconColor ? `color: ${iconColor};` : ''));
 
 const ActorIcon: React.FC<{
   id: PrimaryKey;
-}> = function({ id }) {
+}> = function ({ id }) {
   const dispatch = useDispatch();
   const handleClick = useCallback(() => {
     dispatch(deleteActor(id));
@@ -18,17 +23,15 @@ const ActorIcon: React.FC<{
   return (
     <>
       <span className="pointer" onClick={handleClick}>
-        <Octicon
+        <XIcon
           className="ma1 flex-shrink-0 red"
           verticalAlign="text-bottom"
-          icon={X}
-          ariaLabel={'Supprimer'}
+          aria-label="Supprimer"
         />
       </span>
-      <StyledOcticon
+      <StyledPersonIcon
         iconColor={color ? color(id) : undefined}
         className="ma1 flex-shrink-0"
-        icon={Person}
       />
     </>
   );

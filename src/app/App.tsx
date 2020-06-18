@@ -12,18 +12,32 @@ import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
+import Drawer from '../feature/global/Drawer';
+import FullGraph from '../feature/global/FullGraph';
 
-const Main = styled.main`
+const Aside = styled.main`
   display: grid;
   width: 100%;
   height: 100vh;
   grid-template-areas:
-    'search mask mask'
-    'info mask mask'
-    'info rel map'
-    'info timeline timeline';
-  grid-template-columns: 25% 1fr 1fr;
-  grid-template-rows: auto auto 1fr auto;
+    'search main'
+    'info main';
+  grid-template-columns: 25% 1fr;
+  grid-template-rows: auto 1fr;
+`;
+
+const Main = styled.main`
+  grid-area: main;
+  display: grid;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  grid-template-areas:
+    'mask mask'
+    'rel map'
+    'timeline timeline';
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr auto;
 `;
 
 const Search = styled.section`
@@ -92,16 +106,22 @@ function App() {
   );
   return (
     <>
-      <Main {...bind}>
-        <Mask />
+      <Aside {...bind}>
         <Search>
           <Autocomplete />
         </Search>
         <StyledInformation />
-        <StyledRelation />
-        <StyledMap />
-        <StyledTimeline />
-      </Main>
+        <Main>
+          <Mask />
+          <StyledRelation />
+          <StyledMap />
+          <StyledTimeline />
+          <Drawer>
+            <FullGraph />
+          </Drawer>
+        </Main>
+      </Aside>
+
       <ActorModal />
     </>
   );

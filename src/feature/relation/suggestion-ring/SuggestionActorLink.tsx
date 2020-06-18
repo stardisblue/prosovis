@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { toCartesian } from '../../../utils';
-import useD3 from '../../../hooks/useD3';
+import { useDatum } from '../../../hooks/useD3';
 import { selectRelationNodes } from '../selectRelations';
 import { useSelector } from 'react-redux';
 import { RelationEvent } from '../models';
@@ -109,7 +109,7 @@ export const SuggestionActorLink: React.FC<{
 
   const kvDatum = useMemo(() => [datum, points.slice(1)], [datum, points]);
 
-  const $path = useD3<SVGPathElement>(kvDatum);
+  const $path = useDatum<SVGPathElement>(kvDatum);
 
   // if link persists
   useEffect(() => {

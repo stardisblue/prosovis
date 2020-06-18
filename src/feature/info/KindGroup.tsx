@@ -3,11 +3,10 @@ import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import _ from 'lodash';
-import Octicon, { ChevronUp, ChevronDown } from '@primer/octicons-react';
+import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { ThumbnailEventInfo } from './EventInfo';
 import { EventDates } from './EventDates';
 import { useSelector } from 'react-redux';
-import { StyledOcticon } from './StyledOcticon';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import getEventIcon from './event/getEventIcon';
@@ -28,7 +27,7 @@ export const KindGroup: React.FC<{
   selected?: boolean;
   masked?: boolean;
   highlighted?: boolean;
-}> = function({
+}> = function ({
   kind,
   events,
   start,
@@ -36,7 +35,7 @@ export const KindGroup: React.FC<{
   origin,
   selected,
   masked,
-  highlighted
+  highlighted,
 }) {
   const color = useSelector(selectSwitchKindColor);
   const [show, setShow] = useState(false);
@@ -47,6 +46,8 @@ export const KindGroup: React.FC<{
     [events]
   );
 
+  const Icon = getEventIcon(kind);
+  const Chevron = show ? ChevronUpIcon : ChevronDownIcon;
   return (
     <div className="pv1">
       <Flex
@@ -55,28 +56,22 @@ export const KindGroup: React.FC<{
         className={classnames('sip-info--event pointer', {
           b: selected,
           'o-50': masked,
-          'bg-light-gray': highlighted
+          'bg-light-gray': highlighted,
         })}
-        {...useFlatClick(() => setShow(s => !s))}
+        {...useFlatClick(() => setShow((s) => !s))}
         {...useHoverHighlight(interactive)}
       >
         <span className="ph2">
-          <StyledOcticon
-            iconColor={color ? color(kind) : 'black'}
-            icon={getEventIcon(kind)}
-            width={16}
-            height={16}
-          />
+          <Icon iconColor={color ? color(kind) : 'black'} />
         </span>
         <FlexItem auto>
           {events.length} {getKindString(kind)}
         </FlexItem>
         <EventDates dates={[start, end]} />
-        <Octicon
+        <Chevron
           className="ma1 flex-shrink-0"
           verticalAlign="text-bottom"
-          icon={show ? ChevronUp : ChevronDown}
-          ariaLabel={show ? 'Réduire' : 'Etendre'}
+          aria-label={show ? 'Réduire' : 'Etendre'}
         />
       </Flex>
       {show && (
@@ -84,7 +79,7 @@ export const KindGroup: React.FC<{
           className="bl bw1 pt1"
           borderColor={color ? color(kind) : 'grey'}
         >
-          {_.map(events, e => (
+          {_.map(events, (e) => (
             <ThumbnailEventInfo
               key={e.id}
               event={e}

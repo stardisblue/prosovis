@@ -5,7 +5,6 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { StyledOcticon } from './StyledOcticon';
 import { EventDates } from './EventDates';
 
 import getEventInfo from './event/getEventInfo';
@@ -63,6 +62,8 @@ export const EventInfo: React.FC<EventInfoProps> = function ({
     event.id,
   ]);
 
+  const Icon = getEventIcon(event.kind);
+
   return (
     <Flex
       justify="between"
@@ -76,12 +77,7 @@ export const EventInfo: React.FC<EventInfoProps> = function ({
       {...useClickSelect(dispatchable)}
     >
       <span className="ph2">
-        <StyledOcticon
-          iconColor={color ? color(event.kind) : 'black'}
-          icon={getEventIcon(event.kind)}
-          width={16}
-          height={16}
-        />
+        <Icon iconColor={color ? color(event.kind) : 'black'} />
       </span>
       <FlexItem auto>{getEventInfo(event, origin === 'Actor', false)}</FlexItem>
       <EventDates dates={event.datation} />

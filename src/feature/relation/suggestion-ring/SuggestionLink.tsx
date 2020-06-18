@@ -1,6 +1,6 @@
 import React from 'react';
 import { toCartesian } from '../../../utils';
-import useD3 from '../../../hooks/useD3';
+import { useDatum } from '../../../hooks/useD3';
 // import { selectRelationNodes } from '../selectRelations';
 // import { useSelector } from 'react-redux';
 import { RelationEvent } from '../models';
@@ -30,7 +30,7 @@ export const SuggestionLink: React.FC<{
 
   // const nodes = useSelector(selectRelationNodes);
 
-  const $line = useD3<SVGPathElement>(datum);
+  const $line = useDatum<SVGPathElement>(datum);
 
   const { x: x1, y: y1 } = toCartesian({
     theta: x(datum.target),

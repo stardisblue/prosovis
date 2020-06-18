@@ -3,7 +3,7 @@ import styled from 'styled-components/macro';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
 import _ from 'lodash';
-import Octicon, { X, Plus } from '@primer/octicons-react';
+import { XIcon, PlusIcon } from '@primer/octicons-react';
 import { selectMaxActors, selectCurrent } from '../../selectors/maxActors';
 import { addActorsThunk } from '../../thunks/actor';
 import { resetCurrent } from '../../reducers/maxActorsSlice';
@@ -132,6 +132,7 @@ export const ActorLine: React.FC<any> = function ({
     switcher(actor.id);
   }, [switcher, actor.id]);
 
+  const Icon = checked ? XIcon : PlusIcon;
   return (
     <div
       style={{
@@ -139,11 +140,10 @@ export const ActorLine: React.FC<any> = function ({
       }}
     >
       <span className="pointer" onClick={handleClick}>
-        <Octicon
+        <Icon
           className="ma1 flex-shrink-0 red"
           verticalAlign="text-bottom"
-          icon={checked ? X : Plus}
-          ariaLabel={'Supprimer'}
+          aria-label={'Supprimer'}
         />
       </span>
       {actor.label}

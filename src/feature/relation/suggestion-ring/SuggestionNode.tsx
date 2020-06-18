@@ -14,7 +14,7 @@ import { useFlatClick } from '../../../hooks/useClick';
 // import { selectActors } from '../../../selectors/event';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components';
-import Octicon, { Plus } from '@primer/octicons-react';
+import { PlusIcon } from '@primer/octicons-react';
 import { fetchActorThunk } from '../../../thunks/actor';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
@@ -95,9 +95,11 @@ export const SuggestionNode: React.FC<{
 
   return (
     <g
-      transform={`rotate(${
-        (x(datum.target) * 180) / Math.PI
-      }) translate(200,0)`}
+      style={{
+        transform: `rotate(${
+          (x(datum.target) * 180) / Math.PI
+        }deg) translate3d(200px, 0, 0)`,
+      }}
       opacity={active ? (actors[active.actor] ? 1 : 0.3) : undefined}
       onMouseUp={onMouseUp}
       onMouseEnter={handleMouseEnter}
@@ -159,7 +161,7 @@ export const SuggestionPopup: React.FC<any> = function ({
           backgroundColor: d3.color(color)?.darker().toString(),
         }}
       >
-        <Octicon icon={Plus} />
+        <PlusIcon />
         <span style={{ marginLeft: '2px' }}>{label}</span>
         {/* {_.map(activeActors, (a) => (
         <ActorLine actor={a} />
