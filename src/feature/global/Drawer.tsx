@@ -10,27 +10,25 @@ const StyledDrawer = styled.section`
   z-index: 9998;
   transition-duration: 0.25s;
   background-color: white;
+  border-left: 1px solid lightgray;
 `;
 
-const Drawer: React.FC<{ className?: string }> = function ({
-  className,
-  children,
-}) {
+const Drawer: React.FC<{
+  className?: string;
+  hideable?: React.ReactNode;
+}> = function ({ className, hideable, children }) {
   const [drawer, setDrawer] = useState<'open' | 'closed'>('open');
 
   const click = useFlatClick(() => {
     setDrawer((state) => (state === 'open' ? 'closed' : 'open'));
   });
 
-  // useLayoutEffect(() => {
-  //   setDrawer('closed');
-  // }, []);
-
   return (
     <StyledDrawer
       className={className}
       style={{ width: drawer === 'open' ? '100%' : '0' }}
     >
+      {drawer === 'open' && hideable}
       {children}
       <DrawerHandle state={drawer} {...click} />
     </StyledDrawer>

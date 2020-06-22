@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useMemo, useCallback } from 'react';
 import styled from 'styled-components/macro';
+import { selectActors } from '../../selectors/event';
+import { useSelector } from 'react-redux';
+import { selectSwitchActorColor } from '../../selectors/switch';
+import useHoverHighlight from '../../hooks/useHoverHighlight';
+import { useClickSelect } from '../../hooks/useClick';
 
-const StyledRect = styled.rect`
-  fill: lightgray;
-  stroke: black;
+export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
+  fill: ${({ fill }) => fill ?? 'lightgray'};
+  stroke: ${({ stroke }) => stroke ?? 'black'};
 `;
-const StyledText = styled.text`
+export const StyledText = styled.text`
   font-size: 10px;
   text-anchor: middle;
   dominant-baseline: middle;
@@ -17,21 +22,74 @@ export const FullGraphNode: React.FC<{
   y: number;
   width: number;
   height: number;
-  label: string;
-}> = function ({ x, y, width, height, label }) {
-  // const [coords, setCoords] = useState({ x, y });
-  // useAttrTransition(d3Rect, coords);
+  actor: any;
+  events?: Set<number>;
+  hover: any;
+  chosen: any;
+  isHighlight: any;
+}> = function ({
+  actor,
+  events,
+  x,
+  y,
+  width,
+  height,
+  hover,
+  chosen,
+  isHighlight,
+}) {
+  const actors = useSelector(selectActors);
+
+  const color = useSelector(selectSwitchActorColor);
+
+  const interactive = useMemo(
+    () => Array.from(events ?? [], (id) => ({ id, kind: 'Event' })),
+    [events]
+  );
+  const highlight = useHoverHighlight(interactive);
+
+  const select = useClickSelect(interactive);
+
+  const handleHover = useMemo(
+    () => ({
+      onMouseEnter: () => {
+        hover(actor.id);
+        highlight.onMouseEnter();
+      },
+      onMouseLeave: () => {
+        hover(null);
+        highlight.onMouseLeave();
+      },
+    }),
+    [actor.id, highlight, hover]
+  );
+
+  const handleClick = useCallback(
+    (e) => {
+      chosen(actor.id);
+      select.onClick(e);
+    },
+    [chosen, select, actor]
+  );
+
   return (
     <g
       style={{
         transform: `translate3d(${x}px, ${y}px, 0)`,
       }}
+      {...handleHover}
+      onClick={handleClick}
+      onMouseUp={select.onMouseUp}
     >
-      <StyledRect width={width} height={height}>
-        <title>{label}</title>
-      </StyledRect>
+      <title>{actor.label}</title>
+      <StyledRect
+        width={width}
+        height={height}
+        fill={color && actors[actor.id] ? color(actor.id) : undefined}
+        stroke={isHighlight(actor.id) ? 'yellow' : undefined}
+      ></StyledRect>
       <StyledText dx={width / 2} dy={height / 2}>
-        {label}
+        {actor.label}
       </StyledText>
     </g>
   );

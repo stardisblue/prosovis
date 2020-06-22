@@ -116,7 +116,7 @@ function App() {
           <StyledRelation />
           <StyledMap />
           <StyledTimeline />
-          <Drawer>
+          <Drawer hideable={<h3>Vue d'ensemble</h3>}>
             <FullGraph />
           </Drawer>
         </Main>

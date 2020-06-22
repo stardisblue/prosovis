@@ -71,18 +71,33 @@ export const selectActorsFromMaskedEvents = createSelector(
   (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
 
-const links: RelationEvent[] = _.map(
-  rawLinks,
-  ({ actors, loc, events, d, med }) => ({
-    id: actors.join(':'),
-    source: actors[0],
-    target: actors[1],
-    loc,
-    events,
-    d,
-    med,
-  })
-);
+const links: RelationEvent[] = _.map(rawLinks, ({ actors, ...props }) => ({
+  ...props,
+  id: actors.join(':'),
+  source: actors[0],
+  target: actors[1],
+}));
+
+export const actorLinksMap = _(links)
+  .transform((relations, l) => {
+    let srels = relations.get(l.source);
+    if (srels === undefined) {
+      srels = { events: new Set(), actors: new Map() };
+      relations.set(l.source, srels);
+    }
+    srels.actors.set(l.target, l);
+    l.events.forEach((e) => srels!.events.add(e));
+
+    let trels = relations.get(l.target);
+    if (trels === undefined) {
+      trels = { events: new Set(), actors: new Map() };
+      relations.set(l.target, trels);
+    }
+    trels.actors.set(l.source, l);
+    l.events.forEach((e) => trels!.events.add(e));
+  }, new Map<number, { events: Set<number>; actors: Map<number, any> }>())
+
+  .value();
 
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
