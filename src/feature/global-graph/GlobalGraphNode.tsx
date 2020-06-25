@@ -1,10 +1,11 @@
-import React, { useContext, useMemo, useCallback } from 'react';
+import React, { useContext, useMemo } from 'react';
 import styled from 'styled-components/macro';
 import GlobalGraphContext, { getActorInformations } from './GlobalGraphContext';
 import { useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
 import { selectSwitchActorColor } from '../../selectors/switch';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
+import { useFlatClick } from '../../hooks/useClick';
 
 export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
   fill: ${({ fill }) => fill ?? 'lightgray'};
@@ -53,9 +54,11 @@ export const GlobalGraphNode: React.FC<{
 
   const handleHover = useMemo(
     () => ({
-      onMouseEnter: () => {
-        context.setSparker(id);
-        highlight.onMouseEnter();
+      onMouseEnter: (e: React.MouseEvent<SVGGElement>) => {
+        if (e.buttons === 0) {
+          context.setSparker(id);
+          highlight.onMouseEnter();
+        }
       },
       onMouseLeave: () => {
         context.setSparker(null);
@@ -65,11 +68,9 @@ export const GlobalGraphNode: React.FC<{
     [id, highlight, context]
   );
 
-  const handleClick = useCallback(() => {
+  const handleClick = useFlatClick(() => {
     context.setShiner(id);
-    // select.onClick(e);
-    // setHover((state) => !state);
-  }, [id, context]);
+  });
 
   return (
     <g
@@ -77,9 +78,8 @@ export const GlobalGraphNode: React.FC<{
         transform: `translate3d(${x}px, ${y}px, 0)`,
       }}
       {...handleHover}
-      onClick={handleClick}
+      {...handleClick}
       opacity={opacity}
-      // onMouseUp={select.onMouseUp}
     >
       <title>{actor.label}</title>
       <StyledRect

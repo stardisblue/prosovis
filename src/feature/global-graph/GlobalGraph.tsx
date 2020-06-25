@@ -42,6 +42,7 @@ const hy = d3.max(prism, (n) => n.y + n.height / 2)!;
 
 const GlobalGraph: React.FC = function (props) {
   const $svg = useRef<SVGSVGElement>(null as any);
+  const context = useGlobalGraphContext();
 
   const dims = useDimensions($svg as any);
 
@@ -58,6 +59,26 @@ const GlobalGraph: React.FC = function (props) {
     [dims, bScale]
   );
 
+  const { setSparker, setShiner } = context;
+  const handleClick = useMemo(() => {
+    let flag = true;
+    return Object.assign(
+      (e: any) => {
+        if (flag === false) {
+          flag = true;
+        } else {
+          setSparker(null);
+          setShiner(null);
+        }
+      },
+      {
+        cancel: () => {
+          flag = false;
+        },
+      }
+    );
+  }, [setSparker, setShiner]);
+
   useLayoutEffect(() => {
     const childrens = d3.select($svg.current).selectAll((_, i, nodes) => {
       return nodes[i].children;
@@ -65,7 +86,8 @@ const GlobalGraph: React.FC = function (props) {
 
     const easypz = new EasyPZ(
       $svg.current,
-      function (transform: any) {
+      function (transform) {
+        handleClick.cancel();
         childrens.style(
           'transform',
           `translate3d(${transform.translateX}px, ${
@@ -79,21 +101,16 @@ const GlobalGraph: React.FC = function (props) {
     return () => {
       easypz.removeHostListeners();
     };
-  }, [bScale]);
-
-  const globalGraphContext = useGlobalGraphContext();
+  }, [bScale, handleClick]);
 
   return (
-    <GlobalGraphContext.Provider value={globalGraphContext}>
+    <GlobalGraphContext.Provider value={context}>
       <svg
         ref={$svg}
         width="100%"
         height={dims ? dims.height - 100 : '100%'}
         viewBox={viewBox}
-        // onClick={() => {
-        //   sparkyState[1](null);
-        //   sparkyState[1](null);
-        // }}
+        onClick={handleClick}
       >
         <g style={{ transform: `scale(${bScale})` }}>
           {_.map(prism, (n) => (

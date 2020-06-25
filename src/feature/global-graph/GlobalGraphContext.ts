@@ -1,6 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { actorLinksMap } from '../relation/selectRelations';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import rawNodes from '../../data/actor-nodes';
 
 type GlobalGraphProps = {
@@ -29,7 +29,7 @@ export function getActorInformations(id: number) {
   };
 }
 export const useGlobalGraphContext = function (): GlobalGraphProps {
-  const [sparkler, setSparkler] = useState<number | null>(null);
+  const [sparkler, setSparker] = useState<number | null>(null);
   const [shiner, setShiner] = useState<number | null>(null);
 
   const canISpark = useCallback(
@@ -67,10 +67,14 @@ export const useGlobalGraphContext = function (): GlobalGraphProps {
     [shiner]
   );
 
+  const debounceSparker = useMemo(() => debounce(setSparker, 100), [
+    setSparker,
+  ]);
+
   return {
     sparker: sparkler,
     shiner,
-    setSparker: setSparkler,
+    setSparker: debounceSparker,
     setShiner,
     canIShine,
     canISpark,
