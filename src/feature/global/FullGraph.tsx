@@ -72,14 +72,18 @@ const FullGraph: React.FC = function (props) {
       return nodes[i].children;
     });
 
-    easypz.current = new EasyPZ($svg.current, function (transform: any) {
-      childrens.style(
-        'transform',
-        `translate3d(${transform.translateX}px, ${
-          transform.translateY
-        }px, 0) scale(${transform.scale * baseScale})`
-      );
-    });
+    easypz.current = new EasyPZ(
+      $svg.current,
+      function (transform: any) {
+        childrens.style(
+          'transform',
+          `translate3d(${transform.translateX}px, ${
+            transform.translateY
+          }px, 0) scale(${transform.scale * baseScale})`
+        );
+      },
+      { minScale: 1 }
+    );
 
     return () => {
       easypz.current.removeHostListeners();
