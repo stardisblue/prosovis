@@ -14,8 +14,8 @@ export const ColorContext = React.createContext<ColorContextProps>({} as any);
 // switch couleur par personne/ par type d'evenement
 // voir mettre à jour le camembert
 // et griser les liens de la carte lrosquel a couleur est par type d'evenement
-export const useColorContext = function() {
-  return useMemo(function() {
+export const useColorContext = function () {
+  return useMemo(function () {
     const color = d3
       .scaleOrdinal<AnyEvent['kind'] | string, string>()
       .domain([
@@ -25,7 +25,7 @@ export const useColorContext = function() {
         'Retirement',
         'SuspensionActivity',
         'Death',
-        'ObtainQualification'
+        'ObtainQualification',
       ])
       .range([
         '#a6cee3',
@@ -34,24 +34,17 @@ export const useColorContext = function() {
         '#33a02c',
         '#fb9a99',
         '#e31a1c',
-        '#fdbf6f'
+        '#fdbf6f',
       ]);
 
     const border = d3
       .scaleOrdinal<AnyEvent['kind'] | string, string>()
       .domain(color.domain())
-      .range(
-        color.range().map(d =>
-          d3
-            .color(d)!
-            .darker(2)
-            .toString()
-        )
-      );
+      .range(color.range().map((d) => d3.color(d)!.darker(2).toString()));
 
     return {
       border,
-      color
+      color,
     };
   }, []);
 };

@@ -95,8 +95,7 @@ export const actorLinksMap = _(links)
     }
     trels.actors.set(l.source, l);
     l.events.forEach((e) => trels!.events.add(e));
-  }, new Map<number, { events: Set<number>; actors: Map<number, any> }>())
-
+  }, new Map<number, { events: Set<number>; actors: Map<number, RelationEvent> }>())
   .value();
 
 export const selectRelations = compareByKeySelector(

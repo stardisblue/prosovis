@@ -12,8 +12,8 @@ import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
-import Drawer from '../feature/global/Drawer';
-import FullGraph from '../feature/global/FullGraph';
+import Drawer from '../feature/global-graph/Drawer';
+import GlobalGraph from '../feature/global-graph/GlobalGraph';
 
 const Aside = styled.main`
   display: grid;
@@ -117,7 +117,7 @@ function App() {
           <StyledMap />
           <StyledTimeline />
           <Drawer hideable={<h3>Vue d'ensemble</h3>}>
-            <FullGraph />
+            <GlobalGraph />
           </Drawer>
         </Main>
       </Aside>
