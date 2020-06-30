@@ -15,15 +15,17 @@ export const fetchActorThunk = function (
   payload: PrimaryKey
 ): ThunkAction<void, RootState, unknown, Action<string>> {
   return (dispatch, getState) => {
-    const state = getState();
-    const actors = selectActors(state);
-    const maxSize = selectMaxActors(state);
     axios
       .get('http://advanse.lirmm.fr/siprojuris/api/actor/' + payload)
       .then((response) => {
+        const state = getState();
+        const actors = selectActors(state);
+        const maxSize = selectMaxActors(state);
         // console.log(response);
-        if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
-        else dispatch(addActor(response.data));
+        if (actors[payload] === undefined) {
+          if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
+          else dispatch(addActor(response.data));
+        }
       });
   };
 };

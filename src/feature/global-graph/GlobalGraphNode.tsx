@@ -1,4 +1,4 @@
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
 import GlobalGraphContext, { getActorInformations } from './GlobalGraphContext';
 import { useSelector } from 'react-redux';
@@ -6,11 +6,13 @@ import { selectActors } from '../../selectors/event';
 import { selectSwitchActorColor } from '../../selectors/switch';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useFlatClick } from '../../hooks/useClick';
+import DetailsMenuContext from './DetailsMenuContext';
 
 export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
   fill: ${({ fill }) => fill ?? 'lightgray'};
   stroke: ${({ stroke }) => stroke ?? 'black'};
 `;
+
 export const StyledText = styled.text`
   font-size: 12px;
   text-anchor: middle;
@@ -27,6 +29,29 @@ function useFill(id: number) {
 const ACTIVE_STROKE = 'darkgoldenrod';
 const INACTIVE_OPACITY = 0.5;
 const ACTIVE_STROKE_WIDTH = 3;
+
+export const StyledGroup = styled.g<{ sOpacity?: number }>`
+  opacity: ${({ sOpacity }) => sOpacity};
+`;
+
+function getFocusState<T>(index: T, sparker: T, shiner: T) {
+  return shiner === index || sparker === index
+    ? ACTIVE_STROKE_WIDTH
+    : undefined;
+}
+
+function getHighlightState<T>(index: T, shiner: T, sparky: boolean) {
+  if (sparky) {
+    if (shiner === index) {
+      return undefined;
+    }
+
+    return ACTIVE_STROKE;
+  }
+
+  return undefined;
+}
+
 export const GlobalGraphNode: React.FC<{
   id: number;
   label: string;
@@ -35,51 +60,69 @@ export const GlobalGraphNode: React.FC<{
   width: number;
   height: number;
 }> = function ({ id, label, x, y, width, height }) {
+  const $ref = useRef<SVGGElement>(null as any);
   const { actor, eventIds } = useMemo(() => getActorInformations(id), [id]);
-  const context = useContext(GlobalGraphContext);
+  const {
+    sparker,
+    shiner,
+    canISpark,
+    canIShine,
+    setSparker,
+    setShiner,
+  } = useContext(GlobalGraphContext);
 
-  const fill = useFill(id);
-  const stroke = context.canISpark(id) ? ACTIVE_STROKE : undefined;
-  const strokeWidth =
-    context.shiner === id || context.sparker === id
-      ? ACTIVE_STROKE_WIDTH
-      : undefined;
-  const opacity = context.canIShine(id) ? 1 : INACTIVE_OPACITY;
-
+  const { setMenuTarget } = useContext(DetailsMenuContext);
   const interactive = useMemo(
     () => Array.from(eventIds, (id) => ({ id, kind: 'Event' })),
     [eventIds]
   );
+
   const highlight = useHoverHighlight(interactive);
 
+  // event handlers
   const handleHover = useMemo(
     () => ({
       onMouseEnter: (e: React.MouseEvent<SVGGElement>) => {
         if (e.buttons === 0) {
-          context.setSparker(id);
+          setSparker(id);
           highlight.onMouseEnter();
         }
       },
       onMouseLeave: () => {
-        context.setSparker(null);
+        setSparker(null);
         highlight.onMouseLeave();
       },
     }),
-    [id, highlight, context]
+    [id, highlight, setSparker]
   );
 
   const handleClick = useFlatClick(() => {
-    context.setShiner(id);
+    setShiner(id);
   });
 
+  const handleContextMenu = useCallback<React.MouseEventHandler<SVGGElement>>(
+    (e) => {
+      e.preventDefault();
+      setMenuTarget({ actor, ref: $ref.current });
+    },
+    [setMenuTarget, actor]
+  );
+
+  const fill = useFill(id);
+  const stroke = getHighlightState(id, shiner, canISpark(id));
+  const strokeWidth = getFocusState(id, sparker, shiner);
+  const opacity = canIShine(id) ? 1 : INACTIVE_OPACITY;
+
   return (
-    <g
+    <StyledGroup
+      ref={$ref}
       style={{
         transform: `translate3d(${x}px, ${y}px, 0)`,
       }}
       {...handleHover}
       {...handleClick}
-      opacity={opacity}
+      onContextMenu={handleContextMenu}
+      sOpacity={opacity}
     >
       <title>{actor.label}</title>
       <StyledRect
@@ -92,6 +135,6 @@ export const GlobalGraphNode: React.FC<{
       <StyledText dx={width / 2} dy={height / 2}>
         {label}
       </StyledText>
-    </g>
+    </StyledGroup>
   );
 };

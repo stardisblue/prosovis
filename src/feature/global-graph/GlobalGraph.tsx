@@ -1,48 +1,23 @@
-import React, { useRef, useState, useLayoutEffect, useMemo } from 'react';
+import React, { useRef, useLayoutEffect, useMemo, useContext } from 'react';
 import prism from './prism.json';
-import _ from 'lodash';
+import _, { debounce } from 'lodash';
 import * as d3 from 'd3';
 import { EasyPZ } from 'easypz';
 import { GlobalGraphNode } from './GlobalGraphNode';
 import GlobalGraphContext, {
   useGlobalGraphContext,
 } from './GlobalGraphContext';
-
-function getDimensionObject(node: HTMLElement) {
-  const rect: any = node.getBoundingClientRect();
-
-  return {
-    width: rect.width,
-    height: rect.height,
-  };
-}
-
-const useDimensions = <T extends HTMLElement>(
-  ref: React.MutableRefObject<T>
-) => {
-  const [dims, setDims] = useState(() => {
-    if (ref.current) {
-      return getDimensionObject(ref.current);
-    } else {
-      return null;
-    }
-  });
-
-  useLayoutEffect(() => {
-    if (ref.current) {
-      setDims(getDimensionObject(ref.current));
-    }
-  }, [ref]);
-
-  return dims;
-};
-
+import useDimensions from '../../hooks/useDimensions';
+import DetailsMenuContext from './DetailsMenuContext';
 const wx = d3.max(prism, (n) => n.x + n.width / 2)!;
 const hy = d3.max(prism, (n) => n.y + n.height / 2)!;
 
 const GlobalGraph: React.FC = function (props) {
-  const $svg = useRef<SVGSVGElement>(null as any);
   const context = useGlobalGraphContext();
+  const { setMenuTarget } = useContext(DetailsMenuContext);
+
+  const $svg = useRef<SVGSVGElement>(null as any);
+  const $nodeGroup = useRef<SVGGElement>(null as any);
 
   const dims = useDimensions($svg as any);
 
@@ -69,6 +44,7 @@ const GlobalGraph: React.FC = function (props) {
         } else {
           setSparker(null);
           setShiner(null);
+          setMenuTarget(null);
         }
       },
       {
@@ -77,12 +53,18 @@ const GlobalGraph: React.FC = function (props) {
         },
       }
     );
-  }, [setSparker, setShiner]);
+  }, [setSparker, setShiner, setMenuTarget]);
 
   useLayoutEffect(() => {
-    const childrens = d3.select($svg.current).selectAll((_, i, nodes) => {
-      return nodes[i].children;
-    });
+    const childrens = d3.select($nodeGroup.current);
+
+    const throttleSetMenu = debounce(
+      () =>
+        setMenuTarget((prevState) =>
+          prevState !== null ? { ...prevState } : prevState
+        ),
+      100
+    );
 
     const easypz = new EasyPZ(
       $svg.current,
@@ -94,14 +76,17 @@ const GlobalGraph: React.FC = function (props) {
             transform.translateY
           }px, 0) scale(${transform.scale * bScale})`
         );
+
+        throttleSetMenu();
       },
-      { minScale: 1 }
+      { minScale: 1 },
+      ['SIMPLE_PAN', 'WHEEL_ZOOM', 'PINCH_ZOOM']
     );
 
     return () => {
       easypz.removeHostListeners();
     };
-  }, [bScale, handleClick]);
+  }, [bScale, handleClick, setMenuTarget]);
 
   return (
     <GlobalGraphContext.Provider value={context}>
@@ -112,7 +97,7 @@ const GlobalGraph: React.FC = function (props) {
         viewBox={viewBox}
         onClick={handleClick}
       >
-        <g style={{ transform: `scale(${bScale})` }}>
+        <g ref={$nodeGroup} style={{ transform: `scale(${bScale})` }}>
           {_.map(prism, (n) => (
             <GlobalGraphNode
               key={n.index}

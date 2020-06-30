@@ -1,13 +1,14 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { actorLinksMap } from '../relation/selectRelations';
-import { get, debounce } from 'lodash';
+import { get, debounce, Cancelable } from 'lodash';
 import rawNodes from '../../data/actor-nodes';
 
+type Key = number | null;
 type GlobalGraphProps = {
-  sparker: number | null;
-  shiner: number | null;
-  setSparker: React.Dispatch<React.SetStateAction<number | null>>;
-  setShiner: React.Dispatch<React.SetStateAction<number | null>>;
+  sparker: Key;
+  shiner: Key;
+  setSparker: React.Dispatch<React.SetStateAction<Key>> & Cancelable;
+  setShiner: React.Dispatch<React.SetStateAction<Key>>;
   canIShine: (id: number) => boolean;
   canISpark: (id: number) => boolean;
 };
@@ -29,25 +30,25 @@ export function getActorInformations(id: number) {
   };
 }
 export const useGlobalGraphContext = function (): GlobalGraphProps {
-  const [sparkler, setSparker] = useState<number | null>(null);
-  const [shiner, setShiner] = useState<number | null>(null);
+  const [sparker, setSparker] = useState<Key>(null);
+  const [shiner, setShiner] = useState<Key>(null);
 
   const canISpark = useCallback(
     (id: number) => {
-      if (sparkler === null) return false; // don't spark by default
+      if (sparker === null) return false; // don't spark by default
 
-      if (sparkler === id) return true;
+      if (sparker === id) return true;
 
       console.assert(
-        actorLinksMap.get(sparkler) !== undefined,
+        actorLinksMap.get(sparker) !== undefined,
         actorLinksMap,
-        sparkler,
+        sparker,
         'actorLinksMap.get(actorId: %s) cannot be undefined',
-        sparkler
+        sparker
       );
-      return actorLinksMap.get(sparkler)?.actors.get(id) !== undefined;
+      return actorLinksMap.get(sparker)?.actors.get(id) !== undefined;
     },
-    [sparkler]
+    [sparker]
   );
 
   const canIShine = useCallback(
@@ -72,7 +73,7 @@ export const useGlobalGraphContext = function (): GlobalGraphProps {
   ]);
 
   return {
-    sparker: sparkler,
+    sparker,
     shiner,
     setSparker: debounceSparker,
     setShiner,

@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
 
 import SiprojurisTimeline from '../feature/timeline/SiprojurisTimeline';
@@ -14,6 +14,10 @@ import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
+import DetailsMenuContext, {
+  useDetailsMenuContext,
+} from '../feature/global-graph/DetailsMenuContext';
+import DetailsMenu from '../feature/global-graph/DetailsMenu';
 
 const Aside = styled.main`
   display: grid;
@@ -61,6 +65,9 @@ const StyledTimeline = styled(SiprojurisTimeline)`
 `;
 
 function App() {
+  const detailsMenu = useDetailsMenuContext();
+  const $ref = useRef<HTMLDivElement>(null as any);
+
   const dispatch = useDispatch();
   const onClick = useCallback((e) => {
     dispatch(clearSelection());
@@ -105,25 +112,27 @@ function App() {
     []
   );
   return (
-    <>
-      <Aside {...bind}>
-        <Search>
-          <Autocomplete />
-        </Search>
-        <StyledInformation />
-        <Main>
-          <Mask />
-          <StyledRelation />
-          <StyledMap />
-          <StyledTimeline />
-          <Drawer hideable={<h3>Vue d'ensemble</h3>}>
-            <GlobalGraph />
-          </Drawer>
-        </Main>
-      </Aside>
-
+    <div ref={$ref}>
+      <DetailsMenuContext.Provider value={detailsMenu}>
+        <Aside {...bind}>
+          <Search>
+            <Autocomplete />
+          </Search>
+          <StyledInformation />
+          <Main>
+            <Mask />
+            <StyledRelation />
+            <StyledMap />
+            <StyledTimeline />
+            <Drawer hideable={<h3>Vue d'ensemble</h3>}>
+              <GlobalGraph />
+            </Drawer>
+          </Main>
+        </Aside>
+        <DetailsMenu />
+      </DetailsMenuContext.Provider>
       <ActorModal />
-    </>
+    </div>
   );
 }
 
