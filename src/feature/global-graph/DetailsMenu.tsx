@@ -3,14 +3,9 @@ import React, { useContext, useMemo } from 'react';
 import DetailsMenuContext from './DetailsMenuContext';
 import { getDimensionObject } from '../../hooks/useDimensions';
 import { Spring, animated } from 'react-spring/renderprops';
-import { PlusIcon, XIcon } from '@primer/octicons-react';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchActorThunk } from '../../thunks/actor';
-import { stopEventPropagation } from '../../hooks/useClick';
-import { selectActors } from '../../selectors/event';
-import { deleteActor } from '../../reducers/eventSlice';
+import { DetailsMenuContent } from './DetailsMenuContent';
 
-const StyledDiv = styled(animated.div)`
+const StyledDiv = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -23,10 +18,7 @@ const StyledDiv = styled(animated.div)`
 `;
 
 function DetailsMenu() {
-  const dispatch = useDispatch();
-  const actors = useSelector(selectActors);
   const { menuTarget } = useContext(DetailsMenuContext);
-  const { actor } = menuTarget || { actor: null };
 
   const coords = useMemo(() => {
     if (menuTarget) {
@@ -35,44 +27,7 @@ function DetailsMenu() {
     }
   }, [menuTarget]);
 
-  const onMouseUp = stopEventPropagation;
-
-  const actorExists = actor && actors[actor.id] !== undefined;
-
-  const [handleClick, Icon] = useMemo(
-    () =>
-      actorExists
-        ? [
-            () => {
-              if (actor) dispatch(deleteActor(actor.id));
-            },
-            XIcon,
-          ]
-        : [
-            () => {
-              if (actor) dispatch(fetchActorThunk(actor.id));
-            },
-            PlusIcon,
-          ],
-    [actorExists, actor, dispatch]
-  );
-
-  const content = useMemo(() => {
-    if (actor) {
-      return (
-        <div onMouseUp={onMouseUp}>
-          <span className="pointer" onClick={handleClick}>
-            <Icon
-              className="ma1 flex-shrink-0 green"
-              verticalAlign="text-bottom"
-              aria-label={'ajouter'}
-            />
-          </span>
-          {actor.label}
-        </div>
-      );
-    }
-  }, [actor, handleClick, onMouseUp]);
+  const Div = animated(StyledDiv);
 
   return (menuTarget && coords && (
     <Spring
@@ -81,7 +36,11 @@ function DetailsMenu() {
         transform: `translate3d(${coords[0]}px, ${coords[1]}px, 0)`,
       }}
     >
-      {(props) => <StyledDiv style={props}>{content}</StyledDiv>}
+      {(props) => (
+        <Div style={props}>
+          <DetailsMenuContent actor={menuTarget.actor} />
+        </Div>
+      )}
     </Spring>
   )) as any;
 }

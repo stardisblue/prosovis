@@ -1,0 +1,86 @@
+import React, { useMemo, useEffect, useState } from 'react';
+import { PlusIcon, XIcon } from '@primer/octicons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchActorThunk } from '../../thunks/actor';
+import { stopEventPropagation } from '../../hooks/useClick';
+import { selectActors } from '../../selectors/event';
+import { deleteActor } from '../../reducers/eventSlice';
+import { fetchActor } from '../../data/fetchActor';
+import { ActorCard, getEvents, AnyEvent } from '../../data';
+import { DetailsMenuSpinner } from './DetailsMenuSpinner';
+import { DetailsMenuEvents } from './DetailsMenuEvents';
+import Axios from 'axios';
+
+export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
+  actor,
+}) {
+  const dispatch = useDispatch();
+  const actors = useSelector(selectActors);
+  const actorExists = actor && actors[actor.id] !== undefined;
+
+  const [handleClick, Icon] = useMemo(
+    () =>
+      actorExists
+        ? [
+            () => {
+              if (actor) dispatch(deleteActor(actor.id));
+            },
+            XIcon,
+          ]
+        : [
+            () => {
+              if (actor) dispatch(fetchActorThunk(actor.id));
+            },
+            PlusIcon,
+          ],
+    [actorExists, actor, dispatch]
+  );
+
+  const [events, setEvents] = useState<AnyEvent[] | null>(null);
+
+  useEffect(() => {
+    setEvents(null);
+    const source = Axios.CancelToken.source();
+
+    fetchActor(actor.id, {
+      cancelToken: source.token,
+    })
+      .then((response) => {
+        setEvents(getEvents(response.data));
+      })
+      .catch((thrown) => {
+        if (Axios.isCancel(thrown)) {
+          console.log('Request canceled', thrown.message);
+        } else {
+          console.error(thrown);
+        }
+      });
+
+    return () => {
+      // cancelling to avoid collision between fetches
+      source.cancel('changed to new actor');
+    };
+  }, [actor.id]);
+
+  return (
+    actor && (
+      <div onMouseUp={stopEventPropagation}>
+        <div>
+          <span className="pointer" onClick={handleClick}>
+            <Icon
+              className="ma1 flex-shrink-0 green"
+              verticalAlign="text-bottom"
+              aria-label={'ajouter'}
+            />
+          </span>
+          {actor.label}
+        </div>
+        {events ? (
+          <DetailsMenuEvents events={events} />
+        ) : (
+          <DetailsMenuSpinner />
+        )}
+      </div>
+    )
+  );
+};

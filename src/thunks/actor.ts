@@ -1,4 +1,3 @@
-import axios from 'axios';
 import { PrimaryKey, Actor, ActorCard } from '../data';
 import { setCurrent, resetCurrent } from '../reducers/maxActorsSlice';
 import { ThunkAction, Action } from '@reduxjs/toolkit';
@@ -11,22 +10,22 @@ import {
   clearRelationSelection,
   selectRelationSelection,
 } from '../feature/relation/selectionSlice';
+import { fetchActor } from '../data/fetchActor';
+
 export const fetchActorThunk = function (
   payload: PrimaryKey
 ): ThunkAction<void, RootState, unknown, Action<string>> {
   return (dispatch, getState) => {
-    axios
-      .get('http://advanse.lirmm.fr/siprojuris/api/actor/' + payload)
-      .then((response) => {
-        const state = getState();
-        const actors = selectActors(state);
-        const maxSize = selectMaxActors(state);
-        // console.log(response);
-        if (actors[payload] === undefined) {
-          if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
-          else dispatch(addActor(response.data));
-        }
-      });
+    fetchActor(payload).then((response) => {
+      const state = getState();
+      const actors = selectActors(state);
+      const maxSize = selectMaxActors(state);
+      // console.log(response);
+      if (actors[payload] === undefined) {
+        if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
+        else dispatch(addActor(response.data));
+      }
+    });
   };
 };
 
