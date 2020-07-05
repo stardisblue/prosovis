@@ -6,34 +6,39 @@ import { stopEventPropagation } from '../../hooks/useClick';
 import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
 import { fetchActor } from '../../data/fetchActor';
-import { ActorCard, getEvents, AnyEvent } from '../../data';
+import { ActorCard, getEvents, AnyEvent, PrimaryKey } from '../../data';
 import { DetailsMenuSpinner } from './DetailsMenuSpinner';
 import { DetailsMenuEvents } from './DetailsMenuEvents';
 import Axios from 'axios';
+import ActorIcon from '../info/fold/ActorIcon';
 
-export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
-  actor,
-}) {
+export const DetailsMenuContent: React.FC<{
+  id: PrimaryKey;
+  label: string;
+}> = function ({ id, label }) {
   const dispatch = useDispatch();
   const actors = useSelector(selectActors);
-  const actorExists = actor && actors[actor.id] !== undefined;
+  const actorExists = actors[id] !== undefined;
 
-  const [handleClick, Icon] = useMemo(
+  const icon = useMemo(
     () =>
-      actorExists
-        ? [
-            () => {
-              if (actor) dispatch(deleteActor(actor.id));
-            },
-            XIcon,
-          ]
-        : [
-            () => {
-              if (actor) dispatch(fetchActorThunk(actor.id));
-            },
-            PlusIcon,
-          ],
-    [actorExists, actor, dispatch]
+      actorExists ? (
+        <ActorIcon id={id} />
+      ) : (
+        <span
+          className="pointer"
+          onClick={() => {
+            dispatch(fetchActorThunk(id));
+          }}
+        >
+          <PlusIcon
+            className="ma1 flex-shrink-0 green"
+            verticalAlign="text-bottom"
+            aria-label={'ajouter'}
+          />
+        </span>
+      ),
+    [actorExists, id, dispatch]
   );
 
   const [events, setEvents] = useState<AnyEvent[] | null>(null);
@@ -42,9 +47,7 @@ export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
     setEvents(null);
     const source = Axios.CancelToken.source();
 
-    fetchActor(actor.id, {
-      cancelToken: source.token,
-    })
+    fetchActor(id, { cancelToken: source.token })
       .then((response) => {
         setEvents(getEvents(response.data));
       })
@@ -60,27 +63,15 @@ export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
       // cancelling to avoid collision between fetches
       source.cancel('changed to new actor');
     };
-  }, [actor.id]);
+  }, [id]);
 
   return (
-    actor && (
-      <div onMouseUp={stopEventPropagation}>
-        <div>
-          <span className="pointer" onClick={handleClick}>
-            <Icon
-              className="ma1 flex-shrink-0 green"
-              verticalAlign="text-bottom"
-              aria-label={'ajouter'}
-            />
-          </span>
-          {actor.label}
-        </div>
-        {events ? (
-          <DetailsMenuEvents events={events} />
-        ) : (
-          <DetailsMenuSpinner />
-        )}
+    <div onMouseUp={stopEventPropagation}>
+      <div>
+        {icon}
+        {label}
       </div>
-    )
+      {events ? <DetailsMenuEvents events={events} /> : <DetailsMenuSpinner />}
+    </div>
   );
 };

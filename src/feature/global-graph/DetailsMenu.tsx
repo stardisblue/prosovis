@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import DetailsMenuContext from './DetailsMenuContext';
 import { getDimensionObject } from '../../hooks/useDimensions';
 import { Spring, animated } from 'react-spring/renderprops';
@@ -29,20 +29,26 @@ function DetailsMenu() {
 
   const Div = animated(StyledDiv);
 
-  return (menuTarget && coords && (
-    <Spring
-      native
-      to={{
-        transform: `translate3d(${coords[0]}px, ${coords[1]}px, 0)`,
-      }}
-    >
-      {(props) => (
-        <Div style={props}>
-          <DetailsMenuContent actor={menuTarget.actor} />
-        </Div>
-      )}
-    </Spring>
-  )) as any;
+  return (
+    menuTarget &&
+    coords && (
+      <Spring
+        native
+        to={{
+          transform: `translate3d(${coords[0]}px, ${coords[1]}px, 0)`,
+        }}
+      >
+        {(props) => (
+          <Div style={props}>
+            <DetailsMenuContent
+              id={menuTarget.actor.id}
+              label={menuTarget.actor.label}
+            />
+          </Div>
+        )}
+      </Spring>
+    )
+  );
 }
 
 export default DetailsMenu;

@@ -44,7 +44,7 @@ const GlobalGraph: React.FC = function (props) {
         } else {
           setSparker(null);
           setShiner(null);
-          setMenuTarget(null);
+          setMenuTarget(undefined);
         }
       },
       {
@@ -61,7 +61,7 @@ const GlobalGraph: React.FC = function (props) {
     const throttleSetMenu = debounce(
       () =>
         setMenuTarget((prevState) =>
-          prevState !== null ? { ...prevState } : prevState
+          prevState !== undefined ? { ...prevState } : prevState
         ),
       100
     );
