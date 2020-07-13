@@ -17,7 +17,6 @@ import GlobalGraph from '../feature/global-graph/GlobalGraph';
 import DetailsMenuContext, {
   useDetailsMenuContext,
 } from '../feature/global-graph/DetailsMenuContext';
-import DetailsMenu from '../feature/global-graph/DetailsMenu';
 
 const Aside = styled.main`
   display: grid;
@@ -129,7 +128,7 @@ function App() {
             </Drawer>
           </Main>
         </Aside>
-        <DetailsMenu />
+        {/* <DetailsMenu /> */}
       </DetailsMenuContext.Provider>
       <ActorModal />
     </div>

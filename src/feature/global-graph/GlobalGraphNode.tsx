@@ -135,6 +135,13 @@ export const GlobalGraphNode: React.FC<{
       <StyledText dx={width / 2} dy={height / 2}>
         {label}
       </StyledText>
+      <StyledForeign>
+        <div>Test, hello world</div>
+      </StyledForeign>
     </StyledGroup>
   );
 };
+
+const StyledForeign = styled.foreignObject`
+  overflow: visible;
+`;
