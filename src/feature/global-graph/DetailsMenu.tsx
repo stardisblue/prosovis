@@ -1,14 +1,14 @@
 import styled from 'styled-components/macro';
-import React, { useContext, useMemo, useEffect } from 'react';
+import React, { useContext } from 'react';
 import DetailsMenuContext from './DetailsMenuContext';
-import { getDimensionObject } from '../../hooks/useDimensions';
 import { Spring, animated } from 'react-spring/renderprops';
 import { DetailsMenuContent } from './DetailsMenuContent';
+import { stopEventPropagation } from '../../hooks/useClick';
 
 const StyledDiv = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow-y: scroll;
   z-index: 9998;
   background-color: white;
   border: 1px solid gray;
@@ -20,35 +20,33 @@ const StyledDiv = styled.div`
 function DetailsMenu() {
   const { menuTarget } = useContext(DetailsMenuContext);
 
-  const coords = useMemo(() => {
-    if (menuTarget) {
-      const { right: x, top: y } = getDimensionObject(menuTarget.ref);
-      return [x, y];
-    }
-  }, [menuTarget]);
-
-  const Div = animated(StyledDiv);
-
-  return (
-    menuTarget &&
-    coords && (
+  if (menuTarget) {
+    const { x, y, width } = menuTarget;
+    return (menuTarget && (
       <Spring
         native
         to={{
-          transform: `translate3d(${coords[0]}px, ${coords[1]}px, 0)`,
+          transform: `translate3d(${x + width}px, ${y}px, 0)`,
         }}
       >
         {(props) => (
-          <Div style={props}>
-            <DetailsMenuContent
-              id={menuTarget.actor.id}
-              label={menuTarget.actor.label}
-            />
-          </Div>
+          <animated.foreignObject
+            style={props}
+            width="250"
+            height="300"
+            onClick={stopEventPropagation}
+            onWheel={stopEventPropagation}
+          >
+            <StyledDiv>
+              <DetailsMenuContent actor={menuTarget.actor} />
+            </StyledDiv>
+          </animated.foreignObject>
         )}
       </Spring>
-    )
-  );
+    )) as any;
+  }
+
+  return null;
 }
 
 export default DetailsMenu;

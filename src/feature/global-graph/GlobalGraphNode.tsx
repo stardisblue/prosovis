@@ -103,9 +103,9 @@ export const GlobalGraphNode: React.FC<{
   const handleContextMenu = useCallback<React.MouseEventHandler<SVGGElement>>(
     (e) => {
       e.preventDefault();
-      setMenuTarget({ actor, ref: $ref.current });
+      setMenuTarget({ actor, ref: $ref.current, x, y, width, height });
     },
-    [setMenuTarget, actor]
+    [setMenuTarget, actor, x, y, width, height]
   );
 
   const fill = useFill(id);
@@ -135,13 +135,6 @@ export const GlobalGraphNode: React.FC<{
       <StyledText dx={width / 2} dy={height / 2}>
         {label}
       </StyledText>
-      <StyledForeign>
-        <div>Test, hello world</div>
-      </StyledForeign>
     </StyledGroup>
   );
 };
-
-const StyledForeign = styled.foreignObject`
-  overflow: visible;
-`;

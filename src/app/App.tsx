@@ -14,9 +14,6 @@ import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
-import DetailsMenuContext, {
-  useDetailsMenuContext,
-} from '../feature/global-graph/DetailsMenuContext';
 
 const Aside = styled.main`
   display: grid;
@@ -64,7 +61,6 @@ const StyledTimeline = styled(SiprojurisTimeline)`
 `;
 
 function App() {
-  const detailsMenu = useDetailsMenuContext();
   const $ref = useRef<HTMLDivElement>(null as any);
 
   const dispatch = useDispatch();
@@ -112,24 +108,21 @@ function App() {
   );
   return (
     <div ref={$ref}>
-      <DetailsMenuContext.Provider value={detailsMenu}>
-        <Aside {...bind}>
-          <Search>
-            <Autocomplete />
-          </Search>
-          <StyledInformation />
-          <Main>
-            <Mask />
-            <StyledRelation />
-            <StyledMap />
-            <StyledTimeline />
-            <Drawer hideable={<h3>Vue d'ensemble</h3>}>
-              <GlobalGraph />
-            </Drawer>
-          </Main>
-        </Aside>
-        {/* <DetailsMenu /> */}
-      </DetailsMenuContext.Provider>
+      <Aside {...bind}>
+        <Search>
+          <Autocomplete />
+        </Search>
+        <StyledInformation />
+        <Main>
+          <Mask />
+          <StyledRelation />
+          <StyledMap />
+          <StyledTimeline />
+          <Drawer>
+            <GlobalGraph />
+          </Drawer>
+        </Main>
+      </Aside>
       <ActorModal />
     </div>
   );

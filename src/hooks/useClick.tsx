@@ -2,14 +2,16 @@ import React from 'react';
 import { SelectionEvent, setSelection } from '../reducers/selectionSlice';
 import { useDispatch } from 'react-redux';
 
-export function stopEventPropagation(event: React.MouseEvent) {
+export function stopEventPropagation<E extends { stopPropagation: () => void }>(
+  event: E
+) {
   event.stopPropagation();
   return event;
 }
 export function useFlatClick(callback: React.MouseEventHandler) {
   return {
     onClick: React.useCallback(flatEvent(callback), [callback]),
-    onMouseUp: stopEventPropagation
+    onMouseUp: stopEventPropagation,
   };
 }
 
