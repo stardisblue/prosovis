@@ -1,22 +1,43 @@
-import React from 'react';
-import { AnyEvent } from '../../data';
+import React, { useMemo } from 'react';
+import { AnyEvent, Datation } from '../../data';
 import _ from 'lodash';
+import getEventIcon from '../info/event/getEventIcon';
+import { useSelector } from 'react-redux';
+import { selectSwitchKindColor } from '../../selectors/switch';
+import { EventDates } from '../info/EventDates';
 export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
-  const grouped = _(events)
-    .sortBy('datation[0].clean_date')
-    .transform((acc, curr) => {
-      const prev = _.last(acc);
-      if (prev?.kind === curr.kind) {
-        prev.events.push(curr);
-      } else {
-        acc.push({ kind: curr.kind, events: [curr] });
-      }
-    }, [] as { kind: string; events: AnyEvent[] }[])
-    .value();
+  const grouped = useMemo(() => {
+    return _(events)
+      .sortBy('datation[0].clean_date')
+      .transform((acc, curr) => {
+        const prev = _.last(acc);
+        if (prev?.kind === curr.kind) {
+          prev.events.push(curr);
+        } else {
+          acc.push({ kind: curr.kind, events: [curr] });
+        }
+      }, [] as { kind: AnyEvent['kind']; events: AnyEvent[] }[])
+      .map((v) => {
+        const datation = _.flatMap(v.events, (e) => e.datation);
+        return {
+          ...v,
+          start: _.minBy(datation, 'clean_date'),
+          end: _.maxBy(datation, 'clean_date'),
+        };
+      })
+      .value();
+  }, [events]);
+  console.log(grouped);
   return (
     <div>
-      {_.map(grouped, ({ kind, events }) => (
-        <DetailsMenuEvent key={events[0].id} kind={kind} events={events} />
+      {_.map(grouped, ({ kind, events, start, end }) => (
+        <DetailsMenuEvent
+          key={events[0].id}
+          kind={kind}
+          events={events}
+          start={start}
+          end={end}
+        />
       ))}
     </div>
   );
@@ -24,13 +45,23 @@ export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
 function DetailsMenuEvent({
   kind,
   events,
+  start,
+  end,
 }: {
-  kind: string;
+  kind: AnyEvent['kind'];
   events: AnyEvent[];
+  start?: Datation;
+  end?: Datation;
 }) {
+  const color = useSelector(selectSwitchKindColor);
+  const Icon = getEventIcon(kind);
   return (
     <div>
-      {events.length} x {kind}
+      {events.length}x{' '}
+      <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />
+      {start && end && (
+        <EventDates dates={start === end ? [start] : [start, end]} />
+      )}
     </div>
   );
 }
