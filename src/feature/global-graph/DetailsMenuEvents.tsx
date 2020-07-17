@@ -5,6 +5,7 @@ import getEventIcon from '../info/event/getEventIcon';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { EventDates } from '../info/EventDates';
+import eventKind from '../../i18n/event-kind';
 export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
   const grouped = useMemo(() => {
     return _(events)
@@ -57,7 +58,7 @@ function DetailsMenuEvent({
   const Icon = getEventIcon(kind);
   return (
     <div>
-      {events.length}x{' '}
+      {events.length}x {eventKind(kind)}
       <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />
       {start && end && (
         <EventDates dates={start === end ? [start] : [start, end]} />
