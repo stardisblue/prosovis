@@ -28,14 +28,22 @@ export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
               if (actor) dispatch(deleteActor(actor.id));
               setMenuTarget(null);
             },
-            XIcon,
+            <XIcon
+              className="ma1 flex-shrink-0 red"
+              verticalAlign="text-bottom"
+              aria-label={'supprimer'}
+            />,
           ]
         : [
             () => {
               if (actor) dispatch(fetchActorThunk(actor.id));
               setMenuTarget(null);
             },
-            PlusIcon,
+            <PlusIcon
+              className="ma1 flex-shrink-0 green"
+              verticalAlign="text-bottom"
+              aria-label={'ajouter'}
+            />,
           ],
     [actorExists, actor, dispatch, setMenuTarget]
   );
@@ -71,11 +79,7 @@ export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
       <div onMouseUp={stopEventPropagation}>
         <div>
           <span className="pointer" onClick={handleClick}>
-            <Icon
-              className="ma1 flex-shrink-0 green"
-              verticalAlign="text-bottom"
-              aria-label={'ajouter'}
-            />
+            {Icon}
           </span>
           {actor.label}
         </div>
