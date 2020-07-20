@@ -4,10 +4,10 @@ const fr: { [k in AnyEvent['kind']]: string } = {
   Birth: 'Naissance',
   Death: 'Décès',
   Education: 'Enseignement',
-  ObtainQualification: "Obtention d'une qualification",
+  ObtainQualification: 'Obtention de qualité',
   PassageExamen: "Passage d'un examen",
   Retirement: 'Retraite',
-  SuspensionActivity: 'Congé',
+  SuspensionActivity: "Suspension d'activité",
 };
 
 function eventKind(kind: AnyEvent['kind']) {

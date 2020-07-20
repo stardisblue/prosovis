@@ -5,6 +5,7 @@ import { AnyEvent } from '../../data';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { kindMaskState, selectKindMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
+import eventKind from '../../i18n/event-kind';
 
 const Kind: React.FC<{
   id: AnyEvent['kind'];
@@ -24,7 +25,7 @@ const Kind: React.FC<{
       checked={kindMaskState(id, kindMask)}
       handleCheck={handleCheck}
     >
-      {id}
+      {eventKind(id)}
     </CheckBoxSwitch>
   );
 };

@@ -58,8 +58,9 @@ function DetailsMenuEvent({
   const Icon = getEventIcon(kind);
   return (
     <div>
-      {events.length}x {eventKind(kind)}
-      <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />
+      {events.length}x{' '}
+      <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />{' '}
+      {eventKind(kind)}
       {start && end && (
         <EventDates dates={start === end ? [start] : [start, end]} />
       )}
