@@ -1,7 +1,6 @@
 import _ from 'lodash';
-import React, { useMemo, useContext, useCallback, useEffect } from 'react';
+import React, { useMemo, useContext, useCallback } from 'react';
 import * as d3 from 'd3';
-import { Spring, animated } from 'react-spring/renderprops';
 import { selectSwitchColor } from '../../selectors/switch';
 import { superSelectionAsMap } from '../../selectors/superHighlights';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
