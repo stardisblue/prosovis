@@ -59,20 +59,20 @@ export const PiePath: React.FC<{
     outer: arc.outerRadius()(null as any),
   };
 
-  const smallD = useMemo(
-    () =>
-      d3
-        .arc<d3.PieArcDatum<[string, any[]]>>()
-        .innerRadius(sizes.inner)
-        .outerRadius(function (d) {
-          scale.range([sizes.inner, sizes.outer]);
-          return scale(
-            _.filter(d.data[1], ({ id }) => selected[id]).length /
-              d.data[1].length
-          );
-        })(a)!,
-    [sizes, a, selected]
-  );
+  const smallD = useMemo(() => {
+    return _.isEmpty(selected)
+      ? ''
+      : d3
+          .arc<d3.PieArcDatum<[string, any[]]>>()
+          .innerRadius(sizes.inner)
+          .outerRadius(function (d) {
+            scale.range([sizes.inner, sizes.outer]);
+            return scale(
+              _.filter(d.data[1], ({ id }) => selected[id]).length /
+                d.data[1].length
+            );
+          })(a)!;
+  }, [sizes, a, selected]);
 
   // arc.outerRadius(
   //   (arc.outerRadius() * _.filter(values, ({ id }) => selected[id]).length) /
@@ -98,26 +98,18 @@ export const PiePath: React.FC<{
   }, [onMouseLeave, $hover]);
 
   return (
-    <>
-      <path
-        fill={fill}
-        opacity={opacity}
-        d={d}
-        {...useClickSelect(interactive)}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
-        <title>{values.length}</title>
-      </path>{' '}
-      <path
-        fill={fill}
-        d={smallD}
-        {...useClickSelect(interactive)}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-      >
+    <g
+      fill={fill}
+      {...useClickSelect(interactive)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <path opacity={opacity} d={d}>
         <title>{values.length}</title>
       </path>
-    </>
+      <path d={smallD}>
+        <title>{values.length}</title>
+      </path>
+    </g>
   );
 };
