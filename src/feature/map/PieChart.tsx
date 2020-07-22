@@ -39,6 +39,8 @@ export const PieChart: React.FC<{
   );
 };
 
+const scale = d3.scaleSqrt();
+
 export default PieChart;
 export const PiePath: React.FC<{
   a: d3.PieArcDatum<[string, any[]]>;
@@ -52,15 +54,32 @@ export const PiePath: React.FC<{
 
   const d = useMemo(() => arc(a)!, [arc, a]);
   const fill = useMemo(() => color(id), [color, id]);
+  const sizes = {
+    inner: arc.innerRadius()(null as any),
+    outer: arc.outerRadius()(null as any),
+  };
 
-  const opacity = useMemo(
+  const smallD = useMemo(
     () =>
-      _.isEmpty(selected) ||
-      _.some(values, ({ id }) => selected[id] !== undefined)
-        ? 1
-        : 0.3,
-    [values, selected]
+      d3
+        .arc<d3.PieArcDatum<[string, any[]]>>()
+        .innerRadius(sizes.inner)
+        .outerRadius(function (d) {
+          scale.range([sizes.inner, sizes.outer]);
+          return scale(
+            _.filter(d.data[1], ({ id }) => selected[id]).length /
+              d.data[1].length
+          );
+        })(a)!,
+    [sizes, a, selected]
   );
+
+  // arc.outerRadius(
+  //   (arc.outerRadius() * _.filter(values, ({ id }) => selected[id]).length) /
+  //     values.length
+  // );
+
+  const opacity = useMemo(() => (_.isEmpty(selected) ? 1 : 0.3), [selected]);
 
   const interactive = useMemo(
     () => _.map(values, ({ id }) => ({ id, kind: 'Event' })),
@@ -79,15 +98,26 @@ export const PiePath: React.FC<{
   }, [onMouseLeave, $hover]);
 
   return (
-    <path
-      fill={fill}
-      opacity={opacity}
-      d={d}
-      {...useClickSelect(interactive)}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <title>{values.length}</title>
-    </path>
+    <>
+      <path
+        fill={fill}
+        opacity={opacity}
+        d={d}
+        {...useClickSelect(interactive)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <title>{values.length}</title>
+      </path>{' '}
+      <path
+        fill={fill}
+        d={smallD}
+        {...useClickSelect(interactive)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        <title>{values.length}</title>
+      </path>
+    </>
   );
 };
