@@ -28,7 +28,7 @@ export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
       })
       .value();
   }, [events]);
-  console.log(grouped);
+
   return (
     <div>
       {_.map(grouped, ({ kind, events, start, end }) => (

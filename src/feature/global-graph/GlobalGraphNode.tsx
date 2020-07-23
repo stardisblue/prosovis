@@ -98,6 +98,7 @@ export const GlobalGraphNode: React.FC<{
 
   const handleClick = useFlatClick(() => {
     setShiner(id);
+    setMenuTarget({ actor, ref: $ref.current, x, y, width, height });
   });
 
   const handleContextMenu = useCallback<React.MouseEventHandler<SVGGElement>>(
