@@ -1,12 +1,12 @@
 import React from 'react';
 import { Datation } from '../../data';
-import _ from 'lodash';
+import { flatMap } from 'lodash';
 export const EventDates: React.FC<{
   dates: Datation[];
-}> = function({ dates }) {
+}> = function ({ dates }) {
   return (
     <div className="tr">
-      {_.flatMap(dates, (d, index, array) =>
+      {flatMap(dates, (d, index, array) =>
         array.length - 1 !== index ? (
           [
             <abbr
@@ -18,7 +18,7 @@ export const EventDates: React.FC<{
                 {d.value}
               </time>
             </abbr>,
-            <React.Fragment key={d.id + 'interspace'}> - </React.Fragment>
+            <React.Fragment key={d.id + 'interspace'}> - </React.Fragment>,
           ]
         ) : (
           <abbr

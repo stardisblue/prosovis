@@ -1,5 +1,4 @@
 import React from 'react';
-import _ from 'lodash';
 import classnames from 'classnames';
 import { Datation } from '../../data';
 import { InformationFold } from './fold/InformationFold';
@@ -13,11 +12,10 @@ import { useSelector } from 'react-redux';
 import { selectionAsMap } from '../../selectors/selection';
 import MaskedInformation from './MaskedInformation';
 import { superHighlightAsMap } from '../../selectors/superHighlights';
+import { flow, map, get, join, sortBy } from 'lodash/fp';
 
 export function parseDates(dates: Datation[]) {
-  return _(dates)
-    .map((date) => date.value)
-    .join(' - ');
+  return flow(map(get('value')), join(' - '))(dates);
 }
 
 const selectInformationEvents = createSelector(
@@ -26,16 +24,15 @@ const selectInformationEvents = createSelector(
   maskedEventsAsMap,
   superHighlightAsMap,
   function (events, selected, masked, highlighted) {
-    return _<SelectedEvent>(events)
-      .chain()
-      .map<SelectedEvent>((e) => ({
+    return flow(
+      map((e: SelectedEvent) => ({
         ...e,
         highlighted: highlighted[e.id] !== undefined,
         selected: selected[e.id] !== undefined,
         masked: masked[e.id] === undefined,
-      }))
-      .orderBy(['datation[0].clean_date'])
-      .value();
+      })),
+      sortBy<SelectedEvent>('datation[0].clean_date')
+    )(events);
   }
 );
 
@@ -48,14 +45,20 @@ export const Information: React.FC<{ className?: string }> = function ({
 
   return (
     <Flex column className={classnames('pa1 h-100 overflow-y-auto', className)}>
-      {_.map(groups.no, (g) => (
-        <InformationFold key={g.group.uri} {...g} />
-      ))}
+      {map(
+        (g) => (
+          <InformationFold key={g.group.uri} {...g} />
+        ),
+        groups.no
+      )}
       <hr />
       {/* TODO  style */}
-      {_.map(groups.yes, (g) => (
-        <MaskedInformation key={g.group.uri} {...g} />
-      ))}
+      {map(
+        (g) => (
+          <MaskedInformation key={g.group.uri} {...g} />
+        ),
+        groups.yes
+      )}
     </Flex>
   );
 };

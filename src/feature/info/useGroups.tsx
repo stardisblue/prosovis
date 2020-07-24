@@ -1,26 +1,19 @@
 import { useMemo } from 'react';
-import _ from 'lodash';
 import { Ressource, getLocalisation, NamedPlace } from '../../data';
 import { SelectedEvent } from './models';
+import { orderBy, groupBy, flow, map } from 'lodash/fp';
 
 export function useGroups(selectedEvents: SelectedEvent[]) {
   // order by selection and then by kind
   return useMemo(() => {
-    const grps: {
-      kind: 'Actor' | 'NamedPlace';
-      group: Ressource | NamedPlace;
-      events: SelectedEvent[];
-      selected: boolean;
-      highlighted: boolean;
-      masked: boolean;
-    }[] = [];
+    const grps: SelectedEventsGroup[] = [];
     const actorKeyIndex: {
       [k: string]: number;
     } = {};
     const localisationKeyIndex: {
       [k: string]: number;
     } = {};
-    _.map(selectedEvents, e => {
+    map((e) => {
       if (actorKeyIndex[e.actor.id] === undefined) {
         actorKeyIndex[e.actor.id] = grps.length;
         grps.push({
@@ -29,7 +22,7 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
           events: [],
           highlighted: false,
           selected: false,
-          masked: true
+          masked: true,
         });
       }
       const localisation = getLocalisation(e) || {
@@ -37,7 +30,7 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
         label: 'Inconnue',
         kind: 'NamedPlace',
         uri: 'unknown',
-        url: 'unknown'
+        url: 'unknown',
       };
       if (localisationKeyIndex[localisation.id] === undefined) {
         localisationKeyIndex[localisation.id] = grps.length;
@@ -47,7 +40,7 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
           events: [],
           highlighted: false,
           selected: false,
-          masked: true
+          masked: true,
         });
       }
 
@@ -68,13 +61,23 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
 
       grps[actorKeyIndex[e.actor.id]].events.push(e);
       grps[localisationKeyIndex[localisation.id]].events.push(e);
-    });
-    return _(grps)
-      .orderBy(
+    }, selectedEvents);
+
+    return flow(
+      orderBy<SelectedEventsGroup>(
         ['selected', 'group.kind', 'events[0].datation[0].clean_date'],
         ['desc']
-      )
-      .groupBy(e => (e.masked === true ? 'yes' : 'no'))
-      .value();
+      ),
+      groupBy<SelectedEventsGroup>((e) => (e.masked === true ? 'yes' : 'no'))
+    )(grps);
   }, [selectedEvents]);
 }
+
+type SelectedEventsGroup = {
+  kind: 'Actor' | 'NamedPlace';
+  group: Ressource | NamedPlace;
+  events: SelectedEvent[];
+  selected: boolean;
+  highlighted: boolean;
+  masked: boolean;
+};

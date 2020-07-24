@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import classnames from 'classnames';
 import { AnyEvent, Datation } from '../../data';
 import { Flex, FlexItem } from '../../components/ui/Flex';
-import _ from 'lodash';
+import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { ThumbnailEventInfo } from './EventInfo';
 import { EventDates } from './EventDates';
@@ -42,7 +42,7 @@ export const KindGroup: React.FC<{
 
   useEffect(() => setShow(selected === true), [selected]);
   const interactive = useMemo(
-    () => _.map(events, ({ id }) => ({ id, kind: 'Event' })),
+    () => map(events, ({ id }) => ({ id, kind: 'Event' })),
     [events]
   );
 
@@ -79,7 +79,7 @@ export const KindGroup: React.FC<{
           className="bl bw1 pt1"
           borderColor={color ? color(kind) : 'grey'}
         >
-          {_.map(events, (e) => (
+          {map(events, (e) => (
             <ThumbnailEventInfo
               key={e.id}
               event={e}

@@ -1,6 +1,6 @@
 import React, { useRef, useLayoutEffect, useMemo } from 'react';
 import prism from './prism.json';
-import _ from 'lodash';
+import { map } from 'lodash';
 import * as d3 from 'd3';
 import { EasyPZ } from 'easypz';
 import { GlobalGraphNode } from './GlobalGraphNode';
@@ -93,7 +93,7 @@ const GlobalGraph: React.FC = function (props) {
           onClick={handleClick}
         >
           <g ref={$nodeGroup} style={{ transform: `scale(${bScale})` }}>
-            {_.map(prism, (n) => (
+            {map(prism, (n) => (
               <GlobalGraphNode
                 key={n.index}
                 id={n.index}
