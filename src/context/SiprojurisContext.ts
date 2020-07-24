@@ -1,47 +1,14 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { Actor, AnyEvent, PrimaryKey, getEvents } from '../data';
-import _ from 'lodash';
+import { every, filter, keyBy } from 'lodash';
+import { flow, uniqBy, map, identity, transform } from 'lodash/fp';
 
 type HightlightEvents = { id: PrimaryKey; kind: string }[];
 
-/* 
- TODO: 5 types of interaction
- - highlight (on hover)
- - highlight+
- - focus (on select)
- - mask (on hide)
- - filter (on delete)
+const getActorsEvents = transform<Actor, AnyEvent[]>((acc, actor) => {
+  acc.push(...getEvents(actor));
+}, []);
 
- * Highlight:
- - timeline hover
- - map hover
- 
- * Highlight+:
- - Information hover
-
- * Focus:
- - map select
- - timeline select
- - information select
-
- * Mask
- - Types uncheck
- - Timeline filter
- - Map zoom filter
-
- * Filter
- - Information remove
-
- ! exceptions
- - Info hover has them focused in the other views (Highlight +)
-
- * Switch
- - map camembert display
- - color
-
- 
- TODO Info: trier par année
- */
 type SiprojurisContextProps = {
   actors: Actor[];
   selected?: PrimaryKey[];
@@ -59,12 +26,14 @@ export const SiprojurisContext = React.createContext<SiprojurisContextProps>(
   {} as any
 );
 
+const getUniqKind = flow(uniqBy<AnyEvent>('kind'), map('kind'));
+
 /**
  *
  * @param dataset
  * @deprecated
  */
-export const useSiprojurisContext = function(
+export const useSiprojurisContext = function (
   dataset: Actor[]
 ): SiprojurisContextProps {
   const [actors] = useState(dataset);
@@ -77,25 +46,15 @@ export const useSiprojurisContext = function(
     setFilters((state: any) => ({ ...state, [key]: filter }));
   }, []);
 
-  const events = useMemo(
-    function() {
-      return _.transform(
-        actors,
-        (acc, actor) => {
-          acc.push(...getEvents(actor));
-        },
-        [] as AnyEvent[]
-      );
-    },
-    [actors]
-  );
+  const events = useMemo(() => getActorsEvents(actors), [actors]);
 
   const filteredEvents = useMemo(
-    () => _.filter(events, e => _.every(filters, f => f(e))),
+    () => filter(events, (e) => every(filters, (f) => f(e))),
     [events, filters]
   );
-  const indexedEvents = useMemo(() => _.keyBy(filteredEvents, 'id'), [
-    filteredEvents
+
+  const indexedEvents = useMemo(() => keyBy(filteredEvents, 'id'), [
+    filteredEvents,
   ]);
 
   const [selected, setSelected] = useState<PrimaryKey[] | undefined>();
@@ -103,22 +62,12 @@ export const useSiprojurisContext = function(
   const select = useCallback((items?: PrimaryKey[]) => {
     if (items === undefined) return setSelected(undefined);
 
-    setSelected(
-      _(items)
-        .sort()
-        .sortedUniq()
-        .value()
-    );
+    const selection = uniqBy<PrimaryKey>(identity, items);
+
+    setSelected(selection);
   }, []);
 
-  const types = useMemo(
-    () =>
-      _(events)
-        .uniqBy('kind')
-        .map('kind')
-        .value(),
-    [events]
-  );
+  const types = useMemo(() => getUniqKind(events), [events]);
 
   return {
     selected,
@@ -130,6 +79,6 @@ export const useSiprojurisContext = function(
     highlights,
     setHighlights,
     setFilter,
-    types
+    types,
   };
 };

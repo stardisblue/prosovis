@@ -9,9 +9,9 @@ import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducers/';
 import defaultActors from './data/actors.json';
 import { getEvents, Actor } from './data/';
-import _ from 'lodash';
+import { flatMap } from 'lodash/fp';
 
-const events = _.flatMap((defaultActors as any) as Actor[], getEvents);
+const events = flatMap(getEvents, (defaultActors as any) as Actor[]);
 
 const store = configureStore({
   reducer: rootReducer,

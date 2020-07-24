@@ -1,48 +1,90 @@
 import React, { useMemo } from 'react';
 import { AnyEvent, Datation } from '../../data';
-import _ from 'lodash';
+import {
+  pipe,
+  sortBy,
+  transform,
+  map,
+  last,
+  minBy,
+  maxBy,
+  flatMap,
+} from 'lodash/fp';
 import getEventIcon from '../info/event/getEventIcon';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { EventDates } from '../info/EventDates';
 import eventKind from '../../i18n/event-kind';
-export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
-  const grouped = useMemo(() => {
-    return _(events)
-      .sortBy('datation[0].clean_date')
-      .transform((acc, curr) => {
-        const prev = _.last(acc);
-        if (prev?.kind === curr.kind) {
-          prev.events.push(curr);
-        } else {
-          acc.push({ kind: curr.kind, events: [curr] });
-        }
-      }, [] as { kind: AnyEvent['kind']; events: AnyEvent[] }[])
-      .map((v) => {
-        const datation = _.flatMap(v.events, (e) => e.datation);
-        return {
-          ...v,
-          start: _.minBy(datation, 'clean_date'),
-          end: _.maxBy(datation, 'clean_date'),
-        };
-      })
-      .value();
-  }, [events]);
 
-  return (
-    <div>
-      {_.map(grouped, ({ kind, events, start, end }) => (
-        <DetailsMenuEvent
-          key={events[0].id}
-          kind={kind}
-          events={events}
-          start={start}
-          end={end}
-        />
-      ))}
-    </div>
+type EventsByKind = {
+  kind: AnyEvent['kind'];
+  events: AnyEvent[];
+};
+
+type EventsByKindStartEndDate = EventsByKind & {
+  start: Datation | undefined;
+  end: Datation | undefined;
+};
+
+const eventsByFirstDate = sortBy<AnyEvent>('datation[0].clean_date');
+const groupEventsByKind = transform<AnyEvent, EventsByKind[]>((acc, curr) => {
+  const prev = last(acc);
+  if (prev?.kind === curr.kind) {
+    prev.events.push(curr);
+  } else {
+    acc.push({ kind: curr.kind, events: [curr] });
+  }
+}, []);
+
+const getDatationsFromEvents = flatMap((e: AnyEvent) => e.datation);
+const minDate = minBy<Datation>('clean_date');
+const maxDate = maxBy<Datation>('clean_date');
+
+const addStartEndDateToEventGroup = (v: EventsByKind) => {
+  const datation = getDatationsFromEvents(v.events);
+  return {
+    ...v,
+    start: minDate(datation),
+    end: maxDate(datation),
+  };
+};
+
+const createDetailsMenuEvent = ({
+  kind,
+  events,
+  start,
+  end,
+}: EventsByKindStartEndDate) => (
+  <DetailsMenuEvent
+    key={events[0].id}
+    kind={kind}
+    events={events}
+    start={start}
+    end={end}
+  />
+);
+
+export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
+  const grouped = useMemo(
+    () =>
+      pipe<
+        [AnyEvent[]],
+        AnyEvent[],
+        EventsByKind[],
+        EventsByKindStartEndDate[],
+        JSX.Element[]
+      >(
+        eventsByFirstDate,
+        groupEventsByKind,
+        map(addStartEndDateToEventGroup),
+        map(createDetailsMenuEvent)
+      )(events),
+    [events]
   );
+
+  return <div>{grouped}</div>;
 }
+
 function DetailsMenuEvent({
   kind,
   events,

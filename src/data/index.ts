@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import { map, sortBy } from 'lodash/fp';
 
 export type PrimaryKey = number | string;
 
@@ -68,7 +68,7 @@ export type EducationEvent = Event & {
 
 export type ExamenEvent = Event & {
   kind: 'PassageExamen';
-  actor_evalue: ActorCard;
+  actor_evalue: Nullable<ActorCard>;
   actor_evaluer: Nullable<ActorCard>;
   abstract_object: AbstractObject;
   collective_actor: CollectiveActor;
@@ -136,32 +136,48 @@ export function getLocalisation(event: AnyEvent) {
 
 export function getEvents(actor: Actor): AnyEvent[] {
   const events = [];
+
   events.push(
     ...actor.birth_set,
     ...actor.death_set,
     ...actor.education_set,
-    ..._.map(actor.est_evalue_examen, ({ id, actor_evalue, ...rest }) => ({
-      id: -id,
-      ...rest,
-      actor_evalue,
-      actor: actor_evalue,
-    })),
-    ..._(actor.evaluer_examen)
-      .filter('actor_evaluer')
-      .map(({ actor_evaluer, ...rest }) => ({
-        ...rest,
-        actor_evaluer,
-        actor: actor_evaluer!,
-      }))
-      .value(),
+    ...map(createEvaluatedExamen, actor.est_evalue_examen),
+    ...map(createEvaluatorExamen, actor.evaluer_examen),
     ...actor.retirement_set,
     ...actor.suspensionactivity_set,
     ...actor.obtainqualification_set
   );
 
-  return _.map(events, (e) => {
-    e = _.clone(e);
-    e.datation = _.sortBy(e.datation, 'clean_date');
-    return e;
-  });
+  return orderDatation(events);
+}
+
+export const sortDatation = sortBy<Datation>('clean_date');
+
+const orderDatation = map((e: AnyEvent) => {
+  e = { ...e };
+  e.datation = sortDatation(e.datation);
+  return e;
+});
+
+function createEvaluatorExamen({
+  actor_evaluer,
+  ...rest
+}: ExamenEvent): DirectionalExamenEvent {
+  return {
+    ...rest,
+    actor_evaluer,
+    actor: actor_evaluer!,
+  };
+}
+function createEvaluatedExamen({
+  id,
+  actor_evalue,
+  ...rest
+}: ExamenEvent): DirectionalExamenEvent {
+  return {
+    id: -id,
+    ...rest,
+    actor_evalue,
+    actor: actor_evalue!,
+  };
 }
