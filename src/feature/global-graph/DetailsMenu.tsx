@@ -1,5 +1,5 @@
-import styled from 'styled-components/macro';
 import React, { useContext, useRef, useEffect } from 'react';
+import styled from 'styled-components/macro';
 import DetailsMenuContext from './DetailsMenuContext';
 import { Spring, animated } from 'react-spring/renderprops';
 import { DetailsMenuContent } from './DetailsMenuContent';
@@ -29,7 +29,7 @@ function DetailsOnWheelDiv({
 
   useEffect(() => {
     /* react onWheel event is attached directly to top element event listener, 
-    aka: document.addEventListeners
+    aka: document.addEventListener
     as we don't want EasyPZ to react to wheel events in this case, we are
     forced to use legacy eventlistener, hence the effect
      */
@@ -53,7 +53,7 @@ function DetailsMenu() {
 
   if (menuTarget) {
     const { x, y, width } = menuTarget;
-    return (menuTarget && (
+    return (
       <Spring
         native
         to={{
@@ -71,7 +71,7 @@ function DetailsMenu() {
           </animated.foreignObject>
         )}
       </Spring>
-    )) as any;
+    );
   }
 
   return null;

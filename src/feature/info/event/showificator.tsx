@@ -25,15 +25,17 @@ const showificator = function <P extends string, E extends { [k in P]: E[P] }>(
 ) {
   return function y(strings: TemplateStringsArray, label: keyof E) {
     if (event[label] && isNamedPlace(event[label])) {
-      return (event[label] as Nullable<Ressource>)?.label
-        ? [
-            strings[0],
-            <StyledSpan showQuestion={!hasCoordinates(event[label])}>
-              {(event[label] as Nullable<Ressource>)?.label}
-            </StyledSpan>,
-            strings[1],
-          ]
-        : '';
+      return (event[label] as Nullable<Ressource>)?.label ? (
+        <>
+          {strings[0]}
+          <StyledSpan showQuestion={!hasCoordinates(event[label])}>
+            {(event[label] as Nullable<Ressource>)?.label}
+          </StyledSpan>
+          {strings[1]}
+        </>
+      ) : (
+        ''
+      );
     }
 
     return (event[label] as Nullable<Ressource>)?.label
