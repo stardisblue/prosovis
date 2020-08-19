@@ -27,14 +27,14 @@ type EventsByKindStartEndDate = EventsByKind & {
 };
 
 const eventsByFirstDate = sortBy<AnyEvent>('datation[0].clean_date');
-const groupEventsByKind = transform<AnyEvent, EventsByKind[]>((acc, curr) => {
+const groupEventsByKind = (acc: EventsByKind[], curr: AnyEvent) => {
   const prev = last(acc);
   if (prev?.kind === curr.kind) {
     prev.events.push(curr);
   } else {
     acc.push({ kind: curr.kind, events: [curr] });
   }
-}, []);
+};
 
 const getDatationsFromEvents = flatMap((e: AnyEvent) => e.datation);
 const minDate = minBy<Datation>('clean_date');
@@ -65,22 +65,20 @@ const createDetailsMenuEvent = ({
 );
 
 export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
-  const grouped = useMemo(
-    () =>
-      pipe<
-        [AnyEvent[]],
-        AnyEvent[],
-        EventsByKind[],
-        EventsByKindStartEndDate[],
-        JSX.Element[]
-      >(
-        eventsByFirstDate,
-        groupEventsByKind,
-        map(addStartEndDateToEventGroup),
-        map(createDetailsMenuEvent)
-      )(events),
-    [events]
-  );
+  const grouped = useMemo(() => {
+    return pipe<
+      [AnyEvent[]],
+      AnyEvent[],
+      EventsByKind[],
+      EventsByKindStartEndDate[],
+      JSX.Element[]
+    >(
+      eventsByFirstDate,
+      transform(groupEventsByKind, []),
+      map(addStartEndDateToEventGroup),
+      map(createDetailsMenuEvent)
+    )(events);
+  }, [events]);
 
   return <div>{grouped}</div>;
 }
