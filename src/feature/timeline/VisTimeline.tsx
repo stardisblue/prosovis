@@ -8,11 +8,11 @@ import React, {
 import classnames from 'classnames';
 import _ from 'lodash';
 import { Nullable, PrimaryKey, Datation } from '../../data';
-import he from 'he';
-import './VisTimeline.css';
+import { unescape } from 'he';
 import { useMouse } from './useMouse';
 import { Moment } from 'moment';
 import { useReferences } from './useReferences';
+import './VisTimeline.css';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addSelection,
@@ -111,8 +111,8 @@ const selectTimelineEvents = createSelector(
           const { id, actor, label, kind, datation } = e;
           acc.push({
             id,
-            title: he.unescape(actor.label),
-            label: he.unescape(label),
+            title: unescape(actor.label),
+            label: unescape(label),
             popover: 'true',
             ...resolveDatation(datation),
             className: classnames(_.kebabCase(kind), 'timeline-event'),
