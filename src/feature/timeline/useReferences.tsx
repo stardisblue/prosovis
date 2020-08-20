@@ -3,10 +3,10 @@ import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
 import { Nullable } from '../../data';
-import * as vis from 'vis-timeline/standalone';
+import * as vis from 'vis-timeline/peer';
 
 function refNotNull<T>(f: (dom: T) => any) {
-  return function(dom: Nullable<T>) {
+  return function (dom: Nullable<T>) {
     if (!dom) return;
     return f(dom);
   };
@@ -24,8 +24,8 @@ const options = {
   margin: {
     item: {
       horizontal: 5, // distance
-      vertical: 1
-    }
+      vertical: 1,
+    },
   },
   orientation: { item: 'top' },
   dataAttributes: [
@@ -36,10 +36,10 @@ const options = {
     'group',
     'title',
     'label',
-    'popover'
+    'popover',
   ],
   verticalScroll: true,
-  horizontalScroll: true
+  horizontalScroll: true,
 };
 
 export function useReferences() {
@@ -101,15 +101,15 @@ export function useReferences() {
     // ),
     timeline,
     timelineRef: useCallback(
-      refNotNull(function(dom: HTMLDivElement) {
+      refNotNull(function (dom: HTMLDivElement) {
         // put timeline logic here
         $(dom).popover({
           selector: '[data-popover="true"]',
           trigger: 'hover',
           placement: 'top',
-          content: function() {
+          content: function () {
             return this.getAttribute('data-label') || '';
-          }
+          },
         });
 
         $events.current = dom.getElementsByClassName('timeline-event') as any;
@@ -119,12 +119,12 @@ export function useReferences() {
         visTimeline.addCustomTime(undefined as any, 'b');
         setTimeline({
           vis: visTimeline,
-          dom
+          dom,
         });
       }),
       // eslint-disable-next-line
       []
-    )
+    ),
     // window,
     // windowRef: useCallback(
     //   refNotNull(function(dom: SVGGElement) {

@@ -5,6 +5,8 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
+import './VisTimeline.css';
+
 import classnames from 'classnames';
 import _ from 'lodash';
 import { Nullable, PrimaryKey, Datation } from '../../data';
@@ -12,7 +14,6 @@ import { unescape } from 'he';
 import { useMouse } from './useMouse';
 import { Moment } from 'moment';
 import { useReferences } from './useReferences';
-import './VisTimeline.css';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   addSelection,
