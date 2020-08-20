@@ -5,7 +5,7 @@ import App from './app/App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'react-redux';
 
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import rootReducer from './reducers/';
 import defaultActors from './data/actors.json';
 import { getEvents, Actor } from './data/';
@@ -18,6 +18,7 @@ const store = configureStore({
   preloadedState: {
     events,
   },
+  middleware: getDefaultMiddleware({ immutableCheck: false }),
 });
 
 ReactDOM.render(
