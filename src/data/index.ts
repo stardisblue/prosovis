@@ -8,7 +8,7 @@ export type Ressource = {
   uri: string;
   label: string;
 };
-export type ActorCard = Ressource;
+export type ActorCard = Ressource & { kind: 'Actor'; id: number };
 type AbstractObject = Ressource;
 
 export type Nullable<T> = T | null;

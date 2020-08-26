@@ -2,6 +2,13 @@ import React from 'react';
 import { AnyEvent } from '../../../data';
 import showificator from './showificator';
 
+/**
+ *
+ * @param event
+ * @param fromActor
+ * @param isSubGroup
+ * @deprecated use getEventLabel instead
+ */
 function getEventInfo(
   event: AnyEvent,
   fromActor: boolean,
@@ -70,7 +77,7 @@ function getEventInfo(
             )}
           </>
         ),
-        rest,
+        ...rest,
       ];
     }
     case 'Retirement': {
