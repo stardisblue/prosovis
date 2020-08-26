@@ -14,6 +14,7 @@ import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
+import ActorPlaceSwitch from '../feature/timeline/header/ActorPlaceSwitch';
 
 const Aside = styled.main`
   display: grid;
@@ -35,9 +36,10 @@ const Main = styled.main`
   grid-template-areas:
     'mask mask'
     'rel map'
+    'timeline-header map'
     'timeline timeline';
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr auto auto;
 `;
 
 const Search = styled.section`
@@ -50,10 +52,17 @@ const StyledInformation = styled(Information)`
 
 const StyledMap = styled(SiprojurisMap)`
   grid-area: map;
+  border: 1px solid lightgray;
 `;
 
 const StyledRelation = styled(Relation)`
   grid-area: rel;
+  border-top: 1px solid lightgray;
+  border-bottom: 1px solid lightgray;
+`;
+
+const StyledTimelineHeader = styled(ActorPlaceSwitch)`
+  grid-area: timeline-header;
 `;
 
 const StyledTimeline = styled(SiprojurisTimeline)`
@@ -117,6 +126,7 @@ function App() {
           <Mask />
           <StyledRelation />
           <StyledMap />
+          <StyledTimelineHeader />
           <StyledTimeline />
           <Drawer>
             <GlobalGraph />

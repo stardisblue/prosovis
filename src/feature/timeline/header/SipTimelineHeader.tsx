@@ -9,6 +9,9 @@ const StyledDiv = styled.div`
   background-color: #f7f7f7;
 `;
 
+/**
+ * @deprecated
+ */
 const SipTimelineHeader: React.FC = function () {
   return (
     <StyledDiv>

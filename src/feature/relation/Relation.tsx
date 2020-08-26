@@ -43,7 +43,7 @@ function useDimensions() {
 
 const simulation = getSimulation((d: any) => d.id);
 
-const Relation: React.FC = function () {
+const Relation: React.FC<{ className?: string }> = function ({ className }) {
   const dispatch = useDispatch();
 
   const $nodeGroup = useRef<SVGGElement>(null as any);
@@ -142,6 +142,7 @@ const Relation: React.FC = function () {
 
   return (
     <svg
+      className={className}
       ref={$svg}
       width="100%"
       height="100%"

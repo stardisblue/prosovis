@@ -55,3 +55,5 @@ export const ActorPlaceSwitch: React.FC = function () {
     </StyledLabel>
   );
 };
+
+export default ActorPlaceSwitch;
