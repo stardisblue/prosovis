@@ -1,8 +1,11 @@
 import styled from 'styled-components/macro';
 
-const IconSpacer = styled.div`
+export const IconSpacer = styled.div<{ spaceRight?: boolean }>`
   display: flex;
-  margin-right: 8px;
+  ${({ spaceRight }) =>
+    spaceRight === undefined || spaceRight ? 'margin-right: 0.25em' : ''};
+  flex-direction: column;
+  justify-content: center;
 `;
 export const IconSpacerPointer = styled(IconSpacer)`
   cursor: pointer;

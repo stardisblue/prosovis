@@ -1,11 +1,11 @@
 import { getActorLabel } from './getActorLabel';
-import { Nullable, Ressource } from './types';
+import { Nullable, Ressource } from './typings';
 import {
   ComputedLabels,
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
-} from './sip-types';
+} from './sip-typings';
 
 /**
  * Displays current string or an emtpy string
@@ -17,18 +17,10 @@ import {
  */
 function ton<T extends Ressource>(
   strings: TemplateStringsArray,
-  label: Nullable<T> | [Nullable<T>, (o: T) => string]
+  label: Nullable<T>
 ) {
   if (label === null) {
     return '';
-  }
-
-  if (Array.isArray(label)) {
-    const [fun, ress] = label;
-    if (fun === null) {
-      return '';
-    }
-    return strings[0] + ress(fun) + strings[1];
   }
 
   return strings[0] + label.label + strings[1];
@@ -38,7 +30,7 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
   switch (event.kind) {
     case 'Birth': {
       return {
-        actorNote: ton`Naissance Ã  ${event.localisation}`,
+        actorNote: ton`Naissance à ${event.localisation}`,
         placeNote: ton`Naissance de ${event.actor}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
         placeNoteAndGrouped: ton`De ${event.actor}`,
@@ -46,8 +38,8 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
     }
     case 'Death': {
       return {
-        actorNote: ton`DÃ©cÃ¨s Ã  ${event.localisation}`,
-        placeNote: ton`DÃ©cÃ¨s de ${event.actor}`,
+        actorNote: ton`Décès à ${event.localisation}`,
+        placeNote: ton`Décès de ${event.actor}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
         placeNoteAndGrouped: ton`De ${event.actor}`,
       };
@@ -57,23 +49,36 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
         actorNote:
           'Enseigne' +
           ton` "${event.abstract_object}"` +
-          ton` Ã  ${event.collective_actor}`,
+          ton` à ${event.collective_actor}`,
         placeNote:
           `${getActorLabel(event.actor)} enseigne` +
           ton` "${event.abstract_object}"` +
-          ton` Ã  ${event.collective_actor}`,
+          ton` à ${event.collective_actor}`,
+        actorNoteAndGrouped:
+          ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`,
+        placeNoteAndGrouped:
+          getActorLabel(event.actor) +
+          ton` "${event.abstract_object}"` +
+          ton` à ${event.collective_actor}`,
       };
     }
     case 'ObtainQualification': {
       return {
         actorNote:
-          'Obtient la qualitÃ©' +
+          'Obtient la qualité' +
           ton` "${event.social_characteristic}"` +
-          ton` Ã  ${event.collective_actor}`,
+          ton` à ${event.collective_actor}`,
         placeNote:
-          `${getActorLabel(event.actor)} obtient la qualitÃ©` +
+          `${getActorLabel(event.actor)} obtient la qualité` +
           ton` "${event.social_characteristic}"` +
-          ton` Ã  ${event.collective_actor}`,
+          ton` à ${event.collective_actor}`,
+        actorNoteAndGrouped:
+          ton` "${event.social_characteristic}"` +
+          ton` à ${event.collective_actor}`,
+        placeNoteAndGrouped:
+          getActorLabel(event.actor) +
+          ton` "${event.social_characteristic}"` +
+          ton` à ${event.collective_actor}`,
       };
     }
     case 'PassageExamen': {
@@ -82,26 +87,26 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
           ? yes
           : no;
       const rest =
-        ton` "${event.abstract_object}"` + ton` Ã  ${event.collective_actor}`;
+        ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`;
       return {
         actorNote:
           eva(
             ton`Evalue ${event.actor_evalue}`,
-            ton`EvaluÃ© par ${event.actor_evaluer}`
+            ton`Evalué par ${event.actor_evaluer}`
           ) + rest,
         placeNote:
           getActorLabel(event.actor) +
           eva(
             ton` evalue ${event.actor_evalue}`,
-            ton` evaluÃ© par ${event.actor_evaluer}`
+            ton` evalué par ${event.actor_evaluer}`
           ) +
           rest,
       };
     }
     case 'Retirement': {
       return {
-        actorNote: 'DÃ©part en retraite',
-        placeNote: 'DÃ©part en retraite' + `de ${getActorLabel(event.actor)}`,
+        actorNote: 'Départ en retraite',
+        placeNote: `Départ en retraite de ${getActorLabel(event.actor)}`,
       };
     }
     case 'SuspensionActivity': {
@@ -126,10 +131,10 @@ export function getEventLabel(
       placeNoteAndGrouped,
     } = event.computed;
 
-    if (noteKind == 'Actor') {
+    if (noteKind === 'Actor') {
       // fallback to actorNote
       return (grouped && actorNoteAndGrouped) || actorNote;
-    } else if (noteKind == 'NamedPlace') {
+    } else if (noteKind === 'NamedPlace') {
       // fallback to placeNote
       return (grouped && placeNoteAndGrouped) || placeNote;
     }
@@ -142,4 +147,33 @@ export function getEventLabel(
 
   // fallback to default labellisation
   return event.label;
+}
+
+export function getKindString(kind: string) {
+  switch (kind) {
+    case 'Birth':
+      return 'Naissances';
+
+    case 'Death':
+      return 'Décès';
+
+    case 'Education':
+      return 'Enseignements';
+
+    case 'ObtainQualification':
+      return 'Obtention de qualités';
+
+    case 'PassageExamen':
+      return 'Evaluations';
+
+    case 'Retirement':
+      return 'Départs en retraite';
+
+    case 'SuspensionActivity':
+      return "Suspensions d'activités";
+
+    default: {
+      return 'Inconnue';
+    }
+  }
 }

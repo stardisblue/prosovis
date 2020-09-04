@@ -5,13 +5,7 @@ import { ActorCard } from './typings';
 const splitActorLabel = split(',');
 const compactFirstNames = (f: string) => f.trim().replace(/[^A-Z]+/g, '. ');
 const trimFirstNames = function ([name, ...firstNames]: string[]) {
-  return (
-    name +
-    pipe<[string[]], string[], string>(
-      map(compactFirstNames),
-      join('')
-    )(firstNames).trim()
-  );
+  return `${name} ${pipe(map(compactFirstNames), join(''))(firstNames).trim()}`;
 };
 export function computeActorShortLabel(
   actor: ActorCard | SiprojurisActor
@@ -30,5 +24,5 @@ export function computeActorShortLabel(
 }
 
 export function getActorLabel(actor: SiprojurisActor, short: boolean = false) {
-  return short ? actor.label : actor.shortLabel;
+  return short ? actor.shortLabel : actor.label;
 }

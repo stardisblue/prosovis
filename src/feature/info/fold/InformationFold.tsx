@@ -1,18 +1,17 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { Ressource } from '../../../data/typings';
 import classnames from 'classnames';
-import _ from 'lodash';
 
 import { LocationIcon } from '@primer/octicons-react';
-import KindGroup from '../KindGroup';
-import { EventGroup, SelectedEvent } from '../models';
-import EventInfo from '../EventInfo';
-import Fold from './Fold';
+import { SelectedEvent } from '../models';
+import { Note } from '../../../components/ui/Note';
 import ActorIcon from './ActorIcon';
-import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { useClickSelect } from '../../../hooks/useClick';
+// import useHoverHighlight from '../../../hooks/useHoverHighlight';
+// import { useClickSelect } from '../../../hooks/useClick';
 import styled from 'styled-components/macro';
+import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
+import { SiprojurisEvent } from '../../../data/sip-typings';
 
 // TODO griser personnes
 // surlingé : survol
@@ -30,7 +29,7 @@ import styled from 'styled-components/macro';
 // synchro timeline-carte-information
 // laisser le graphe grisé
 type InfoGroupProps = {
-  events: SelectedEvent[];
+  events: SelectedEvent<SiprojurisEvent>[];
   group: Ressource;
   kind: 'Actor' | 'NamedPlace';
   masked: boolean;
@@ -57,6 +56,10 @@ const LocationDiv = styled.div<{ showQuestion: boolean }>(({ showQuestion }) =>
     : ''
 );
 
+/**
+ * @deprecated use ActorNote or PlaceNote
+ * @param param0
+ */
 export const InformationFold: React.FC<InfoGroupProps> = function ({
   events,
   group,
@@ -65,90 +68,105 @@ export const InformationFold: React.FC<InfoGroupProps> = function ({
   selected,
   highlighted,
 }) {
-  const groupedEvents = useMemo(
-    () =>
-      _.reduce(
-        events,
-        (acc, e) => {
-          let last = _.last(acc);
+  // const groupedEvents = useMemo(
+  //   () =>
+  //     _.reduce(
+  //       events,
+  //       (acc, e) => {
+  //         let last = _.last(acc);
 
-          if (last === undefined || last.kind !== e.kind) {
-            acc.push({
-              id: e.id,
-              kind: e.kind,
-              events: e,
-              start: _.first(e.datation)!,
-              end: _.last(e.datation)!,
-              masked: e.masked,
-              selected: e.selected,
-              highlighted: e.highlighted,
-            });
-            return acc;
-          }
-          if (_.isArray(last.events)) {
-            last.events.push(e);
-          } else {
-            last.events = [last.events, e];
-          }
+  //         if (last === undefined || last.kind !== e.kind) {
+  //           acc.push({
+  //             id: e.id,
+  //             kind: e.kind,
+  //             events: e,
+  //             start: _.first(e.datation)!,
+  //             end: _.last(e.datation)!,
+  //             masked: e.masked,
+  //             selected: e.selected,
+  //             highlighted: e.highlighted,
+  //           });
+  //           return acc;
+  //         }
+  //         if (_.isArray(last.events)) {
+  //           last.events.push(e);
+  //         } else {
+  //           last.events = [last.events, e];
+  //         }
 
-          last.start = _.minBy(
-            [last.start, _.first(e.datation)],
-            'clean_date'
-          )!;
-          last.end = _.maxBy([last.end, _.last(e.datation)], 'clean_date')!;
+  //         last.start = _.minBy(
+  //           [last.start, _.first(e.datation)],
+  //           'clean_date'
+  //         )!;
+  //         last.end = _.maxBy([last.end, _.last(e.datation)], 'clean_date')!;
 
-          if (e.selected !== undefined) {
-            last.selected = last.selected || e.selected;
-          }
+  //         if (e.selected !== undefined) {
+  //           last.selected = last.selected || e.selected;
+  //         }
 
-          if (e.highlighted !== undefined) {
-            last.highlighted = last.highlighted || e.highlighted;
-          }
-          if (e.masked !== undefined) {
-            last.masked = last.masked && e.masked;
-          }
+  //         if (e.highlighted !== undefined) {
+  //           last.highlighted = last.highlighted || e.highlighted;
+  //         }
+  //         if (e.masked !== undefined) {
+  //           last.masked = last.masked && e.masked;
+  //         }
 
-          return acc;
-        },
-        [] as EventGroup<SelectedEvent[] | SelectedEvent>[]
-      ),
-    [events]
-  );
+  //         return acc;
+  //       },
+  //       [] as EventGroup<
+  //         SelectedEvent<SiprojurisEvent>[] | SelectedEvent<SiprojurisEvent>
+  //       >[]
+  //     ),
+  //   [events]
+  // );
 
-  const interactive = useMemo(
-    () => _.map(events, (e) => ({ id: e.id, kind: 'Event' })),
-    [events]
-  );
+  // const interactive = useMemo(
+  //   () => _.map(events, (e) => ({ id: e.id, kind: 'Event' })),
+  //   [events]
+  // );
 
   return (
-    <Fold
-      className={classnames({ 'bg-light-gray': highlighted })}
-      events={groupedEvents.map((e) =>
-        _.isArray(e.events) ? (
-          <KindGroup key={e.id} {...(e as any)} origin={kind} />
-        ) : (
-          <EventInfo key={e.id} event={e.events} origin={kind} />
-        )
-      )}
-      handleClick={useClickSelect(interactive)}
-      {...useHoverHighlight(interactive)}
+    <Note
+      title={
+        <>
+          {kind === 'Actor' ? (
+            <ActorIcon id={group.id} />
+          ) : (
+            <IconSpacerPointer>
+              <LocationIcon />
+            </IconSpacerPointer>
+          )}
+          <LocationDiv
+            showQuestion={kind === 'NamedPlace' && !hasCoordinates(group)}
+            className={classnames('flex-auto', {
+              b: selected,
+              'o-50': masked,
+            })}
+          >
+            {group.label}
+          </LocationDiv>
+        </>
+      }
     >
-      {kind === 'Actor' ? (
-        <ActorIcon id={group.id} />
-      ) : (
-        <LocationIcon className="ma1 flex-shrink-0" />
-      )}
-      <LocationDiv
-        showQuestion={kind === 'NamedPlace' && !hasCoordinates(group)}
-        className={classnames('flex-auto', {
-          b: selected,
-          'o-50': masked,
-        })}
-      >
-        {group.label}
-      </LocationDiv>
-    </Fold>
+      test
+    </Note>
   );
+
+  // return (
+  //   <Fold
+  //     className={classnames({ 'bg-light-gray': highlighted })}
+  //     events={groupedEvents.map((e) =>
+  //       _.isArray(e.events) ? (
+  //         <KindGroup key={e.id} {...(e as any)} origin={kind} />
+  //       ) : (
+  //         <EventInfo key={e.id} event={e.events} origin={kind} />
+  //       )
+  //     )}
+  //     handleClick={useClickSelect(interactive)}
+  //     {...useHoverHighlight(interactive)}
+  //   >
+  //   </Fold>
+  // );
 };
 
 function hasCoordinates(obj: any) {

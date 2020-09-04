@@ -1,6 +1,9 @@
+import { SiprojurisEvent } from '../../data/sip-typings';
 import { AnyEvent, Datation } from '../../data/typings';
 
-export type EventGroup<T extends SelectedEvent | SelectedEvent[]> = {
+export type EventGroup<
+  T extends SelectedEvent<SiprojurisEvent> | SelectedEvent<SiprojurisEvent>[]
+> = {
   id: AnyEvent['id'];
   kind: AnyEvent['kind'];
   events: T;

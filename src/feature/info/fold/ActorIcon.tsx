@@ -6,6 +6,7 @@ import { PrimaryKey } from '../../../data/typings';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { deleteActor } from '../../../reducers/eventSlice';
 import styled from 'styled-components/macro';
+import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
 
 const StyledPersonIcon = styled(PersonIcon)<{
   iconColor?: string;
@@ -20,19 +21,19 @@ const ActorIcon: React.FC<{
   }, [dispatch, id]);
 
   const color = useSelector(selectSwitchActorColor);
+
   return (
     <>
-      <span className="pointer" onClick={handleClick}>
+      <IconSpacerPointer as="span" onClick={handleClick}>
         <XIcon
-          className="ma1 flex-shrink-0 red"
+          className="red"
           verticalAlign="text-bottom"
           aria-label="Supprimer"
         />
-      </span>
-      <StyledPersonIcon
-        iconColor={color ? color(id) : undefined}
-        className="ma1 flex-shrink-0"
-      />
+      </IconSpacerPointer>
+      <IconSpacerPointer as="span">
+        <StyledPersonIcon iconColor={color ? color(id) : undefined} />
+      </IconSpacerPointer>
     </>
   );
 };

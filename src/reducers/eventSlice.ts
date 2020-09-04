@@ -1,11 +1,12 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getEvents } from '../data';
-import { PrimaryKey, AnyEvent, Actor } from '../data/typings';
+import { PrimaryKey, Actor } from '../data/typings';
 import _ from 'lodash';
+import { SiprojurisEvent } from '../data/sip-typings';
 
 export const eventSlice = createSlice({
   name: 'event',
-  initialState: [] as AnyEvent[],
+  initialState: [] as SiprojurisEvent[],
   reducers: {
     addActor(state, action: PayloadAction<Actor | Actor[]>) {
       if (_.isArray(action.payload)) {

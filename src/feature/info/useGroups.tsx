@@ -1,13 +1,17 @@
 import { useMemo } from 'react';
 import { getLocalisation } from '../../data';
-import { Ressource, NamedPlace } from '../../data/typings';
 import { SelectedEvent } from './models';
-import { orderBy, groupBy, flow, map } from 'lodash/fp';
+import { orderBy, groupBy, map, pipe } from 'lodash/fp';
+import {
+  SiprojurisActor,
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../data/sip-typings';
 
-export function useGroups(selectedEvents: SelectedEvent[]) {
+export function useGroups(selectedEvents: SelectedEvent<SiprojurisEvent>[]) {
   // order by selection and then by kind
   return useMemo(() => {
-    const grps: SelectedEventsGroup[] = [];
+    const grps: SelectedEventsGroupObject[] = [];
     const actorKeyIndex: {
       [k: string]: number;
     } = {};
@@ -32,6 +36,8 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
         kind: 'NamedPlace',
         uri: 'unknown',
         url: 'unknown',
+        lat: null,
+        lng: null,
       };
       if (localisationKeyIndex[localisation.id] === undefined) {
         localisationKeyIndex[localisation.id] = grps.length;
@@ -64,20 +70,26 @@ export function useGroups(selectedEvents: SelectedEvent[]) {
       grps[localisationKeyIndex[localisation.id]].events.push(e);
     }, selectedEvents);
 
-    return flow(
-      orderBy<SelectedEventsGroup>(
+    return pipe(
+      orderBy<SelectedEventsGroupObject>(
         ['selected', 'group.kind', 'events[0].datation[0].clean_date'],
         ['desc']
       ),
-      groupBy<SelectedEventsGroup>((e) => (e.masked === true ? 'yes' : 'no'))
+      groupBy<SelectedEventsGroupObject>((e) =>
+        e.masked === true ? 'yes' : 'no'
+      )
     )(grps);
   }, [selectedEvents]);
 }
 
-type SelectedEventsGroup = {
-  kind: 'Actor' | 'NamedPlace';
-  group: Ressource | NamedPlace;
-  events: SelectedEvent[];
+type SelectedEventsGroupObject =
+  | SelectedEventsGroup<SiprojurisActor>
+  | SelectedEventsGroup<SiprojurisNamedPlace>;
+
+type SelectedEventsGroup<T extends SiprojurisActor | SiprojurisNamedPlace> = {
+  kind: T['kind'];
+  group: T;
+  events: SelectedEvent<SiprojurisEvent>[];
   selected: boolean;
   highlighted: boolean;
   masked: boolean;

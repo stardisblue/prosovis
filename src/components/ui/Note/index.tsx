@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@primer/octicons-react';
 import { useFlatClick } from '../../../hooks/useClick';
 import { IconSpacerPointer } from '../IconSpacer';
+import styled from 'styled-components/macro';
 
 export const Note: React.FC<{
   title: JSX.Element | string;
   flat?: boolean;
   defaultToggleState?: boolean;
 }> = function ({ title, flat = false, defaultToggleState = false, children }) {
-  const Base = flat ? React.Fragment : 'section';
+  const Base = flat ? React.Fragment : 'div';
 
   const [show, setShow] = useState(defaultToggleState);
   const handleToggle = useFlatClick(() => {
@@ -19,9 +20,9 @@ export const Note: React.FC<{
     <Base>
       <NoteTitle>
         {title}
-        <IconSpacerPointer {...handleToggle}>
+        <IconSpacerPointer {...handleToggle} spaceRight={false}>
           {show ? (
-            <ChevronUpIcon aria-label="DÃ©plier" />
+            <ChevronUpIcon aria-label="Déplier" />
           ) : (
             <ChevronDownIcon aria-label="Replier" />
           )}
@@ -32,9 +33,9 @@ export const Note: React.FC<{
   );
 };
 
-export const NoteTitle: React.FC = function ({ children }) {
-  return <div>{children}</div>;
-};
+const NoteTitle = styled.div`
+  display: flex;
+`;
 
 export const NoteContent: React.FC = function ({ children }) {
   return <>{children}</>;

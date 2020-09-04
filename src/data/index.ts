@@ -1,4 +1,7 @@
 import { map, sortBy } from 'lodash/fp';
+import { computeActorShortLabel } from './getActorLabel';
+import { computeEventLabels } from './getEventLabel';
+import { SiprojurisEvent } from './sip-typings';
 import {
   AnyEvent,
   Actor,
@@ -24,7 +27,9 @@ export function getLocalisation(event: AnyEvent) {
   }
 }
 
-export function getEvents(actor: Actor): AnyEvent[] {
+export const sortDatation = sortBy<Datation>('clean_date');
+
+export function getEvents(actor: Actor): SiprojurisEvent[] {
   const events = [];
 
   events.push(
@@ -38,16 +43,20 @@ export function getEvents(actor: Actor): AnyEvent[] {
     ...actor.obtainqualification_set
   );
 
-  return orderDatation(events);
+  const prepareEvents = map((e: AnyEvent) => {
+    const se: SiprojurisEvent = {
+      localisation: null,
+      ...e,
+      actor: computeActorShortLabel(e.actor),
+      datation: sortDatation(e.datation),
+    };
+
+    se.computed = computeEventLabels(se);
+    return se;
+  });
+
+  return prepareEvents(events);
 }
-
-export const sortDatation = sortBy<Datation>('clean_date');
-
-const orderDatation = map((e: AnyEvent) => {
-  e = { ...e };
-  e.datation = sortDatation(e.datation);
-  return e;
-});
 
 function createEvaluatorExamen({
   actor_evaluer,

@@ -15,9 +15,13 @@ type FlexProps = {
   onMouseLeave?: React.MouseEventHandler;
 };
 
+/**
+ * @deprecated
+ * @param param0
+ */
 export const Flex: React.FC<React.PropsWithChildren<
   FlexProps & FlexItemProps
->> = function(
+>> = function (
   {
     tag = 'div',
     className,
@@ -44,7 +48,7 @@ export const Flex: React.FC<React.PropsWithChildren<
           'flex-wrap': wrap === true,
           'flex-nowrap': wrap === false,
           [`items-${items}`]: items,
-          'flex-column': column
+          'flex-column': column,
         },
         flexItemClasses(rest)
       )}
