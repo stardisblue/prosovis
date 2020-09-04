@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react';
 import $ from 'jquery';
 import 'popper.js';
 import 'bootstrap';
-import { Nullable } from '../../data';
+import { Nullable } from '../../data/typings';
 import * as vis from 'vis-timeline/peer';
 
 function refNotNull<T>(f: (dom: T) => any) {

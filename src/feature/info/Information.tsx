@@ -1,6 +1,6 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Datation } from '../../data';
+import { Datation } from '../../data/typings';
 import { InformationFold } from './fold/InformationFold';
 import { useGroups } from './useGroups';
 import { SelectedEvent } from './models';

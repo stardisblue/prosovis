@@ -1,14 +1,14 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { PrimaryKey, AnyEvent } from '../data';
+import { PrimaryKey, AnyEvent } from '../data/typings';
 import { selectSelection } from './selection';
 
 type SuperHighlight = { id: PrimaryKey; kind: string; type?: string };
 
 export const selectSuperHighlight = (state: RootState) => state.superHighlight;
 
-export const superHighlightAsMap = createSelector(selectSuperHighlight, sel =>
+export const superHighlightAsMap = createSelector(selectSuperHighlight, (sel) =>
   _.keyBy(sel, 'id')
 );
 
@@ -21,7 +21,7 @@ export const selectSuperSelection = createSelector(
   }
 );
 
-export const superSelectionAsMap = createSelector(selectSuperSelection, sel =>
+export const superSelectionAsMap = createSelector(selectSuperSelection, (sel) =>
   _.keyBy(sel, 'id')
 );
 

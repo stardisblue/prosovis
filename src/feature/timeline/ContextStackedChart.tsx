@@ -6,39 +6,39 @@ import moment from 'moment';
 import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, PrimaryKey } from '../../data';
+import { AnyEvent, PrimaryKey } from '../../data/typings';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
 
-export const selectDiscrete = createSelector(selectEvents, function(events) {
+export const selectDiscrete = createSelector(selectEvents, function (events) {
   return _(events)
     .flatMap<
       | { kind: AnyEvent['kind'] | ''; actor: PrimaryKey | null; time: Date }
       | undefined
-    >(e => {
+    >((e) => {
       if (e.datation.length === 2) {
         const [start, end] = _(e.datation)
-          .map(d => d3.timeYear.floor(new Date(d.clean_date)))
+          .map((d) => d3.timeYear.floor(new Date(d.clean_date)))
           .sort()
           .value();
 
-        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map(time => ({
+        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
           kind: e.kind,
           actor: e.actor.id,
-          time
+          time,
         }));
       } else if (e.datation.length === 1) {
         return {
           kind: e.kind,
           actor: e.actor.id,
-          time: d3.timeYear(moment(e.datation[0].clean_date).toDate())
+          time: d3.timeYear(moment(e.datation[0].clean_date).toDate()),
         };
       }
     })
     .concat(
       d3.timeYear
         .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map(d => ({ time: d, kind: '', actor: null }))
+        .map((d) => ({ time: d, kind: '', actor: null }))
     )
     .groupBy('time');
 });
@@ -53,18 +53,18 @@ const selectMap = createSelector(
     switcher === 'Actor'
       ? {
           countBy: 'actor',
-          keys: _.map(actors, a => '' + a.id),
-          color: actorColor
+          keys: _.map(actors, (a) => '' + a.id),
+          color: actorColor,
         }
       : { countBy: 'kind', keys: _.values(kinds), color: mainColor }
 );
 
-const selectStack = createSelector(selectDiscrete, selectMap, function(
+const selectStack = createSelector(selectDiscrete, selectMap, function (
   events,
   selection
 ) {
   const flatten = _(events)
-    .mapValues(v => _.countBy(v, selection.countBy))
+    .mapValues((v) => _.countBy(v, selection.countBy))
     .map((value, time) => ({ time: new Date(time), ...value }))
     .sortBy('time')
     .value();
@@ -75,7 +75,7 @@ const selectStack = createSelector(selectDiscrete, selectMap, function(
       .keys(selection.keys)
       .order(d3.stackOrderInsideOut)
       .value((d, k) => d[k] || 0)(flatten as any),
-    color: selection.color
+    color: selection.color,
   };
 });
 
@@ -93,10 +93,10 @@ type D3Selection = d3.Selection<
 
 export const ContextStackedChart: React.FC<{
   x: d3.ScaleTime<number, number>;
-}> = function({ x }) {
+}> = function ({ x }) {
   // ! assuming that ref is instantaneously populated
   const chart = useRef<D3Selection>(null as any);
-  const chartRef = useCallback(function(dom: SVGGElement) {
+  const chartRef = useCallback(function (dom: SVGGElement) {
     if (!dom) return;
     chart.current = d3.select(dom);
   }, []);
@@ -104,18 +104,18 @@ export const ContextStackedChart: React.FC<{
   const stackAndColor = useSelector(selectStack);
 
   const y = useMemo(
-    function() {
+    function () {
       return (
         d3
           .scalePow()
           .domain([
-            d3.min(stackAndColor.stack, d => d3.min(d, d => d[0])) as any,
-            d3.max(stackAndColor.stack, d => d3.max(d, d => d[1])) as any
+            d3.min(stackAndColor.stack, (d) => d3.min(d, (d) => d[0])) as any,
+            d3.max(stackAndColor.stack, (d) => d3.max(d, (d) => d[1])) as any,
           ])
           // .nice()
           .range([
             ContextOptions.height - ContextOptions.margin.bottom,
-            ContextOptions.margin.top
+            ContextOptions.margin.top,
           ])
       );
     },
@@ -123,19 +123,19 @@ export const ContextStackedChart: React.FC<{
   );
 
   const area = useMemo(
-    function() {
+    function () {
       return d3
         .area()
         .x((d: any) => x(d.data.time))
-        .y0(d => y(d[0]))
-        .y1(d => y(d[1]))
+        .y0((d) => y(d[0]))
+        .y1((d) => y(d[1]))
         .curve(d3.curveStep);
     },
     [x, y]
   );
 
   useEffect(
-    function() {
+    function () {
       chart.current
         .selectAll('path')
         .data(stackAndColor.stack)
@@ -143,7 +143,7 @@ export const ContextStackedChart: React.FC<{
         .attr('fill', (d: any) => stackAndColor.color(d.key))
         .attr('d', area as any)
         .append('title')
-        .text(d => d.key);
+        .text((d) => d.key);
     },
     [area, stackAndColor]
   );

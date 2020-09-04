@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ActorCard } from '../../data';
+import { ActorCard } from '../../data/typings';
 type Menu = {
   actor: ActorCard;
   ref: SVGGElement;

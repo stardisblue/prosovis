@@ -1,7 +1,7 @@
 import { RootState } from '../reducers';
 import { selectMainColor, selectActorColor } from './color';
 import { createSelector } from '@reduxjs/toolkit';
-import { PrimaryKey, AnyEvent } from '../data';
+import { PrimaryKey, AnyEvent } from '../data/typings';
 import * as d3 from 'd3';
 
 export const selectSwitch = (state: RootState) => state.switch;

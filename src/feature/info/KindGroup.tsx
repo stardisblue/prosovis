@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import classnames from 'classnames';
-import { AnyEvent, Datation } from '../../data';
+import { AnyEvent, Datation } from '../../data/typings';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';

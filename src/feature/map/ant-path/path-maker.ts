@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { AntPathEvent } from './AntPath';
-import { Datation } from '../../../data';
+import { Datation } from '../../../data/typings';
 import * as d3 from 'd3-array';
 type FlatAntPath = {
   event: AntPathEvent;

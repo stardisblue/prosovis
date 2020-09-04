@@ -2,11 +2,11 @@ import React from 'react';
 import _ from 'lodash';
 import { Flex } from '../../components/ui/Flex';
 import { useSelector } from 'react-redux';
-import { AnyEvent } from '../../data';
+import { AnyEvent } from '../../data/typings';
 import Kind from './Kind';
 import { selectKinds } from '../../selectors/event';
 
-const KindList: React.FC = function() {
+const KindList: React.FC = function () {
   const kinds = useSelector(selectKinds);
 
   return (

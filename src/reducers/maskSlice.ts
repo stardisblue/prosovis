@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnyEvent } from '../data';
+import { AnyEvent } from '../data/typings';
 
 type IntervalMask = {
   start: string;
@@ -25,10 +25,13 @@ export const maskSlice = createSlice({
     actor?: ActorMask;
   },
   reducers: {
-    setIntervalMask: function(state, { payload }: PayloadAction<IntervalMask>) {
+    setIntervalMask: function (
+      state,
+      { payload }: PayloadAction<IntervalMask>
+    ) {
       state.interval = payload;
     },
-    toggleKindMask: function(
+    toggleKindMask: function (
       state,
       { payload }: PayloadAction<AnyEvent['kind']>
     ) {
@@ -37,10 +40,10 @@ export const maskSlice = createSlice({
           state.kind[payload] !== undefined ? !state.kind[payload] : false;
       else state.kind = { [payload]: false };
     },
-    setKindMask: function(state, { payload }: PayloadAction<KindMask>) {
+    setKindMask: function (state, { payload }: PayloadAction<KindMask>) {
       state.kind = payload;
     },
-    toggleActorMask: function(
+    toggleActorMask: function (
       state,
       { payload }: PayloadAction<AnyEvent['actor']['id']>
     ) {
@@ -49,16 +52,16 @@ export const maskSlice = createSlice({
           state.actor[payload] !== undefined ? !state.actor[payload] : false;
       else state.actor = { [payload]: false };
     },
-    setActorMask: function(state, { payload }: PayloadAction<ActorMask>) {
+    setActorMask: function (state, { payload }: PayloadAction<ActorMask>) {
       state.actor = payload;
     },
-    setBoundsMask: function(state, { payload }: PayloadAction<BoundsMask>) {
+    setBoundsMask: function (state, { payload }: PayloadAction<BoundsMask>) {
       state.bounds = payload;
     },
-    clearMask: function() {
+    clearMask: function () {
       return {};
-    }
-  }
+    },
+  },
 });
 
 export const {
@@ -68,7 +71,7 @@ export const {
   setActorMask,
   toggleActorMask,
   setBoundsMask,
-  clearMask
+  clearMask,
 } = maskSlice.actions;
 
 export default maskSlice.reducer;

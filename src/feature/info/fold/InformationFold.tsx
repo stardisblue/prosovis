@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { Ressource } from '../../../data';
+import { Ressource } from '../../../data/typings';
 import classnames from 'classnames';
 import _ from 'lodash';
 

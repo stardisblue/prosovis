@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import { AnyEvent } from '../data';
+import { AnyEvent } from '../data/typings';
 
 type ColorContextProps = {
   border: d3.ScaleOrdinal<AnyEvent['kind'] | string, string>;

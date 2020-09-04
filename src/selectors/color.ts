@@ -1,6 +1,6 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, PrimaryKey } from '../data';
+import { AnyEvent, PrimaryKey } from '../data/typings';
 import * as d3 from 'd3';
 import { selectActors } from './event';
 import _ from 'lodash';

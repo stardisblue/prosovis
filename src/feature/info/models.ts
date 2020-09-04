@@ -1,4 +1,4 @@
-import { AnyEvent, Datation } from '../../data';
+import { AnyEvent, Datation } from '../../data/typings';
 
 export type EventGroup<T extends SelectedEvent | SelectedEvent[]> = {
   id: AnyEvent['id'];

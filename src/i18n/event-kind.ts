@@ -1,4 +1,4 @@
-import { AnyEvent } from '../data';
+import { AnyEvent } from '../data/typings';
 
 const fr: { [k in AnyEvent['kind']]: string } = {
   Birth: 'Naissance',

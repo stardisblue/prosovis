@@ -1,5 +1,6 @@
 import { useMemo } from 'react';
-import { Ressource, getLocalisation, NamedPlace } from '../../data';
+import { getLocalisation } from '../../data';
+import { Ressource, NamedPlace } from '../../data/typings';
 import { SelectedEvent } from './models';
 import { orderBy, groupBy, flow, map } from 'lodash/fp';
 

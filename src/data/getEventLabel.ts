@@ -1,10 +1,11 @@
-import { AnyEvent, Nullable, Ressource } from './index';
+import { getActorLabel } from './getActorLabel';
+import { Nullable, Ressource } from './types';
 import {
   ComputedLabels,
   SiprojurisActor,
-  SiprojurisNamedPlace,
   SiprojurisEvent,
-} from './types';
+  SiprojurisNamedPlace,
+} from './sip-types';
 
 /**
  * Displays current string or an emtpy string
@@ -14,18 +15,30 @@ import {
  * @param strings
  * @param label
  */
-function ton(strings: TemplateStringsArray, label: Nullable<Ressource>) {
-  if (label) {
-    return strings[0] + label.label + strings[1];
+function ton<T extends Ressource>(
+  strings: TemplateStringsArray,
+  label: Nullable<T> | [Nullable<T>, (o: T) => string]
+) {
+  if (label === null) {
+    return '';
   }
-  return '';
+
+  if (Array.isArray(label)) {
+    const [fun, ress] = label;
+    if (fun === null) {
+      return '';
+    }
+    return strings[0] + ress(fun) + strings[1];
+  }
+
+  return strings[0] + label.label + strings[1];
 }
 
-export function computeLabels(event: AnyEvent): ComputedLabels {
+export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
   switch (event.kind) {
     case 'Birth': {
       return {
-        actorNote: ton`Naissance à ${event.localisation}`,
+        actorNote: ton`Naissance Ã  ${event.localisation}`,
         placeNote: ton`Naissance de ${event.actor}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
         placeNoteAndGrouped: ton`De ${event.actor}`,
@@ -33,8 +46,8 @@ export function computeLabels(event: AnyEvent): ComputedLabels {
     }
     case 'Death': {
       return {
-        actorNote: ton`Décès à ${event.localisation}`,
-        placeNote: ton`Décès de ${event.actor}`,
+        actorNote: ton`DÃ©cÃ¨s Ã  ${event.localisation}`,
+        placeNote: ton`DÃ©cÃ¨s de ${event.actor}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
         placeNoteAndGrouped: ton`De ${event.actor}`,
       };
@@ -44,23 +57,23 @@ export function computeLabels(event: AnyEvent): ComputedLabels {
         actorNote:
           'Enseigne' +
           ton` "${event.abstract_object}"` +
-          ton` à ${event.collective_actor}`,
+          ton` Ã  ${event.collective_actor}`,
         placeNote:
-          `${event.actor.label} enseigne` +
+          `${getActorLabel(event.actor)} enseigne` +
           ton` "${event.abstract_object}"` +
-          ton` à ${event.collective_actor}`,
+          ton` Ã  ${event.collective_actor}`,
       };
     }
     case 'ObtainQualification': {
       return {
         actorNote:
-          'Obtient la qualité' +
+          'Obtient la qualitÃ©' +
           ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
+          ton` Ã  ${event.collective_actor}`,
         placeNote:
-          `${event.actor.label} obtient la qualité` +
+          `${getActorLabel(event.actor)} obtient la qualitÃ©` +
           ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
+          ton` Ã  ${event.collective_actor}`,
       };
     }
     case 'PassageExamen': {
@@ -69,50 +82,50 @@ export function computeLabels(event: AnyEvent): ComputedLabels {
           ? yes
           : no;
       const rest =
-        ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`;
+        ton` "${event.abstract_object}"` + ton` Ã  ${event.collective_actor}`;
       return {
         actorNote:
           eva(
             ton`Evalue ${event.actor_evalue}`,
-            ton`Evalué par ${event.actor_evaluer}`
+            ton`EvaluÃ© par ${event.actor_evaluer}`
           ) + rest,
         placeNote:
-          event.actor.label +
+          getActorLabel(event.actor) +
           eva(
             ton` evalue ${event.actor_evalue}`,
-            ton` evalué par ${event.actor_evaluer}`
+            ton` evaluÃ© par ${event.actor_evaluer}`
           ) +
           rest,
       };
     }
     case 'Retirement': {
       return {
-        actorNote: 'Départ en retraite',
-        placeNote: 'Départ en retraite' + `de ${event.actor.label}`,
+        actorNote: 'DÃ©part en retraite',
+        placeNote: 'DÃ©part en retraite' + `de ${getActorLabel(event.actor)}`,
       };
     }
     case 'SuspensionActivity': {
       return {
         actorNote: ton` ${event.abstract_object}`,
-        placeNote: event.actor.label + ton` ${event.abstract_object}`,
+        placeNote: getActorLabel(event.actor) + ton` ${event.abstract_object}`,
       };
     }
   }
 }
 
-export function getLabel(
-  this: SiprojurisEvent,
+export function getEventLabel(
+  event: SiprojurisEvent,
   noteKind: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'],
   grouped: boolean = false
 ): string {
-  if (this.computed) {
+  if (event.computed) {
     const {
       actorNote,
       actorNoteAndGrouped,
       placeNote,
       placeNoteAndGrouped,
-    } = this.computed;
-    
+    } = event.computed;
+
     if (noteKind == 'Actor') {
       // fallback to actorNote
       return (grouped && actorNoteAndGrouped) || actorNote;
@@ -121,7 +134,12 @@ export function getLabel(
       return (grouped && placeNoteAndGrouped) || placeNote;
     }
   }
+  event.computed = computeEventLabels(event);
+
+  if (event.computed) {
+    return getEventLabel(event, noteKind, grouped);
+  }
 
   // fallback to default labellisation
-  return this.label;
+  return event.label;
 }

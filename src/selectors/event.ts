@@ -1,28 +1,21 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { getLocalisation, NamedPlace } from '../data';
+import { getLocalisation } from '../data';
+import { NamedPlace } from '../data/typings';
 
 export const selectEvents = (state: RootState) => state.events;
 
-export const selectEventsAsMap = createSelector(selectEvents, events =>
+export const selectEventsAsMap = createSelector(selectEvents, (events) =>
   _.keyBy(events, 'id')
 );
 
-export const selectKinds = createSelector(selectEvents, events =>
-  _(events)
-    .uniqBy('kind')
-    .map('kind')
-    .keyBy()
-    .value()
+export const selectKinds = createSelector(selectEvents, (events) =>
+  _(events).uniqBy('kind').map('kind').keyBy().value()
 );
 
-export const selectActors = createSelector(selectEvents, events =>
-  _(events)
-    .uniqBy('actor.id')
-    .map('actor')
-    .keyBy('id')
-    .value()
+export const selectActors = createSelector(selectEvents, (events) =>
+  _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
 
 const defaultPlace: NamedPlace = {
@@ -32,13 +25,13 @@ const defaultPlace: NamedPlace = {
   uri: 'unknown',
   url: 'unknown',
   lat: null,
-  lng: null
+  lng: null,
 };
 
-export const selectPlaces = createSelector(selectEvents, events =>
+export const selectPlaces = createSelector(selectEvents, (events) =>
   _(events)
-    .uniqBy(s => getLocalisation(s)?.id || -1)
-    .map(s => getLocalisation(s) || defaultPlace)
+    .uniqBy((s) => getLocalisation(s)?.id || -1)
+    .map((s) => getLocalisation(s) || defaultPlace)
     .keyBy('id')
     .value()
 );

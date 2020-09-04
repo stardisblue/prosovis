@@ -1,5 +1,5 @@
 import React from 'react';
-import { Datation } from '../../data';
+import { Datation } from '../../data/typings';
 import { flatMap } from 'lodash';
 export const EventDates: React.FC<{
   dates: Datation[];

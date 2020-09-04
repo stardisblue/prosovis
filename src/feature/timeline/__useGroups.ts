@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
-import { Actor, AnyEvent, PrimaryKey } from '../../data';
+import { Actor, AnyEvent, PrimaryKey } from '../../data/typings';
 
 type GroupByFunc = (a: AnyEvent) => any;
 type GroupsFunc = (e: AnyEvent[]) => any[];
@@ -43,7 +43,7 @@ export function useGroups(
     return a.localisation ? a.localisation.id : 0;
   }
   const groupsActor = useCallback(
-    function() {
+    function () {
       return actors;
     },
     [actors]
@@ -51,11 +51,11 @@ export function useGroups(
   function groupsNamedPlace(events: AnyEvent[]) {
     return _(events)
       .map(
-        e =>
+        (e) =>
           (e as any).localisation || {
             id: 0,
             label: 'Inconnue',
-            kind: 'NamedPlace'
+            kind: 'NamedPlace',
           }
       )
       .uniqBy('id')
@@ -69,13 +69,13 @@ export function useGroups(
       actor: {
         groups: groupsActor,
         groupBy: groupByActor,
-        kind: 'Actor'
+        kind: 'Actor',
       },
       localisation: {
         groups: groupsNamedPlace,
         groupBy: groupByNamedPlace,
-        kind: 'NamedPlace'
-      }
+        kind: 'NamedPlace',
+      },
     }),
     [groupsActor]
   );
@@ -93,7 +93,7 @@ export function useGroups(
         events,
         (a): GroupedEvent => ({
           ...a,
-          group: grouping.groupBy(a)
+          group: grouping.groupBy(a),
         })
       ),
     [events, grouping]

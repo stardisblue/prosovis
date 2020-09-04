@@ -9,7 +9,7 @@ import './VisTimeline.css';
 
 import classnames from 'classnames';
 import _ from 'lodash';
-import { Nullable, PrimaryKey, Datation } from '../../data';
+import { Nullable, PrimaryKey, Datation } from '../../data/typings';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
 import { Moment } from 'moment';

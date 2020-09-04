@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nullable, Ressource, NamedPlace } from '../../../data';
+import { Nullable, Ressource, NamedPlace } from '../../../data/typings';
 import styled from 'styled-components/macro';
 
 const StyledSpan = styled.span<{ showQuestion: boolean }>(({ showQuestion }) =>

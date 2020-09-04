@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
-import { PrimaryKey } from '../../../data';
+import { PrimaryKey } from '../../../data/typings';
 import useLazyRef from '../../../hooks/useLazyRef';
 
 type DataMarkerOptions = L.CircleMarkerOptions & {
@@ -15,7 +15,7 @@ interface DataMarkerType extends L.CircleMarker {
 }
 
 const DataMarker = (L.CircleMarker.extend({
-  options: { id: null, kind: null, actor: null }
+  options: { id: null, kind: null, actor: null },
 }) as any) as DataMarkerType;
 
 export const Marker: React.FC<{
@@ -33,14 +33,22 @@ export const Marker: React.FC<{
   onClick?: L.LeafletEventHandlerFn;
   onMarkerAdd?: (marker: DataMarkerType) => void;
   onMarkerRemove?: (marker: DataMarkerType) => void;
-}> = function({ latlng, options, $l, $map, onMouseOut, onMouseOver, onClick }) {
+}> = function ({
+  latlng,
+  options,
+  $l,
+  $map,
+  onMouseOut,
+  onMouseOver,
+  onClick,
+}) {
   const marker = useLazyRef(() => new DataMarker(latlng, options));
 
-  useEffect(function() {
+  useEffect(function () {
     // const marker = L.circleMarker(latlng, {fillColor: color.main()});
     $l.current.addLayer(marker.current);
     $map.current.fire('sip-marker', { current: marker.current }, true);
-    return function() {
+    return function () {
       // eslint-disable-next-line
       $l.current.removeLayer(marker.current);
       // eslint-disable-next-line
@@ -65,7 +73,7 @@ function useColor(
   fillColor?: string
 ) {
   useEffect(
-    function() {
+    function () {
       marker.current.setStyle({ color, fillColor });
     }, // safely ignoring marker
     // eslint-disable-next-line
@@ -78,7 +86,7 @@ function useFillOpacity(
   fillOpacity?: number
 ) {
   useEffect(
-    function() {
+    function () {
       marker.current.setStyle({ fillOpacity });
     }, // safely ignoring marker
     // eslint-disable-next-line
@@ -92,10 +100,10 @@ function useHover(
   onMouseOut?: L.LeafletEventHandlerFn
 ) {
   useEffect(
-    function() {
+    function () {
       if (onMouseOver !== undefined) {
         marker.current.on('mouseover', onMouseOver);
-        return function() {
+        return function () {
           // marker.current does not change
           // eslint-disable-next-line
           marker.current.off('mouseover');
@@ -107,10 +115,10 @@ function useHover(
   );
 
   useEffect(
-    function() {
+    function () {
       if (onMouseOut !== undefined) {
         marker.current.on('mouseout', onMouseOut);
-        return function() {
+        return function () {
           // marker.current does not change
           // eslint-disable-next-line
           marker.current.off('mouseout');
@@ -127,11 +135,11 @@ function useClick(
   onMouseClick?: L.LeafletEventHandlerFn
 ) {
   useEffect(
-    function() {
+    function () {
       if (onMouseClick !== undefined) {
         marker.current.on('click', onMouseClick);
 
-        return function() {
+        return function () {
           // marker.current does not change
           // eslint-disable-next-line
           marker.current.off('click');

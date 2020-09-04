@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AnyEvent, Ressource, PrimaryKey, getLocalisation } from '../../data';
+import { getLocalisation } from '../../data';
+import { AnyEvent, Ressource, PrimaryKey } from '../../data/typings';
 import _ from 'lodash';
 
 function groupByActor(a: AnyEvent) {
@@ -14,17 +15,17 @@ function groupByNamedPlace(a: AnyEvent) {
 function groupsActor(events: AnyEvent[]) {
   return _(events)
     .uniqBy('actor.id')
-    .map(e => e.actor)
+    .map((e) => e.actor)
     .value();
 }
 
 function groupsNamedPlace(events: AnyEvent[]) {
   return _(events)
-    .uniqBy(e => {
+    .uniqBy((e) => {
       const localisation = getLocalisation(e);
       return (localisation && localisation.id) || 0;
     })
-    .map(e => {
+    .map((e) => {
       const localisation = getLocalisation(e);
       return (
         localisation || {
@@ -32,7 +33,7 @@ function groupsNamedPlace(events: AnyEvent[]) {
           label: 'Inconnue',
           kind: 'NamedPlace',
           url: 'unknown',
-          uri: 'unknown'
+          uri: 'unknown',
         }
       );
     })
@@ -47,13 +48,13 @@ export const GROUP_BY: {
   actor: {
     groups: groupsActor,
     groupBy: groupByActor,
-    kind: 'Actor'
+    kind: 'Actor',
   },
   localisation: {
     groups: groupsNamedPlace,
     groupBy: groupByNamedPlace,
-    kind: 'NamedPlace'
-  }
+    kind: 'NamedPlace',
+  },
 };
 
 type GroupingProps = {
@@ -89,7 +90,7 @@ export function useTimelineContext(): {
   // }, []);
   return {
     grouping,
-    setGroup
+    setGroup,
     // displayTypes,
     // toggle
   };

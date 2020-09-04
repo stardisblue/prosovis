@@ -1,4 +1,4 @@
-import { PrimaryKey, Actor, ActorCard } from '../data';
+import { PrimaryKey, Actor, ActorCard } from '../data/typings';
 import { setCurrent, resetCurrent } from '../reducers/maxActorsSlice';
 import { ThunkAction, Action } from '@reduxjs/toolkit';
 import { RootState } from '../reducers';

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data';
+import { PrimaryKey } from '../data/typings';
 import _ from 'lodash';
 
 export type SuperHightlightEvent = {

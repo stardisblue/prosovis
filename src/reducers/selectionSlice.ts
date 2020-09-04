@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data';
+import { PrimaryKey } from '../data/typings';
 import _ from 'lodash';
 
 export type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
@@ -13,10 +13,7 @@ const selectionSlice = createSlice({
       action: PayloadAction<SelectionEvent | SelectionEvent[]>
     ) {
       if (_.isArray(action.payload))
-        return _(action.payload)
-          .sortBy('id')
-          .sortedUniqBy('id')
-          .value();
+        return _(action.payload).sortBy('id').sortedUniqBy('id').value();
       else return [action.payload];
     },
     addSelection(
@@ -33,14 +30,14 @@ const selectionSlice = createSlice({
     },
     clearSelection() {
       return null;
-    }
-  }
+    },
+  },
 });
 
 export const {
   setSelection,
   addSelection,
-  clearSelection
+  clearSelection,
 } = selectionSlice.actions;
 
 export default selectionSlice.reducer;

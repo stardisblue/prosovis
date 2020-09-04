@@ -1,6 +1,7 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, getLocalisation } from '../data';
+import { getLocalisation } from '../data';
+import { AnyEvent } from '../data/typings';
 import moment from 'moment';
 import _ from 'lodash';
 import { selectEvents } from './event';
@@ -10,15 +11,18 @@ import { ActorMask, KindMask } from '../reducers/maskSlice';
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
   selectMask,
-  mask => mask.interval
+  (mask) => mask.interval
 );
-export const selectKindMask = createSelector(selectMask, mask => mask.kind);
-export const selectActorMask = createSelector(selectMask, mask => mask.actor);
-export const selectBoundsMask = createSelector(selectMask, mask => mask.bounds);
+export const selectKindMask = createSelector(selectMask, (mask) => mask.kind);
+export const selectActorMask = createSelector(selectMask, (mask) => mask.actor);
+export const selectBoundsMask = createSelector(
+  selectMask,
+  (mask) => mask.bounds
+);
 
-export const selectIntervalFun = createSelector(selectIntervalMask, res =>
+export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
   res
-    ? function({ datation }: AnyEvent) {
+    ? function ({ datation }: AnyEvent) {
         if (datation.length === 1) {
           return moment(datation[0].clean_date).isBetween(res.start, res.end);
         } else {
@@ -37,15 +41,15 @@ export const selectIntervalFun = createSelector(selectIntervalMask, res =>
     : undefined
 );
 
-export const selectKindFun = createSelector(selectKindMask, res =>
+export const selectKindFun = createSelector(selectKindMask, (res) =>
   res ? (e: AnyEvent) => kindMaskState(e.kind, res) : undefined
 );
 
-export const selectActorFun = createSelector(selectActorMask, res =>
+export const selectActorFun = createSelector(selectActorMask, (res) =>
   res ? (e: AnyEvent) => actorMaskState(e.actor, res) : undefined
 );
 
-export const selectBoundsFun = createSelector(selectBoundsMask, res =>
+export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
   res
     ? (e: AnyEvent) => {
         const loc = getLocalisation(e);
@@ -63,7 +67,7 @@ export const maskAllFun = createSelector(
   selectKindFun,
   selectActorFun,
   selectBoundsFun,
-  function(interval, kind, actor, bound) {
+  function (interval, kind, actor, bound) {
     return (e: AnyEvent) => {
       if (interval && !interval(e)) return false;
       if (kind && !kind(e)) return false;
@@ -80,7 +84,7 @@ export const selectMaskedEvents = createSelector(
   (events, maskF) => _.filter(events, maskF)
 );
 
-export const maskedEventsAsMap = createSelector(selectMaskedEvents, events =>
+export const maskedEventsAsMap = createSelector(selectMaskedEvents, (events) =>
   _.keyBy(events, 'id')
 );
 

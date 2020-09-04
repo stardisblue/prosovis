@@ -1,4 +1,4 @@
-import { AnyEvent } from '../../../data';
+import { AnyEvent } from '../../../data/typings';
 import {
   PlusIcon,
   MortarBoardIcon,

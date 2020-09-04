@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data';
+import { PrimaryKey } from '../data/typings';
 import _ from 'lodash';
 
 type HightlightEvent = { id: PrimaryKey; kind: string; type?: string };
@@ -16,8 +16,8 @@ export const highlightSlice = createSlice({
     },
     clearHighlights() {
       return null;
-    }
-  }
+    },
+  },
 });
 
 export const { setHighlights, clearHighlights } = highlightSlice.actions;

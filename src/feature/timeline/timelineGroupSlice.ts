@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../reducers';
-import { AnyEvent, getLocalisation } from '../../data';
+import { getLocalisation } from '../../data';
+import { AnyEvent } from '../../data/typings';
 import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
 
@@ -12,8 +13,8 @@ const timelineGroupSlice = createSlice({
   reducers: {
     setGroup(_state, action: PayloadAction<TimelineGroupTypes>) {
       return action.payload;
-    }
-  }
+    },
+  },
 });
 
 export const { setGroup } = timelineGroupSlice.actions;
@@ -27,7 +28,7 @@ const defaultLocalisation = {
   label: 'Inconnue',
   kind: 'NamedPlace',
   url: 'unknown',
-  uri: 'unknown'
+  uri: 'unknown',
 };
 
 export const selectTimelineEventGroups = createSelector(
@@ -36,17 +37,14 @@ export const selectTimelineEventGroups = createSelector(
   (grouping, events) => {
     switch (grouping) {
       case 'Actor':
-        return _(events)
-          .uniqBy('actor.id')
-          .map('actor')
-          .value();
+        return _(events).uniqBy('actor.id').map('actor').value();
       case 'NamedPlace':
         return _(events)
-          .uniqBy(e => {
+          .uniqBy((e) => {
             const localisation = getLocalisation(e);
             return (localisation && localisation.id) || 0;
           })
-          .map(e => {
+          .map((e) => {
             const localisation = getLocalisation(e);
             return localisation || defaultLocalisation;
           })
@@ -66,7 +64,7 @@ function groupByNamedPlace(a: AnyEvent) {
 
 export const selectTimelineGroupBy = createSelector(
   selectTimelineGroup,
-  grouping => {
+  (grouping) => {
     switch (grouping) {
       case 'Actor':
         return groupByActor;

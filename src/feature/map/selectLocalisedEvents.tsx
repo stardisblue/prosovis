@@ -1,18 +1,18 @@
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
+import { getLocalisation } from '../../data';
 import {
-  getLocalisation,
   NamedPlace,
   Actor,
   PrimaryKey,
   AnyEvent,
-  Datation
-} from '../../data';
+  Datation,
+} from '../../data/typings';
 
 export const selectLocalisedEvents = createSelector(
   selectMaskedEvents,
-  events =>
+  (events) =>
     _.transform(
       events,
       (acc, e) => {
@@ -24,7 +24,7 @@ export const selectLocalisedEvents = createSelector(
             actor: e.actor.id,
             kind: e.kind,
             datation: e.datation,
-            localisation: l
+            localisation: l,
           });
       },
       [] as {
