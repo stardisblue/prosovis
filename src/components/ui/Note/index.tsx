@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@primer/octicons-react';
 import { useFlatClick } from '../../../hooks/useClick';
 import { IconSpacerPointer } from '../IconSpacer';
-import styled from 'styled-components/macro';
+import { StyledFlex } from '../Flex/styled-components';
 
 export const Note: React.FC<{
   title: JSX.Element | string;
   flat?: boolean;
+  underline?: boolean;
   defaultToggleState?: boolean;
 }> = function ({ title, flat = false, defaultToggleState = false, children }) {
   const Base = flat ? React.Fragment : 'div';
@@ -33,9 +34,7 @@ export const Note: React.FC<{
   );
 };
 
-const NoteTitle = styled.div`
-  display: flex;
-`;
+const NoteTitle = StyledFlex;
 
 export const NoteContent: React.FC = function ({ children }) {
   return <>{children}</>;

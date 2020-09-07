@@ -12,20 +12,22 @@ import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import styled from 'styled-components/macro';
 import ActorLabel from '../../../components/ActorLabel';
-import { GrowFlexItem } from '../../../components/ui/Flex/styled-components';
+import { EnlargeFlex } from '../../../components/ui/Flex/styled-components';
 import { useFlatClick, useClickSelect } from '../../../hooks/useClick';
 import { SiprojurisActor, SiprojurisEvent } from '../../../data/sip-typings';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
-
-const Enlarge = styled(GrowFlexItem)`
-  display: flex;
-  cursor: pointer;
-`;
+import { LeftBottomSpacer } from '../../../components/event/LeftSpacer';
+import useHoverHighlight from '../../../hooks/useHoverHighlight';
+import { highlightable, selectable } from './styled-components';
 
 const StyledPersonIcon = styled(PersonIcon)<{
   iconColor?: string;
 }>(({ iconColor }) => (iconColor ? `color: ${iconColor};` : ''));
+
+const StyledParagraph = styled.span`
+  ${selectable}
+`;
 
 export const ActorNote: React.FC<{
   events: SelectedEvent<SiprojurisEvent>[];
@@ -43,6 +45,7 @@ export const ActorNote: React.FC<{
   const handleDeleteClick = useFlatClick(() => {
     dispatch(deleteActor(group.id));
   });
+  const handleHighlightHover = useHoverHighlight(interactive);
 
   const groupedEvents = useMemo(
     () =>
@@ -80,9 +83,6 @@ export const ActorNote: React.FC<{
             last.selected = last.selected || e.selected;
           }
 
-          if (e.highlighted !== undefined) {
-            last.highlighted = last.highlighted || e.highlighted;
-          }
           if (e.masked !== undefined) {
             last.masked = last.masked && e.masked;
           }
@@ -101,29 +101,41 @@ export const ActorNote: React.FC<{
   return (
     <Note
       title={
-        <Enlarge {...handleSelectClick}>
+        <HighlightableEnlarge
+          highlighted={highlighted}
+          {...handleSelectClick}
+          {...handleHighlightHover}
+        >
           <IconSpacerPointer as="span" {...handleDeleteClick}>
             <XIcon className="red" aria-label="Supprimer" />
           </IconSpacerPointer>
           <IconSpacer as="span">
             <StyledPersonIcon iconColor={color ? color(group.id) : undefined} />
           </IconSpacer>
-          <ActorLabel actor={group} short />
-        </Enlarge>
+          <StyledParagraph selected={selected}>
+            <ActorLabel actor={group} short />
+          </StyledParagraph>
+        </HighlightableEnlarge>
       }
       flat
     >
-      {groupedEvents.map((e) =>
-        _.isArray(e.events) ? (
-          <EventGroup
-            key={e.id}
-            {...(e as EventGroupType<SelectedEvent<SiprojurisEvent>[]>)}
-            origin={'Actor'}
-          />
-        ) : (
-          <EventLine key={e.id} event={e.events} origin={'Actor'} />
-        )
-      )}
+      <LeftBottomSpacer borderColor={color ? color(group.id) : undefined}>
+        {groupedEvents.map((e) =>
+          _.isArray(e.events) ? (
+            <EventGroup
+              key={e.id}
+              {...(e as EventGroupType<SelectedEvent<SiprojurisEvent>[]>)}
+              origin={'Actor'}
+            />
+          ) : (
+            <EventLine key={e.id} event={e.events} origin={'Actor'} />
+          )
+        )}
+      </LeftBottomSpacer>
     </Note>
   );
 };
+
+const HighlightableEnlarge = styled(EnlargeFlex)`
+  ${highlightable}
+`;
