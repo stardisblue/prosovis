@@ -1,4 +1,3 @@
-import { map } from 'lodash';
 import { every, some } from 'lodash/fp';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';

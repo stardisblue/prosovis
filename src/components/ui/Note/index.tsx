@@ -1,6 +1,5 @@
 import { ChevronDownIcon, ChevronUpIcon } from '@primer/octicons-react';
 import React, { useState } from 'react';
-import styled from 'styled-components/macro';
 import { useFlatClick } from '../../../hooks/useClick';
 import { StyledFlex } from '../Flex/styled-components';
 import { IconSpacerPointer } from '../IconSpacer';

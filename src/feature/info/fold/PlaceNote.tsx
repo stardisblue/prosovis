@@ -1,7 +1,6 @@
 import { LocationIcon } from '@primer/octicons-react';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
@@ -15,7 +14,6 @@ import {
 } from '../../../data/sip-typings';
 import { useClickSelect } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { selectSwitchActorColor } from '../../../selectors/switch';
 import { EventGroup as EventGroupType, SelectedEvent } from '../models';
 import {
   highlightable,
