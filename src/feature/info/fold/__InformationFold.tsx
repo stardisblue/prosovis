@@ -60,7 +60,7 @@ const LocationDiv = styled.div<{ showQuestion: boolean }>(({ showQuestion }) =>
  * @deprecated use ActorNote or PlaceNote
  * @param param0
  */
-export const InformationFold: React.FC<InfoGroupProps> = function ({
+export const DeprecatedInformationFold: React.FC<InfoGroupProps> = function ({
   events,
   group,
   kind,
@@ -173,4 +173,4 @@ function hasCoordinates(obj: any) {
   return obj.lng != null && obj.lat != null;
 }
 
-export default InformationFold;
+export default DeprecatedInformationFold;

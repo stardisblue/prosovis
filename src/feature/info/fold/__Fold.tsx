@@ -38,7 +38,12 @@ type FoldProps = {
   handleClick?: { [k in 'onClick' | 'onMouseUp']: React.MouseEventHandler };
 };
 
-export const Fold: React.FC<FoldProps> = function ({
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
+export const DeprecatedFold: React.FC<FoldProps> = function ({
   events,
   children,
   className,
@@ -98,4 +103,4 @@ export const Fold: React.FC<FoldProps> = function ({
   );
 };
 
-export default Fold;
+export default DeprecatedFold;

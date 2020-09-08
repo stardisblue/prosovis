@@ -1,23 +1,20 @@
-import { XIcon } from '@primer/octicons-react';
+import { LocationIcon } from '@primer/octicons-react';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
-import ActorLabel from '../../../components/ActorLabel';
-import { ColorablePersonIcon } from '../../../components/ColorablePersonIcon';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
 import { LeftBottomSpacer } from '../../../components/event/LeftSpacer';
 import { EnlargeFlex } from '../../../components/ui/Flex/styled-components';
-import {
-  IconSpacer,
-  IconSpacerPointer,
-} from '../../../components/ui/IconSpacer';
+import { IconSpacer } from '../../../components/ui/IconSpacer';
 import { Note } from '../../../components/ui/Note';
-import { SiprojurisActor, SiprojurisEvent } from '../../../data/sip-typings';
-import { useClickSelect, useFlatClick } from '../../../hooks/useClick';
+import {
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../../data/sip-typings';
+import { useClickSelect } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { EventGroup as EventGroupType, SelectedEvent } from '../models';
 import {
@@ -27,7 +24,7 @@ import {
   SelectableProp,
 } from './styled-components';
 
-const HighlightableEnlarge = styled(EnlargeFlex)<
+const InteractiveEnlarge = styled(EnlargeFlex)<
   HighlightableProp & SelectableProp
 >`
   padding-top: 1px;
@@ -36,22 +33,19 @@ const HighlightableEnlarge = styled(EnlargeFlex)<
   ${selectable}
 `;
 
-export const ActorNote: React.FC<{
+export const PlaceNote: React.FC<{
   events: SelectedEvent<SiprojurisEvent>[];
-  group: SiprojurisActor;
+  group: SiprojurisNamedPlace;
   masked?: boolean;
   selected: boolean;
   highlighted: boolean;
 }> = function ({ events, group, selected, highlighted }) {
-  const dispatch = useDispatch();
   const interactive = useMemo(
     () => _.map(events, (e) => ({ id: e.id, kind: 'Event' })),
     [events]
   );
   const handleSelectClick = useClickSelect(interactive);
-  const handleDeleteClick = useFlatClick(() => {
-    dispatch(deleteActor(group.id));
-  });
+
   const handleHighlightHover = useHoverHighlight(interactive);
 
   const groupedEvents = useMemo(
@@ -95,30 +89,22 @@ export const ActorNote: React.FC<{
     [events]
   );
 
-  const color = useSelector(selectSwitchActorColor);
-
   const title = (
-    <HighlightableEnlarge
+    <InteractiveEnlarge
       {...handleSelectClick}
       {...handleHighlightHover}
       highlighted={highlighted}
       selected={selected}
     >
-      <IconSpacerPointer as="span" {...handleDeleteClick} spaceRight>
-        <XIcon className="red" aria-label="Supprimer" />
-      </IconSpacerPointer>
       <IconSpacer as="span" spaceRight>
-        <ColorablePersonIcon
-          iconColor={color ? color(group.id) : undefined}
-          aria-label="individu"
-        />
+        <LocationIcon aria-label="lieu" />
       </IconSpacer>
-      <ActorLabel as="span" actor={group} short />
-    </HighlightableEnlarge>
+      <span>{group.label}</span>
+    </InteractiveEnlarge>
   );
 
   const content = (
-    <LeftBottomSpacer borderColor={color ? color(group.id) : undefined}>
+    <LeftBottomSpacer>
       {groupedEvents.map((e) =>
         Array.isArray(e.events) ? (
           <EventGroup

@@ -6,6 +6,14 @@ import { SiprojurisEvent } from '../../data/sip-typings';
 import { ActorCard, AnyEvent, NamedPlace } from '../../data/typings';
 import getEventIcon from '../../feature/info/event/getEventIcon';
 import { EventDates } from '../../feature/info/EventDates';
+import {
+  highlightable,
+  HighlightableProp,
+  maskable,
+  MaskableProp,
+  selectable,
+  SelectableProp,
+} from '../../feature/info/fold/styled-components';
 import { SelectedEvent } from '../../feature/info/models';
 import { useClickSelect } from '../../hooks/useClick';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
@@ -13,18 +21,33 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { GrowFlexItem, StyledFlex } from '../ui/Flex/styled-components';
 import { IconSpacer } from '../ui/IconSpacer';
 
-const Base = styled(StyledFlex)<{
-  selected?: boolean;
-  masked?: boolean;
-  highlighted?: boolean;
-}>`
+const Base = styled(StyledFlex)<
+  SelectableProp & MaskableProp & HighlightableProp
+>`
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
   justify-content: space-between;
   align-items: center;
-  ${({ selected }) => selected && 'font-weight: 700;'}
-  ${({ masked }) => masked && 'opacity: .5;'}
-  ${({ highlighted }) =>
-    highlighted && 'background-color:var(--light-gray);'};
+  ${selectable}
+  ${maskable}
+  ${highlightable};
 `;
+
+const EventLineIcon: React.FC<{ kind: AnyEvent['kind'] }> = function ({
+  kind,
+}) {
+  const color = useSelector(selectSwitchKindColor);
+
+  const Icon = getEventIcon(kind);
+
+  return (
+    <IconSpacer spaceRight>
+      <Icon iconColor={color ? color(kind) : undefined} />
+    </IconSpacer>
+  );
+};
 
 export const EventLine: React.FC<{
   event: SelectedEvent<SiprojurisEvent>;
@@ -38,24 +61,16 @@ export const EventLine: React.FC<{
   const showIcon = !grouped && <EventLineIcon kind={event.kind} />;
 
   return (
-    <Base {...handleHighlightHover} {...handleSelectClick}>
+    <Base
+      {...handleHighlightHover}
+      {...handleSelectClick}
+      selected={event.selected === true}
+      highlighted={event.highlighted === true}
+      masked={event.masked === true}
+    >
       {showIcon}
       <GrowFlexItem>{getEventLabel(event, origin, grouped)}</GrowFlexItem>
       <EventDates dates={event.datation} />
     </Base>
-  );
-};
-
-const EventLineIcon: React.FC<{ kind: AnyEvent['kind'] }> = function ({
-  kind,
-}) {
-  const color = useSelector(selectSwitchKindColor);
-
-  const Icon = getEventIcon(kind);
-
-  return (
-    <IconSpacer>
-      <Icon iconColor={color ? color(kind) : undefined} />
-    </IconSpacer>
   );
 };

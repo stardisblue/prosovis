@@ -1,6 +1,8 @@
+import { map } from 'lodash';
+import { every, some } from 'lodash/fp';
 import React, { useMemo } from 'react';
-import { map, reduce } from 'lodash';
 import { useSelector } from 'react-redux';
+import styled from 'styled-components/macro';
 import { getKindString } from '../../data/getEventLabel';
 import {
   SiprojurisActor,
@@ -10,15 +12,6 @@ import {
 import { Datation } from '../../data/typings';
 import getEventIcon from '../../feature/info/event/getEventIcon';
 import { EventDates } from '../../feature/info/EventDates';
-import { SelectedEvent } from '../../feature/info/models';
-import useHoverHighlight from '../../hooks/useHoverHighlight';
-import { selectSwitchKindColor } from '../../selectors/switch';
-import { EnlargeFlex, GrowFlexItem } from '../ui/Flex/styled-components';
-import { IconSpacer } from '../ui/IconSpacer';
-import { Note } from '../ui/Note';
-import { EventLine } from './EventLine';
-import { LeftSpacer } from './LeftSpacer';
-import styled from 'styled-components/macro';
 import {
   highlightable,
   HighlightableProp,
@@ -27,6 +20,14 @@ import {
   selectable,
   SelectableProp,
 } from '../../feature/info/fold/styled-components';
+import { SelectedEvent } from '../../feature/info/models';
+import useHoverHighlight from '../../hooks/useHoverHighlight';
+import { selectSwitchKindColor } from '../../selectors/switch';
+import { EnlargeFlex, GrowFlexItem } from '../ui/Flex/styled-components';
+import { IconSpacer } from '../ui/IconSpacer';
+import { Note } from '../ui/Note';
+import { EventLine } from './EventLine';
+import { LeftSpacer } from './LeftSpacer';
 
 export const EventGroup: React.FC<{
   kind: SiprojurisEvent['kind'];
@@ -34,11 +35,9 @@ export const EventGroup: React.FC<{
   start: Datation;
   end: Datation;
   origin: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'];
-  selected?: boolean;
-  masked?: boolean;
-}> = function ({ kind, events, start, end, origin, selected, masked }) {
+}> = function ({ kind, events, start, end, origin }) {
   const interactive = useMemo(
-    () => map(events, ({ id }) => ({ id, kind: 'Event' })),
+    () => events.map(({ id }) => ({ id, kind: 'Event' })),
     [events]
   );
   const handleHighLightHover = useHoverHighlight(interactive);
@@ -48,18 +47,11 @@ export const EventGroup: React.FC<{
   const Icon = getEventIcon(kind);
 
   /* Computed */
-  const isHighlighted = useMemo(
-    () => reduce(events, (acc, e) => acc || e.highlighted === true, false),
-    [events]
-  );
-  const isMasked = useMemo(
-    () => reduce(events, (acc, e) => acc && e.masked === true, true),
-    [events]
-  );
-  const isSelected = useMemo(
-    () => reduce(events, (acc, e) => acc || e.selected === true, false),
-    [events]
-  );
+  const isHighlighted = useMemo(() => some(['highlighted', true], events), [
+    events,
+  ]);
+  const isMasked = useMemo(() => every(['masked', true], events), [events]);
+  const isSelected = useMemo(() => some(['selected', true], events), [events]);
 
   return (
     <Note
@@ -70,7 +62,7 @@ export const EventGroup: React.FC<{
           highlighted={isHighlighted}
           {...handleHighLightHover}
         >
-          <IconSpacer>
+          <IconSpacer spaceRight>
             <Icon iconColor={color ? color(kind) : undefined} />
           </IconSpacer>
           <GrowFlexItem>
@@ -79,20 +71,29 @@ export const EventGroup: React.FC<{
           <EventDates dates={[start, end]} />
         </InteractableEnlarge>
       }
-      underline
     >
-      <LeftSpacer borderColor={color ? color(kind) : undefined}>
-        {map(events, (e) => (
-          <EventLine key={e.id} event={e} origin={origin} grouped />
-        ))}
-      </LeftSpacer>
+      <Base>
+        <LeftSpacer borderColor={color ? color(kind) : undefined}>
+          {events.map((e) => (
+            <EventLine key={e.id} event={e} origin={origin} grouped />
+          ))}
+        </LeftSpacer>
+      </Base>
     </Note>
   );
 };
 
+const Base = styled.div`
+  padding-left: 0.25em;
+`;
+
 const InteractableEnlarge = styled(EnlargeFlex)<
   HighlightableProp & MaskableProp & SelectableProp
 >`
+  padding-top: 1px;
+  padding-bottom: 1px;
+  padding-left: 0.25em;
+  padding-right: 0.25em;
   ${highlightable}
   ${maskable}
   ${selectable}

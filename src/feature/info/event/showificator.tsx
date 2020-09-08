@@ -2,6 +2,9 @@ import React from 'react';
 import { Nullable, Ressource, NamedPlace } from '../../../data/typings';
 import styled from 'styled-components/macro';
 
+/**
+ * @deprecated
+ */
 const StyledSpan = styled.span<{ showQuestion: boolean }>(({ showQuestion }) =>
   showQuestion
     ? `
@@ -20,6 +23,12 @@ const StyledSpan = styled.span<{ showQuestion: boolean }>(({ showQuestion }) =>
   `
     : ''
 );
+
+/**
+ *
+ * @param event
+ * @deprecated
+ */
 const showificator = function <P extends string, E extends { [k in P]: E[P] }>(
   event: E
 ) {
@@ -44,10 +53,20 @@ const showificator = function <P extends string, E extends { [k in P]: E[P] }>(
   };
 };
 
+/**
+ *
+ * @param obj
+ * @deprecated
+ */
 function isNamedPlace(obj: any): obj is NamedPlace {
   return obj.kind === 'NamedPlace';
 }
 
+/**
+ *
+ * @param obj
+ * @deprecated
+ */
 function hasCoordinates(obj: any) {
   return obj.lng != null && obj.lat != null;
 }

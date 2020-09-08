@@ -1,20 +1,20 @@
+import { createSelector } from '@reduxjs/toolkit';
+import { flow, get, join, map, size, sortBy } from 'lodash/fp';
 import React from 'react';
-import classnames from 'classnames';
+import { useSelector } from 'react-redux';
+import styled from 'styled-components/macro';
+import { StyledFlex } from '../../components/ui/Flex/styled-components';
+import { SiprojurisEvent } from '../../data/sip-typings';
 import { Datation } from '../../data/typings';
-import { InformationFold } from './fold/InformationFold';
-import { useGroups } from './useGroups';
-import { SelectedEvent } from './models';
-import { Flex } from '../../components/ui/Flex';
 import { selectEvents } from '../../selectors/event';
 import { maskedEventsAsMap } from '../../selectors/mask';
-import { createSelector } from '@reduxjs/toolkit';
-import { useSelector } from 'react-redux';
 import { selectionAsMap } from '../../selectors/selection';
-import MaskedInformation from './MaskedInformation';
 import { superHighlightAsMap } from '../../selectors/superHighlights';
-import { flow, map, get, join, sortBy } from 'lodash/fp';
 import { ActorNote } from './fold/ActorNote';
-import { SiprojurisEvent } from '../../data/sip-typings';
+import { DisabledNote } from './fold/DisabledNote';
+import { PlaceNote } from './fold/PlaceNote';
+import { SelectedEvent } from './models';
+import { useGroups } from './useGroups';
 
 export function parseDates(dates: Datation[]) {
   return flow(map(get('value')), join(' - '))(dates);
@@ -46,27 +46,34 @@ export const Information: React.FC<{ className?: string }> = function ({
   const groups = useGroups(selectedEvents);
 
   return (
-    <Flex column className={classnames('pa1 h-100 overflow-y-auto', className)}>
+    <Base className={className}>
       {map(
         (g) =>
           g.kind === 'Actor' ? (
             <ActorNote key={g.group.uri} {...g} />
           ) : (
-            <InformationFold key={g.group.uri} {...g} />
+            <PlaceNote key={g.group.uri} {...g} />
           ),
         groups.no
       )}
-      <hr />
+      {size(groups.yes) > 0 && <hr />}
       {/* TODO  style */}
       {map(
         (g) => (
-          <MaskedInformation key={g.group.uri} {...g} />
+          <DisabledNote key={g.group.uri} {...g} />
         ),
         groups.yes
       )}
-    </Flex>
+    </Base>
   );
 };
+
+export const Base = styled(StyledFlex)`
+  flex-direction: column;
+  padding: 0.125em;
+  overflow-y: auto;
+  height: 100%;
+`;
 
 export default Information;
 

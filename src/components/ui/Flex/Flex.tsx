@@ -62,6 +62,9 @@ export const Flex: React.FC<React.PropsWithChildren<
   );
 };
 
+/**
+ * @deprecated
+ */
 export const FlexMemo = memo(Flex);
 
 export default FlexMemo;

@@ -3,14 +3,16 @@ import { getActorLabel, computeActorShortLabel } from '../data/getActorLabel';
 import { SiprojurisActor, isSiprojurisActor } from '../data/sip-typings';
 
 const ActorLabel: React.FC<{
+  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
   actor: SiprojurisActor;
   short?: boolean;
-}> = function ({ actor, short }) {
+}> = function ({ as, actor, short }) {
   let display = isSiprojurisActor(actor)
     ? actor
     : computeActorShortLabel(actor);
+  let Base = as ? as : React.Fragment;
 
-  return <>{getActorLabel(display, short)}</>;
+  return <Base>{getActorLabel(display, short)}</Base>;
 };
 
 export default ActorLabel;

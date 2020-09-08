@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { EventDates } from './EventDates';
 
-import getEventInfo from './event/getEventInfo';
+import deprecatedGetEventInfo from './event/__getEventInfo';
 import getEventIcon from './event/getEventIcon';
 
 import useHoverHighlight from '../../hooks/useHoverHighlight';
@@ -20,7 +20,12 @@ type ThumbnailEventInfoProps<T = AnyEvent> = {
   icon?: boolean;
 };
 
-export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function ({
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
+export const DeprecatedThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function ({
   event,
   origin,
 }) {
@@ -42,7 +47,9 @@ export const ThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = function ({
       {...useHoverHighlight(dispatchable)}
     >
       <span className="ph2"></span>
-      <FlexItem auto>{getEventInfo(event, origin === 'Actor', true)}</FlexItem>
+      <FlexItem auto>
+        {deprecatedGetEventInfo(event, origin === 'Actor', true)}
+      </FlexItem>
       <EventDates dates={event.datation} />
     </Flex>
   );
@@ -53,7 +60,12 @@ type EventInfoProps<T = AnyEvent> = {
   origin: 'Actor' | 'NamedPlace';
 };
 
-export const EventInfo: React.FC<EventInfoProps> = function ({
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
+export const DeprecatedEventInfo: React.FC<EventInfoProps> = function ({
   event,
   origin,
 }) {
@@ -79,10 +91,12 @@ export const EventInfo: React.FC<EventInfoProps> = function ({
       <span className="ph2">
         <Icon iconColor={color ? color(event.kind) : 'black'} />
       </span>
-      <FlexItem auto>{getEventInfo(event, origin === 'Actor', false)}</FlexItem>
+      <FlexItem auto>
+        {deprecatedGetEventInfo(event, origin === 'Actor', false)}
+      </FlexItem>
       <EventDates dates={event.datation} />
     </Flex>
   );
 };
 
-export default EventInfo;
+export default DeprecatedEventInfo;

@@ -5,11 +5,18 @@ export const LeftSpacer = styled('div')<{ borderColor?: string }>`
   border-color: ${({ borderColor = lightgray }) => borderColor};
   box-sizing: border-box;
   margin-left: 7px;
-  padding-left: calc(7px + 0.25em);
+  padding-left: 3px;
   border-left-style: solid;
   border-width: 2px;
+
+  &:not(:last-child) {
+  }
 `;
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
+  padding-bottom: 2px;
+  margin-bottom: 0.25em;
+  overflow-y: auto;
+  min-height: 2em;
 `;

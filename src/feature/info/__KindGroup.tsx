@@ -4,7 +4,7 @@ import { AnyEvent, Datation } from '../../data/typings';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
-import { ThumbnailEventInfo } from './EventInfo';
+import { DeprecatedThumbnailEventInfo } from './__EventInfo';
 import { EventDates } from './EventDates';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
@@ -18,7 +18,12 @@ const MarginLeftDiv = styled<any>('div')`
   margin-left: 1rem;
 `;
 
-export const KindGroup: React.FC<{
+/**
+ *
+ * @param param0
+ * @deprecated use EventGroup
+ */
+export const DeprecatedKindGroup: React.FC<{
   kind: AnyEvent['kind'];
   events: AnyEvent[];
   start: Datation;
@@ -80,7 +85,7 @@ export const KindGroup: React.FC<{
           borderColor={color ? color(kind) : 'grey'}
         >
           {map(events, (e) => (
-            <ThumbnailEventInfo
+            <DeprecatedThumbnailEventInfo
               key={e.id}
               event={e}
               origin={origin}
@@ -93,7 +98,13 @@ export const KindGroup: React.FC<{
   );
 };
 
-export default KindGroup;
+export default DeprecatedKindGroup;
+
+/**
+ *
+ * @param kind
+ * @deprecated
+ */
 function getKindString(kind: string) {
   switch (kind) {
     case 'Birth':

@@ -5,14 +5,14 @@ export type HighlightableProp = {
 };
 
 export const highlightable = ({ highlighted }: HighlightableProp) =>
-  highlighted && `background-color: ${moongray};`;
+  highlighted && `background-color: ${moongray}; border-radius: 2px;`;
 
 export type SelectableProp = {
   selected: boolean;
 };
 
 export const selectable = ({ selected }: SelectableProp) =>
-  selected && 'font-weight: 700;';
+  'cursor: pointer;' + (selected ? 'font-weight: 700;' : '');
 
 export type MaskableProp = {
   masked: boolean;

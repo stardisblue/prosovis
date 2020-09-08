@@ -4,8 +4,8 @@ import { AnyEvent, Datation } from '../../data/typings';
 export type EventGroup<
   T extends SelectedEvent<SiprojurisEvent> | SelectedEvent<SiprojurisEvent>[]
 > = {
-  id: AnyEvent['id'];
-  kind: AnyEvent['kind'];
+  id: SiprojurisEvent['id'];
+  kind: SiprojurisEvent['kind'];
   events: T;
   start: Datation;
   end: Datation;

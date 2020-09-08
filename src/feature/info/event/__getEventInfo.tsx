@@ -9,7 +9,7 @@ import showificator from './showificator';
  * @param isSubGroup
  * @deprecated use getEventLabel instead
  */
-function getEventInfo(
+function deprecatedGetEventInfo(
   event: AnyEvent,
   fromActor: boolean,
   isSubGroup?: boolean
@@ -96,4 +96,4 @@ function getEventInfo(
   }
 }
 
-export default getEventInfo;
+export default deprecatedGetEventInfo;

@@ -1,17 +1,17 @@
-import React, { useState } from 'react';
 import { ChevronDownIcon, ChevronUpIcon } from '@primer/octicons-react';
+import React, { useState } from 'react';
+import styled from 'styled-components/macro';
 import { useFlatClick } from '../../../hooks/useClick';
-import { IconSpacerPointer } from '../IconSpacer';
 import { StyledFlex } from '../Flex/styled-components';
+import { IconSpacerPointer } from '../IconSpacer';
 
 export const Note: React.FC<{
+  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
   title: JSX.Element | string;
-  flat?: boolean;
   underline?: boolean;
   defaultToggleState?: boolean;
-}> = function ({ title, flat = false, defaultToggleState = false, children }) {
-  const Base = flat ? React.Fragment : 'div';
-
+}> = function ({ title, as = 'div', defaultToggleState = false, children }) {
+  const Base = as;
   const [show, setShow] = useState(defaultToggleState);
   const handleToggle = useFlatClick(() => {
     setShow((s) => !s);
@@ -21,7 +21,7 @@ export const Note: React.FC<{
     <Base>
       <NoteTitle>
         {title}
-        <IconSpacerPointer {...handleToggle} spaceRight={false}>
+        <IconSpacerPointer {...handleToggle} spaceLeft>
           {show ? (
             <ChevronUpIcon aria-label="Déplier" />
           ) : (

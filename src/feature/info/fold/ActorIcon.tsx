@@ -12,6 +12,11 @@ const StyledPersonIcon = styled(PersonIcon)<{
   iconColor?: string;
 }>(({ iconColor }) => (iconColor ? `color: ${iconColor};` : ''));
 
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
 const ActorIcon: React.FC<{
   id: PrimaryKey;
 }> = function ({ id }) {

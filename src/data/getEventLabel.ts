@@ -30,18 +30,18 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
   switch (event.kind) {
     case 'Birth': {
       return {
-        actorNote: ton`Naissance à ${event.localisation}`,
-        placeNote: ton`Naissance de ${event.actor}`,
+        actorNote: 'Naissance' + ton` à ${event.localisation}`,
+        placeNote: `Naissance de ${getActorLabel(event.actor)}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: ton`De ${event.actor}`,
+        placeNoteAndGrouped: `De ${getActorLabel(event.actor)}`,
       };
     }
     case 'Death': {
       return {
-        actorNote: ton`Décès à ${event.localisation}`,
-        placeNote: ton`Décès de ${event.actor}`,
+        actorNote: 'Décès' + ton` à ${event.localisation}`,
+        placeNote: `Décès de ${getActorLabel(event.actor)}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: ton`De ${event.actor}`,
+        placeNoteAndGrouped: `De ${getActorLabel(event.actor)}`,
       };
     }
     case 'Education': {

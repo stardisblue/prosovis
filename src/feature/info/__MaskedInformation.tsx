@@ -1,11 +1,15 @@
 import React from 'react';
 import classnames from 'classnames';
-import { Flex } from '../../components/ui/Flex/';
+import { Flex } from '../../components/ui/Flex';
 import { LocationIcon } from '@primer/octicons-react';
 import ActorIcon from './fold/ActorIcon';
 import { Ressource } from '../../data/typings';
-
-const MaskedInformation: React.FC<{
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
+const DeprecatedMaskedInformation: React.FC<{
   group: Ressource;
   kind: 'Actor' | 'NamedPlace';
   selected: boolean;
@@ -36,4 +40,4 @@ const MaskedInformation: React.FC<{
   );
 };
 
-export default MaskedInformation;
+export default DeprecatedMaskedInformation;
