@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { getEvents } from '../data';
-import { Actor, AnyEvent, PrimaryKey } from '../data/typings';
+import { Actor, AnyEvent, PrimaryKey } from '../data/models';
 import { every, filter, keyBy } from 'lodash';
 import { flow, uniqBy, map, identity, transform } from 'lodash/fp';
 

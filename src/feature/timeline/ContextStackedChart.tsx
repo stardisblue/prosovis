@@ -6,7 +6,7 @@ import moment from 'moment';
 import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, PrimaryKey } from '../../data/typings';
+import { AnyEvent, PrimaryKey } from '../../data/models';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
 

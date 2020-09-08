@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../reducers';
 import { getLocalisation } from '../../data';
-import { AnyEvent } from '../../data/typings';
+import { AnyEvent } from '../../data/models';
 import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
 

@@ -1,6 +1,6 @@
 import { pipe, split, map, join } from 'lodash/fp';
-import { isSiprojurisActor, SiprojurisActor } from './sip-typings';
-import { ActorCard } from './typings';
+import { isSiprojurisActor, SiprojurisActor } from './sip-models';
+import { ActorCard } from './models';
 
 const splitActorLabel = split(',');
 const compactFirstNames = (f: string) => f.trim().replace(/[^A-Z]+/g, '. ');

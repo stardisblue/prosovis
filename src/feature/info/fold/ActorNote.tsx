@@ -14,7 +14,7 @@ import {
   IconSpacerPointer,
 } from '../../../components/ui/IconSpacer';
 import { Note } from '../../../components/ui/Note';
-import { SiprojurisActor, SiprojurisEvent } from '../../../data/sip-typings';
+import { SiprojurisActor, SiprojurisEvent } from '../../../data/sip-models';
 import { useClickSelect, useFlatClick } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { deleteActor } from '../../../reducers/eventSlice';

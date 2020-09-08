@@ -1,7 +1,7 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { PrimaryKey, AnyEvent } from '../data/typings';
+import { PrimaryKey, AnyEvent } from '../data/models';
 
 type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
 

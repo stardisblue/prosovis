@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleActorMask } from '../../reducers/maskSlice';
-import { AnyEvent } from '../../data/typings';
+import { AnyEvent } from '../../data/models';
 import { selectSwitchActorColor } from '../../selectors/switch';
 import { actorMaskState, selectActorMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';

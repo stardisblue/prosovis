@@ -1,5 +1,5 @@
 import React from 'react';
-import { Nullable, Ressource, NamedPlace } from '../../../data/typings';
+import { Nullable, Ressource, NamedPlace } from '../../../data/models';
 import styled from 'styled-components/macro';
 
 /**

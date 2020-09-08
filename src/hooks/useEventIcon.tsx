@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { AnyEvent } from '../data/typings';
+import { AnyEvent } from '../data/models';
 import getEventIcon from '../feature/info/event/getEventIcon';
 import { selectSwitchKindColor } from '../selectors/switch';
 

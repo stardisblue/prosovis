@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import { Flex } from '../../components/ui/Flex';
 import { useSelector } from 'react-redux';
-import { AnyEvent } from '../../data/typings';
+import { AnyEvent } from '../../data/models';
 import Kind from './Kind';
 import { selectKinds } from '../../selectors/event';
 

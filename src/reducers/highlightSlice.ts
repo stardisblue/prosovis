@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data/typings';
+import { PrimaryKey } from '../data/models';
 import _ from 'lodash';
 
 type HightlightEvent = { id: PrimaryKey; kind: string; type?: string };

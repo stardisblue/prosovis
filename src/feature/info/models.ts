@@ -1,5 +1,5 @@
-import { SiprojurisEvent } from '../../data/sip-typings';
-import { AnyEvent, Datation } from '../../data/typings';
+import { SiprojurisEvent } from '../../data/sip-models';
+import { AnyEvent, Datation } from '../../data/models';
 
 export type EventGroup<
   T extends SelectedEvent<SiprojurisEvent> | SelectedEvent<SiprojurisEvent>[]

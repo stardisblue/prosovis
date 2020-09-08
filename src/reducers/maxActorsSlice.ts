@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Actor } from '../data/typings';
+import { Actor } from '../data/models';
 
 export const maxActorsSlice = createSlice({
   initialState: { max: 5, current: null } as {

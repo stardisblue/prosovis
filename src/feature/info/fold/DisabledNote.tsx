@@ -11,7 +11,7 @@ import {
 import {
   SiprojurisActor,
   SiprojurisNamedPlace,
-} from '../../../data/sip-typings';
+} from '../../../data/sip-models';
 import { useFlatClick } from '../../../hooks/useClick';
 import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { getLocalisation } from '../../data';
-import { AnyEvent, Ressource, PrimaryKey } from '../../data/typings';
+import { AnyEvent, Ressource, PrimaryKey } from '../../data/models';
 import _ from 'lodash';
 
 function groupByActor(a: AnyEvent) {

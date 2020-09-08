@@ -8,7 +8,7 @@ import {
   PrimaryKey,
   AnyEvent,
   Datation,
-} from '../../data/typings';
+} from '../../data/models';
 
 export const selectLocalisedEvents = createSelector(
   selectMaskedEvents,

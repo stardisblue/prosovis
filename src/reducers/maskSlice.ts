@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnyEvent } from '../data/typings';
+import { AnyEvent } from '../data/models';
 
 type IntervalMask = {
   start: string;

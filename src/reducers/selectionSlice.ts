@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data/typings';
+import { PrimaryKey } from '../data/models';
 import _ from 'lodash';
 
 export type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };

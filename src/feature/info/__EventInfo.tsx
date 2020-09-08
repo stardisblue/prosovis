@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import classnames from 'classnames';
-import { AnyEvent } from '../../data/typings';
+import { AnyEvent } from '../../data/models';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';

@@ -1,7 +1,7 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import { getLocalisation } from '../data';
-import { AnyEvent } from '../data/typings';
+import { AnyEvent } from '../data/models';
 import moment from 'moment';
 import _ from 'lodash';
 import { selectEvents } from './event';

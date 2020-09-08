@@ -1,4 +1,4 @@
-import { ActorCard, NamedPlace, Nullable, AnyEvent } from './typings';
+import { ActorCard, NamedPlace, Nullable, AnyEvent } from './models';
 
 export type SiprojurisActor = Readonly<
   ActorCard & {

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AnyEvent, Datation } from '../../data/typings';
+import { AnyEvent, Datation } from '../../data/models';
 import {
   pipe,
   sortBy,

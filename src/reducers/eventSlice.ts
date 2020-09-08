@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { getEvents } from '../data';
-import { PrimaryKey, Actor } from '../data/typings';
+import { PrimaryKey, Actor } from '../data/models';
 import _ from 'lodash';
-import { SiprojurisEvent } from '../data/sip-typings';
+import { SiprojurisEvent } from '../data/sip-models';
 
 export const eventSlice = createSlice({
   name: 'event',

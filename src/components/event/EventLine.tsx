@@ -2,8 +2,8 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
-import { SiprojurisEvent } from '../../data/sip-typings';
-import { ActorCard, AnyEvent, NamedPlace } from '../../data/typings';
+import { SiprojurisEvent } from '../../data/sip-models';
+import { ActorCard, AnyEvent, NamedPlace } from '../../data/models';
 import getEventIcon from '../../feature/info/event/getEventIcon';
 import { EventDates } from '../../feature/info/EventDates';
 import {

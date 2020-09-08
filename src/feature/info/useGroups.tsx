@@ -6,7 +6,7 @@ import {
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
-} from '../../data/sip-typings';
+} from '../../data/sip-models';
 
 export function useGroups(selectedEvents: SelectedEvent<SiprojurisEvent>[]) {
   // order by selection and then by kind

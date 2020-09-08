@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import _ from 'lodash';
-import { AnyEvent, Ressource } from '../data/typings';
+import { AnyEvent, Ressource } from '../data/models';
 /**
  *
  * @param selectedEvents

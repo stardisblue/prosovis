@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Ressource } from '../../../data/typings';
+import { Ressource } from '../../../data/models';
 import classnames from 'classnames';
 
 import { LocationIcon } from '@primer/octicons-react';
@@ -11,7 +11,7 @@ import ActorIcon from './ActorIcon';
 // import { useClickSelect } from '../../../hooks/useClick';
 import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
-import { SiprojurisEvent } from '../../../data/sip-typings';
+import { SiprojurisEvent } from '../../../data/sip-models';
 
 // TODO griser personnes
 // surlingé : survol

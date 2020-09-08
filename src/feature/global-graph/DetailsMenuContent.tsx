@@ -7,7 +7,7 @@ import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
 import { fetchActor } from '../../data/fetchActor';
 import { getEvents } from '../../data';
-import { ActorCard, AnyEvent } from '../../data/typings';
+import { ActorCard, AnyEvent } from '../../data/models';
 import { DetailsMenuSpinner } from './DetailsMenuSpinner';
 import { DetailsMenuEvents } from './DetailsMenuEvents';
 import Axios from 'axios';

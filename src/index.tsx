@@ -9,7 +9,7 @@ import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import rootReducer from './reducers/';
 import defaultActors from './data/actors.json';
 import { getEvents } from './data';
-import { Actor } from './data/typings';
+import { Actor } from './data/models';
 import { flatMap } from 'lodash/fp';
 
 const events = flatMap(getEvents, (defaultActors as any) as Actor[]);

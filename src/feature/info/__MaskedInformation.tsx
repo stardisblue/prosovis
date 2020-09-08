@@ -3,7 +3,7 @@ import classnames from 'classnames';
 import { Flex } from '../../components/ui/Flex';
 import { LocationIcon } from '@primer/octicons-react';
 import ActorIcon from './fold/ActorIcon';
-import { Ressource } from '../../data/typings';
+import { Ressource } from '../../data/models';
 /**
  *
  * @param param0

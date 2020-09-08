@@ -2,7 +2,7 @@ import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { getLocalisation } from '../data';
-import { NamedPlace } from '../data/typings';
+import { NamedPlace } from '../data/models';
 
 export const selectEvents = (state: RootState) => state.events;
 

@@ -1,14 +1,14 @@
 import { map, sortBy } from 'lodash/fp';
 import { computeActorShortLabel } from './getActorLabel';
 import { computeEventLabels } from './getEventLabel';
-import { SiprojurisEvent } from './sip-typings';
+import { SiprojurisEvent } from './sip-models';
 import {
   AnyEvent,
   Actor,
   Datation,
   ExamenEvent,
   DirectionalExamenEvent,
-} from './typings';
+} from './models';
 
 export function getLocalisation(event: AnyEvent) {
   switch (event.kind) {

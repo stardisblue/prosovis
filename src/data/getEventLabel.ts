@@ -1,11 +1,11 @@
 import { getActorLabel } from './getActorLabel';
-import { Nullable, Ressource } from './typings';
+import { Nullable, Ressource } from './models';
 import {
   ComputedLabels,
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
-} from './sip-typings';
+} from './sip-models';
 
 /**
  * Displays current string or an emtpy string

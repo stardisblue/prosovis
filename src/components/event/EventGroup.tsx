@@ -7,8 +7,8 @@ import {
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
-} from '../../data/sip-typings';
-import { Datation } from '../../data/typings';
+} from '../../data/sip-models';
+import { Datation } from '../../data/models';
 import getEventIcon from '../../feature/info/event/getEventIcon';
 import { EventDates } from '../../feature/info/EventDates';
 import {

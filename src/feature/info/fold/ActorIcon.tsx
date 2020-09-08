@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 
 import { PersonIcon, XIcon } from '@primer/octicons-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { PrimaryKey } from '../../../data/typings';
+import { PrimaryKey } from '../../../data/models';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { deleteActor } from '../../../reducers/eventSlice';
 import styled from 'styled-components/macro';

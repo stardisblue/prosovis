@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnyEvent } from '../../../data/typings';
+import { AnyEvent } from '../../../data/models';
 import showificator from './showificator';
 
 /**

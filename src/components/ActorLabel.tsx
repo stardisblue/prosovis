@@ -1,6 +1,6 @@
 import React from 'react';
 import { getActorLabel, computeActorShortLabel } from '../data/getActorLabel';
-import { SiprojurisActor, isSiprojurisActor } from '../data/sip-typings';
+import { SiprojurisActor, isSiprojurisActor } from '../data/sip-models';
 
 const ActorLabel: React.FC<{
   as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;

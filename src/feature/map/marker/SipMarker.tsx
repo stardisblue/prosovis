@@ -7,7 +7,7 @@ import {
   PrimaryKey,
   Datation,
   Actor,
-} from '../../../data/typings';
+} from '../../../data/models';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../../selectors/switch';

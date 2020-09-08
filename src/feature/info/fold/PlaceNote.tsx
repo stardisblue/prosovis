@@ -11,7 +11,7 @@ import { Note } from '../../../components/ui/Note';
 import {
   SiprojurisEvent,
   SiprojurisNamedPlace,
-} from '../../../data/sip-typings';
+} from '../../../data/sip-models';
 import { useClickSelect } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { EventGroup as EventGroupType, SelectedEvent } from '../models';
