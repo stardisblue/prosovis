@@ -8,7 +8,7 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { EventDates } from './EventDates';
 
 import deprecatedGetEventInfo from './event/__getEventInfo';
-import getEventIcon from './event/getEventIcon';
+import getEventIcon from '../../data/getEventIcon';
 
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useClickSelect } from '../../hooks/useClick';

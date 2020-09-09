@@ -9,7 +9,7 @@ import {
   SiprojurisNamedPlace,
 } from '../../data/sip-models';
 import { Datation } from '../../data/models';
-import getEventIcon from '../../feature/info/event/getEventIcon';
+import getEventIcon from '../../data/getEventIcon';
 import { EventDates } from '../../feature/info/EventDates';
 import {
   highlightable,

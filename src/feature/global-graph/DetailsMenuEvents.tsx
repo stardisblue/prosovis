@@ -10,7 +10,7 @@ import {
   maxBy,
   flatMap,
 } from 'lodash/fp';
-import getEventIcon from '../info/event/getEventIcon';
+import getEventIcon from '../../data/getEventIcon';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { EventDates } from '../info/EventDates';

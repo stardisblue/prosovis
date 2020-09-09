@@ -9,7 +9,7 @@ import { EventDates } from './EventDates';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import getEventIcon from './event/getEventIcon';
+import getEventIcon from '../../data/getEventIcon';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useFlatClick } from '../../hooks/useClick';
 

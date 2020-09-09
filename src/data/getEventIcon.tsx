@@ -1,4 +1,4 @@
-import { AnyEvent } from '../../../data/models';
+import { AnyEvent } from './models';
 import {
   PlusIcon,
   MortarBoardIcon,
@@ -7,8 +7,8 @@ import {
   HomeIcon,
   Icon,
 } from '@primer/octicons-react';
-import Pause from './Pause';
-import Grave from './Grave';
+import Pause from '../feature/info/event/Pause';
+import Grave from '../feature/info/event/Grave';
 
 import styled from 'styled-components/macro';
 
