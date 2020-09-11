@@ -1,15 +1,16 @@
 import React, { useCallback } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { toggleActorMask } from '../../reducers/maskSlice';
-import { AnyEvent } from '../../data/models';
 import { selectSwitchActorColor } from '../../selectors/switch';
 import { actorMaskState, selectActorMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
+import ActorLabel from '../../components/ActorLabel';
+import { SiprojurisActor } from '../../data/sip-models';
 
 const Actor: React.FC<{
-  actor: AnyEvent['actor'];
+  actor: SiprojurisActor;
 }> = function ({ actor }) {
-  const { id, label } = actor;
+  const { id } = actor;
 
   const dispatch = useDispatch();
 
@@ -26,7 +27,7 @@ const Actor: React.FC<{
       checked={actorMaskState(actor, actorMask)}
       handleCheck={handleCheck}
     >
-      {label}
+      <ActorLabel as="span" actor={actor} short />
     </CheckBoxSwitch>
   );
 };

@@ -71,20 +71,14 @@ export const EventGroup: React.FC<{
         </InteractableEnlarge>
       }
     >
-      <Base>
-        <LeftSpacer borderColor={color ? color(kind) : undefined}>
-          {events.map((e) => (
-            <EventLine key={e.id} event={e} origin={origin} grouped />
-          ))}
-        </LeftSpacer>
-      </Base>
+      <LeftSpacer borderColor={color ? color(kind) : undefined}>
+        {events.map((e) => (
+          <EventLine key={e.id} event={e} origin={origin} grouped />
+        ))}
+      </LeftSpacer>
     </Note>
   );
 };
-
-const Base = styled.div`
-  padding-left: 0.25em;
-`;
 
 const InteractableEnlarge = styled(EnlargeFlex)<
   HighlightableProp & MaskableProp & SelectableProp

@@ -9,7 +9,9 @@ import {
   StyledText,
   StyledSlider,
 } from '../../../components/ui/CheckBoxSwitch';
+import classnames from 'classnames';
 import styled from 'styled-components/macro';
+import { lightgray } from '../../../components/ui/colors';
 
 export const PaddedStyledText = styled(StyledText)`
   padding-left: 0.125em;
@@ -20,12 +22,17 @@ export const AdaptedSlider = styled(StyledSlider)`
   background-color: #6c757d;
 `;
 
-export const ActorPlaceSwitch: React.FC = function () {
+export const ActorPlaceSwitch: React.FC<{ className?: string }> = function ({
+  className,
+}) {
   const dispatch = useDispatch();
+
   const [checked, setChecked] = useState(false);
+
   const handleGroupSwitch = useCallback(() => {
     setChecked((s) => !s);
   }, []);
+
   useEffect(
     function () {
       if (checked) {
@@ -36,20 +43,24 @@ export const ActorPlaceSwitch: React.FC = function () {
     },
     [dispatch, checked]
   );
+
   return (
-    <StyledLabel className="pointer" onMouseUp={stopEventPropagation}>
+    <StyledLabel
+      className={classnames('pointer', className)}
+      onMouseUp={stopEventPropagation}
+    >
       <StyledInput
         type="checkbox"
         checked={checked}
         onChange={handleGroupSwitch}
       />
-      <PaddedStyledText sliderColor={checked ? '#ccc' : ''}>
+      <PaddedStyledText sliderColor={checked ? lightgray : ''}>
         Personnes
       </PaddedStyledText>
       <AdaptedSlider>
         <StyledKnob slide={checked} />
       </AdaptedSlider>
-      <PaddedStyledText sliderColor={checked ? '' : '#ccc'}>
+      <PaddedStyledText sliderColor={checked ? '' : lightgray}>
         Lieux
       </PaddedStyledText>
     </StyledLabel>

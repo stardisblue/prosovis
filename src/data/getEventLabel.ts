@@ -31,17 +31,17 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
     case 'Birth': {
       return {
         actorNote: 'Naissance' + ton` à ${event.localisation}`,
-        placeNote: `Naissance de ${getActorLabel(event.actor)}`,
+        placeNote: `Naissance de ${getActorLabel(event.actor, true)}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: `De ${getActorLabel(event.actor)}`,
+        placeNoteAndGrouped: `De ${getActorLabel(event.actor, true)}`,
       };
     }
     case 'Death': {
       return {
         actorNote: 'Décès' + ton` à ${event.localisation}`,
-        placeNote: `Décès de ${getActorLabel(event.actor)}`,
+        placeNote: `Décès de ${getActorLabel(event.actor, true)}`,
         actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: `De ${getActorLabel(event.actor)}`,
+        placeNoteAndGrouped: `De ${getActorLabel(event.actor, true)}`,
       };
     }
     case 'Education': {
@@ -51,13 +51,13 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
           ton` "${event.abstract_object}"` +
           ton` à ${event.collective_actor}`,
         placeNote:
-          `${getActorLabel(event.actor)} enseigne` +
+          `${getActorLabel(event.actor, true)} enseigne` +
           ton` "${event.abstract_object}"` +
           ton` à ${event.collective_actor}`,
         actorNoteAndGrouped:
           ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`,
         placeNoteAndGrouped:
-          getActorLabel(event.actor) +
+          getActorLabel(event.actor, true) +
           ton` "${event.abstract_object}"` +
           ton` à ${event.collective_actor}`,
       };
@@ -69,14 +69,14 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
           ton` "${event.social_characteristic}"` +
           ton` à ${event.collective_actor}`,
         placeNote:
-          `${getActorLabel(event.actor)} obtient la qualité` +
+          `${getActorLabel(event.actor, true)} obtient la qualité` +
           ton` "${event.social_characteristic}"` +
           ton` à ${event.collective_actor}`,
         actorNoteAndGrouped:
           ton` "${event.social_characteristic}"` +
           ton` à ${event.collective_actor}`,
         placeNoteAndGrouped:
-          getActorLabel(event.actor) +
+          getActorLabel(event.actor, true) +
           ton` "${event.social_characteristic}"` +
           ton` à ${event.collective_actor}`,
       };
@@ -95,7 +95,7 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
             ton`Evalué par ${event.actor_evaluer}`
           ) + rest,
         placeNote:
-          getActorLabel(event.actor) +
+          getActorLabel(event.actor, true) +
           eva(
             ton` evalue ${event.actor_evalue}`,
             ton` evalué par ${event.actor_evaluer}`
@@ -106,13 +106,14 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
     case 'Retirement': {
       return {
         actorNote: 'Départ en retraite',
-        placeNote: `Départ en retraite de ${getActorLabel(event.actor)}`,
+        placeNote: `Départ en retraite de ${getActorLabel(event.actor, true)}`,
       };
     }
     case 'SuspensionActivity': {
       return {
         actorNote: ton` ${event.abstract_object}`,
-        placeNote: getActorLabel(event.actor) + ton` ${event.abstract_object}`,
+        placeNote:
+          getActorLabel(event.actor, true) + ton` ${event.abstract_object}`,
       };
     }
   }

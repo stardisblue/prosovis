@@ -37,6 +37,8 @@ import {
   clearSuperHighlights,
   setSuperHighlights,
 } from '../../reducers/superHighlightSlice';
+import ActorPlaceSwitch from './header/ActorPlaceSwitch';
+import styled from 'styled-components/macro';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -425,7 +427,9 @@ const VisTimeline: React.FC = function () {
 
   return (
     <>
-      <div id="timeline" ref={timelineRef}></div>
+      <div id="timeline" ref={timelineRef}>
+        <VisHeader />
+      </div>
       {width && (
         <Context
           mask={maskSync}
@@ -438,5 +442,13 @@ const VisTimeline: React.FC = function () {
     </>
   );
 };
+
+const VisHeader = styled(ActorPlaceSwitch)`
+  position: absolute;
+  bottom: 1px;
+  z-index: 2;
+  line-height: 1.2;
+  background-color: white;
+`;
 
 export default VisTimeline;

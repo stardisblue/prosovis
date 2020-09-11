@@ -24,8 +24,8 @@ import { IconSpacer } from '../ui/IconSpacer';
 const Base = styled(StyledFlex)<
   SelectableProp & MaskableProp & HighlightableProp
 >`
-  padding-top: 1px;
-  padding-bottom: 1px;
+  padding-top: 2px;
+  padding-bottom: 2px;
   padding-left: 0.25em;
   padding-right: 0.25em;
   justify-content: space-between;

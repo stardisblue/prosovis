@@ -2,13 +2,11 @@ import { XIcon } from '@primer/octicons-react';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components/macro';
 import ActorLabel from '../../../components/ActorLabel';
 import { ColorablePersonIcon } from '../../../components/ColorablePersonIcon';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
 import { LeftBottomSpacer } from '../../../components/event/LeftSpacer';
-import { EnlargeFlex } from '../../../components/ui/Flex/styled-components';
 import {
   IconSpacer,
   IconSpacerPointer,
@@ -20,21 +18,7 @@ import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { EventGroup as EventGroupType, SelectedEvent } from '../models';
-import {
-  highlightable,
-  selectable,
-  HighlightableProp,
-  SelectableProp,
-} from './styled-components';
-
-const HighlightableEnlarge = styled(EnlargeFlex)<
-  HighlightableProp & SelectableProp
->`
-  padding-top: 1px;
-  padding-bottom: 1px;
-  ${highlightable}
-  ${selectable}
-`;
+import { InteractiveEnlarge } from './InteractiveEnlarge';
 
 export const ActorNote: React.FC<{
   events: SelectedEvent<SiprojurisEvent>[];
@@ -98,13 +82,13 @@ export const ActorNote: React.FC<{
   const color = useSelector(selectSwitchActorColor);
 
   const title = (
-    <HighlightableEnlarge
+    <InteractiveEnlarge
       {...handleSelectClick}
       {...handleHighlightHover}
       highlighted={highlighted}
       selected={selected}
     >
-      <IconSpacerPointer as="span" {...handleDeleteClick} spaceRight>
+      <IconSpacerPointer as="span" {...handleDeleteClick} spaceLeft spaceRight>
         <XIcon className="red" aria-label="Supprimer" />
       </IconSpacerPointer>
       <IconSpacer as="span" spaceRight>
@@ -113,8 +97,8 @@ export const ActorNote: React.FC<{
           aria-label="individu"
         />
       </IconSpacer>
-      <ActorLabel as="span" actor={group} short />
-    </HighlightableEnlarge>
+      <ActorLabel as="span" actor={group} />
+    </InteractiveEnlarge>
   );
 
   const content = (

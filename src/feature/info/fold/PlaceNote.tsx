@@ -1,11 +1,9 @@
 import { LocationIcon } from '@primer/octicons-react';
 import _ from 'lodash';
 import React, { useMemo } from 'react';
-import styled from 'styled-components/macro';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
 import { LeftBottomSpacer } from '../../../components/event/LeftSpacer';
-import { EnlargeFlex } from '../../../components/ui/Flex/styled-components';
 import { IconSpacer } from '../../../components/ui/IconSpacer';
 import { Note } from '../../../components/ui/Note';
 import {
@@ -15,21 +13,7 @@ import {
 import { useClickSelect } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { EventGroup as EventGroupType, SelectedEvent } from '../models';
-import {
-  highlightable,
-  selectable,
-  HighlightableProp,
-  SelectableProp,
-} from './styled-components';
-
-const InteractiveEnlarge = styled(EnlargeFlex)<
-  HighlightableProp & SelectableProp
->`
-  padding-top: 1px;
-  padding-bottom: 1px;
-  ${highlightable}
-  ${selectable}
-`;
+import { InteractiveEnlarge } from './InteractiveEnlarge';
 
 export const PlaceNote: React.FC<{
   events: SelectedEvent<SiprojurisEvent>[];
@@ -94,7 +78,7 @@ export const PlaceNote: React.FC<{
       highlighted={highlighted}
       selected={selected}
     >
-      <IconSpacer as="span" spaceRight>
+      <IconSpacer as="span" spaceRight spaceLeft>
         <LocationIcon aria-label="lieu" />
       </IconSpacer>
       <span>{group.label}</span>
