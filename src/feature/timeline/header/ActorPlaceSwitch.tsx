@@ -11,15 +11,17 @@ import {
 } from '../../../components/ui/CheckBoxSwitch';
 import classnames from 'classnames';
 import styled from 'styled-components/macro';
-import { lightgray } from '../../../components/ui/colors';
+import { darkgray, lightgray } from '../../../components/ui/colors';
 
 export const PaddedStyledText = styled(StyledText)`
   padding-left: 0.125em;
   padding-right: 0.125em;
+  font-size: 0.75em;
+  font-weight: 700;
 `;
 
 export const AdaptedSlider = styled(StyledSlider)`
-  background-color: #6c757d;
+  background-color: ${darkgray};
 `;
 
 export const ActorPlaceSwitch: React.FC<{ className?: string }> = function ({

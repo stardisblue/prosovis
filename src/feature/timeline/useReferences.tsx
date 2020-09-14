@@ -23,7 +23,7 @@ const options = {
   height: '300px',
   margin: {
     item: {
-      horizontal: 5, // distance
+      horizontal: 3, // distance
       vertical: 1,
     },
   },

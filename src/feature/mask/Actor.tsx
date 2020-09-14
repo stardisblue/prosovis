@@ -6,6 +6,8 @@ import { actorMaskState, selectActorMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 import ActorLabel from '../../components/ActorLabel';
 import { SiprojurisActor } from '../../data/sip-models';
+import { SmallFont } from './styled-components';
+import { darkgray } from '../../components/ui/colors';
 
 const Actor: React.FC<{
   actor: SiprojurisActor;
@@ -23,11 +25,11 @@ const Actor: React.FC<{
 
   return (
     <CheckBoxSwitch
-      color={color ? color(id) : '#6c757d'}
+      color={color ? color(id) : darkgray}
       checked={actorMaskState(actor, actorMask)}
       handleCheck={handleCheck}
     >
-      <ActorLabel as="span" actor={actor} short />
+      <ActorLabel as={SmallFont} actor={actor} short />
     </CheckBoxSwitch>
   );
 };

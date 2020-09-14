@@ -22,6 +22,7 @@ import { getSimulation } from './utils/simulation';
 import SuggestionRing from './suggestion-ring/SuggestionRing';
 import { selectRelationEmphasis } from './highlightSlice';
 import path from './suggestion-ring/path';
+import { darkgray } from '../../components/ui/colors';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -159,7 +160,7 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         updateLinkPosition={updateRef}
       />
 
-      <g ref={$linkGroup} stroke="#6c757d" strokeWidth={1.5}>
+      <g ref={$linkGroup} stroke={darkgray} strokeWidth={1.5}>
         {useMemo(
           () =>
             Array.from(links, ([key, datum]) => (

@@ -4,12 +4,14 @@ import StyledInput from '../../feature/mask/StyledInput';
 import { stopEventPropagation } from '../../hooks/useClick';
 
 export const StyledLabel = styled.label`
+  line-height: 1.2;
   margin-bottom: 0;
   margin-right: 1em;
+  display: flex;
+  align-items: center;
 `;
 
 export const StyledSlider = styled.div`
-  display: inline-block;
   cursor: pointer;
   padding: 0.125em;
   height: 1em;
@@ -29,9 +31,6 @@ export const StyledKnob = styled.div<{ slide: boolean }>`
 `;
 
 export const StyledText = styled.div<{ sliderColor: string }>`
-  display: inline-block;
-  padding-bottom: 0.125em;
-  vertical-align: bottom;
   margin-left: 0.125em;
   color: ${(props) => props.sliderColor};
   transition: 0.4s;

@@ -10,6 +10,7 @@ const StyledSection = styled.section`
   grid-template:
     'switches actors' auto
     'switches kinds' auto / auto 1fr;
+  grid-row-gap: 0.125em;
   padding-top: 0.125em;
   padding-right: 0.125em;
   padding-bottom: 0.125em;
@@ -18,8 +19,8 @@ const StyledSection = styled.section`
 
 const SwitchArea = styled.div`
   grid-area: switches;
-  padding-top: 0.25em;
-  padding-bottom: 0.25em;
+  /* padding-top: 0.25em; */
+  /* padding-bottom: 0.25em; */
 `;
 
 const ActorsArea = styled.div`
@@ -30,7 +31,7 @@ const KindsArea = styled.div`
   grid-area: kinds;
 `;
 
-const Mask: React.FC = function() {
+const Mask: React.FC = function () {
   return (
     <StyledSection>
       <SwitchArea>

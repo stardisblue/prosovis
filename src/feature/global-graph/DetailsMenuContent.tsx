@@ -7,15 +7,17 @@ import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
 import { fetchActor } from '../../data/fetchActor';
 import { getEvents } from '../../data';
-import { ActorCard, AnyEvent } from '../../data/models';
+import { AnyEvent } from '../../data/models';
 import { DetailsMenuSpinner } from './DetailsMenuSpinner';
 import { DetailsMenuEvents } from './DetailsMenuEvents';
 import Axios from 'axios';
 import DetailsMenuContext from './DetailsMenuContext';
+import ActorLabel from '../../components/ActorLabel';
+import { SiprojurisActor } from '../../data/sip-models';
 
-export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
-  actor,
-}) {
+export const DetailsMenuContent: React.FC<{
+  actor: SiprojurisActor;
+}> = function ({ actor }) {
   const dispatch = useDispatch();
   const { setMenuTarget } = useContext(DetailsMenuContext);
   const actors = useSelector(selectActors);
@@ -82,7 +84,7 @@ export const DetailsMenuContent: React.FC<{ actor: ActorCard }> = function ({
           <span className="pointer" onClick={handleClick}>
             {Icon}
           </span>
-          {actor.label}
+          <ActorLabel actor={actor} />
         </div>
         {events ? (
           <DetailsMenuEvents events={events} />

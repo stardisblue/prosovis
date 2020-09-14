@@ -10,6 +10,7 @@ import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { setSelection } from '../../../reducers/selectionSlice';
 import { HoverContext } from '../HoverContext';
 import * as d3 from 'd3-scale';
+import { darkgray } from '../../../components/ui/colors';
 
 const scale = d3.scaleLog().domain([1, 10]).range([2, 50]);
 
@@ -100,7 +101,7 @@ export const ActorPath: React.FC<{
             twoWay={total[grp]}
             dashArray={[2, scale(diff < 1 ? 1 : diff)]}
             delay={500}
-            color={colorFn ? colorFn(id) : '#6c757d'}
+            color={colorFn ? colorFn(id) : darkgray}
           />
         );
       })}

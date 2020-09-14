@@ -16,6 +16,7 @@ import Modal from '../../modal/Modal';
 import styled from 'styled-components';
 import { PlusIcon } from '@primer/octicons-react';
 import { fetchActorThunk } from '../../../thunks/actor';
+import { darkgray } from '../../../components/ui/colors';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
@@ -42,7 +43,7 @@ export const SuggestionNodes: React.FC<{
   y.domain(domain);
 
   return (
-    <g ref={$g} fill={color || '#6c757d'}>
+    <g ref={$g} fill={color || darkgray}>
       {_.map(sorted, (datum) => (
         <SuggestionNode
           key={datum.target}
@@ -50,7 +51,7 @@ export const SuggestionNodes: React.FC<{
           x={x}
           y={y}
           actors={grouped[datum.target]}
-          color={color || '#6c757d'}
+          color={color || darkgray}
         />
       ))}
     </g>

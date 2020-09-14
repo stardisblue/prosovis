@@ -1,4 +1,12 @@
+import { mapValues } from 'lodash/fp';
 import rawNodes from './actor-nodes.json';
+import { computeActorShortLabel } from './getActorLabel';
 import { ActorCard } from './models';
+import { SiprojurisActor } from './sip-models';
 
-export default rawNodes as { [k: string]: ActorCard };
+const actorNodes: { [k: string]: SiprojurisActor } = mapValues(
+  (v) => computeActorShortLabel(v),
+  rawNodes as { [k: string]: ActorCard }
+);
+
+export default actorNodes;

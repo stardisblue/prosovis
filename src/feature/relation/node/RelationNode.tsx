@@ -8,6 +8,7 @@ import { useDatum } from '../../../hooks/useD3';
 import { useSelector } from 'react-redux';
 import { selectRelationActorRing } from '../selectRelations';
 import { selectSwitchActorColor } from '../../../selectors/switch';
+import { darkgray } from '../../../components/ui/colors';
 
 const scale = d3.scaleSqrt().range([0, 3]);
 
@@ -40,7 +41,7 @@ export const RelationNode: React.FC<{
   );
 
   return (
-    <g ref={$g} fill={color ? color(datum.id) : '#6c757d'} cursor="pointer">
+    <g ref={$g} fill={color ? color(datum.id) : darkgray} cursor="pointer">
       <circle r={scale(ghosts.size)} fill={'white'} />
       {_.map(arcs, (a) => (
         <PiePart key={a.data[0]} parent={datum.id} a={a} arc={arc} />

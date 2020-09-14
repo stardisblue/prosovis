@@ -4,7 +4,7 @@ import DetailsMenuContext from './DetailsMenuContext';
 import { Spring, animated } from 'react-spring/renderprops';
 import { DetailsMenuContent } from './DetailsMenuContent';
 import { stopEventPropagation } from '../../hooks/useClick';
-import { ActorCard } from '../../data/models';
+import { SiprojurisActor } from '../../data/sip-models';
 
 const StyledDetailsOnWheelDiv = styled(DetailsOnWheelDiv)`
   width: 100%;
@@ -22,7 +22,7 @@ function DetailsOnWheelDiv({
   actor,
   className,
 }: {
-  actor: ActorCard;
+  actor: SiprojurisActor;
   className?: string;
 }) {
   const ref = useRef<HTMLDivElement>(null as any);

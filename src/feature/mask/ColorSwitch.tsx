@@ -6,6 +6,7 @@ import { toggleSwitch } from '../../reducers/switchSlice';
 import styled from 'styled-components/macro';
 import StyledInput from './StyledInput';
 import { stopEventPropagation } from '../../hooks/useClick';
+import { darkgray } from '../../components/ui/colors';
 
 const StyledLabel = styled.label`
   position: relative;
@@ -20,7 +21,7 @@ const StyledSlider = styled.div`
   height: 100%;
   width: 100%;
   padding: 12.5%;
-  background-color: #6c757d;
+  background-color: ${darkgray};
   transition: 0.4s;
   border-radius: 999em;
 `;

@@ -8,6 +8,8 @@ import { selectMaxActors, selectCurrent } from '../../selectors/maxActors';
 import { addActorsThunk } from '../../thunks/actor';
 import { resetCurrent } from '../../reducers/maxActorsSlice';
 import { Flex } from '../../components/ui/Flex';
+import { computeActorShortLabel } from '../../data/getActorLabel';
+import ActorLabel from '../../components/ActorLabel';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -94,7 +96,12 @@ export const ActorModal: React.FC = function () {
               moins un.
             </h3>
             <hr />
-            {current && <div>Nouvel acteur : {current.label}</div>}
+            {current && (
+              <div>
+                Nouvel acteur :{' '}
+                <ActorLabel actor={computeActorShortLabel(current)} />
+              </div>
+            )}
             <hr />
             <ul>
               {_.map(checkboxs, ({ actor, checked }, key) => (
@@ -146,7 +153,7 @@ export const ActorLine: React.FC<any> = function ({
           aria-label={'Supprimer'}
         />
       </span>
-      {actor.label}
+      <ActorLabel actor={actor} />
     </div>
   );
 };

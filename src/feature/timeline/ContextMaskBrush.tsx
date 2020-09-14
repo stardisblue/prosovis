@@ -5,6 +5,7 @@ import { setIntervalMask } from '../../reducers/maskSlice';
 import _ from 'lodash';
 import ContextOptions from './ContextOptions';
 import styled from 'styled-components';
+import { darkgray } from '../../components/ui/colors';
 
 const StyledG = styled.g`
   .selection {
@@ -37,7 +38,7 @@ const brushHandles = function (
 
       group
         .append('path')
-        .attr('fill', '#6c757d')
+        .attr('fill', darkgray)
         .attr('cursor', 'ew-resize')
         .attr('d', path)
         .style('transform', 'translate3d(0, 5px, 0)');
@@ -45,7 +46,7 @@ const brushHandles = function (
       // triangle down
       group
         .append('path')
-        .attr('fill', '#6c757d')
+        .attr('fill', darkgray)
         .attr('cursor', 'ew-resize')
         .attr('d', d3.symbol().type(d3.symbolTriangle))
         .style('transform', `translate3d(1px, ${height - 5}px, 0)`);
@@ -53,7 +54,7 @@ const brushHandles = function (
       // triangle up
       group
         .append('path')
-        .attr('fill', '#6c757d')
+        .attr('fill', darkgray)
         .attr('cursor', 'ew-resize')
         .attr('d', d3.symbol().type(d3.symbolTriangle))
         .style('transform', 'rotate(180deg) translate3d(-1px, -5px, 0)');

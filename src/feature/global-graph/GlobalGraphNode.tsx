@@ -7,6 +7,7 @@ import { selectSwitchActorColor } from '../../selectors/switch';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useFlatClick } from '../../hooks/useClick';
 import DetailsMenuContext from './DetailsMenuContext';
+import ActorLabel from '../../components/ActorLabel';
 
 export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
   fill: ${({ fill }) => fill ?? 'lightgray'};
@@ -16,7 +17,6 @@ export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
 export const StyledText = styled.text`
   font-size: 12px;
   text-anchor: middle;
-  dominant-baseline: middle;
   user-select: none;
 `;
 
@@ -125,7 +125,7 @@ export const GlobalGraphNode: React.FC<{
       onContextMenu={handleContextMenu}
       sOpacity={opacity}
     >
-      <title>{actor.label}</title>
+      <ActorLabel as="title" actor={actor} />
       <StyledRect
         width={width}
         height={height}
@@ -133,7 +133,7 @@ export const GlobalGraphNode: React.FC<{
         stroke={stroke}
         strokeWidth={strokeWidth}
       ></StyledRect>
-      <StyledText dx={width / 2} dy={height / 2}>
+      <StyledText dx={width / 2} dy={height / 2} dominantBaseline="middle">
         {label}
       </StyledText>
     </StyledGroup>

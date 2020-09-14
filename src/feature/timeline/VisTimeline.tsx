@@ -39,6 +39,7 @@ import {
 } from '../../reducers/superHighlightSlice';
 import ActorPlaceSwitch from './header/ActorPlaceSwitch';
 import styled from 'styled-components/macro';
+import { getEventLabel } from '../../data/getEventLabel';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -111,11 +112,11 @@ const selectTimelineEvents = createSelector(
       events,
       function (acc, e) {
         if (e.datation && e.datation.length > 0) {
-          const { id, actor, label, kind, datation } = e;
+          const { id, kind, datation } = e;
           acc.push({
             id,
-            title: unescape(actor.label),
-            label: unescape(label),
+            title: unescape(getEventLabel(e, 'Actor')),
+            // label: "",
             popover: 'true',
             ...resolveDatation(datation),
             className: classnames(_.kebabCase(kind), 'timeline-event'),
@@ -445,7 +446,7 @@ const VisTimeline: React.FC = function () {
 
 const VisHeader = styled(ActorPlaceSwitch)`
   position: absolute;
-  bottom: 1px;
+  bottom: 20px;
   z-index: 2;
   line-height: 1.2;
   background-color: white;

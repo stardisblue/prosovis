@@ -6,6 +6,8 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { kindMaskState, selectKindMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 import eventKind from '../../i18n/event-kind';
+import { SmallFont } from './styled-components';
+import { darkgray } from '../../components/ui/colors';
 
 const Kind: React.FC<{
   id: AnyEvent['kind'];
@@ -21,11 +23,11 @@ const Kind: React.FC<{
 
   return (
     <CheckBoxSwitch
-      color={color ? color(id) : '#6c757d'}
+      color={color ? color(id) : darkgray}
       checked={kindMaskState(id, kindMask)}
       handleCheck={handleCheck}
     >
-      {eventKind(id)}
+      <SmallFont> {eventKind(id)}</SmallFont>
     </CheckBoxSwitch>
   );
 };

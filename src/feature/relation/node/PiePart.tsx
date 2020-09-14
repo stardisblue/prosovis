@@ -66,7 +66,7 @@ export const PiePart: React.FC<{
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       fillOpacity={opacity}
-      // stroke={(emph && '#6c757d') || undefined}
+      // stroke={(emph && darkgray) || undefined}
     >
       <title>{value.size}</title>
     </path>

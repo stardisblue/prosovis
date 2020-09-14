@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { ActorCard } from '../../data/models';
+import { SiprojurisActor } from '../../data/sip-models';
 type Menu = {
-  actor: ActorCard;
+  actor: SiprojurisActor;
   ref: SVGGElement;
   x: number;
   y: number;
