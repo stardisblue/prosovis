@@ -14,6 +14,7 @@ import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
+import { lightgray } from '../components/ui/colors';
 
 const Aside = styled.main`
   display: grid;
@@ -50,13 +51,12 @@ const StyledInformation = styled(Information)`
 
 const StyledMap = styled(SiprojurisMap)`
   grid-area: map;
-  border: 1px solid lightgray;
+  border-left: 1px solid ${lightgray};
 `;
 
 const StyledRelation = styled(Relation)`
   grid-area: rel;
-  border-top: 1px solid lightgray;
-  border-bottom: 1px solid lightgray;
+  border-top: 1px solid ${lightgray};
 `;
 
 const StyledTimeline = styled(SiprojurisTimeline)`

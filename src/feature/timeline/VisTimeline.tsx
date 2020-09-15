@@ -9,6 +9,7 @@ import './VisTimeline.css';
 
 import classnames from 'classnames';
 import _ from 'lodash';
+import { map } from 'lodash/fp';
 import { Nullable, PrimaryKey, Datation } from '../../data/models';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
@@ -40,6 +41,7 @@ import {
 import ActorPlaceSwitch from './header/ActorPlaceSwitch';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
+import { SiprojurisActor, SiprojurisNamedPlace } from '../../data/sip-models';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -88,16 +90,16 @@ function resolveDatation([start, end]: Datation[]): {
   };
 }
 
-function newLineLongString(str: string, maxLenght = 20): string {
+function newLineLongString(str: string, maxLenght = 30): string {
   if (str.length < maxLenght) {
-    return str;
+    return str.padEnd(maxLenght, '\u00a0');
   }
   const parts = _.split(str, ' ');
   const half = Math.floor((parts.length + 1) / 2);
 
   return _(parts)
     .chunk(half)
-    .map((i) => _.join(i, ' '))
+    .map((i) => _.join(i, ' ').padEnd(maxLenght, '\u00a0'))
     .join('<br/>');
 }
 
@@ -418,10 +420,13 @@ const VisTimeline: React.FC = function () {
 
     // Set Groups
     timeline.vis.setGroups(
-      _.map(groups, ({ id, label }) => ({
-        id,
-        content: newLineLongString(label),
-      }))
+      map(
+        ({ id, label }) => ({
+          id,
+          content: newLineLongString(label),
+        }),
+        groups as (SiprojurisActor | SiprojurisNamedPlace)[]
+      )
     );
     // visTimeline.current!.redraw();
   }, [groups, timeline]);
