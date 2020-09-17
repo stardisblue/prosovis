@@ -5,7 +5,7 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { EventDates } from './EventDates';
+import { DeprecatedEventDates } from './EventDates';
 
 import deprecatedGetEventInfo from './event/__getEventInfo';
 import getEventIcon from '../../data/getEventIcon';
@@ -50,7 +50,7 @@ export const DeprecatedThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = f
       <FlexItem auto>
         {deprecatedGetEventInfo(event, origin === 'Actor', true)}
       </FlexItem>
-      <EventDates dates={event.datation} />
+      <DeprecatedEventDates dates={event.datation} />
     </Flex>
   );
 };
@@ -94,7 +94,7 @@ export const DeprecatedEventInfo: React.FC<EventInfoProps> = function ({
       <FlexItem auto>
         {deprecatedGetEventInfo(event, origin === 'Actor', false)}
       </FlexItem>
-      <EventDates dates={event.datation} />
+      <DeprecatedEventDates dates={event.datation} />
     </Flex>
   );
 };

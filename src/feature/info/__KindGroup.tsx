@@ -5,7 +5,7 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { DeprecatedThumbnailEventInfo } from './__EventInfo';
-import { EventDates } from './EventDates';
+import { DeprecatedEventDates } from './EventDates';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
@@ -72,7 +72,7 @@ export const DeprecatedKindGroup: React.FC<{
         <FlexItem auto>
           {events.length} {getKindString(kind)}
         </FlexItem>
-        <EventDates dates={[start, end]} />
+        <DeprecatedEventDates dates={[start, end]} />
         <Chevron
           className="ma1 flex-shrink-0"
           verticalAlign="text-bottom"

@@ -13,8 +13,8 @@ import {
 import getEventIcon from '../../data/getEventIcon';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { EventDates } from '../info/EventDates';
 import eventKind from '../../i18n/event-kind';
+import { EventDates } from '../../components/DateComponent';
 
 type EventsByKind = {
   kind: AnyEvent['kind'];

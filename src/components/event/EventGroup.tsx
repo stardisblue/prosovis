@@ -10,7 +10,6 @@ import {
 } from '../../data/sip-models';
 import { Datation } from '../../data/models';
 import getEventIcon from '../../data/getEventIcon';
-import { EventDates } from '../../feature/info/EventDates';
 import {
   highlightable,
   HighlightableProp,
@@ -27,6 +26,7 @@ import { IconSpacer } from '../ui/IconSpacer';
 import { Note } from '../ui/Note';
 import { EventLine } from './EventLine';
 import { LeftSpacer } from './LeftSpacer';
+import { EventDates } from '../DateComponent';
 
 export const EventGroup: React.FC<{
   kind: SiprojurisEvent['kind'];

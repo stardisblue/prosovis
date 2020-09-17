@@ -11,4 +11,5 @@ export const GrowFlexItem = styled.div`
 export const EnlargeFlex = styled.div`
   flex: 1;
   display: flex;
+  align-items: center;
 `;

@@ -1,7 +1,13 @@
 import React from 'react';
 import { Datation } from '../../data/models';
 import { flatMap } from 'lodash';
-export const EventDates: React.FC<{
+
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
+export const DeprecatedEventDates: React.FC<{
   dates: Datation[];
 }> = function ({ dates }) {
   return (

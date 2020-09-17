@@ -80,7 +80,7 @@ const GlobalGraph: React.FC = function (props) {
     return () => {
       easypz.removeHostListeners();
     };
-  }, [bScale, handleClick, setMenuTarget]);
+  }, [bScale, handleClick]);
 
   return (
     <GlobalGraphContext.Provider value={context}>

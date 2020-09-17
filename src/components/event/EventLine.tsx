@@ -5,7 +5,7 @@ import { getEventLabel } from '../../data/getEventLabel';
 import { SiprojurisEvent } from '../../data/sip-models';
 import { ActorCard, AnyEvent, NamedPlace } from '../../data/models';
 import getEventIcon from '../../data/getEventIcon';
-import { EventDates } from '../../feature/info/EventDates';
+import { EventDates } from '../DateComponent';
 import {
   highlightable,
   HighlightableProp,

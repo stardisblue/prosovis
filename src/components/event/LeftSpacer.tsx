@@ -8,9 +8,6 @@ export const LeftSpacer = styled('div')<{ borderColor?: string }>`
   padding-left: 3px;
   border-left-style: solid;
   border-width: 2px;
-
-  &:not(:last-child) {
-  }
 `;
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
