@@ -18,7 +18,6 @@ import { SelectedEvent } from '../../feature/info/models';
 import { useClickSelect } from '../../hooks/useClick';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { GrowFlexItem, StyledFlex } from '../ui/Flex/styled-components';
 import { IconSpacer } from '../ui/IconSpacer';
 
 const Base = styled.div<SelectableProp & MaskableProp & HighlightableProp>`
@@ -74,7 +73,3 @@ export const EventLine: React.FC<{
     </Base>
   );
 };
-
-const StyledEventLabel = styled(GrowFlexItem)`
-  /* min-width: 50%; */
-`;

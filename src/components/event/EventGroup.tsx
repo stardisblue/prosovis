@@ -21,7 +21,6 @@ import {
 import { SelectedEvent } from '../../feature/info/models';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { EnlargeFlex, GrowFlexItem } from '../ui/Flex/styled-components';
 import { IconSpacer } from '../ui/IconSpacer';
 import { Note } from '../ui/Note';
 import { EventLine } from './EventLine';
