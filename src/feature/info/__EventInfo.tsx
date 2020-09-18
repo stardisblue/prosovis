@@ -5,7 +5,7 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { DeprecatedEventDates } from './EventDates';
+import { DeprecatedEventDates } from './__EventDates';
 
 import deprecatedGetEventInfo from './event/__getEventInfo';
 import getEventIcon from '../../data/getEventIcon';

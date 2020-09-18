@@ -5,7 +5,7 @@ import { Flex, FlexItem } from '../../components/ui/Flex';
 import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
 import { DeprecatedThumbnailEventInfo } from './__EventInfo';
-import { DeprecatedEventDates } from './EventDates';
+import { DeprecatedEventDates } from './__EventDates';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { selectSwitchKindColor } from '../../selectors/switch';
