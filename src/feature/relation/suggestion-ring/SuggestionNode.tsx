@@ -13,7 +13,7 @@ import { createSelector } from 'reselect';
 import { useFlatClick } from '../../../hooks/useClick';
 // import { selectActors } from '../../../selectors/event';
 import Modal from '../../modal/Modal';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { PlusIcon } from '@primer/octicons-react';
 import { fetchActorThunk } from '../../../thunks/actor';
 import { darkgray } from '../../../components/ui/colors';

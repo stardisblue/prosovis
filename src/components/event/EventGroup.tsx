@@ -64,9 +64,9 @@ export const EventGroup: React.FC<{
           <IconSpacer spaceRight>
             <Icon iconColor={color ? color(kind) : undefined} />
           </IconSpacer>
-          <GrowFlexItem>
+          <div>
             {events.length} {getKindString(kind)}
-          </GrowFlexItem>
+          </div>
           <EventDates dates={[start, end]} />
         </InteractableEnlarge>
       }
@@ -80,9 +80,12 @@ export const EventGroup: React.FC<{
   );
 };
 
-const InteractableEnlarge = styled(EnlargeFlex)<
+const InteractableEnlarge = styled.div<
   HighlightableProp & MaskableProp & SelectableProp
 >`
+  flex: 1;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 0.25em;

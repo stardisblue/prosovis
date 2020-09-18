@@ -1,5 +1,5 @@
 import React, { useLayoutEffect, useRef, useState, useMemo } from 'react';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { Nullable } from '../data/models';
 import Modal from '../feature/modal/Modal';
 import { getDimensionObject } from '../hooks/useDimensions';

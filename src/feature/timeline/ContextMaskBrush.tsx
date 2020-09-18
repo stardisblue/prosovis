@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { setIntervalMask } from '../../reducers/maskSlice';
 import _ from 'lodash';
 import ContextOptions from './ContextOptions';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { darkgray } from '../../components/ui/colors';
 
 const StyledG = styled.g`

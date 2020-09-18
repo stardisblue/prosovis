@@ -21,9 +21,9 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { GrowFlexItem, StyledFlex } from '../ui/Flex/styled-components';
 import { IconSpacer } from '../ui/IconSpacer';
 
-const Base = styled(StyledFlex)<
-  SelectableProp & MaskableProp & HighlightableProp
->`
+const Base = styled.div<SelectableProp & MaskableProp & HighlightableProp>`
+  display: grid;
+  grid-template-columns: auto 1fr auto;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 0.25em;
@@ -58,7 +58,7 @@ export const EventLine: React.FC<{
   const handleHighlightHover = useHoverHighlight(dispatchable);
   const handleSelectClick = useClickSelect(dispatchable);
 
-  const showIcon = !grouped && <EventLineIcon kind={event.kind} />;
+  const showIcon = grouped ? <span /> : <EventLineIcon kind={event.kind} />;
 
   return (
     <Base
@@ -69,8 +69,12 @@ export const EventLine: React.FC<{
       masked={event.masked === true}
     >
       {showIcon}
-      <GrowFlexItem>{getEventLabel(event, origin, grouped)}</GrowFlexItem>
+      <div>{getEventLabel(event, origin, grouped)}</div>
       <EventDates dates={event.datation} />
     </Base>
   );
 };
+
+const StyledEventLabel = styled(GrowFlexItem)`
+  /* min-width: 50%; */
+`;
