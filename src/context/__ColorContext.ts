@@ -7,7 +7,9 @@ type ColorContextProps = {
   color: d3.ScaleOrdinal<AnyEvent['kind'] | string, string>;
 };
 
-export const ColorContext = React.createContext<ColorContextProps>({} as any);
+export const DeprecatedColorContext = React.createContext<ColorContextProps>(
+  {} as any
+);
 
 // TODO http://colorbrewer2.org/#type=qualitative&scheme=Paired&n=7
 // TODO suspension activité: pause

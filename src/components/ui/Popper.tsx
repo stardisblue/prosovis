@@ -1,9 +1,9 @@
 import React, { useLayoutEffect, useRef, useState, useMemo } from 'react';
 import styled from 'styled-components/macro';
-import { Nullable } from '../data/models';
-import Modal from '../feature/modal/Modal';
-import { getDimensionObject } from '../hooks/useDimensions';
-import { darkgray } from './ui/colors';
+import { Nullable } from '../../data/models';
+import Modal from '../../feature/modal/Modal';
+import { getDimensionObject } from '../../hooks/useDimensions';
+import { darkgray } from './colors';
 
 const PopperDiv = styled.div`
   z-index: 9999;

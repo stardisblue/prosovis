@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { TriangleRightIcon } from '@primer/octicons-react';
 import { Datation } from '../data/models';
-import { CenteredTopPopper } from './Popper';
+import { CenteredTopPopper } from './ui/Popper';
 
 const Base = styled.span`
   white-space: nowrap;
