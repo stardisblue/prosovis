@@ -1,7 +1,20 @@
+import {
+  every,
+  flow,
+  get,
+  inRange,
+  isEqual,
+  join,
+  map,
+  once,
+  overEvery,
+  some,
+} from 'lodash/fp';
 import { getActorLabel } from './getActorLabel';
-import { Nullable, Ressource } from './models';
+import { Datation, Nullable, Ressource } from './models';
 import {
   ComputedLabels,
+  SipError,
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
@@ -117,6 +130,164 @@ export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
       };
     }
   }
+}
+
+function checkDatationLength(
+  event: SiprojurisEvent,
+  sizes: number | { start: number; end: number } | number[] = 2
+): SipError | undefined {
+  const errorMsg: SipError = {
+    kind: 'DatationLength',
+    message: `Incorrect number of dates`,
+    value: event.datation.length,
+    expected: sizes,
+    level: 'Error',
+  };
+
+  if (Array.isArray(sizes)) {
+    if (!some(isEqual(event.datation.length))(sizes)) return errorMsg;
+  } else if (typeof sizes === 'object') {
+    if (!inRange(sizes.start, sizes.end, event.datation.length))
+      return errorMsg;
+  } else if (event.datation.length !== sizes) {
+    return errorMsg;
+  }
+}
+
+function checkDatationType(
+  event: SiprojurisEvent,
+  expected: Datation['label'][]
+): SipError | undefined {
+  // all event.datation is one of the allowed type
+  if (!every((e) => some(e.label, expected), event.datation)) {
+    return {
+      kind: 'DatationType',
+      message: 'Inaccurate date type',
+      value: flow(map('label'), join(', '))(event.datation),
+      expected,
+      level: 'Warning',
+    };
+  }
+}
+
+// function checkIncoherentDatation() {}
+
+const onces = [
+  once(console.log),
+  once(console.log),
+  once(console.log),
+  once(console.log),
+  once(console.log),
+  once(console.log),
+  once(console.log),
+];
+
+export function accumulator(errors: SipError[] = []) {
+  const acc = {
+    add: function (check?: SipError) {
+      if (check) errors.push(check);
+      return acc;
+    },
+    errors,
+  };
+  return acc;
+}
+
+export function computeEventErrors(
+  event: SiprojurisEvent,
+  actorEvents: SiprojurisEvent[]
+): SiprojurisEvent {
+  const chain = accumulator();
+
+  switch (event.kind) {
+    case 'Birth': {
+      chain
+        .add(checkDatationLength(event, 1))
+        .add(
+          checkDatationType(event, [
+            'Date unique',
+            "Date unique (jusqu'à, inclus)",
+          ])
+        );
+      onces[0](event);
+      break;
+    }
+
+    case 'Death': {
+      chain
+        .add(checkDatationLength(event, 1))
+        .add(
+          checkDatationType(event, [
+            'Date unique',
+            "Date unique (jusqu'à, inclus)",
+          ])
+        );
+      onces[1](event);
+      break;
+    }
+
+    case 'Education': {
+      chain
+        .add(checkDatationLength(event, 2))
+        .add(checkDatationType(event, ['Date de début', 'Date de fin']));
+
+      onces[2](event);
+      break;
+    }
+
+    case 'ObtainQualification': {
+      chain
+        .add(checkDatationLength(event, 1))
+        .add(
+          checkDatationType(event, [
+            'Date unique',
+            "Date unique (jusqu'à, inclus)",
+          ])
+        );
+
+      onces[3](event);
+      break;
+    }
+
+    case 'PassageExamen': {
+      chain
+        .add(checkDatationLength(event, 1))
+        .add(
+          checkDatationType(event, [
+            'Date unique',
+            "Date unique (jusqu'à, inclus)",
+          ])
+        );
+
+      onces[4](event);
+      break;
+    }
+
+    case 'Retirement': {
+      chain
+        .add(checkDatationLength(event, 1))
+        .add(
+          checkDatationType(event, [
+            'Date unique',
+            "Date unique (jusqu'à, inclus)",
+          ])
+        );
+
+      onces[5](event);
+      break;
+    }
+    case 'SuspensionActivity': {
+      chain
+        .add(checkDatationLength(event, 2))
+        .add(checkDatationType(event, ['Date de début', 'Date de fin']));
+
+      onces[6](event);
+      break;
+    }
+  }
+
+  event.errors = chain.errors;
+  return event;
 }
 
 export function getEventLabel(

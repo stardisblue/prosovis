@@ -12,12 +12,22 @@ export function isSiprojurisActor(object: any): object is SiprojurisActor {
 
 export type SiprojurisNamedPlace = Readonly<NamedPlace>;
 
+export type SipErrorKinds = 'DatationLength' | 'DatationType';
+
+export type SipError = {
+  kind: SipErrorKinds;
+  message: string;
+  value: string | number;
+  expected?: any;
+  level: 'Error' | 'Warning' | 'Info';
+};
+
 export type SiprojurisEvent = Readonly<
   AnyEvent & {
     actor: SiprojurisActor;
     localisation: Nullable<SiprojurisNamedPlace>;
   }
-> & { computed?: ComputedLabels };
+> & { computed?: ComputedLabels; errors?: SipError[] };
 
 export type ComputedLabels = {
   actorNote: string;

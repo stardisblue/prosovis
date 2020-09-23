@@ -11,6 +11,11 @@ type AbstractObject = Ressource;
 
 export type Nullable<T> = T | null;
 export type Datation = Ressource & {
+  label:
+    | 'Date unique'
+    | 'Date de début'
+    | 'Date de fin'
+    | "Date unique (jusqu'à, inclus)";
   value: string;
   clean_date: string;
 };
