@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../reducers';
 import { getLocalisation } from '../../data';
-import { AnyEvent } from '../../data/models';
 import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
-import { SiprojurisActor, SiprojurisNamedPlace } from '../../data/sip-models';
+import {
+  SiprojurisActor,
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../data/sip-models';
 
 type TimelineGroupTypes = 'Actor' | 'NamedPlace';
 
@@ -60,11 +63,11 @@ export const selectTimelineEventGroups = createSelector(
   }
 );
 
-function groupByActor(a: AnyEvent) {
+function groupByActor(a: SiprojurisEvent) {
   return a.actor.id;
 }
 
-function groupByNamedPlace(a: AnyEvent) {
+function groupByNamedPlace(a: SiprojurisEvent) {
   const loc = getLocalisation(a);
   return loc ? loc.id : 0;
 }

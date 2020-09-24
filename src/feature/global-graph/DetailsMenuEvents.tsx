@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { AnyEvent, Datation } from '../../data/models';
+import { Datation } from '../../data/models';
 import {
   pipe,
   sortBy,
@@ -15,10 +15,11 @@ import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import eventKind from '../../i18n/event-kind';
 import { EventDates } from '../../components/DateComponent';
+import { SiprojurisEvent } from '../../data/sip-models';
 
 type EventsByKind = {
-  kind: AnyEvent['kind'];
-  events: AnyEvent[];
+  kind: SiprojurisEvent['kind'];
+  events: SiprojurisEvent[];
 };
 
 type EventsByKindStartEndDate = EventsByKind & {
@@ -26,8 +27,8 @@ type EventsByKindStartEndDate = EventsByKind & {
   end: Datation | undefined;
 };
 
-const eventsByFirstDate = sortBy<AnyEvent>('datation[0].clean_date');
-const groupEventsByKind = (acc: EventsByKind[], curr: AnyEvent) => {
+const eventsByFirstDate = sortBy<SiprojurisEvent>('datation[0].clean_date');
+const groupEventsByKind = (acc: EventsByKind[], curr: SiprojurisEvent) => {
   const prev = last(acc);
   if (prev?.kind === curr.kind) {
     prev.events.push(curr);
@@ -36,7 +37,7 @@ const groupEventsByKind = (acc: EventsByKind[], curr: AnyEvent) => {
   }
 };
 
-const getDatationsFromEvents = flatMap((e: AnyEvent) => e.datation);
+const getDatationsFromEvents = flatMap((e: SiprojurisEvent) => e.datation);
 const minDate = minBy<Datation>('clean_date');
 const maxDate = maxBy<Datation>('clean_date');
 
@@ -64,11 +65,11 @@ const createDetailsMenuEvent = ({
   />
 );
 
-export function DetailsMenuEvents({ events }: { events: AnyEvent[] }) {
+export function DetailsMenuEvents({ events }: { events: SiprojurisEvent[] }) {
   const grouped = useMemo(() => {
     return pipe<
-      [AnyEvent[]],
-      AnyEvent[],
+      [SiprojurisEvent[]],
+      SiprojurisEvent[],
       EventsByKind[],
       EventsByKindStartEndDate[],
       JSX.Element[]
@@ -89,8 +90,8 @@ function DetailsMenuEvent({
   start,
   end,
 }: {
-  kind: AnyEvent['kind'];
-  events: AnyEvent[];
+  kind: SiprojurisEvent['kind'];
+  events: SiprojurisEvent[];
   start?: Datation;
   end?: Datation;
 }) {

@@ -1,9 +1,10 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, PrimaryKey } from '../data/models';
+import { PrimaryKey } from '../data/models';
 import * as d3 from 'd3';
 import { selectActors } from './event';
 import _ from 'lodash';
+import { SiprojurisEvent } from '../data/sip-models';
 
 export const selectColor = (state: RootState) => state.color;
 export const selectDomain = createSelector(selectColor, (c) => c.kindDomain);
@@ -18,7 +19,7 @@ export const selectMainColor = createSelector(
   selectKindRange,
   (domain, range) =>
     d3
-      .scaleOrdinal<AnyEvent['kind'] | string, string>()
+      .scaleOrdinal<SiprojurisEvent['kind'] | string, string>()
       .domain(domain)
       .range(range)
 );
@@ -92,7 +93,7 @@ export const selectBorderColor = createSelector(
   selectKindRange,
   (domain, range) =>
     d3
-      .scaleOrdinal<AnyEvent['kind'] | string, string>()
+      .scaleOrdinal<SiprojurisEvent['kind'] | string, string>()
       .domain(domain)
       .range(range.map((d) => d3.color(d)!.darker(2).toString()))
 );

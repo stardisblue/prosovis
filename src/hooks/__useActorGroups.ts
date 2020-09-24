@@ -1,16 +1,16 @@
 import { useMemo } from 'react';
 import _ from 'lodash';
-import { AnyEvent, Ressource } from '../data/models';
+import { DeprecatedAnyEvent, Ressource } from '../data/models';
 /**
  *
  * @param selectedEvents
  * @deprecated
  */
-export function useActorGroups(selectedEvents: AnyEvent[]) {
+export function useActorGroups(selectedEvents: DeprecatedAnyEvent[]) {
   return useMemo(() => {
     const byactor: {
       key: Ressource;
-      events: AnyEvent[];
+      events: DeprecatedAnyEvent[];
     }[] = [];
     const keyIndex: {
       [k: string]: number;

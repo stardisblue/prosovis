@@ -1,5 +1,5 @@
 import React from 'react';
-import { AnyEvent } from '../../../data/models';
+import { DeprecatedAnyEvent } from '../../../data/models';
 import showificator from './__showificator';
 
 /**
@@ -10,7 +10,7 @@ import showificator from './__showificator';
  * @deprecated use getEventLabel instead
  */
 function deprecatedGetEventInfo(
-  event: AnyEvent,
+  event: DeprecatedAnyEvent,
   fromActor: boolean,
   isSubGroup?: boolean
 ) {

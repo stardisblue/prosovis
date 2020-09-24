@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import * as d3 from 'd3';
-import { AnyEvent } from '../data/models';
+import { DeprecatedAnyEvent } from '../data/models';
 
 type ColorContextProps = {
-  border: d3.ScaleOrdinal<AnyEvent['kind'] | string, string>;
-  color: d3.ScaleOrdinal<AnyEvent['kind'] | string, string>;
+  border: d3.ScaleOrdinal<DeprecatedAnyEvent['kind'] | string, string>;
+  color: d3.ScaleOrdinal<DeprecatedAnyEvent['kind'] | string, string>;
 };
 
 export const DeprecatedColorContext = React.createContext<ColorContextProps>(
@@ -19,7 +19,7 @@ export const DeprecatedColorContext = React.createContext<ColorContextProps>(
 export const useColorContext = function () {
   return useMemo(function () {
     const color = d3
-      .scaleOrdinal<AnyEvent['kind'] | string, string>()
+      .scaleOrdinal<DeprecatedAnyEvent['kind'] | string, string>()
       .domain([
         'PassageExamen',
         'Birth',
@@ -40,7 +40,7 @@ export const useColorContext = function () {
       ]);
 
     const border = d3
-      .scaleOrdinal<AnyEvent['kind'] | string, string>()
+      .scaleOrdinal<DeprecatedAnyEvent['kind'] | string, string>()
       .domain(color.domain())
       .range(color.range().map((d) => d3.color(d)!.darker(2).toString()));
 

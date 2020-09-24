@@ -1,4 +1,3 @@
-import { AnyEvent } from './models';
 import {
   PlusIcon,
   MortarBoardIcon,
@@ -11,6 +10,7 @@ import Pause from '../feature/info/event/Pause';
 import Grave from '../feature/info/event/Grave';
 
 import styled from 'styled-components/macro';
+import { SiprojurisEvent } from './sip-models';
 
 export const styleIcon = (icon: Icon) =>
   styled(icon)<{
@@ -26,7 +26,7 @@ export const kindMap = {
   SuspensionActivity: styleIcon(Pause),
 };
 
-function getEventIcon(kind: AnyEvent['kind']) {
+function getEventIcon(kind: SiprojurisEvent['kind']) {
   return kindMap[kind];
 }
 

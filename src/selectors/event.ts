@@ -2,7 +2,7 @@ import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { getLocalisation } from '../data';
-import { NamedPlace } from '../data/models';
+import { SiprojurisNamedPlace } from '../data/sip-models';
 
 export const selectEvents = (state: RootState) => state.events;
 
@@ -18,7 +18,7 @@ export const selectActors = createSelector(selectEvents, (events) =>
   _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
 
-const defaultPlace: NamedPlace = {
+const defaultPlace: SiprojurisNamedPlace = {
   id: 0,
   label: 'Inconnu',
   kind: 'NamedPlace',

@@ -1,17 +1,23 @@
 import {
+  curryRight,
+  each,
   every,
+  filter,
+  first,
+  flatMap,
   flow,
   get,
   inRange,
   isEqual,
-  join,
+  last,
   map,
+  maxBy,
+  minBy,
   once,
-  overEvery,
   some,
 } from 'lodash/fp';
 import { getActorLabel } from './getActorLabel';
-import { Datation, Nullable, Ressource } from './models';
+import { CollectiveActor, Datation, Nullable, Ressource } from './models';
 import {
   ComputedLabels,
   SipError,
@@ -138,10 +144,10 @@ function checkDatationLength(
 ): SipError | undefined {
   const errorMsg: SipError = {
     kind: 'DatationLength',
-    message: `Incorrect number of dates`,
+    message: `Le nombre de dates est incorrect`,
     value: event.datation.length,
     expected: sizes,
-    level: 'Error',
+    level: 'Warning',
   };
 
   if (Array.isArray(sizes)) {
@@ -159,18 +165,172 @@ function checkDatationType(
   expected: Datation['label'][]
 ): SipError | undefined {
   // all event.datation is one of the allowed type
-  if (!every((e) => some(e.label, expected), event.datation)) {
+  if (!every((e) => some(isEqual(e.label), expected), event.datation)) {
     return {
       kind: 'DatationType',
-      message: 'Inaccurate date type',
-      value: flow(map('label'), join(', '))(event.datation),
+      message: 'Le type de(s) date(s) est incorrect',
+      value: map('label', event.datation),
       expected,
       level: 'Warning',
     };
   }
 }
 
-// function checkIncoherentDatation() {}
+export function checkMissingLocalisation<
+  E extends {
+    localisation: Nullable<SiprojurisNamedPlace>;
+  }
+>(event: E): SipError | undefined {
+  if (!event.localisation) {
+    return {
+      kind: 'MissingLocalisation',
+      message: "L'evenement n'as pas de lieu défini",
+      value: 'null',
+      expected: 'NamedPlace',
+      level: 'Warning',
+    };
+  }
+
+  if (!event.localisation.lat || !event.localisation.lng) {
+    return {
+      kind: 'MissingLocalisationCoordinates',
+      message: "Les coordonnées GPS de l'evenement ne sont pas définis",
+      value: 'null',
+      expected: 'Coordonnées GPS',
+      level: 'Warning',
+    };
+  }
+}
+
+export function checkCollectiveActor<
+  E extends {
+    collective_actor: Nullable<CollectiveActor<SiprojurisNamedPlace>>;
+  }
+>(event: E): SipError | undefined {
+  if (!event.collective_actor) {
+    return {
+      kind: 'MissingCollectiveActor',
+      message: "L'acteur collectif n'est pas défini",
+      level: 'Warning',
+      value: 'null',
+      expected: 'CollectiveActor',
+    };
+  }
+  const loc = event.collective_actor.localisation;
+
+  if (!loc) {
+    return {
+      kind: 'MissingCollectiveActorLocalisation',
+      message: "La localisation de l'acteur collectif n'est pas défini",
+      level: 'Warning',
+      value: 'null',
+      expected: 'NamedPlace',
+    };
+  }
+
+  if (!loc.lat || !loc.lng) {
+    return {
+      kind: 'MissingCollectiveActorLocalisationCoordinates',
+      message: "Les coordonnées GPS de l'acteur collectif ne sont pas définis",
+      level: 'Warning',
+      value: 'null',
+      expected: 'Coordonnées GPS',
+    };
+  }
+}
+
+function checkEventUnicity(
+  events: SiprojurisEvent[],
+  kind: SiprojurisEvent['kind']
+) {
+  const subPart = filter({ kind }, events);
+  if (subPart.length > 1) {
+    each((b) => {
+      b.errors = [
+        {
+          kind: 'EventDuplication',
+          level: 'Error',
+          message: `Les evenements de ${kind} doivent être uniques`,
+          value: subPart.length,
+          expected: 1,
+        },
+      ];
+    }, subPart);
+  }
+
+  return subPart;
+}
+
+/**
+ * @param event
+ * @param keyEvents
+ */
+function checkBeforeBirthDatation(
+  event: SiprojurisEvent,
+  keyEvents: {
+    birth: SiprojurisEvent[];
+    death: SiprojurisEvent[];
+    events: SiprojurisEvent[];
+  }
+): SipError | undefined {
+  if (event.kind !== 'Birth') {
+    const firstEventCleanDate = get('clean_date', first(event.datation));
+    const firstBirthCleanDate = flow(
+      flatMap<SiprojurisEvent, Datation>(get('datation')),
+      minBy<Datation>('clean_date'),
+      get('clean_date')
+    )(keyEvents.birth);
+
+    if (
+      firstEventCleanDate &&
+      firstBirthCleanDate &&
+      firstEventCleanDate <= firstBirthCleanDate
+    )
+      return {
+        kind: 'DatationBeforeBirth',
+        level: 'Error',
+        message: "L'evenement s'est produit avant la naissance",
+        value: firstEventCleanDate,
+        expected: `<= ${firstBirthCleanDate}`,
+      };
+  }
+}
+
+/**
+ * @param event
+ * @param keyEvents
+ */
+function checkAfterDeathDatation(
+  event: SiprojurisEvent,
+  keyEvents: {
+    birth: SiprojurisEvent[];
+    death: SiprojurisEvent[];
+    events: SiprojurisEvent[];
+  }
+): SipError | undefined {
+  if (event.kind !== 'Death') {
+    const lastEventCleanDate = get('clean_date', last(event.datation));
+    const lastDeathCleanDate = flow(
+      flatMap<SiprojurisEvent, Datation>(get('datation')),
+      maxBy<Datation>('clean_date'),
+      get('clean_date')
+    )(keyEvents.death);
+
+    if (
+      lastEventCleanDate &&
+      lastDeathCleanDate &&
+      lastEventCleanDate > lastDeathCleanDate
+    ) {
+      return {
+        kind: 'DatationBeforeDeath',
+        level: 'Error',
+        message: "L'evenement s'est produit après la mort",
+        value: lastEventCleanDate,
+        expected: `> ${lastDeathCleanDate}`,
+      };
+    }
+  }
+}
 
 const onces = [
   once(console.log),
@@ -193,11 +353,23 @@ export function accumulator(errors: SipError[] = []) {
   return acc;
 }
 
-export function computeEventErrors(
+export function computeActorWideErrors(events: SiprojurisEvent[]) {
+  const birth = checkEventUnicity(events, 'Birth');
+  const death = checkEventUnicity(events, 'Death');
+
+  const curried = curryRight(computeEventErrors)({ birth, death, events });
+  return map(curried, events);
+}
+
+function computeEventErrors(
   event: SiprojurisEvent,
-  actorEvents: SiprojurisEvent[]
+  actorEvents: {
+    birth: SiprojurisEvent[];
+    death: SiprojurisEvent[];
+    events: SiprojurisEvent[];
+  }
 ): SiprojurisEvent {
-  const chain = accumulator();
+  const chain = accumulator(event.errors);
 
   switch (event.kind) {
     case 'Birth': {
@@ -208,7 +380,8 @@ export function computeEventErrors(
             'Date unique',
             "Date unique (jusqu'à, inclus)",
           ])
-        );
+        )
+        .add(checkMissingLocalisation(event));
       onces[0](event);
       break;
     }
@@ -221,7 +394,9 @@ export function computeEventErrors(
             'Date unique',
             "Date unique (jusqu'à, inclus)",
           ])
-        );
+        )
+        .add(checkMissingLocalisation(event));
+
       onces[1](event);
       break;
     }
@@ -229,7 +404,11 @@ export function computeEventErrors(
     case 'Education': {
       chain
         .add(checkDatationLength(event, 2))
-        .add(checkDatationType(event, ['Date de début', 'Date de fin']));
+        .add(checkDatationType(event, ['Date de début', 'Date de fin']))
+        .add(checkMissingLocalisation(event))
+        .add(checkCollectiveActor(event))
+        .add(checkBeforeBirthDatation(event, actorEvents))
+        .add(checkAfterDeathDatation(event, actorEvents));
 
       onces[2](event);
       break;
@@ -243,7 +422,10 @@ export function computeEventErrors(
             'Date unique',
             "Date unique (jusqu'à, inclus)",
           ])
-        );
+        )
+        .add(checkCollectiveActor(event))
+        .add(checkBeforeBirthDatation(event, actorEvents))
+        .add(checkAfterDeathDatation(event, actorEvents));
 
       onces[3](event);
       break;
@@ -257,7 +439,11 @@ export function computeEventErrors(
             'Date unique',
             "Date unique (jusqu'à, inclus)",
           ])
-        );
+        )
+        .add(checkMissingLocalisation(event))
+        .add(checkCollectiveActor(event))
+        .add(checkBeforeBirthDatation(event, actorEvents))
+        .add(checkAfterDeathDatation(event, actorEvents));
 
       onces[4](event);
       break;
@@ -271,7 +457,9 @@ export function computeEventErrors(
             'Date unique',
             "Date unique (jusqu'à, inclus)",
           ])
-        );
+        )
+        .add(checkBeforeBirthDatation(event, actorEvents))
+        .add(checkAfterDeathDatation(event, actorEvents));
 
       onces[5](event);
       break;
@@ -279,11 +467,17 @@ export function computeEventErrors(
     case 'SuspensionActivity': {
       chain
         .add(checkDatationLength(event, 2))
-        .add(checkDatationType(event, ['Date de début', 'Date de fin']));
+        .add(checkDatationType(event, ['Date de début', 'Date de fin']))
+        .add(checkBeforeBirthDatation(event, actorEvents))
+        .add(checkAfterDeathDatation(event, actorEvents));
 
       onces[6](event);
       break;
     }
+  }
+
+  if (chain.errors.length > 0) {
+    console.log(chain.errors);
   }
 
   event.errors = chain.errors;

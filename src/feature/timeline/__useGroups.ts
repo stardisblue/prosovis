@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import { useCallback, useMemo, useState } from 'react';
-import { Actor, AnyEvent, PrimaryKey } from '../../data/models';
+import { Actor, DeprecatedAnyEvent, PrimaryKey } from '../../data/models';
 
-type GroupByFunc = (a: AnyEvent) => any;
-type GroupsFunc = (e: AnyEvent[]) => any[];
+type GroupByFunc = (a: DeprecatedAnyEvent) => any;
+type GroupsFunc = (e: DeprecatedAnyEvent[]) => any[];
 export type Grouping<T extends string = string> = {
   groups: GroupsFunc;
   groupBy: GroupByFunc;
@@ -14,7 +14,7 @@ export type GroupProps = {
   items: any[];
 };
 
-export type GroupedEvent = AnyEvent & { group: PrimaryKey };
+export type GroupedEvent = DeprecatedAnyEvent & { group: PrimaryKey };
 
 /**
  * Allows to group events by NamedPlace or Actors
@@ -22,7 +22,7 @@ export type GroupedEvent = AnyEvent & { group: PrimaryKey };
  * @param actors
  */
 export function useGroups(
-  events: AnyEvent[],
+  events: DeprecatedAnyEvent[],
   actors: Actor[]
 ): [
   GroupedEvent[],
@@ -36,7 +36,7 @@ export function useGroups(
     localisation: Grouping<'NamedPlace'>;
   }
 ] {
-  function groupByActor(a: AnyEvent) {
+  function groupByActor(a: DeprecatedAnyEvent) {
     return a.actor.id;
   }
   function groupByNamedPlace(a: any) {
@@ -48,7 +48,7 @@ export function useGroups(
     },
     [actors]
   );
-  function groupsNamedPlace(events: AnyEvent[]) {
+  function groupsNamedPlace(events: DeprecatedAnyEvent[]) {
     return _(events)
       .map(
         (e) =>

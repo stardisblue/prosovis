@@ -1,13 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
-import {
-  AnyEvent,
-  NamedPlace,
-  PrimaryKey,
-  Datation,
-  Actor,
-} from '../../../data/models';
+import { PrimaryKey, Datation } from '../../../data/models';
 
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../../selectors/switch';
@@ -15,16 +9,21 @@ import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import _ from 'lodash';
 import { setSelection } from '../../../reducers/selectionSlice';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
+import {
+  SiprojurisActor,
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../../data/sip-models';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
   $map: React.MutableRefObject<L.Map>;
   event: {
-    localisation: NamedPlace;
+    localisation: SiprojurisNamedPlace;
     label: string;
-    actor: Actor['id'];
+    actor: SiprojurisActor['id'];
     id: PrimaryKey;
-    kind: AnyEvent['kind'];
+    kind: SiprojurisEvent['kind'];
     datation: Datation[];
   };
 }> = function ({ $l, $map, event }) {

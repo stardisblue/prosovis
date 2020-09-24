@@ -2,8 +2,11 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
-import { SiprojurisEvent } from '../../data/sip-models';
-import { ActorCard, AnyEvent, NamedPlace } from '../../data/models';
+import {
+  SiprojurisActor,
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../data/sip-models';
 import getEventIcon from '../../data/getEventIcon';
 import { EventDates } from '../DateComponent';
 import {
@@ -34,7 +37,7 @@ const Base = styled.div<SelectableProp & MaskableProp & HighlightableProp>`
   ${highlightable};
 `;
 
-const EventLineIcon: React.FC<{ kind: AnyEvent['kind'] }> = function ({
+const EventLineIcon: React.FC<{ kind: SiprojurisEvent['kind'] }> = function ({
   kind,
 }) {
   const color = useSelector(selectSwitchKindColor);
@@ -50,7 +53,7 @@ const EventLineIcon: React.FC<{ kind: AnyEvent['kind'] }> = function ({
 
 export const EventLine: React.FC<{
   event: SelectedEvent<SiprojurisEvent>;
-  origin: ActorCard['kind'] | NamedPlace['kind'];
+  origin: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'];
   grouped?: boolean;
 }> = function ({ event, origin, grouped = false }) {
   const dispatchable = { id: event.id, kind: 'Event' };

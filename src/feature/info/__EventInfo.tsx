@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import classnames from 'classnames';
-import { AnyEvent } from '../../data/models';
+import { DeprecatedAnyEvent } from '../../data/models';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { SelectedEvent } from './models';
 import { useSelector } from 'react-redux';
@@ -14,7 +14,7 @@ import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useClickSelect } from '../../hooks/useClick';
 import { superHighlightAsMap } from '../../selectors/superHighlights';
 
-type ThumbnailEventInfoProps<T = AnyEvent> = {
+type ThumbnailEventInfoProps<T = DeprecatedAnyEvent> = {
   event: SelectedEvent<T>;
   origin: 'Actor' | 'NamedPlace';
   icon?: boolean;
@@ -55,7 +55,7 @@ export const DeprecatedThumbnailEventInfo: React.FC<ThumbnailEventInfoProps> = f
   );
 };
 
-type EventInfoProps<T = AnyEvent> = {
+type EventInfoProps<T = DeprecatedAnyEvent> = {
   event: SelectedEvent<T>;
   origin: 'Actor' | 'NamedPlace';
 };

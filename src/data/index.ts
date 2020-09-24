@@ -1,6 +1,6 @@
-import { map, sortBy } from 'lodash/fp';
+import { flow, map, sortBy } from 'lodash/fp';
 import { computeActorShortLabel } from './getActorLabel';
-import { computeEventErrors, computeEventLabels } from './getEventLabel';
+import { computeEventLabels, computeActorWideErrors } from './getEventLabel';
 import { SiprojurisEvent } from './sip-models';
 import {
   AnyEvent,
@@ -8,9 +8,13 @@ import {
   Datation,
   ExamenEvent,
   DirectionalExamenEvent,
+  ActorCard,
+  NamedPlace,
 } from './models';
 
-export function getLocalisation(event: AnyEvent) {
+export function getLocalisation<A extends ActorCard, T extends NamedPlace>(
+  event: AnyEvent<A, T>
+) {
   switch (event.kind) {
     case 'Birth':
     case 'Death':
@@ -30,7 +34,7 @@ export function getLocalisation(event: AnyEvent) {
 export const sortDatation = sortBy<Datation>('clean_date');
 
 export function getEvents(actor: Actor): SiprojurisEvent[] {
-  const events = [];
+  const events: AnyEvent<ActorCard, NamedPlace>[] = [];
 
   events.push(
     ...actor.birth_set,
@@ -43,42 +47,71 @@ export function getEvents(actor: Actor): SiprojurisEvent[] {
     ...actor.obtainqualification_set
   );
 
-  const prepareEvents = map((e: AnyEvent) => {
-    const se: SiprojurisEvent = {
-      localisation: null,
+  return flow(map(convertToSiprojurisEvents), computeActorWideErrors)(events);
+}
+
+function convertToSiprojurisEvents({
+  actor,
+  ...e
+}: AnyEvent<ActorCard, NamedPlace>): SiprojurisEvent {
+  let se: SiprojurisEvent;
+  if (e.kind === 'PassageExamen') {
+    se = {
       ...e,
-      actor: computeActorShortLabel(e.actor),
+      actor_evalue: e.actor_evalue
+        ? computeActorShortLabel(e.actor_evalue)
+        : null,
+      actor_evaluer: e.actor_evaluer
+        ? computeActorShortLabel(e.actor_evaluer)
+        : null,
+      actor: computeActorShortLabel(actor),
+    };
+  } else if (e.kind === 'ObtainQualification') {
+    const pe = e.passage_examen;
+    const passage_examen = pe
+      ? {
+          ...pe,
+          actor_evalue: pe.actor_evalue
+            ? computeActorShortLabel(pe.actor_evalue)
+            : null,
+          actor_evaluer: pe.actor_evaluer
+            ? computeActorShortLabel(pe.actor_evaluer)
+            : null,
+        }
+      : null;
+    se = {
+      ...e,
+      passage_examen,
+      actor: computeActorShortLabel(actor),
+    };
+  } else {
+    se = {
+      ...e,
+      actor: computeActorShortLabel(actor),
       datation: sortDatation(e.datation),
     };
+  }
 
-    se.computed = computeEventLabels(se);
-    return se;
-  });
-
-  const ses = prepareEvents(events);
-
-  return map((e: SiprojurisEvent) => computeEventErrors(e, ses))(ses);
+  se.computed = computeEventLabels(se);
+  return se;
 }
 
-function createEvaluatorExamen({
-  actor_evaluer,
-  ...rest
-}: ExamenEvent): DirectionalExamenEvent {
+function createEvaluatorExamen<A extends ActorCard, T extends NamedPlace>(
+  e: ExamenEvent<A, T>
+): DirectionalExamenEvent<A, T> {
   return {
-    ...rest,
-    actor_evaluer,
-    actor: actor_evaluer!,
+    ...e,
+    actor: e.actor_evaluer!,
   };
 }
-function createEvaluatedExamen({
+
+function createEvaluatedExamen<A extends ActorCard, T extends NamedPlace>({
   id,
-  actor_evalue,
   ...rest
-}: ExamenEvent): DirectionalExamenEvent {
+}: ExamenEvent<A, T>): DirectionalExamenEvent<A, T> {
   return {
     id: -id,
     ...rest,
-    actor_evalue,
-    actor: actor_evalue!,
+    actor: rest.actor_evalue!,
   };
 }

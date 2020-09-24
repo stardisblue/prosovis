@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import classnames from 'classnames';
-import { AnyEvent, Datation } from '../../data/models';
+import { DeprecatedAnyEvent, Datation } from '../../data/models';
 import { Flex, FlexItem } from '../../components/ui/Flex';
 import { map } from 'lodash';
 import { ChevronUpIcon, ChevronDownIcon } from '@primer/octicons-react';
@@ -24,8 +24,8 @@ const MarginLeftDiv = styled<any>('div')`
  * @deprecated use EventGroup
  */
 export const DeprecatedKindGroup: React.FC<{
-  kind: AnyEvent['kind'];
-  events: AnyEvent[];
+  kind: DeprecatedAnyEvent['kind'];
+  events: DeprecatedAnyEvent[];
   start: Datation;
   end: Datation;
   origin: 'Actor' | 'NamedPlace';

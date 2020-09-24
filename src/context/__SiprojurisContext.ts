@@ -1,12 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { getEvents } from '../data';
-import { Actor, AnyEvent, PrimaryKey } from '../data/models';
+import { Actor, DeprecatedAnyEvent, PrimaryKey } from '../data/models';
 import { every, filter, keyBy } from 'lodash';
 import { flow, uniqBy, map, identity, transform } from 'lodash/fp';
 
 type HightlightEvents = { id: PrimaryKey; kind: string }[];
 
-const getActorsEvents = transform<Actor, AnyEvent[]>((acc, actor) => {
+const getActorsEvents = transform<Actor, DeprecatedAnyEvent[]>((acc, actor) => {
   acc.push(...getEvents(actor));
 }, []);
 
@@ -14,20 +14,20 @@ type SiprojurisContextProps = {
   actors: Actor[];
   selected?: PrimaryKey[];
   select(events?: PrimaryKey[]): void;
-  events: AnyEvent[];
-  filteredEvents: AnyEvent[];
+  events: DeprecatedAnyEvent[];
+  filteredEvents: DeprecatedAnyEvent[];
   highlights?: HightlightEvents;
   setHighlights(highlight?: HightlightEvents): void;
   setFilter(key: PrimaryKey, filter: any): void;
-  types: AnyEvent['kind'][];
-  indexedEvents: _.Dictionary<AnyEvent>;
+  types: DeprecatedAnyEvent['kind'][];
+  indexedEvents: _.Dictionary<DeprecatedAnyEvent>;
 };
 
 export const SiprojurisContext = React.createContext<SiprojurisContextProps>(
   {} as any
 );
 
-const getUniqKind = flow(uniqBy<AnyEvent>('kind'), map('kind'));
+const getUniqKind = flow(uniqBy<DeprecatedAnyEvent>('kind'), map('kind'));
 
 /**
  *

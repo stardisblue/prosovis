@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import { getLocalisation } from '../../data';
-import { AnyEvent, Ressource, PrimaryKey } from '../../data/models';
+import { DeprecatedAnyEvent, Ressource, PrimaryKey } from '../../data/models';
 import _ from 'lodash';
 
-function groupByActor(a: AnyEvent) {
+function groupByActor(a: DeprecatedAnyEvent) {
   return a.actor.id;
 }
 
-function groupByNamedPlace(a: AnyEvent) {
+function groupByNamedPlace(a: DeprecatedAnyEvent) {
   const loc = getLocalisation(a);
   return loc ? loc.id : 0;
 }
 
-function groupsActor(events: AnyEvent[]) {
+function groupsActor(events: DeprecatedAnyEvent[]) {
   return _(events)
     .uniqBy('actor.id')
     .map((e) => e.actor)
     .value();
 }
 
-function groupsNamedPlace(events: AnyEvent[]) {
+function groupsNamedPlace(events: DeprecatedAnyEvent[]) {
   return _(events)
     .uniqBy((e) => {
       const localisation = getLocalisation(e);
@@ -58,13 +58,13 @@ export const GROUP_BY: {
 };
 
 type GroupingProps = {
-  groups: (events: AnyEvent[]) => Ressource[];
-  groupBy: (a: AnyEvent) => PrimaryKey;
+  groups: (events: DeprecatedAnyEvent[]) => Ressource[];
+  groupBy: (a: DeprecatedAnyEvent) => PrimaryKey;
   kind: string;
 };
 
 type DisplayTypesMap = {
-  [k in AnyEvent['kind']]: boolean;
+  [k in DeprecatedAnyEvent['kind']]: boolean;
 };
 
 export function useTimelineContext(): {
@@ -76,7 +76,7 @@ export function useTimelineContext(): {
   const [grouping, setGroup] = useState(GROUP_BY.actor);
   // const [displayTypes, setDisplayTypes] = useState(() =>
   //   _(types)
-  //     .map<[AnyEvent['kind'], boolean]>(t => [t, true])
+  //     .map<[DeprecatedAnyEvent['kind'], boolean]>(t => [t, true])
   //     .fromPairs()
   //     .value()
   // );

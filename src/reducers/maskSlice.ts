@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { AnyEvent } from '../data/models';
+import { SiprojurisEvent } from '../data/sip-models';
 
 type IntervalMask = {
   start: string;
@@ -7,11 +7,11 @@ type IntervalMask = {
 };
 
 export type KindMask = {
-  [k in AnyEvent['kind']]?: boolean;
+  [k in SiprojurisEvent['kind']]?: boolean;
 };
 
 export type ActorMask = {
-  [k in AnyEvent['actor']['id']]?: boolean;
+  [k in SiprojurisEvent['actor']['id']]?: boolean;
 };
 
 type BoundsMask = [{ lat: number; lng: number }, { lat: number; lng: number }];
@@ -33,7 +33,7 @@ export const maskSlice = createSlice({
     },
     toggleKindMask: function (
       state,
-      { payload }: PayloadAction<AnyEvent['kind']>
+      { payload }: PayloadAction<SiprojurisEvent['kind']>
     ) {
       if (state.kind)
         state.kind[payload] =
@@ -45,7 +45,7 @@ export const maskSlice = createSlice({
     },
     toggleActorMask: function (
       state,
-      { payload }: PayloadAction<AnyEvent['actor']['id']>
+      { payload }: PayloadAction<SiprojurisEvent['actor']['id']>
     ) {
       if (state.actor)
         state.actor[payload] =

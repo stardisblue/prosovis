@@ -1,7 +1,8 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { PrimaryKey, AnyEvent } from '../data/models';
+import { PrimaryKey } from '../data/models';
+import { SiprojurisEvent } from '../data/sip-models';
 
 type HighlightEvent = { id: PrimaryKey; kind: string; type?: string };
 
@@ -13,7 +14,7 @@ export const highlightsAsMap = createSelector(selectHighlights, (res) =>
 
 export function isHighlighted(
   highlights: _.Dictionary<HighlightEvent>,
-  event: AnyEvent
+  event: SiprojurisEvent
 ) {
   return highlights[event.id] !== undefined;
 }

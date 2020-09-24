@@ -1,6 +1,6 @@
-import { AnyEvent } from '../data/models';
+import { SiprojurisEvent } from '../data/sip-models';
 
-const fr: { [k in AnyEvent['kind']]: string } = {
+const fr: { [k in SiprojurisEvent['kind']]: string } = {
   Birth: 'Naissance',
   Death: 'Décès',
   Education: 'Enseignement',
@@ -10,7 +10,7 @@ const fr: { [k in AnyEvent['kind']]: string } = {
   SuspensionActivity: "Suspension d'activité",
 };
 
-function eventKind(kind: AnyEvent['kind']) {
+function eventKind(kind: SiprojurisEvent['kind']) {
   return fr[kind];
 }
 export default eventKind;

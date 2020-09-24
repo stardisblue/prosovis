@@ -1,32 +1,37 @@
-import { ActorCard, NamedPlace, Nullable, AnyEvent } from './models';
+import { ActorCard, NamedPlace, AnyEvent } from './models';
 
-export type SiprojurisActor = Readonly<
-  ActorCard & {
-    shortLabel: string;
-  }
->;
+export type SiprojurisActor = ActorCard & {
+  shortLabel: string;
+};
 
 export function isSiprojurisActor(object: any): object is SiprojurisActor {
   return object?.kind === 'Actor' && typeof object?.shortLabel === 'string';
 }
 
-export type SiprojurisNamedPlace = Readonly<NamedPlace>;
+export type SiprojurisNamedPlace = NamedPlace;
 
-export type SipErrorKinds = 'DatationLength' | 'DatationType';
+export type SipErrorKinds =
+  | 'DatationLength'
+  | 'DatationType'
+  | 'DatationBeforeBirth'
+  | 'DatationBeforeDeath'
+  | 'EventDuplication'
+  | 'MissingLocalisation'
+  | 'MissingCollectiveActor'
+  | 'MissingCollectiveActorLocalisation'
+  | 'MissingCollectiveActorLocalisationCoordinates'
+  | 'MissingLocalisationCoordinates';
 
 export type SipError = {
   kind: SipErrorKinds;
   message: string;
-  value: string | number;
+  value: string[] | string | number;
   expected?: any;
   level: 'Error' | 'Warning' | 'Info';
 };
 
 export type SiprojurisEvent = Readonly<
-  AnyEvent & {
-    actor: SiprojurisActor;
-    localisation: Nullable<SiprojurisNamedPlace>;
-  }
+  AnyEvent<SiprojurisActor, SiprojurisNamedPlace>
 > & { computed?: ComputedLabels; errors?: SipError[] };
 
 export type ComputedLabels = {

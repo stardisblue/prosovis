@@ -2,13 +2,12 @@ import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { getLocalisation } from '../../data';
+import { PrimaryKey, Datation } from '../../data/models';
 import {
-  NamedPlace,
-  Actor,
-  PrimaryKey,
-  AnyEvent,
-  Datation,
-} from '../../data/models';
+  SiprojurisActor,
+  SiprojurisEvent,
+  SiprojurisNamedPlace,
+} from '../../data/sip-models';
 
 export const selectLocalisedEvents = createSelector(
   selectMaskedEvents,
@@ -28,11 +27,11 @@ export const selectLocalisedEvents = createSelector(
           });
       },
       [] as {
-        localisation: NamedPlace;
+        localisation: SiprojurisNamedPlace;
         label: string;
-        actor: Actor['id'];
+        actor: SiprojurisActor['id'];
         id: PrimaryKey;
-        kind: AnyEvent['kind'];
+        kind: SiprojurisEvent['kind'];
         datation: Datation[];
       }[]
     )

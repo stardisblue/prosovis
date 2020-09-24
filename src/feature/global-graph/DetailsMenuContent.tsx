@@ -7,7 +7,7 @@ import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
 import { fetchActor } from '../../data/fetchActor';
 import { getEvents } from '../../data';
-import { AnyEvent } from '../../data/models';
+import { SiprojurisEvent } from '../../data/sip-models';
 import { DetailsMenuSpinner } from './DetailsMenuSpinner';
 import { DetailsMenuEvents } from './DetailsMenuEvents';
 import Axios from 'axios';
@@ -51,7 +51,7 @@ export const DetailsMenuContent: React.FC<{
     [actorExists, actor, dispatch, setMenuTarget]
   );
 
-  const [events, setEvents] = useState<AnyEvent[] | null>(null);
+  const [events, setEvents] = useState<SiprojurisEvent[] | null>(null);
 
   useEffect(() => {
     setEvents(null);

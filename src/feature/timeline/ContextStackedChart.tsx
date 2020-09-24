@@ -6,14 +6,19 @@ import moment from 'moment';
 import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
-import { AnyEvent, PrimaryKey } from '../../data/models';
+import { PrimaryKey } from '../../data/models';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
+import { SiprojurisEvent } from '../../data/sip-models';
 
 export const selectDiscrete = createSelector(selectEvents, function (events) {
   return _(events)
     .flatMap<
-      | { kind: AnyEvent['kind'] | ''; actor: PrimaryKey | null; time: Date }
+      | {
+          kind: SiprojurisEvent['kind'] | '';
+          actor: PrimaryKey | null;
+          time: Date;
+        }
       | undefined
     >((e) => {
       if (e.datation.length === 2) {
