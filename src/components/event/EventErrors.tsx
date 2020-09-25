@@ -1,10 +1,10 @@
 import React from 'react';
 import { SipError } from '../../data/sip-models';
 import { IconSpacerPointer } from '../ui/IconSpacer';
-import { XCircleFillIcon } from '@primer/octicons-react';
+import { IconProps, XCircleFillIcon } from '@primer/octicons-react';
 import { groupBy } from 'lodash/fp';
 import { blue, red, orange } from '../ui/colors';
-import styled from 'styled-components/macro';
+import styled, { StyledComponent } from 'styled-components/macro';
 import AlertFillIcon from '../ui/icon/AlertFillIcon';
 import InfoFillIcon from '../ui/icon/InfoFillIcon';
 import { CenteredTopPopper } from '../ui/Popper';
@@ -19,27 +19,43 @@ const SipInfoIcon = styled(InfoFillIcon)`
   color: ${blue};
 `;
 
+function plural(value: number, singular: string, plural: string) {
+  if (value === 1) {
+    return singular;
+  } else {
+    return `${value} ${plural}`;
+  }
+}
+
 function getIcon(errors: { [k in SipError['level']]?: SipError[] }) {
-  const [Icon, label] = errors.Error
-    ? [SipErrorIcon, 'Error']
+  const value:
+    | [StyledComponent<React.FC<IconProps>, any, {}, never>, string]
+    | null = errors.Error
+    ? [SipErrorIcon, plural(errors.Error.length, 'Une erreur', 'erreurs')]
     : errors.Warning
-    ? [SipWarningIcon, 'Warning']
+    ? [SipWarningIcon, plural(errors.Warning.length, 'Un warning', 'warnings')]
     : errors.Info
-    ? [SipInfoIcon, 'Info']
-    : [];
+    ? [SipInfoIcon, plural(errors.Info.length, 'Une note', 'notes')]
+    : null;
 
-  if (Icon) return <CenteredTopPopper content={label} children={children} />;
+  return value;
+}
 
-  return null;
+function wrapPopper([Icon, label]: [
+  StyledComponent<React.FC<IconProps>, any, {}, never>,
+  string
+]) {
+  return <CenteredTopPopper content={label} children={children} />;
 
   function children(
-    $ref: React.MutableRefObject<HTMLElement>,
+    $ref: React.MutableRefObject<HTMLDivElement>,
     show: () => void,
     hide: () => void
   ) {
     if (!Icon) throw new Error('Unreachable Code reached');
     return (
-      <i
+      <IconSpacerPointer
+        spaceLeft
         ref={$ref}
         onMouseEnter={show}
         onFocus={show}
@@ -47,7 +63,7 @@ function getIcon(errors: { [k in SipError['level']]?: SipError[] }) {
         onBlur={hide}
       >
         <Icon aria-label={label} />
-      </i>
+      </IconSpacerPointer>
     );
   }
 }
@@ -62,6 +78,7 @@ export const EventErrors: React.FC<{ errors?: SipError[] }> = function ({
   const errorGroups = groupBy('level', errors);
   console.log(errorGroups);
   const icon = getIcon(errorGroups);
+  const wrapper = icon ? wrapPopper(icon) : null;
 
-  return <IconSpacerPointer spaceLeft>{icon}</IconSpacerPointer>;
+  return wrapper;
 };
