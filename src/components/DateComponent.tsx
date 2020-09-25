@@ -24,7 +24,7 @@ export const DateLabel: React.FC<{
 
   return (
     <StyledTime
-      title={`${d.label} - ${d.clean_date}`}
+      aria-label={`${d.label} - ${d.clean_date}`}
       dateTime={d.clean_date}
       data-uri={d.uri}
     >
@@ -39,7 +39,7 @@ export const DateLabel: React.FC<{
   ) {
     return (
       <StyledTime
-        title={`${d.label} - ${d.clean_date}`}
+        aria-label={`${d.label} - ${d.clean_date}`}
         dateTime={d.clean_date}
         data-uri={d.uri}
         ref={$ref}
