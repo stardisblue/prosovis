@@ -22,10 +22,11 @@ import { useClickSelect } from '../../hooks/useClick';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { IconSpacer } from '../ui/IconSpacer';
+import { EventErrors } from './EventErrors';
 
 const Base = styled.div<SelectableProp & MaskableProp & HighlightableProp>`
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 0.25em;
@@ -62,6 +63,8 @@ export const EventLine: React.FC<{
 
   const showIcon = grouped ? <span /> : <EventLineIcon kind={event.kind} />;
 
+  const showErrors = event.errors && <EventErrors errors={event.errors} />;
+
   return (
     <Base
       {...handleHighlightHover}
@@ -73,6 +76,7 @@ export const EventLine: React.FC<{
       {showIcon}
       <div>{getEventLabel(event, origin, grouped)}</div>
       <EventDates dates={event.datation} />
+      {showErrors}
     </Base>
   );
 };

@@ -4,7 +4,7 @@ import { TriangleRightIcon } from '@primer/octicons-react';
 import { Datation } from '../data/models';
 import { CenteredTopPopper } from './ui/Popper';
 
-const Base = styled.span`
+const StyledTime = styled.time`
   white-space: nowrap;
   font-size: 12px;
 `;
@@ -13,12 +13,6 @@ export const DateLabel: React.FC<{
   datation: Datation;
   showTooltip?: boolean;
 }> = function ({ datation: d, showTooltip = true }) {
-  const time = (
-    <time dateTime={d.clean_date} data-uri={d.uri}>
-      {d.value}
-    </time>
-  );
-
   if (showTooltip) {
     return (
       <CenteredTopPopper
@@ -26,9 +20,17 @@ export const DateLabel: React.FC<{
         children={children}
       />
     );
-  } else {
-    return <Base title={`${d.label} - ${d.clean_date}`}>{time}</Base>;
   }
+
+  return (
+    <StyledTime
+      title={`${d.label} - ${d.clean_date}`}
+      dateTime={d.clean_date}
+      data-uri={d.uri}
+    >
+      {d.value}
+    </StyledTime>
+  );
 
   function children(
     $ref: React.MutableRefObject<HTMLSpanElement>,
@@ -36,15 +38,18 @@ export const DateLabel: React.FC<{
     hide: () => void
   ) {
     return (
-      <Base
+      <StyledTime
+        title={`${d.label} - ${d.clean_date}`}
+        dateTime={d.clean_date}
+        data-uri={d.uri}
         ref={$ref}
         onMouseEnter={show}
         onFocus={show}
         onMouseLeave={hide}
         onBlur={hide}
       >
-        {time}
-      </Base>
+        {d.value}
+      </StyledTime>
     );
   }
 };

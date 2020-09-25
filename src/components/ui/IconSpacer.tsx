@@ -5,10 +5,9 @@ export const IconSpacer = styled.div<{
   spaceLeft?: boolean;
 }>`
   display: flex;
+  align-items: center;
   ${({ spaceRight }) => (spaceRight ? 'margin-right: 0.25em' : null)};
   ${({ spaceLeft }) => spaceLeft && 'margin-left: 0.25em'};
-  flex-direction: column;
-  justify-content: center;
 `;
 export const IconSpacerPointer = styled(IconSpacer)`
   cursor: pointer;

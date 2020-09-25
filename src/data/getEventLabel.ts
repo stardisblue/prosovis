@@ -348,7 +348,12 @@ export function accumulator(errors: SipError[] = []) {
       if (check) errors.push(check);
       return acc;
     },
-    errors,
+    get errors() {
+      if (errors.length > 0) {
+        return errors;
+      }
+      return undefined;
+    },
   };
   return acc;
 }
@@ -474,10 +479,6 @@ function computeEventErrors(
       onces[6](event);
       break;
     }
-  }
-
-  if (chain.errors.length > 0) {
-    console.log(chain.errors);
   }
 
   event.errors = chain.errors;
