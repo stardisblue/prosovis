@@ -16,7 +16,7 @@ function useDimensions<T extends HTMLElement | SVGElement>(
 export function getDimensionObject<T extends HTMLElement | SVGElement>(
   node: T
 ) {
-  const rect: any = node.getBoundingClientRect();
+  const rect = node.getBoundingClientRect();
 
   return rect;
 }

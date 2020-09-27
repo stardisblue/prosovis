@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { TriangleRightIcon } from '@primer/octicons-react';
 import { Datation } from '../data/models';
-import { CenteredTopPopper } from './ui/Popper';
+import { Popper } from './ui/Popper';
 
 const StyledTime = styled.time`
   white-space: nowrap;
@@ -15,10 +15,7 @@ export const DateLabel: React.FC<{
 }> = function ({ datation: d, showTooltip = true }) {
   if (showTooltip) {
     return (
-      <CenteredTopPopper
-        content={`${d.label} - ${d.clean_date}`}
-        children={children}
-      />
+      <Popper content={`${d.label} - ${d.clean_date}`} children={children} />
     );
   }
 

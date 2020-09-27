@@ -1,21 +1,17 @@
-import React, { useLayoutEffect, useRef, useState, useMemo } from 'react';
+import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
-import { Nullable } from '../../data/models';
 import Modal from '../../feature/modal/Modal';
 import { getDimensionObject } from '../../hooks/useDimensions';
 import { darkgray } from './colors';
 
-const PopperDiv = styled.div`
-  z-index: 9999;
-  position: absolute;
-`;
-
 type PopperType<T extends HTMLElement | SVGElement> = {
+  as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;
   content: React.ReactNode;
   offset?: {
     x: number;
     y: number;
   };
+  position?: 'north' | 'north-west';
   children: (
     $ref: React.MutableRefObject<T>,
     showPopper: () => void,
@@ -23,66 +19,77 @@ type PopperType<T extends HTMLElement | SVGElement> = {
   ) => React.ReactNode;
 };
 
-export const Popper = function <T extends HTMLElement | SVGElement>({
-  content,
-  children,
-  offset = { x: 0, y: 0 },
-}: PopperType<T>) {
-  const [dims, setDims] = useState<Nullable<{ x: number; y: number }>>(null);
+function computePosition(
+  child: DOMRect,
+  content: DOMRect,
+  orientation: NonNullable<PopperType<HTMLElement>['position']>
+) {
+  if (orientation === 'north')
+    return {
+      left: child.left + child.width / 2 - content.width / 2,
+      top: child.top - content.height,
+    };
+
+  if (orientation === 'north-west')
+    return {
+      left: child.right,
+      top: child.top - 4,
+    };
+}
+
+export function useRefPopper<T extends HTMLElement | SVGElement>(
+  content: React.ReactNode,
+  position: PopperType<HTMLElement>['position'] = 'north',
+  StyledPopper:
+    | keyof JSX.IntrinsicElements
+    | React.ComponentType<any> = BlackPopper
+): [React.ReactNode, React.MutableRefObject<T>, () => void, () => void] {
   const $ref = useRef<T>(null as any);
 
-  function showPopper() {
-    const { top, left } = getDimensionObject($ref.current);
-    setDims({ x: left + offset.x, y: top + offset.y });
-  }
-
-  function hidePopper() {
-    setDims(null);
-  }
-
-  const positionorhide = dims
-    ? {
-        left: dims!.x,
-        top: dims!.y,
-      }
-    : { display: 'none' };
-
-  return (
-    <>
-      {children($ref, showPopper, hidePopper)}
-      <Modal>
-        <PopperDiv style={positionorhide}>{content}</PopperDiv>
-      </Modal>
-    </>
+  const [jsxcontent, show, hide] = usePopper(
+    $ref,
+    content,
+    position,
+    StyledPopper
   );
-};
+  return [jsxcontent, $ref, show, hide];
+}
 
-export const CenteredTopPopper = function <T extends HTMLElement | SVGElement>({
-  content,
-  children,
-}: PopperType<T>) {
+export function usePopper<T extends HTMLElement | SVGElement>(
+  $ref: React.MutableRefObject<T>,
+  content: React.ReactNode,
+  position: PopperType<HTMLElement>['position'] = 'north',
+  StyledPopper:
+    | keyof JSX.IntrinsicElements
+    | React.ComponentType<any> = BlackPopper
+): [React.ReactNode, () => void, () => void] {
   const $content = useRef<HTMLDivElement>(null as any);
-  const $ref = useRef<T>(null as any);
 
+  const [show, setShow] = useState(false);
   const [dims, setDims] = useState<{ left: number; top: number } | undefined>(
     undefined
   );
-
-  const [show, setShow] = useState(false);
 
   useLayoutEffect(() => {
     if (show) {
       const childDims = getDimensionObject($ref.current);
       const contentDims = getDimensionObject($content.current);
 
-      setDims({
-        left: childDims.left + childDims.width / 2 - contentDims.width / 2,
-        top: childDims.top - contentDims.height,
-      });
+      setDims(computePosition(childDims, contentDims, position));
     } else {
       setDims(undefined);
     }
-  }, [show]);
+  }, [show, position, $ref]);
+
+  return [
+    <Modal>
+      <StyledPopper ref={$content} style={show ? dims : { display: 'none' }}>
+        {content}
+      </StyledPopper>
+    </Modal>,
+    showPopper,
+    hidePopper,
+  ];
 
   function showPopper() {
     setShow(true);
@@ -91,24 +98,27 @@ export const CenteredTopPopper = function <T extends HTMLElement | SVGElement>({
   function hidePopper() {
     setShow(false);
   }
+}
 
-  const childs = useMemo(() => children($ref, showPopper, hidePopper), [
-    children,
-  ]);
+export const Popper = function <T extends HTMLElement | SVGElement>({
+  as = BlackPopper,
+  content,
+  children,
+  position = 'north',
+}: PopperType<T>) {
+  const [jsxcontent, $ref, show, hide] = useRefPopper<T>(content, position, as);
 
   return (
     <>
-      {childs}
-      <Modal>
-        <BlackPopper ref={$content} style={show ? dims : { display: 'none' }}>
-          {content}
-        </BlackPopper>
-      </Modal>
+      {children($ref, show, hide)}
+      {jsxcontent}
     </>
   );
 };
 
-const BlackPopper = styled(PopperDiv)`
+const BlackPopper = styled.div`
+  z-index: 9999;
+  position: absolute;
   background-color: ${darkgray};
   border-radius: 3px;
   color: white;

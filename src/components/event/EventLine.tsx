@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
@@ -63,7 +63,15 @@ export const EventLine: React.FC<{
 
   const showIcon = grouped ? <span /> : <EventLineIcon kind={event.kind} />;
 
-  const showErrors = event.errors && <EventErrors errors={event.errors} />;
+  const showErrors = useMemo(
+    function () {
+      return (
+        event.errors !== undefined &&
+        event.errors.length > 0 && <EventErrors errors={event.errors} />
+      );
+    },
+    [event.errors]
+  );
 
   return (
     <Base
