@@ -1,4 +1,4 @@
-import { every, some } from 'lodash/fp';
+import { every, flatMap, get, some } from 'lodash/fp';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
@@ -50,6 +50,9 @@ export const EventGroup: React.FC<{
   ]);
   const isMasked = useMemo(() => every(['masked', true], events), [events]);
   const isSelected = useMemo(() => some(['selected', true], events), [events]);
+
+  const eventErrors = flatMap(get('errors'), events);
+  console.info(eventErrors);
 
   return (
     <Note

@@ -1,14 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { SipError } from '../../data/sip-models';
-import { IconSpacerPointer } from '../ui/IconSpacer';
-import { IconProps, XCircleFillIcon, XIcon } from '@primer/octicons-react';
-import { groupBy } from 'lodash/fp';
+import { IconSpacer, IconSpacerPointer } from '../ui/IconSpacer';
+import {
+  AlertIcon,
+  IconProps,
+  InfoIcon,
+  XCircleFillIcon,
+  XCircleIcon,
+  XIcon,
+} from '@primer/octicons-react';
+import { compact, groupBy } from 'lodash/fp';
 import { blue, red, orange } from '../ui/colors';
 import styled, { StyledComponent } from 'styled-components/macro';
 import AlertFillIcon from '../ui/icon/AlertFillIcon';
 import InfoFillIcon from '../ui/icon/InfoFillIcon';
 import { usePopper } from '../ui/Popper';
 import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
+import { StyledFlex } from '../ui/Flex/styled-components';
 
 const SipErrorIcon = styled(XCircleFillIcon)`
   color: ${red};
@@ -21,27 +29,20 @@ const SipInfoIcon = styled(InfoFillIcon)`
 `;
 
 function plural(value: number, singular: string, plural: string) {
-  if (value === 1) {
-    return singular;
-  } else {
-    return `${value} ${plural}`;
-  }
+  if (value === 0) return '';
+
+  if (value === 1) return singular;
+  else return `${value} ${plural}`;
 }
 
 function getIcon(
   errors: { [k in SipError['level']]?: SipError[] }
-): [StyledComponent<React.FC<IconProps>, any, {}, never>, string] {
-  if (errors.Error)
-    return [SipErrorIcon, plural(errors.Error.length, 'Une erreur', 'erreurs')];
+): StyledComponent<React.FC<IconProps>, any, {}, never> {
+  if (errors.Error) return SipErrorIcon;
 
-  if (errors.Warning)
-    return [
-      SipWarningIcon,
-      plural(errors.Warning.length, 'Un warning', 'warnings'),
-    ];
+  if (errors.Warning) return SipWarningIcon;
 
-  if (errors.Info)
-    return [SipInfoIcon, plural(errors.Info.length, 'Une note', 'notes')];
+  if (errors.Info) return SipInfoIcon;
 
   throw new Error('Unreachable code');
 }
@@ -65,17 +66,47 @@ const CloseButton = styled.div`
   top: 0;
 `;
 
+/**
+ * @param errors
+ * @deprecated use simple string instead
+ */
+export function getRichErrorLabel(
+  errors: { [k in SipError['level']]?: SipError[] }
+) {
+  const acc: (JSX.Element | number | string)[] = [];
+  if (errors.Error)
+    acc.push(<IconSpacer as={XCircleIcon} spaceRight />, errors.Error.length);
+  if (errors.Warning)
+    acc.push(
+      <IconSpacer as={AlertIcon} spaceLeft={acc.length > 0} spaceRight />,
+      errors.Warning.length
+    );
+  if (errors.Info)
+    acc.push(
+      <IconSpacer as={InfoIcon} spaceLeft={acc.length > 0} spaceRight />,
+      errors.Info.length
+    );
+
+  return <StyledFlex>{acc}</StyledFlex>;
+}
+
 export const EventErrors: React.FC<{ errors: SipError[] }> = function ({
   errors,
 }) {
   const $ref = useRef<HTMLDivElement>(null as any);
 
-  const groupedErrors = groupBy('level', errors);
-  const iconprops = getIcon(groupedErrors);
+  const groupedErrors: { [k in SipError['level']]?: SipError[] } = groupBy(
+    'level',
+    errors
+  );
+  const label = compact([
+    plural(groupedErrors.Error?.length || 0, '1 erreur', 'erreurs'),
+    plural(groupedErrors.Warning?.length || 0, '1 alerte', 'alertes'),
+    plural(groupedErrors.Info?.length || 0, '1 note', 'notes'),
+  ]).join(', ');
+  const Icon = getIcon(groupedErrors);
 
   const [showContextMenu, setContextMenuState] = useState(false);
-
-  const [Icon, label] = iconprops;
 
   const [hint, showHint, hideHint] = usePopper($ref, label);
   const [details, showDetails, hideDetails] = usePopper(
