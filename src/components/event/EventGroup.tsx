@@ -26,6 +26,7 @@ import { Note } from '../ui/Note';
 import { EventLine } from './EventLine';
 import { LeftSpacer } from './LeftSpacer';
 import { EventDates } from '../DateComponent';
+import { SimpleEventErrors } from './EventErrors';
 
 export const EventGroup: React.FC<{
   kind: SiprojurisEvent['kind'];
@@ -52,7 +53,16 @@ export const EventGroup: React.FC<{
   const isSelected = useMemo(() => some(['selected', true], events), [events]);
 
   const eventErrors = flatMap(get('errors'), events);
-  console.info(eventErrors);
+
+  const showErrors = useMemo(
+    function () {
+      return (
+        eventErrors !== undefined &&
+        eventErrors.length > 0 && <SimpleEventErrors errors={eventErrors} />
+      );
+    },
+    [eventErrors]
+  );
 
   return (
     <Note
@@ -70,6 +80,7 @@ export const EventGroup: React.FC<{
             {events.length} {getKindString(kind)}
           </div>
           <EventDates dates={[start, end]} />
+          {showErrors}
         </InteractableEnlarge>
       }
     >
@@ -87,7 +98,8 @@ const InteractableEnlarge = styled.div<
 >`
   flex: 1;
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 0.25em;
