@@ -8,11 +8,11 @@ export const LeftSpacer = styled('div')<{ borderColor?: string }>`
   padding-left: 3px;
   border-left-style: solid;
   border-width: 2px;
-  padding-right: 0.5em;
 `;
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
+  padding-right: 16px;
   padding-bottom: 2px;
   margin-bottom: 0.25em;
   overflow-y: auto;
