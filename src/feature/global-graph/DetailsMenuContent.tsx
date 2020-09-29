@@ -14,6 +14,10 @@ import Axios from 'axios';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
 import { SiprojurisActor } from '../../data/sip-models';
+import { StyledFlex } from '../../components/ui/Flex/styled-components';
+import styled from 'styled-components/macro';
+import { IconSpacerPointer } from '../../components/ui/IconSpacer';
+import { lightgray } from '../../components/ui/colors';
 
 export const DetailsMenuContent: React.FC<{
   actor: SiprojurisActor;
@@ -79,19 +83,27 @@ export const DetailsMenuContent: React.FC<{
 
   return (
     actor && (
-      <div onMouseUp={stopEventPropagation}>
-        <div>
-          <span className="pointer" onClick={handleClick}>
+      <Base onMouseUp={stopEventPropagation}>
+        <ActorTitle>
+          <IconSpacerPointer spaceRight onClick={handleClick}>
             {Icon}
-          </span>
+          </IconSpacerPointer>
           <ActorLabel actor={actor} />
-        </div>
+        </ActorTitle>
         {events ? (
           <DetailsMenuEvents events={events} />
         ) : (
           <DetailsMenuSpinner />
         )}
-      </div>
+      </Base>
     )
   );
 };
+const ActorTitle = styled(StyledFlex)`
+  border-bottom: 1px solid ${lightgray};
+`;
+
+const Base = styled(StyledFlex)`
+  flex-direction: column;
+  height: 100%;
+`;

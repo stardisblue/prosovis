@@ -9,6 +9,7 @@ import {
   minBy,
   maxBy,
   flatMap,
+  compact,
 } from 'lodash/fp';
 import getEventIcon from '../../data/getEventIcon';
 import { useSelector } from 'react-redux';
@@ -16,6 +17,9 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import eventKind from '../../i18n/event-kind';
 import { EventDates } from '../../components/DateComponent';
 import { SiprojurisEvent } from '../../data/sip-models';
+import { StyledFlex } from '../../components/ui/Flex/styled-components';
+import styled from 'styled-components/macro';
+import { IconSpacer } from '../../components/ui/IconSpacer';
 
 type EventsByKind = {
   kind: SiprojurisEvent['kind'];
@@ -23,8 +27,7 @@ type EventsByKind = {
 };
 
 type EventsByKindStartEndDate = EventsByKind & {
-  start: Datation | undefined;
-  end: Datation | undefined;
+  datation: Datation[];
 };
 
 const eventsByFirstDate = sortBy<SiprojurisEvent>('datation[0].clean_date');
@@ -43,27 +46,35 @@ const maxDate = maxBy<Datation>('clean_date');
 
 const addStartEndDateToEventGroup = (v: EventsByKind) => {
   const datation = getDatationsFromEvents(v.events);
+  const min = minDate(datation);
+  const max = maxDate(datation);
+
   return {
     ...v,
-    start: minDate(datation),
-    end: maxDate(datation),
+    datation: compact(min === max ? [min] : [min, max]),
   };
 };
 
 const createDetailsMenuEvent = ({
   kind,
   events,
-  start,
-  end,
+  datation,
 }: EventsByKindStartEndDate) => (
   <DetailsMenuEvent
     key={events[0].id}
     kind={kind}
     events={events}
-    start={start}
-    end={end}
+    datation={datation}
   />
 );
+
+const Base = styled.div`
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding-right: 1em;
+  padding-left: 0.25em;
+`;
 
 export function DetailsMenuEvents({ events }: { events: SiprojurisEvent[] }) {
   const grouped = useMemo(() => {
@@ -81,30 +92,35 @@ export function DetailsMenuEvents({ events }: { events: SiprojurisEvent[] }) {
     )(events);
   }, [events]);
 
-  return <div>{grouped}</div>;
+  return <Base>{grouped}</Base>;
 }
 
 function DetailsMenuEvent({
   kind,
   events,
-  start,
-  end,
+  datation,
 }: {
   kind: SiprojurisEvent['kind'];
   events: SiprojurisEvent[];
-  start?: Datation;
-  end?: Datation;
+  datation: Datation[];
 }) {
   const color = useSelector(selectSwitchKindColor);
   const Icon = getEventIcon(kind);
   return (
-    <div>
-      {events.length}x{' '}
-      <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />{' '}
-      {eventKind(kind)}
-      {start && end && (
-        <EventDates dates={start === end ? [start] : [start, end]} />
-      )}
-    </div>
+    <StyledEventLine>
+      <span>{events.length}x</span>
+      <IconSpacer spaceLeft spaceRight>
+        <Icon iconColor={color ? color(kind) : 'black'} aria-label={kind} />
+      </IconSpacer>
+      <StyledSpan>{eventKind(kind)}</StyledSpan>
+      {datation.length > 0 && <EventDates dates={datation} />}
+    </StyledEventLine>
   );
 }
+const StyledEventLine = styled(StyledFlex)`
+  align-items: center;
+`;
+
+const StyledSpan = styled.span`
+  flex: 1;
+`;

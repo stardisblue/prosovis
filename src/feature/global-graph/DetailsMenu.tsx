@@ -6,25 +6,17 @@ import { DetailsMenuContent } from './DetailsMenuContent';
 import { stopEventPropagation } from '../../hooks/useClick';
 import { SiprojurisActor } from '../../data/sip-models';
 
-const StyledDetailsOnWheelDiv = styled(DetailsOnWheelDiv)`
+const StyledDetailsOnWheelDiv = styled.div`
   width: 100%;
   height: 100%;
-  overflow-y: scroll;
   z-index: 9998;
   background-color: white;
   border: 1px solid gray;
   border-radius: 3px;
   box-shadow: 0 0 3px gray;
-  padding: 0 1em;
 `;
 
-function DetailsOnWheelDiv({
-  actor,
-  className,
-}: {
-  actor: SiprojurisActor;
-  className?: string;
-}) {
+function DetailsOnWheelDiv({ actor }: { actor: SiprojurisActor }) {
   const ref = useRef<HTMLDivElement>(null as any);
 
   useEffect(() => {
@@ -42,9 +34,9 @@ function DetailsOnWheelDiv({
   }, []);
 
   return (
-    <div className={className} ref={ref}>
+    <StyledDetailsOnWheelDiv ref={ref}>
       <DetailsMenuContent actor={actor} />
-    </div>
+    </StyledDetailsOnWheelDiv>
   );
 }
 
@@ -67,7 +59,7 @@ function DetailsMenu() {
             height="300"
             onClick={stopEventPropagation}
           >
-            <StyledDetailsOnWheelDiv actor={menuTarget.actor} />
+            <DetailsOnWheelDiv actor={menuTarget.actor} />
           </animated.foreignObject>
         )}
       </Spring>
