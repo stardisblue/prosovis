@@ -55,6 +55,45 @@ export function useRefPopper<T extends HTMLElement | SVGElement>(
   return [jsxcontent, $ref, show, hide];
 }
 
+export function useDimsPopper<
+  T extends HTMLElement | SVGElement,
+  C extends HTMLElement | SVGElement
+>(
+  $ref: React.MutableRefObject<T>,
+  $content: React.MutableRefObject<C>,
+  position: PopperType<HTMLElement>['position'] = 'north'
+): [
+  { left: number; top: number } | { display: 'none' } | undefined,
+  () => void,
+  () => void
+] {
+  const [show, setShow] = useState(false);
+  const [dims, setDims] = useState<{ left: number; top: number } | undefined>(
+    undefined
+  );
+
+  useLayoutEffect(() => {
+    if (show) {
+      const childDims = getDimensionObject($ref.current);
+      const contentDims = getDimensionObject($content.current);
+
+      setDims(computePosition(childDims, contentDims, position));
+    } else {
+      setDims(undefined);
+    }
+  }, [show, position, $ref, $content]);
+
+  return [show ? dims : { display: 'none' }, showPopper, hidePopper];
+
+  function showPopper() {
+    setShow(true);
+  }
+
+  function hidePopper() {
+    setShow(false);
+  }
+}
+
 export function usePopper<T extends HTMLElement | SVGElement>(
   $ref: React.MutableRefObject<T>,
   content: React.ReactNode,

@@ -1,14 +1,30 @@
-import React, { useState, useRef, useEffect, useMemo } from 'react';
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+  useCallback,
+} from 'react';
 import { SipError } from '../../data/sip-models';
-import { IconSpacerPointer } from '../ui/IconSpacer';
-import { IconProps, XCircleFillIcon, XIcon } from '@primer/octicons-react';
-import { compact, groupBy } from 'lodash/fp';
+import { IconSpacerPointer, IconSpacer } from '../ui/IconSpacer';
+import {
+  IconProps,
+  XCircleFillIcon,
+  XIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  GrabberIcon,
+} from '@primer/octicons-react';
+import { compact, groupBy, capitalize, pipe, sortBy } from 'lodash/fp';
 import { blue, red, orange } from '../ui/colors';
 import styled, { StyledComponent } from 'styled-components/macro';
 import AlertFillIcon from '../ui/icon/AlertFillIcon';
 import InfoFillIcon from '../ui/icon/InfoFillIcon';
-import { usePopper, useRefPopper } from '../ui/Popper';
+import { usePopper, useRefPopper, useDimsPopper } from '../ui/Popper';
 import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
+import { useSpring, animated } from 'react-spring';
+import { useDrag } from 'react-use-gesture';
+import Modal from '../../feature/modal/Modal';
 
 const SipErrorIcon = styled(XCircleFillIcon)`
   color: ${red};
@@ -20,23 +36,14 @@ const SipInfoIcon = styled(InfoFillIcon)`
   color: ${blue};
 `;
 
-const StyledDiv = styled.div`
+const DetailsMenu = styled.div`
   z-index: 9998;
   position: absolute;
-`;
-
-const DetailsMenu = styled.div`
   width: 20em;
   min-height: 200px;
   background-color: white;
   box-shadow: 1px 1px 5px 0 black;
   border-radius: 3px;
-`;
-
-const CloseButton = styled.div`
-  position: absolute;
-  right: 0;
-  top: 0;
 `;
 
 function plural(value: number, singular: string, plural: string) {
@@ -46,6 +53,16 @@ function plural(value: number, singular: string, plural: string) {
   else return `${value} ${plural}`;
 }
 
+const errorLevelTranslation: { [k in SipError['level']]: string } = {
+  Error: 'erreur',
+  Warning: 'alerte',
+  Info: 'note',
+};
+
+function getErrorLevel(error: SipError) {
+  return errorLevelTranslation[error.level];
+}
+
 function getErrorLabel(errors: { [k in SipError['level']]?: SipError[] }) {
   return compact([
     plural(errors.Error?.length || 0, '1 erreur', 'erreurs'),
@@ -53,6 +70,8 @@ function getErrorLabel(errors: { [k in SipError['level']]?: SipError[] }) {
     plural(errors.Info?.length || 0, '1 note', 'notes'),
   ]).join(', ');
 }
+
+const createErrorTitleString = pipe(getErrorLevel, capitalize);
 
 function getErrorInfo(
   errors: SipError[]
@@ -145,31 +164,128 @@ export const SimpleEventErrors: React.FC<{ errors: SipError[] }> = function ({
   );
 };
 
+const ErrorCount = styled.div`
+  align-self: center;
+`;
+
+const TabButton = styled(IconSpacer)`
+  background-color: #fafbfc;
+  border: 1px solid rgba(27, 31, 35, 0.12);
+  box-shadow: 0px 1px 0px rgba(27, 31, 35, 0.04),
+    inset 0px 2px 0px rgba(255, 255, 255, 0.25);
+  padding: 0.25em;
+`;
+
+const GroupableTabButton = styled(TabButton)<{
+  position?: 'left' | 'right' | 'between';
+  disabled?: boolean;
+}>`
+  ${({ position }) => {
+    switch (position) {
+      case 'left':
+        return `
+        border-top-left-radius: 4px; 
+        border-bottom-left-radius: 4px;
+        border-right-width: 0;`;
+      case 'right':
+        return `
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;`;
+      case 'between':
+        return 'border-right-width: 0;';
+      default:
+        return '';
+    }
+  }}
+`;
+
+const TitleBase = styled.div`
+  display: grid;
+  grid-template-columns: auto auto auto auto 1fr auto;
+  padding-top: 0.25em;
+  padding-left: 0.25em;
+  justify-items: center;
+`;
+
+const CountDisplay = styled.div`
+  padding: 0.25em;
+  border-top: 1px solid rgba(27, 31, 35, 0.12);
+  border-bottom: 1px solid rgba(27, 31, 35, 0.12);
+  box-shadow: 0px 1px 0px rgba(27, 31, 35, 0.04),
+    inset 0px 2px 0px rgba(255, 255, 255, 0.25);
+`;
+
+const TitleCloseIcon = styled(IconSpacerPointer)`
+  align-self: start;
+`;
+
+const ContentBase = styled.div`
+  padding: 0.25em;
+`;
+
+const ContentTitle = styled.p`
+  text-align: center;
+`;
+
+const DetailsMenuContent: React.FC<{ error: SipError }> = function ({ error }) {
+  console.log(error);
+  return (
+    <ContentBase>
+      <ContentTitle>{error.message}</ContentTitle>
+    </ContentBase>
+  );
+};
+
+const AnimatedDetailsMenu = animated(DetailsMenu);
+
 export const EventErrors: React.FC<{ errors: SipError[] }> = function ({
   errors,
 }) {
+  const [{ xy }, set] = useSpring(() => ({ xy: [0, 0] }));
+
+  const bindDraggable = useDrag(({ down, offset }) => {
+    set({ xy: offset });
+  });
+
   const $ref = useRef<HTMLDivElement>(null as any);
 
   const [showContextMenu, setContextMenuState] = useState(false);
 
-  const [details, showDetails, hideDetails] = usePopper(
+  const sortedErrors = useMemo(
+    () =>
+      sortBy(
+        ({ level }) => (level === 'Error' ? 0 : level === 'Warning' ? 1 : 2),
+        errors
+      ),
+    [errors]
+  );
+  const [[currentErrorIndex, currentError], setCurrentError] = useState<
+    [number, SipError]
+  >([0, sortedErrors[0]]);
+
+  const nextError = useCallback(() => {
+    if (currentErrorIndex + 1 < sortedErrors.length) {
+      setCurrentError([
+        currentErrorIndex + 1,
+        sortedErrors[currentErrorIndex + 1],
+      ]);
+    }
+  }, [sortedErrors, currentErrorIndex]);
+
+  const prevError = useCallback(() => {
+    if (currentErrorIndex > 0) {
+      setCurrentError([
+        currentErrorIndex - 1,
+        sortedErrors[currentErrorIndex - 1],
+      ]);
+    }
+  }, [sortedErrors, currentErrorIndex]);
+
+  const $contentRef = useRef<HTMLDivElement>(null as any);
+  const [dims, showDetails, hideDetails] = useDimsPopper(
     $ref,
-    <DetailsMenu
-      onClick={stopEventPropagation}
-      onMouseUp={stopEventPropagation}
-      onContextMenu={stopEventPropagation}
-      style={{ position: 'relative', top: 0, right: 0 }}
-    >
-      <CloseButton
-        {...useFlatClick(() => {
-          setContextMenuState(false);
-        })}
-      >
-        <XIcon aria-label="Fermer le menu contextuel d'erreur" />
-      </CloseButton>
-    </DetailsMenu>,
-    'north-west',
-    StyledDiv
+    $contentRef,
+    'north-west'
   );
 
   useEffect(() => {
@@ -194,7 +310,6 @@ export const EventErrors: React.FC<{ errors: SipError[] }> = function ({
         onFocus={showHint}
         onMouseLeave={() => {
           hideHint();
-          setContextMenuState(false);
         }}
         onBlur={hideHint}
         onContextMenu={handleContextMenu}
@@ -202,7 +317,55 @@ export const EventErrors: React.FC<{ errors: SipError[] }> = function ({
         onMouseUp={stopEventPropagation}
       >
         <Icon aria-label={label} />
-        {details}
+        <Modal>
+          <AnimatedDetailsMenu
+            ref={$contentRef}
+            onClick={stopEventPropagation}
+            onMouseUp={stopEventPropagation}
+            onContextMenu={stopEventPropagation}
+            style={{
+              ...dims,
+              transform: xy.interpolate(((x: any, y: any) => {
+                return `translate3d(${x}px, ${y}px, 0)`;
+              }) as any),
+            }}
+          >
+            <TitleBase>
+              <IconSpacer {...bindDraggable()}>
+                <GrabberIcon />
+              </IconSpacer>
+              <GroupableTabButton
+                as="button"
+                position="left"
+                onClick={prevError}
+                disabled={currentErrorIndex === 0}
+              >
+                <ChevronLeftIcon />
+              </GroupableTabButton>
+              <CountDisplay>
+                {currentErrorIndex + 1}/{errors.length}
+              </CountDisplay>
+              <GroupableTabButton
+                as="button"
+                position="right"
+                onClick={nextError}
+                disabled={currentErrorIndex + 1 === sortedErrors.length}
+              >
+                <ChevronRightIcon />
+              </GroupableTabButton>
+              <ErrorCount>{createErrorTitleString(currentError)}</ErrorCount>
+              <TitleCloseIcon
+                spaceRight
+                {...useFlatClick(() => {
+                  setContextMenuState(false);
+                })}
+              >
+                <XIcon aria-label="Fermer le menu contextuel d'erreur" />
+              </TitleCloseIcon>
+            </TitleBase>
+            <DetailsMenuContent error={currentError} />
+          </AnimatedDetailsMenu>
+        </Modal>
       </ColoredPilledIconSpacer>
       {hint}
     </>
