@@ -366,8 +366,8 @@ export const EventErrors: React.FC<{ errors: SipError[] }> = function ({
             <DetailsMenuContent error={currentError} />
           </AnimatedDetailsMenu>
         </Modal>
+        {hint}
       </ColoredPilledIconSpacer>
-      {hint}
     </>
   );
 
