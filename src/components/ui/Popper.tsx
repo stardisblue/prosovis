@@ -27,12 +27,12 @@ function computePosition(
   if (orientation === 'north')
     return {
       left: child.left + child.width / 2 - content.width / 2,
-      top: child.top - content.height,
+      top: child.top - (content.height + 4),
     };
 
   if (orientation === 'north-west')
     return {
-      left: child.right,
+      left: child.right + 8,
       top: child.top - 4,
     };
 }

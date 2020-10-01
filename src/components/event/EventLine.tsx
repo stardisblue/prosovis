@@ -67,10 +67,15 @@ export const EventLine: React.FC<{
     function () {
       return (
         event.errors !== undefined &&
-        event.errors.length > 0 && <EventErrors errors={event.errors} />
+        event.errors.length > 0 && (
+          <EventErrors
+            highlight={event.highlighted === true}
+            errors={event.errors}
+          />
+        )
       );
     },
-    [event.errors]
+    [event.errors, event.highlighted]
   );
 
   return (
