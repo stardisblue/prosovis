@@ -15,7 +15,6 @@ import {
   HighlightableProp,
   maskable,
   MaskableProp,
-  selectable,
   SelectableProp,
 } from '../../feature/info/fold/styled-components';
 import { SelectedEvent } from '../../feature/info/models';
@@ -106,5 +105,5 @@ const InteractableEnlarge = styled.div<
   padding-right: 0.25em;
   ${highlightable}
   ${maskable}
-  ${selectable}
+  ${({ selected }: SelectableProp) => selected && 'font-weight: 700;'}
 `;
