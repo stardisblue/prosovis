@@ -15,6 +15,7 @@ import Autocomplete from '../feature/search/Autocomplete';
 import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
 import { lightgray } from '../components/ui/colors';
+import { HelpInfoBubble } from '../feature/help/InfoButton';
 
 const Aside = styled.main`
   display: grid;
@@ -34,13 +35,12 @@ const Main = styled.main`
   width: 100%;
   height: 100%;
   grid-template-areas:
-    'mask mask'
-    'rel map'
+    'header header'
+    'rel  map'
     'timeline timeline';
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr auto;
   grid-template-rows: auto 1fr auto;
 `;
-
 const Search = styled.section`
   grid-area: search;
 `;
@@ -61,6 +61,17 @@ const StyledRelation = styled(Relation)`
 
 const StyledTimeline = styled(SiprojurisTimeline)`
   grid-area: timeline;
+`;
+
+const Header = styled.div`
+  grid-area: header;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: 1fr auto;
+`;
+
+const StyledInfoBubble = styled(HelpInfoBubble)`
+  padding: 2px;
 `;
 
 function App() {
@@ -117,7 +128,10 @@ function App() {
         </Search>
         <StyledInformation />
         <Main>
-          <Mask />
+          <Header>
+            <Mask />
+            <StyledInfoBubble />
+          </Header>
           <StyledRelation />
           <StyledMap />
           <StyledTimeline />

@@ -120,6 +120,7 @@ const Overlay = styled.div<{ show?: boolean }>`
 `;
 const DetailsMenu = styled.div<{ active?: boolean }>`
   z-index: 9998;
+  top: 0;
   position: absolute;
   width: 20em;
   min-height: 200px;
@@ -162,7 +163,7 @@ export const EventErrorContextMenu: React.FC<{
   const [dims, show, hide] = useDimsPopper(
     $parentRef,
     $contentRef,
-    'north-west'
+    'north-east'
   );
 
   useEffect(() => {

@@ -11,7 +11,7 @@ type PopperType<T extends HTMLElement | SVGElement> = {
     x: number;
     y: number;
   };
-  position?: 'north' | 'north-west';
+  position?: 'north' | 'north-west' | 'north-east';
   children: (
     $ref: React.MutableRefObject<T>,
     showPopper: () => void,
@@ -24,17 +24,26 @@ function computePosition(
   content: DOMRect,
   orientation: NonNullable<PopperType<HTMLElement>['position']>
 ) {
-  if (orientation === 'north')
-    return {
-      left: child.left + child.width / 2 - content.width / 2,
-      top: child.top - (content.height + 4),
-    };
+  switch (orientation) {
+    case 'north':
+      return {
+        left: child.left + child.width / 2 - content.width / 2,
+        top: child.top - (content.height + 4),
+      };
 
-  if (orientation === 'north-west')
-    return {
-      left: child.right + 8,
-      top: child.top - 4,
-    };
+    case 'north-east':
+      return {
+        left: child.right + 8,
+        top: child.top - 4,
+      };
+
+    case 'north-west':
+      console.log(content.width, child.left);
+      return {
+        left: child.left - (content.width + 8),
+        top: child.top + 4,
+      };
+  }
 }
 
 export function useRefPopper<T extends HTMLElement | SVGElement>(
@@ -157,6 +166,7 @@ export const Popper = function <T extends HTMLElement | SVGElement>({
 
 const BlackPopper = styled.div`
   z-index: 9999;
+  top: 0;
   position: absolute;
   background-color: ${darkgray};
   border-radius: 3px;
@@ -164,5 +174,4 @@ const BlackPopper = styled.div`
   padding: 0.5em;
   font-size: 12px;
   line-height: 1.2;
-  top: 0;
 `;

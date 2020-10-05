@@ -5,7 +5,6 @@ import ActorList from './ActorList';
 import KindList from './KindList';
 
 const StyledSection = styled.section`
-  grid-area: mask;
   display: grid;
   grid-template:
     'switches actors' auto
@@ -31,9 +30,9 @@ const KindsArea = styled.div`
   grid-area: kinds;
 `;
 
-const Mask: React.FC = function () {
+const Mask: React.FC<{ className?: string }> = function ({ className }) {
   return (
-    <StyledSection>
+    <StyledSection className={className}>
       <SwitchArea>
         <ColorSwitch />
       </SwitchArea>
