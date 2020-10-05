@@ -20,6 +20,7 @@ import { SiprojurisEvent } from '../../data/sip-models';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import styled from 'styled-components/macro';
 import { IconSpacer } from '../../components/ui/IconSpacer';
+import { scrollbar } from '../../components/scrollbar';
 
 type EventsByKind = {
   kind: SiprojurisEvent['kind'];
@@ -71,9 +72,11 @@ const createDetailsMenuEvent = ({
 const Base = styled.div`
   height: 100%;
   width: 100%;
-  overflow-y: auto;
-  padding-right: 1em;
+  padding-right: 0.25em;
   padding-left: 0.25em;
+  overflow-y: auto;
+
+  ${scrollbar}
 `;
 
 export function DetailsMenuEvents({ events }: { events: SiprojurisEvent[] }) {

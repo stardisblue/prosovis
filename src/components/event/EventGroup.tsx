@@ -27,6 +27,13 @@ import { LeftSpacer } from './LeftSpacer';
 import { EventDates } from '../DateComponent';
 import { SimpleEventErrors } from './EventErrors';
 
+export const LeftBottomSpacer = styled(LeftSpacer)`
+  border-bottom-style: solid;
+  padding-bottom: 2px;
+  margin-bottom: 2px;
+  margin-right: 2px;
+`;
+
 export const EventGroup: React.FC<{
   kind: SiprojurisEvent['kind'];
   events: SelectedEvent<SiprojurisEvent>[];
@@ -83,11 +90,11 @@ export const EventGroup: React.FC<{
         </InteractableEnlarge>
       }
     >
-      <LeftSpacer borderColor={color ? color(kind) : undefined}>
+      <LeftBottomSpacer borderColor={color ? color(kind) : undefined}>
         {events.map((e) => (
           <EventLine key={e.id} event={e} origin={origin} grouped />
         ))}
-      </LeftSpacer>
+      </LeftBottomSpacer>
     </Note>
   );
 };

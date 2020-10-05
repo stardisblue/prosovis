@@ -24,15 +24,18 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { IconSpacer } from '../ui/IconSpacer';
 import { EventErrors } from './EventErrors';
 
-const Base = styled.div<SelectableProp & MaskableProp & HighlightableProp>`
+export const Base = styled.div<
+  { grouped?: boolean } & SelectableProp & MaskableProp & HighlightableProp
+>`
   display: grid;
-  grid-template-columns: auto 1fr auto auto;
+  grid-template-columns: auto 2fr auto auto;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 0.25em;
   padding-right: 0.25em;
   justify-content: space-between;
   align-items: center;
+  margin-right: ${({ grouped }) => (grouped ? '18px;' : '20px;')};
   ${selectable}
   ${maskable}
   ${highlightable};
@@ -85,6 +88,7 @@ export const EventLine: React.FC<{
       selected={event.selected === true}
       highlighted={event.highlighted === true}
       masked={event.masked === true}
+      grouped={grouped}
     >
       {showIcon}
       <div>{getEventLabel(event, origin, grouped)}</div>

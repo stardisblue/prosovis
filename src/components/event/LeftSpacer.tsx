@@ -1,7 +1,8 @@
 import styled from 'styled-components/macro';
 import { lightgray } from '../ui/colors';
+import { scrollbar } from '../scrollbar';
 
-export const LeftSpacer = styled('div')<{ borderColor?: string }>`
+export const LeftSpacer = styled.div<{ borderColor?: string }>`
   border-color: ${({ borderColor = lightgray }) => borderColor};
   box-sizing: border-box;
   margin-left: 11px; /* 4px icon-spacing + 7px icon centering */
@@ -12,9 +13,10 @@ export const LeftSpacer = styled('div')<{ borderColor?: string }>`
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
-  padding-right: 16px;
   padding-bottom: 2px;
   margin-bottom: 0.25em;
   overflow-y: auto;
   min-height: 2em;
+
+  ${scrollbar}
 `;

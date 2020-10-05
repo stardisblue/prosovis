@@ -15,6 +15,7 @@ import { DisabledNote } from './fold/DisabledNote';
 import { PlaceNote } from './fold/PlaceNote';
 import { SelectedEvent } from './models';
 import { useGroups } from './useGroups';
+import { scrollbar } from '../../components/scrollbar';
 
 export function parseDates(dates: Datation[]) {
   return flow(map(get('value')), join(' - '))(dates);
@@ -71,8 +72,9 @@ export const Information: React.FC<{ className?: string }> = function ({
 export const Base = styled(StyledFlex)`
   flex-direction: column;
   padding: 0.125em;
-  overflow-y: auto;
   height: 100%;
+  overflow-y: auto;
+  ${scrollbar}
 `;
 
 export default Information;

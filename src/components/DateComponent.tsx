@@ -52,9 +52,7 @@ export const DateLabel: React.FC<{
 };
 
 const EventDateBase = styled.div`
-  /*flex: 0;
-  max-width: 6rem;  is this a sensible default (96px) */
-  /* font-size: 12px; */
+  text-align: right;
 `;
 
 export const EventDates: React.FC<{
@@ -62,7 +60,11 @@ export const EventDates: React.FC<{
   showTooltip?: boolean;
 }> = function ({ dates, showTooltip }) {
   if (dates.length === 1) {
-    return <DateLabel datation={dates[0]} showTooltip={showTooltip} />;
+    return (
+      <EventDateBase>
+        <DateLabel datation={dates[0]} showTooltip={showTooltip} />
+      </EventDateBase>
+    );
   }
 
   if (dates.length > 2) {
