@@ -3,7 +3,7 @@ import { SipError } from '../../data/sip-models';
 import { IconSpacerPointer } from '../ui/IconSpacer';
 import { IconProps, XCircleFillIcon } from '@primer/octicons-react';
 import { compact, groupBy } from 'lodash/fp';
-import { blue, red, orange } from '../ui/colors';
+import { blue, red, orange, lightgray } from '../ui/colors';
 import styled, { StyledComponent } from 'styled-components/macro';
 import AlertFillIcon from '../ui/icon/AlertFillIcon';
 import InfoFillIcon from '../ui/icon/InfoFillIcon';
@@ -21,6 +21,16 @@ const SipInfoIcon = styled(InfoFillIcon)`
   color: ${blue};
 `;
 
+const SipGrayedErrorIcon = styled(XCircleFillIcon)`
+  color: ${lightgray};
+`;
+const SipGrayedWarningIcon = styled(AlertFillIcon)`
+  color: ${lightgray};
+`;
+const SipGrayedInfoIcon = styled(InfoFillIcon)`
+  color: ${lightgray};
+`;
+
 function plural(value: number, singular: string, plural: string) {
   if (value === 0) return '';
 
@@ -36,18 +46,38 @@ function getErrorLabel(errors: { [k in SipError['level']]?: SipError[] }) {
   ]).join(', ');
 }
 
+type ColoredErrorInfoType = [
+  StyledComponent<React.FC<IconProps>, any, {}, never>,
+  string,
+  string
+];
+
+type GrayedErrorInfoType = [
+  StyledComponent<React.FC<IconProps>, any, {}, never>,
+  string
+];
+
+function getErrorInfo(errors: SipError[], gray?: true): ColoredErrorInfoType;
+function getErrorInfo(errors: SipError[], gray: false): GrayedErrorInfoType;
 function getErrorInfo(
-  errors: SipError[]
-): [StyledComponent<React.FC<IconProps>, any, {}, never>, string, string] {
+  errors: SipError[],
+  gray: boolean = true
+): ColoredErrorInfoType | GrayedErrorInfoType {
   const groupedErrors: { [k in SipError['level']]?: SipError[] } = groupBy(
     'level',
     errors
   );
   const label = getErrorLabel(groupedErrors);
 
-  if (groupedErrors.Error) return [SipErrorIcon, red, label];
-  if (groupedErrors.Warning) return [SipWarningIcon, orange, label];
-  if (groupedErrors.Info) return [SipInfoIcon, blue, label];
+  if (!gray) {
+    if (groupedErrors.Error) return [SipGrayedErrorIcon, label];
+    if (groupedErrors.Warning) return [SipGrayedWarningIcon, label];
+    if (groupedErrors.Info) return [SipGrayedInfoIcon, label];
+  } else {
+    if (groupedErrors.Error) return [SipErrorIcon, red, label];
+    if (groupedErrors.Warning) return [SipWarningIcon, orange, label];
+    if (groupedErrors.Info) return [SipInfoIcon, blue, label];
+  }
 
   throw new Error('Unreachable code');
 }
@@ -104,7 +134,7 @@ const ColoredPilledIconSpacer = styled(PilledIconSpacer)<{ color: string }>`
 export const SimpleEventErrors: React.FC<{ errors: SipError[] }> = function ({
   errors,
 }) {
-  const [Icon, color, label] = getErrorInfo(errors);
+  const [Icon, label] = getErrorInfo(errors, false);
 
   const [hint, $ref, showHint, hideHint] = useRefPopper<HTMLDivElement>(label);
 
@@ -117,7 +147,7 @@ export const SimpleEventErrors: React.FC<{ errors: SipError[] }> = function ({
         onFocus={showHint}
         onMouseLeave={hideHint}
         onBlur={hideHint}
-        color={color}
+        color={lightgray}
         data-count={errors.length}
       >
         <Icon aria-label={label} />
@@ -134,9 +164,6 @@ export const EventErrors: React.FC<{
   const $ref = useRef<HTMLDivElement>(null as any);
 
   const [showContextMenu, setContextMenuState] = useState(false);
-  function closeContextMenu() {
-    setContextMenuState(false);
-  }
 
   const [Icon, color, label] = useMemo(() => getErrorInfo(errors), [errors]);
   const [hint, showHint, hideHint] = usePopper($ref, label);
@@ -150,9 +177,7 @@ export const EventErrors: React.FC<{
         ref={$ref}
         onMouseEnter={showHint}
         onFocus={showHint}
-        onMouseLeave={() => {
-          hideHint();
-        }}
+        onMouseLeave={hideHint}
         onBlur={hideHint}
         onContextMenu={handleContextMenu}
         onMouseUp={stopEventPropagation}
@@ -170,6 +195,10 @@ export const EventErrors: React.FC<{
       </ColoredPilledIconSpacer>
     </>
   );
+  function closeContextMenu() {
+    setContextMenuState(false);
+    hideHint();
+  }
 
   function handleContextMenu(e: React.MouseEvent<HTMLDivElement, MouseEvent>) {
     e.stopPropagation();
