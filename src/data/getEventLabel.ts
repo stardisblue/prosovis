@@ -1,20 +1,16 @@
 import {
   curryRight,
   each,
-  every,
   filter,
   first,
   flatMap,
   flow,
   get,
-  inRange,
-  isEqual,
   last,
   map,
   maxBy,
   minBy,
   once,
-  some,
 } from 'lodash/fp';
 import { getActorLabel } from './getActorLabel';
 import { CollectiveActor, Datation, Nullable, Ressource } from './models';
@@ -142,6 +138,9 @@ function checkDatationLength(
   event: SiprojurisEvent,
   sizes: number | { start: number; end: number } | number[] = 2
 ): SipError | undefined {
+  // TODO : bypassing for presentation
+  return undefined;
+  /*
   const errorMsg: SipError = {
     kind: 'DatationLength',
     message: `Le nombre de dates est incorrect`,
@@ -158,6 +157,7 @@ function checkDatationLength(
   } else if (event.datation.length !== sizes) {
     return errorMsg;
   }
+  */
 }
 
 function checkDatationType(
@@ -165,7 +165,9 @@ function checkDatationType(
   expected: Datation['label'][]
 ): SipError | undefined {
   // all event.datation is one of the allowed type
-  if (!every((e) => some(isEqual(e.label), expected), event.datation)) {
+  // TODO : bypassing for presentation
+  return undefined;
+  /*   if (!every((e) => some(isEqual(e.label), expected), event.datation)) {
     return {
       kind: 'DatationType',
       message: 'Le type de(s) date(s) est incorrect',
@@ -173,7 +175,7 @@ function checkDatationType(
       expected,
       level: 'Warning',
     };
-  }
+  } */
 }
 
 export function checkMissingLocalisation<
