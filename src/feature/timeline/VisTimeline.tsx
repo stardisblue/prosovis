@@ -406,14 +406,14 @@ const VisTimeline: React.FC = function () {
   useEffect(() => {
     if (firstEvent !== true) return;
     if (!timeline || !width) return;
-
+    if (timelineEvents.length === 0) return;
     timeline.vis.fit({ animation: false });
     const interval = timeline.vis.getWindow();
 
     setViewSync([interval.start, interval.end]);
 
     setFirstEvent(width);
-  }, [firstEvent, timeline, width]);
+  }, [firstEvent, timeline, width, timelineEvents]);
 
   useEffect(() => {
     if (!timeline) return;
