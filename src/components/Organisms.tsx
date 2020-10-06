@@ -15,9 +15,9 @@ const FixedHeightFlex = styled(StyledFlex)`
 export const Organisms: React.FC = function () {
   return (
     <FixedHeightFlex>
+      <ScaledDownImg src="./img/um.png" alt="Logo Université de Montpellier" />
       <ScaledDownImg src="./img/cnrs.png" alt="Logo CNRS" />
       <ScaledDownImg src="./img/lirmm.png" alt="Logo LIRMM" />
-      <ScaledDownImg src="./img/um.png" alt="Logo Université de Montpellier" />
       <ScaledDownImg src="./img/um3.png" alt="Logo Université Paul Valery" />
       <ScaledDownImg
         src="./img/anr.jpg"
