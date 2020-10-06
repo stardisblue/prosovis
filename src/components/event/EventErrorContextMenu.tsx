@@ -85,6 +85,7 @@ const CountDisplay = styled.div`
   padding: 0.25em;
   border-top: 1px solid rgba(27, 31, 35, 0.12);
   border-bottom: 1px solid rgba(27, 31, 35, 0.12);
+  border-left: 1px solid rgba(27, 31, 35, 0.12);
   box-shadow: 0px 1px 0px rgba(27, 31, 35, 0.04),
     inset 0px 2px 0px rgba(255, 255, 255, 0.25);
 `;
