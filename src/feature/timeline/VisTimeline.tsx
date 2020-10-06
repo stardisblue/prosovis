@@ -125,7 +125,7 @@ const selectTimelineEvents = createSelector(
             style: `border:0 solid white;
             border-left: 1px solid white;
             border-right: 1px solid white;
-            background-color: ${eventColor.main(e)}`,
+            background-color: ${eventColor.main(e)};`,
             group: groupBy(e),
             kind,
           });

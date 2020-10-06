@@ -10,6 +10,7 @@ import { PrimaryKey } from '../../data/models';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
 import { SiprojurisEvent } from '../../data/sip-models';
+import { map, pipe, get } from 'lodash/fp';
 
 export const selectDiscrete = createSelector(selectEvents, function (events) {
   return _(events)
@@ -22,10 +23,10 @@ export const selectDiscrete = createSelector(selectEvents, function (events) {
       | undefined
     >((e) => {
       if (e.datation.length === 2) {
-        const [start, end] = _(e.datation)
-          .map((d) => d3.timeYear.floor(new Date(d.clean_date)))
-          .sort()
-          .value();
+        const [start, end] = map(
+          pipe(get('clean_date'), (d) => new Date(d), d3.timeYear.floor),
+          e.datation
+        );
 
         return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
           kind: e.kind,
