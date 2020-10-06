@@ -1,4 +1,4 @@
-import { every, flatMap, get, some } from 'lodash/fp';
+import { every, flatMap, get, some, compact } from 'lodash/fp';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
@@ -7,6 +7,7 @@ import {
   SiprojurisActor,
   SiprojurisEvent,
   SiprojurisNamedPlace,
+  SipError,
 } from '../../data/sip-models';
 import { Datation } from '../../data/models';
 import getEventIcon from '../../data/getEventIcon';
@@ -58,7 +59,9 @@ export const EventGroup: React.FC<{
   const isMasked = useMemo(() => every(['masked', true], events), [events]);
   const isSelected = useMemo(() => some(['selected', true], events), [events]);
 
-  const eventErrors = flatMap(get('errors'), events);
+  const eventErrors = compact(
+    flatMap<typeof events, SipError>(get('errors'), events)
+  );
 
   const showErrors = useMemo(
     function () {

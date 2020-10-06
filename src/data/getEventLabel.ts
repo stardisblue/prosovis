@@ -11,6 +11,7 @@ import {
   maxBy,
   minBy,
   once,
+  find,
 } from 'lodash/fp';
 import { getActorLabel } from './getActorLabel';
 import { CollectiveActor, Datation, Nullable, Ressource } from './models';
@@ -350,6 +351,11 @@ export function accumulator(errors: SipError[] = []) {
       if (check) errors.push(check);
       return acc;
     },
+    addIf: function (...checks: (SipError | undefined)[]) {
+      const value = find((c) => c !== undefined, checks);
+      if (value) errors.push(value);
+      return acc;
+    },
     get errors() {
       if (errors.length > 0) {
         return errors;
@@ -412,8 +418,8 @@ function computeEventErrors(
       chain
         .add(checkDatationLength(event, 2))
         .add(checkDatationType(event, ['Date de début', 'Date de fin']))
-        .add(checkMissingLocalisation(event))
-        .add(checkCollectiveActor(event))
+        // TODO: fix this
+        .addIf(checkCollectiveActor(event), checkMissingLocalisation(event))
         .add(checkBeforeBirthDatation(event, actorEvents))
         .add(checkAfterDeathDatation(event, actorEvents));
 
@@ -447,8 +453,8 @@ function computeEventErrors(
             "Date unique (jusqu'à, inclus)",
           ])
         )
-        .add(checkMissingLocalisation(event))
-        .add(checkCollectiveActor(event))
+        // TODO: fix this
+        .addIf(checkCollectiveActor(event), checkMissingLocalisation(event))
         .add(checkBeforeBirthDatation(event, actorEvents))
         .add(checkAfterDeathDatation(event, actorEvents));
 
