@@ -219,22 +219,39 @@ export function checkCollectiveActor<
       expected: 'CollectiveActor',
     };
   }
-  const loc = event.collective_actor.localisation;
+  const creation = event.collective_actor.creation;
+  if (!creation) {
+    const loc = event.collective_actor.localisation;
 
-  if (!loc) {
-    return {
-      kind: 'MissingCollectiveActorLocalisation',
-      message: "La localisation de l'acteur collectif n'est pas défini",
-      level: 'Warning',
-      value: 'null',
-      expected: 'NamedPlace',
-    };
+    if (!loc) {
+      return {
+        kind: 'MissingCollectiveActorLocalisation',
+        message: "La localisation de l'acteur collectif n'est pas défini",
+        level: 'Warning',
+        value: 'null',
+        expected: 'NamedPlace',
+      };
+    }
+
+    if (!loc.lat || !loc.lng) {
+      return {
+        kind: 'MissingCollectiveActorLocalisationCoordinates',
+        message:
+          "Les coordonnées GPS de l'acteur collectif ne sont pas définis",
+        level: 'Warning',
+        value: 'null',
+        expected: 'Coordonnées GPS',
+      };
+    } else {
+      return;
+    }
   }
 
-  if (!loc.lat || !loc.lng) {
+  if (!creation.lat || !creation.lng) {
     return {
       kind: 'MissingCollectiveActorLocalisationCoordinates',
-      message: "Les coordonnées GPS de l'acteur collectif ne sont pas définis",
+      message:
+        "Les coordonnées GPS du lieu de creation de l'acteur collectif ne sont pas définis",
       level: 'Warning',
       value: 'null',
       expected: 'Coordonnées GPS',
@@ -418,10 +435,14 @@ function computeEventErrors(
       chain
         .add(checkDatationLength(event, 2))
         .add(checkDatationType(event, ['Date de début', 'Date de fin']))
-        // TODO: fix this
-        .addIf(checkCollectiveActor(event), checkMissingLocalisation(event))
         .add(checkBeforeBirthDatation(event, actorEvents))
         .add(checkAfterDeathDatation(event, actorEvents));
+      // TODO: fix this
+      const collectiveActorCheck = checkCollectiveActor(event);
+      chain.add(collectiveActorCheck);
+      if (collectiveActorCheck?.kind === 'MissingCollectiveActor') {
+        chain.add(checkMissingLocalisation(event));
+      }
 
       onces[2](event);
       break;
@@ -453,10 +474,14 @@ function computeEventErrors(
             "Date unique (jusqu'à, inclus)",
           ])
         )
-        // TODO: fix this
-        .addIf(checkCollectiveActor(event), checkMissingLocalisation(event))
         .add(checkBeforeBirthDatation(event, actorEvents))
         .add(checkAfterDeathDatation(event, actorEvents));
+      // TODO: fix this
+      const collectiveActorCheck = checkCollectiveActor(event);
+      chain.add(collectiveActorCheck);
+      if (collectiveActorCheck?.kind === 'MissingCollectiveActor') {
+        chain.add(checkMissingLocalisation(event));
+      }
 
       onces[4](event);
       break;

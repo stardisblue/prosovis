@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { getLocalisation } from '../../data';
 import { SelectedEvent } from './models';
-import { orderBy, groupBy, map, pipe } from 'lodash/fp';
+import { orderBy, groupBy, map, pipe, sortBy } from 'lodash/fp';
 import {
   SiprojurisActor,
   SiprojurisEvent,
@@ -74,6 +74,9 @@ export function useGroups(selectedEvents: SelectedEvent<SiprojurisEvent>[]) {
       orderBy<SelectedEventsGroupObject>(
         ['selected', 'group.kind', 'events[0].datation[0].clean_date'],
         ['desc']
+      ),
+      sortBy((e: SelectedEventsGroupObject) =>
+        e.group.label === 'Inconnue' ? 1 : 0
       ),
       groupBy<SelectedEventsGroupObject>((e) =>
         e.masked === true ? 'yes' : 'no'
