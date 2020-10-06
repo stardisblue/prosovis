@@ -7,18 +7,18 @@ import { Provider } from 'react-redux';
 
 import { configureStore, getDefaultMiddleware } from '@reduxjs/toolkit';
 import rootReducer from './reducers/';
-import defaultActors from './data/actors.json';
-import { getEvents } from './data';
-import { Actor } from './data/models';
-import { flatMap } from 'lodash/fp';
+// import defaultActors from './data/actors.json';
+// import { getEvents } from './data';
+// import { Actor } from './data/models';
+// import { flatMap } from 'lodash/fp';
 
-const events = flatMap(getEvents, (defaultActors as any) as Actor[]);
+// const events = flatMap(getEvents, (defaultActors as any) as Actor[]);
 
 const store = configureStore({
   reducer: rootReducer,
-  preloadedState: {
-    events,
-  },
+  // preloadedState: {
+  //   events,
+  // },
   middleware: getDefaultMiddleware({ immutableCheck: false }),
 });
 
@@ -33,5 +33,3 @@ ReactDOM.render(
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
 serviceWorker.unregister();
-
-// todo: Pointer cursor on hover/selectable elements, aria-labels, stop propagation
