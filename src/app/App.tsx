@@ -16,6 +16,7 @@ import Drawer from '../feature/global-graph/Drawer';
 import GlobalGraph from '../feature/global-graph/GlobalGraph';
 import { lightgray } from '../components/ui/colors';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
+import { OfflineBanner } from '../feature/check-server/OfflineBanner';
 
 const Aside = styled.main`
   display: grid;
@@ -141,6 +142,7 @@ function App() {
         </Main>
       </Aside>
       <ActorModal />
+      <OfflineBanner />
     </div>
   );
 }

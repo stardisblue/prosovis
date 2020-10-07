@@ -1,8 +1,8 @@
 import React, { useMemo, useEffect, useState, useContext } from 'react';
-import { PlusIcon, XIcon } from '@primer/octicons-react';
+import { PlusIcon, XIcon, XCircleFillIcon } from '@primer/octicons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchActorThunk } from '../../thunks/actor';
-import { stopEventPropagation } from '../../hooks/useClick';
+import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
 import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
 import { fetchActor } from '../../data/fetchActor';
@@ -14,15 +14,19 @@ import Axios from 'axios';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
 import { SiprojurisActor } from '../../data/sip-models';
-import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../components/ui/IconSpacer';
-import { lightgray } from '../../components/ui/colors';
+import { lightgray, red } from '../../components/ui/colors';
+import { setOffline, setOnline } from '../../reducers/serverStatusSlice';
+import { selectServerStatus } from '../../selectors/serverStatus';
+import { StyledFlex } from '../../components/ui/Flex/styled-components';
+import { Button } from '../../components/Button';
 
 export const DetailsMenuContent: React.FC<{
   actor: SiprojurisActor;
 }> = function ({ actor }) {
   const dispatch = useDispatch();
+  const online = useSelector(selectServerStatus);
   const { setMenuTarget } = useContext(DetailsMenuContext);
   const actors = useSelector(selectActors);
   const actorExists = actor && actors[actor.id] !== undefined;
@@ -57,21 +61,37 @@ export const DetailsMenuContent: React.FC<{
 
   const [events, setEvents] = useState<SiprojurisEvent[] | null>(null);
 
+  const [retry, setRetryCount] = useState(0);
+  const [disableRetryButton, setRetryButtonState] = useState(false);
+
+  useEffect(() => {
+    if (retry !== 0) {
+      setRetryButtonState(true);
+    }
+  }, [retry]);
+
+  const flatRetryClick = useFlatClick(() => {
+    setRetryCount((state) => {
+      return state + 1;
+    });
+  });
+
   useEffect(() => {
     setEvents(null);
     const source = Axios.CancelToken.source();
-
     fetchActor(actor.id, {
       cancelToken: source.token,
     })
       .then((response) => {
+        dispatch(setOnline());
         setEvents(getEvents(response.data));
       })
       .catch((thrown) => {
         if (Axios.isCancel(thrown)) {
           console.log('Request canceled', thrown.message);
         } else {
-          console.error(thrown);
+          setRetryButtonState(false);
+          dispatch(setOffline());
         }
       });
 
@@ -79,7 +99,7 @@ export const DetailsMenuContent: React.FC<{
       // cancelling to avoid collision between fetches
       source.cancel('changed to new actor');
     };
-  }, [actor.id]);
+  }, [actor.id, online, retry, dispatch]);
 
   return (
     actor && (
@@ -92,13 +112,34 @@ export const DetailsMenuContent: React.FC<{
         </ActorTitle>
         {events ? (
           <DetailsMenuEvents events={events} />
-        ) : (
+        ) : online ? (
           <DetailsMenuSpinner />
+        ) : (
+          <OfflineBase>
+            <SipErrorIcon size={24} />
+            <div>
+              Le serveur distant n'as pas pu être joint, veuillez réessayer plus
+              tard ou notifiez nous à chen@lirmm.fr
+            </div>
+            <Button {...flatRetryClick} disabled={disableRetryButton}>
+              Réessayer {retry !== 0 && retry}
+            </Button>
+          </OfflineBase>
         )}
       </Base>
     )
   );
 };
+
+const SipErrorIcon = styled(XCircleFillIcon)`
+  color: ${red};
+`;
+
+const OfflineBase = styled(StyledFlex)`
+  align-items: center;
+  flex-direction: column;
+`;
+
 const ActorTitle = styled(StyledFlex)`
   border-bottom: 1px solid ${lightgray};
 `;

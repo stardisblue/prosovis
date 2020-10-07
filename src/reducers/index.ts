@@ -10,7 +10,9 @@ import superHighlight from './superHighlightSlice';
 import relationSelection from '../feature/relation/selectionSlice';
 import relationHighlight from '../feature/relation/highlightSlice';
 import maxActors from './maxActorsSlice';
+import serverStatus from './serverStatusSlice';
 const rootReducer = combineReducers({
+  serverStatus,
   maxActors,
   color,
   events,

@@ -11,21 +11,27 @@ import {
   selectRelationSelection,
 } from '../feature/relation/selectionSlice';
 import { fetchActor } from '../data/fetchActor';
+import { setOffline, setOnline } from '../reducers/serverStatusSlice';
 
 export const fetchActorThunk = function (
   payload: PrimaryKey
 ): ThunkAction<void, RootState, unknown, Action<string>> {
   return (dispatch, getState) => {
-    fetchActor(payload).then((response) => {
-      const state = getState();
-      const actors = selectActors(state);
-      const maxSize = selectMaxActors(state);
-      // console.log(response);
-      if (actors[payload] === undefined) {
-        if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
-        else dispatch(addActor(response.data));
-      }
-    });
+    fetchActor(payload)
+      .then((response) => {
+        dispatch(setOnline());
+        const state = getState();
+        const actors = selectActors(state);
+        const maxSize = selectMaxActors(state);
+        // console.log(response);
+        if (actors[payload] === undefined) {
+          if (_.size(actors) >= maxSize) dispatch(setCurrent(response.data));
+          else dispatch(addActor(response.data));
+        }
+      })
+      .catch(() => {
+        dispatch(setOffline());
+      });
   };
 };
 
