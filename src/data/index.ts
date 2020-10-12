@@ -1,6 +1,7 @@
 import { flow, map, sortBy } from 'lodash/fp';
 import { computeActorShortLabel } from './getActorLabel';
-import { computeEventLabels, computeActorWideErrors } from './getEventLabel';
+import { computeEventLabels } from './getEventLabel';
+import { computeActorWideErrors } from './getEventErrors';
 import { SiprojurisEvent } from './sip-models';
 import {
   AnyEvent,
