@@ -1,14 +1,16 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { PrimaryKey } from './models';
 
+const axiosConfig = {
+  timeout: 4000,
+};
+
+const baseurl = 'http://advanse.lirmm.fr/siprojuris/api/';
+
 export function fetchActor(payload: PrimaryKey, config?: AxiosRequestConfig) {
-  return axios.get('http://advanse.lirmm.fr/siprojuris/api/actor/' + payload, {
-    timeout: 2000,
-  });
+  return axios.get(baseurl + 'actor/' + payload, axiosConfig);
 }
 
 export function pingServer() {
-  return axios.get('http://advanse.lirmm.fr/dsiprojuris/api/', {
-    timeout: 2000,
-  });
+  return axios.get(baseurl, axiosConfig);
 }
