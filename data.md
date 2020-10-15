@@ -121,13 +121,43 @@ Afin d'afficher la vue d'ensemble, nous utilisons `Graph`.
 
 ## Lors de l'ajout d'un Acteur, récuperer tous les évènements associés
 
-Grâce à [`RefActors`](#referencer-les-acteurs-disponibles-à-la-recherche) pour récuperer les evenements associes à un acteur, il suffit de les récuperer via l'url fourni (exemple: http://advanse.lirmm.fr/siprojuris/api/actor/40175/).
+Grâce à `RefActors`[<sup>ref</sup>](#referencer-les-acteurs-disponibles-à-la-recherche) pour récuperer les evenements associes à un acteur, il suffit de les récuperer via l'url fourni (exemple: http://advanse.lirmm.fr/siprojuris/api/actor/40175/).
 
 Cet url retourne alors tous les evenements associés à cet acteur.
 
-Ces evenements sont groupés par leur catégorie (naissance, décès, obtention de qualité, ...). C'est ce qu'on appellera des *sets*
+Ces evenements sont groupés par leur catégorie (naissance, décès, obtention de qualité, ...). C'est ce qu'on appellera des *sets*.
 
-> **IMPORTANT**: Je vais introduire une notation particulière qui n'est pas du JSON pour représenter des données qui peuvent être manquantes :
+> **Exemple**
+> 
+> Pour avoir une idée de la structure réelle : http://advanse.lirmm.fr/siprojuris/api/actor/47733/
+>
+> Apercu:
+> 
+> ```json
+> {
+>     "kind": "Actor"
+>     "id": 47733,
+>     "label": "Accarias, Calixte",
+>     "uri": "http://symogih.org/resource/Actr47733",
+>     "url": "http://advanse.lirmm.fr/siprojuris/api/actor/47733/",
+>     "retirement_set": [ ... ],
+>     "birth_set": [ ... ],
+>     "death_set": [ ... ],
+>     "suspensionactivity_set": [ ... ],
+>     "education_set": [ ... ],
+>     "est_evalue_examen": [ ... ],
+>     "evaluer_examen": [ ... ],
+>     "obtainqualification_set": [ ... ],
+>   },
+> ```
+
+---
+
+chaque entitée doit être auto contenue
+
+## Notation utilisée
+
+j'utiliserais `?` pour representer un attribut facultatif. Cette notation ne fait pas parti du format JSON, c'est simplement plus pratique à utiliser lors de la définition de la structure:
 >
 > Exemple: 
 > ```json
@@ -138,13 +168,20 @@ Ces evenements sont groupés par leur catégorie (naissance, décès, obtention 
 > }
 > ```
 >
-> Dans cet exemple, j'utiliserais `?` pour representer le fait que `information` peut ne pas exister.
-
-> Ces deux alternatives sont corrects
-> <div style="display: flex; flex: 1;">
-> <pre><code>{
->     "id": ID,
->     "label": NOM,
->     "information"?: OPTIONNEL
-> }</code></pre></div>
+> Dans cet exemple, `?` pour represente le fait que `information` peut ne pas exister.
 >
+> Par conséquent ces deux alternatives sont une représentation correcte de la donnée.
+>
+> ```json
+> {
+>   "id": 1,
+>   "label": "Exemple 1",
+>   "information": "ceci est l'exemple 1"
+> }
+> ```
+> ```json
+> {
+>   "id": 2,
+>   "label": "Exemple 2",
+> }
+> ```
