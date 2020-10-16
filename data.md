@@ -5,8 +5,18 @@ Table des matières
 - Quelles données entrantes ?
 - A quoi servent les differentes données ?
   - [Referencer les Acteurs](#referencer-les-acteurs)
+  - [Afficher la vue d'ensemble](#afficher-la-vue-densemble)
+  - [Récuperer tous les évènements d'un acteur](#récuperer-tous-les-évènements-dun-acteur)
+- [Réference](#réference)
+  - [Events](#events)
+  - [Actor](#actor)
+  - [RefActors](#refactors)
+  - [RefLocalisations](#reflocalisations)
+  - [Links](#links)
+  - [Graph](#graph)
+  - [ActorEvents](#ActorEvents)
 
-> Quelles données entrantes
+> Données entrantes
 
 Afin de fonctionner correctement, l'application utilise 5 source de données sous format JSON.
 
@@ -20,8 +30,6 @@ Afin de fonctionner correctement, l'application utilise 5 source de données sou
 
 ---
 
----
-
 ## Referencer les Acteurs
 
 `RefActors` est une source qui est utilisée plusieurs fois à differentes fins.
@@ -30,8 +38,6 @@ L'une d'entre elles, et la plus importante est de référencer tous les acteurs 
 ![autocompletion](./docs/img/autocompletion.png)
 
 La structure est assez simple:
-
----
 
 ### Définition: `ref-actors.json`
 
@@ -81,15 +87,11 @@ Comme on peut le constater, chaque entité (`Ressource`) est identifiée par une
 
 ---
 
----
-
 ## Afficher la vue d'ensemble
 
 ![vue d'ensemble](./docs/img/vue_ensemble.png)
 
 Afin d'afficher la vue d'ensemble, nous utilisons `Graph`.
-
----
 
 ### Définition: `graph.json`
 
@@ -140,17 +142,13 @@ l'interface
 
 ---
 
----
-
-## Lors de l'ajout d'un Acteur, récuperer tous les évènements associés
+## Récuperer tous les évènements d'un acteur
 
 Grâce à `RefActors`[<sup>ref</sup>](#referencer-les-acteurs) on peut aussi récuperer les evenements associes à un acteur via l'`url` fourni (exemple: http://advanse.lirmm.fr/siprojuris/api/actor/40175/). Cet url contient tous les evenements associés à cet acteur.
 
 Ces evenements sont groupés par leur catégorie (naissance, décès, obtention de qualité, ...). C'est ce qu'on appellera des _sets_.
 
----
-
-### Definition: `http://advanse.lirmm.fr/siprojuris/api/actor/ID`
+### Definition: `ActorEvents`
 
 ```json
 {
@@ -175,8 +173,9 @@ Pour un autre jeu de données on peut s'imaginer d'avoir des _sets_ totalement d
 
 Chaque _set_ contient une liste d'`Events`[<sup>ref</sup>](#events), un objet représentant un évènement.
 
-Dans le cadre de SIPROJURIS, `est_evalue_examen` et `evaluer_examen` sont traités de manière particulière d'où le fait qu'ils ne soient pas traités comme des _sets_ :
-Ce sont tous deux des évènements orientés : il mettent en opposition celui qui à obtenu le diplome et celui qui l'as évalué.
+> :alert: Dans le cadre de SIPROJURIS, `est_evalue_examen` et `evaluer_examen` sont traités de manière particulière d'où le fait qu'ils ne soient pas traités comme des _sets_ :
+>
+> Ce sont tous deux des évènements orientés : il mettent en opposition celui qui à obtenu le diplome et celui qui l'as évalué.
 
 ---
 
@@ -201,8 +200,6 @@ Pour avoir une idée de la structure réelle : http://advanse.lirmm.fr/siprojuri
     "obtainqualification_set": [ ... ],
   },
 ```
-
----
 
 ---
 

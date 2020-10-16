@@ -23,7 +23,8 @@ export function parseEmphase(
   const actorRingLinks: RelationMap = new Map();
   const ringLinks: RelationMap = new Map();
 
-  const ghosts = actor.locsLinks.get(selection.loc)!;
+  const ghosts =
+    actor.locsLinks.get(selection.loc) || (new Map() as RelationMap);
   const linksForPlace = locLinks.get(selection.loc)!;
   // foreach actor in links, check the connection they have(with ghosts or actors)
   ghosts.forEach((l1) => {
