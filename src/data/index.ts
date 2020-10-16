@@ -48,6 +48,12 @@ export function getEvents(actor: Actor): SiprojurisEvent[] {
     ...actor.obtainqualification_set
   );
 
+  return getSiprojurisEvents(events);
+}
+
+export function getSiprojurisEvents(
+  events: AnyEvent<ActorCard, NamedPlace>[]
+): SiprojurisEvent[] {
   return flow(map(convertToSiprojurisEvents), computeActorWideErrors)(events);
 }
 

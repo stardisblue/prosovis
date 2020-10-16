@@ -173,8 +173,7 @@ export function getKindString(kind: string) {
     case 'SuspensionActivity':
       return "Suspensions d'activités";
 
-    default: {
-      return 'Inconnue';
-    }
+    default:
+      return kind;
   }
 }
