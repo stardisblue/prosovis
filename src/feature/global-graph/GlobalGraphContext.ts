@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { actorLinksMap } from '../relation/selectRelations';
 import { get, debounce, Cancelable } from 'lodash';
-import rawNodes from '../../data/actor-nodes';
+import rawNodes from '../../data/index-actors';
 
 type Key = number | null;
 type GlobalGraphProps = {

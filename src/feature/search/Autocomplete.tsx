@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import rawNodes from '../../data/actor-nodes';
+import rawNodes from '../../data/index-actors';
 import _ from 'lodash';
 import fuzzysort from 'fuzzysort';
 import { useSelector } from 'react-redux';

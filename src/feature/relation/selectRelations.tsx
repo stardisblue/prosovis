@@ -1,19 +1,20 @@
-import rawLocs from '../../data/loc-nodes.json';
-import rawNodes from '../../data/actor-nodes';
+import indexLocalisations from '../../data/index-localisations.json';
+import indexActors from '../../data/index-actors';
 
-import rawLinks from '../../data/known_links.json';
+import rawLinks from '../../data/relations.json';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { RelationEvent, ActorRelationsMap, RelationNodeType } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
+import { pipe, toPairs, map } from 'lodash/fp';
 
-const locs: Map<number, RelationNodeType> = new Map<number, RelationNodeType>(
-  _(rawLocs)
-    .toPairs()
-    .map(([k, v]) => [+k, v] as [number, RelationNodeType])
-    .value()
-) as any;
+const locs: Map<number, RelationNodeType> = new Map(
+  pipe(
+    toPairs,
+    map(([k, v]) => [+k, v] as [number, RelationNodeType])
+  )(indexLocalisations)
+);
 
 export type RelationType = {
   locLinks: Map<number, Map<string, RelationEvent>>;
@@ -111,16 +112,16 @@ export const selectRelations = compareByKeySelector(
           if (actors[source] && actors[target]) {
             // both are actors
             if (!relations.actors.has(source))
-              relations.actors.set(source, _.get(rawNodes, source));
+              relations.actors.set(source, _.get(indexActors, source));
             if (!relations.actors.has(target))
-              relations.actors.set(target, _.get(rawNodes, target));
+              relations.actors.set(target, _.get(indexActors, target));
             relations.links.set(link.id, link);
           } else if (actors[source]) {
-            addRelation(relations, rawNodes, link);
+            addRelation(relations, indexActors, link);
           } else if (actors[target]) {
             link.source = target;
             link.target = source;
-            addRelation(relations, rawNodes, link);
+            addRelation(relations, indexActors, link);
           }
         }
         let l = relations.locLinks.get(link.loc);
