@@ -39,7 +39,7 @@ L'une d'entre elles, et la plus importante est de référencer tous les acteurs 
 
 La structure est assez simple:
 
-### Définition: `ref-actors.json`
+### :books: Définition: `ref-actors.json`
 
 De manière plus générique la structure JSON est:
 
@@ -93,7 +93,7 @@ Comme on peut le constater, chaque entité (`Ressource`) est identifiée par une
 
 Afin d'afficher la vue d'ensemble, nous utilisons `Graph`.
 
-### Définition: `graph.json`
+### :books: Définition: `graph.json`
 
 ```json
 [
@@ -148,7 +148,7 @@ Grâce à `RefActors`[<sup>ref</sup>](#referencer-les-acteurs) on peut aussi ré
 
 Ces evenements sont groupés par leur catégorie (naissance, décès, obtention de qualité, ...). C'est ce qu'on appellera des _sets_.
 
-### Definition: `ActorEvents`
+### :books: Définition: `ActorEvents`
 
 ```json
 {
@@ -173,9 +173,9 @@ Pour un autre jeu de données on peut s'imaginer d'avoir des _sets_ totalement d
 
 Chaque _set_ contient une liste d'`Events`[<sup>ref</sup>](#events), un objet représentant un évènement.
 
-> :alert: Dans le cadre de SIPROJURIS, `est_evalue_examen` et `evaluer_examen` sont traités de manière particulière d'où le fait qu'ils ne soient pas traités comme des _sets_ :
+> :warning: Dans le cadre de SIPROJURIS, `est_evalue_examen` et `evaluer_examen` sont traités de manière particulière d'où le fait qu'ils ne soient pas traités comme des _sets_ :
 >
-> Ce sont tous deux des évènements orientés : il mettent en opposition celui qui à obtenu le diplome et celui qui l'as évalué.
+> Ce sont tous deux des évènements orientés : il mettent en opposition celui qui à obtenu le diplome et celui qui l'as évalué. Par conséquent, ils sont traités differements que les autres _sets_.
 
 ---
 
