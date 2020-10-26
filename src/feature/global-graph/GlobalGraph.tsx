@@ -1,5 +1,5 @@
 import React, { useRef, useLayoutEffect, useMemo } from 'react';
-import prism from './prism.json';
+import prism from '../../data/graph.json';
 import { map } from 'lodash';
 import * as d3 from 'd3';
 import { EasyPZ } from 'easypz';
