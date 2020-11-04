@@ -8,8 +8,6 @@ La totalité des structures présentés dans cette documentation sont détaillé
 
 ## Cas Simple.
 
-
-
 ## API
 
 ### `index-actors.json`
@@ -18,13 +16,13 @@ La totalité des structures présentés dans cette documentation sont détaillé
 
 ```json
 {
-  "__ID__" : {
+  "__ID__": {
     "kind": "Actor",
     "id": __ID__,
     "label": __NOM__,
     "uri": __URL_REFERENCE__,
     "url": __URL_DATA__
-  },
+  }
   /* ... */
 }
 ```
@@ -32,13 +30,17 @@ La totalité des structures présentés dans cette documentation sont détaillé
 #### Définition
 
 - `__ID__` (type: `<number>`)  
-    identifiant unique d'un Acteur
+   identifiant unique d'un Acteur
 - `__NOM__` (type: `<string>`)  
-    nom de l'acteur.
+   nom de l'acteur.
 - `__URL_REFERENCE__` (type: `<url>`)  
-    l'url vers la référence de la donnée, d'où elle est issue.
+   l'url vers la référence de la donnée, d'où elle est issue.
 - `__URL_DATA__` (type: `<url>`)  
-    l'url vers les données supplémentaires concernant l'acteur. 
+   l'url vers les données supplémentaires concernant l'acteur.
+  l'url vers les données supplémentaires concernant l'acteur.
+  l'url vers les données supplémentaires concernant l'acteur.
+  l'url vers les données supplémentaires concernant l'acteur.
+  l'url vers les données supplémentaires concernant l'acteur.
 
 #### Exemple
 
@@ -57,7 +59,7 @@ La totalité des structures présentés dans cette documentation sont détaillé
     "label": "Escarra, Jean",
     "uri": "http://symogih.org/resource/Actr40175",
     "url": "http://advanse.lirmm.fr/siprojuris/api/actor/40175/?format=json"
-  },
+  }
 }
 ```
 
@@ -75,7 +77,7 @@ La totalité des structures présentés dans cette documentation sont détaillé
     "label": __NOM__,
     "uri": __URL_REFERENCE__,
     "url": __URL_DATA__
-  },
+  }
   /* ... */
 }
 ```
@@ -83,13 +85,13 @@ La totalité des structures présentés dans cette documentation sont détaillé
 #### Définition
 
 - `__ID__` (type: `<number>`)  
-    identifiant unique d'un Acteur
+   identifiant unique d'un Acteur
 - `__NOM__` (type: `<string>`)  
-    nom du lieu.
+   nom du lieu.
 - `__URL_REFERENCE__` (type: `<url>`)  
-    l'url vers la référence de la donnée, d'où elle est issue.
+   l'url vers la référence de la donnée, d'où elle est issue.
 - `__URL_DATA__` (type: `<url>`)  
-    l'url vers les données supplémentaires concernant le lieu.
+   l'url vers les données supplémentaires concernant le lieu.
 
 #### Exemple
 
@@ -108,7 +110,7 @@ La totalité des structures présentés dans cette documentation sont détaillé
     "label": "Bruxelles",
     "uri": "http://symogih.org/resource/NaPl838",
     "url": "http://advanse.lirmm.fr/siprojuris/api/named-place/838/?format=json"
-  },
+  }
 }
 ```
 
@@ -121,33 +123,33 @@ La totalité des structures présentés dans cette documentation sont détaillé
 ```json
 [
   {
-    "actors": [ __ID_1__, __ID_2__ ],
+    "actors": [__ID_1__, __ID_2__],
     "loc": __ID_LOC__,
-    "events":[ __ID_EVENT_N__, /* ... */],
+    "events": [__ID_EVENT_N__ /* ... */],
     "d": __DURATION__,
-    "med": __MEDIAN__,
-  },
+    "med": __MEDIAN__
+  }
   /* ... */
 ]
 ```
 
 #### Définition
 
-- `__ID_1__` (type: `<number>`)  
+- `__ID_1__` (type: `<number>`)
     <!-- TODO : REF index-actors -->
-    identifiant du premier acteur de la relation .
-- `__ID_2__` (type: `<number>`)  
+  identifiant du premier acteur de la relation .
+- `__ID_2__` (type: `<number>`)
     <!-- TODO : REF index-actors -->
-    identifiant du second acteur de la relation
-- `__ID_LOC_` (type: `<number>`)  
+  identifiant du second acteur de la relation
+- `__ID_LOC_` (type: `<number>`)
     <!-- TODO : REF index-localisations -->
-    identifiant du lieu de la rencontre.
+  identifiant du lieu de la rencontre.
 - `__ID_EVENT_1__, ..., __ID_EVENT_N__` (type: `<number>`)  
-    identifiant des evenements responsable de la rencotre
+   identifiant des evenements responsable de la rencotre
 - `__DURATION__` (type: `<number>`)  
-    durée pendant la quelle les deux personnes se sont connues/vues
+   durée pendant la quelle les deux personnes se sont connues/vues
 - `__MEDIAN__` (type: `<number>`)  
-    date médiane de la relation. Date sous la forme d'un nombre (nombre de millisecondes depuis le 1 Janvier, 1970 UTC.)
+   date médiane de la relation. Date sous la forme d'un nombre (nombre de millisecondes depuis le 1 Janvier, 1970 UTC.)
 
 #### Exemple
 
@@ -187,30 +189,35 @@ La totalité des structures présentés dans cette documentation sont détaillé
     "y": __POS_Y__,
     "width": __WIDTH__,
     "height": __HEIGHT__
-  },
+  }
   /* ... */
 ]
 ```
 
 #### Définition
 
-- `__ID__` (type: `<number>`)  
+- `__ID__` (type: `<number>`)
     <!-- TODO : REF index-actors -->
-    identifiant de l'acteur.
-- `__NOM__` (type: `<number>`)  
+  identifiant de l'acteur.
+- `__NOM__` (type: `<number>`)
     <!-- TODO : REF index-actors -->
-    nom de l'acteur affiché par le graphe
-- `__POS_X__`, `__POS_Y__` (type: `<number>`)  
+  nom de l'acteur affiché par le graphe
+- `__POS_X__`, `__POS_Y__` (type: `<number>`)
     <!-- TODO : REF index-localisations -->
-    coordonnées du noeud sur le graphe.
+  coordonnées du noeud sur le graphe.
 - `__WIDTH__`, `__HEIGHT__` (type: `<number>`)  
-    dimensions 
+   dimensions
+  dimensions
+  dimensions
+  dimensions
+  dimensions
 - `__DURATION__` (type: `<number>`)  
-    durée pendant la quelle les deux personnes se sont connues/vues
+   durée pendant la quelle les deux personnes se sont connues/vues
 - `__MEDIAN__` (type: `<number>`)  
-    date médiane de la relation. Date sous la forme d'un nombre (nombre de millisecondes depuis le 1 Janvier, 1970 UTC.)
+   date médiane de la relation. Date sous la forme d'un nombre (nombre de millisecondes depuis le 1 Janvier, 1970 UTC.)
 
 #### Exemple
+
 ```json
 [
   {
@@ -228,6 +235,6 @@ La totalité des structures présentés dans cette documentation sont détaillé
     "y": 1608.3109673898746,
     "width": 64,
     "height": 20
-  },
+  }
 ]
 ```
