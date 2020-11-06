@@ -3,19 +3,30 @@ import {
   ProsoVisLocalisation,
   ProsoVisPlace,
 } from './types/localisations';
+import { mapValues } from 'lodash/fp';
 export type RichLocalisation = {
   value: ProsoVisLocalisation;
   localisation: ProsoVisPlace | null;
 };
+
+export type RichRequiredLocalisation = {
+  value: ProsoVisLocalisation;
+  localisation: ProsoVisPlace & { lat: number; lng: number };
+};
 export class LocalisationModel {
   source: ProsoVisLocalisations;
-  cache: {
+  private cache: {
     [k: string]: RichLocalisation;
   } = {};
 
   constructor(localisations: ProsoVisLocalisations) {
     this.source = localisations;
     this.get = this.get.bind(this);
+    this.getAll = this.getAll.bind(this);
+  }
+
+  getAll() {
+    return mapValues(({ id }) => this.get(id)!, this.source.index);
   }
 
   get(id: ProsoVisLocalisation['id']) {

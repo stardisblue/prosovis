@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronRightIcon, ChevronLeftIcon } from '@primer/octicons-react';
 import styled from 'styled-components/macro';
 import { useFlatClick } from '../../hooks/useClick';
@@ -23,32 +23,52 @@ const Drawer: React.FC<{
     setDrawer((state) => (state === 'open' ? 'closed' : 'open'));
   });
 
+  const [display, setDisplay] = useState<'none' | undefined>();
+  useEffect(() => {
+    if (drawer === 'open') {
+      const t = setTimeout(() => setDisplay(undefined), 250);
+      return () => clearTimeout(t);
+    } else {
+      setDisplay('none');
+    }
+  }, [drawer]);
+
   return (
     <StyledDrawer
       className={className}
       style={{ width: drawer === 'open' ? '100%' : '0' }}
     >
       {drawer === 'open' && hideable}
-      {children}
+      <div
+        style={{
+          display: display,
+          height: '100%',
+        }}
+      >
+        {children}
+      </div>
       <DrawerHandle state={drawer} {...click} />
     </StyledDrawer>
   );
 };
 
 const DrawerIcon = styled.div<{ state: 'open' | 'closed' }>`
+  z-index: 999;
   border: 1px lightgray solid;
   background-color: white;
   line-height: 0;
   padding-top: 10px;
-  padding-bottom: 10px; 
-  border-top-${({ state }) =>
-    state === 'closed' ? 'right' : 'left'}-radius: 10px;
-  border-bottom-${({ state }) =>
-    state === 'closed' ? 'right' : 'left'}-radius: 10px;
+  padding-bottom: 10px;
+  ${({ state }) =>
+    state === 'closed'
+      ? `border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;`
+      : `border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;`}
   box-shadow: 1px 1px 3px lightgray;
   ${({ state }) => state === 'open' && 'margin-left: -16px;'}
   position: absolute;
-  top: 50%; 
+  top: 50%;
   ${({ state }) => (state === 'closed' ? 'left' : 'right')}: 0;
 `;
 

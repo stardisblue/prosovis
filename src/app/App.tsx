@@ -12,11 +12,11 @@ import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
-import Drawer from '../feature/global-graph/Drawer';
-import GlobalGraph from '../feature/global-graph/GlobalGraph';
+import Drawer from '../components/ui/Drawer';
 import { lightgray } from '../components/ui/colors';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
 import { OfflineBanner } from '../feature/check-server/OfflineBanner';
+import GlobalView from './GlobalView';
 
 const Aside = styled.main`
   display: grid;
@@ -29,7 +29,7 @@ const Aside = styled.main`
   grid-template-rows: auto 1fr;
 `;
 
-const Main = styled.main`
+const Main = styled.div`
   grid-area: main;
   display: grid;
   position: relative;
@@ -39,9 +39,10 @@ const Main = styled.main`
     'header header'
     'rel  map'
     'timeline timeline';
-  grid-template-columns: 1fr 1fr auto;
-  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
 `;
+
 const Search = styled.section`
   grid-area: search;
 `;
@@ -137,7 +138,7 @@ function App() {
           <StyledMap />
           <StyledTimeline />
           <Drawer>
-            <GlobalGraph />
+            <GlobalView />
           </Drawer>
         </Main>
       </Aside>

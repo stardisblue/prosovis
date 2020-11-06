@@ -15,7 +15,7 @@ import DetailsMenu from './DetailsMenu';
 const wx = d3.max(prism, (n) => n.x + n.width / 2)!;
 const hy = d3.max(prism, (n) => n.y + n.height / 2)!;
 
-const GlobalGraph: React.FC = function (props) {
+const GlobalGraph: React.FC = function () {
   const context = useGlobalGraphContext();
   const detailsMenu = useDetailsMenuContext();
   const { setMenuTarget } = detailsMenu;

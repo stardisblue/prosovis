@@ -11,8 +11,8 @@ export type ProsoVisPlace = {
   id: string;
   label: string;
   uri: string;
-  lat: string;
-  lng: string;
+  lat: number | null;
+  lng: number | null;
 };
 
 export type ProsoVisLocalisation = ProsoVisCollective | ProsoVisPlace;
