@@ -15,7 +15,7 @@ export const fetchActors = createAsyncThunk(
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('/v2/data/index-actors.json', {
+    const response = await Axios.get('./v2/data/index-actors.json', {
       cancelToken: source.token,
     });
     return response.data as ProsoVisActors;

@@ -19,7 +19,7 @@ export const fetchLocalisations = createAsyncThunk(
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('/v2/data/index-localisations.json', {
+    const response = await Axios.get('./v2/data/index-localisations.json', {
       cancelToken: source.token,
     });
     return response.data as ProsoVisLocalisations;
