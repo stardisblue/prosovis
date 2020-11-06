@@ -4,6 +4,8 @@ import { ProsoVisEvents, ProsoVisEvent } from './types/events';
 import { ActorModel } from './ActorModel';
 import { LocalisationModel, RichLocalisation } from './LocalisationModel';
 
+import { flatMap, map } from 'lodash/fp';
+
 export type RichEvent = {
   value: ProsoVisEvent;
   actor: ProsoVisActor | null;
@@ -26,6 +28,7 @@ export class EventModel {
     this.actorModel = actorModel;
     this.localisationModel = localisationModel;
     this.get = this.get.bind(this);
+    this.getAll = this.getAll.bind(this);
     this.getEvents = this.getEvents.bind(this);
   }
 
@@ -33,6 +36,10 @@ export class EventModel {
     const id = typeof actor === 'string' ? actor : actor.id;
 
     return this.source.index[id];
+  }
+
+  getAll() {
+    return flatMap((v) => map(this.get, v), this.source.index);
   }
 
   get(event: ProsoVisEvent) {

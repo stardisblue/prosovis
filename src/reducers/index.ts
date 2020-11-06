@@ -13,6 +13,7 @@ import maxActors from './maxActorsSlice';
 import serverStatus from './serverStatusSlice';
 import actorData from '../v2/reducers/actorsDataSlice';
 import localisationData from '../v2/reducers/localisationsDataSlice';
+import eventData from '../v2/reducers/eventsDataSlice';
 const rootReducer = combineReducers({
   serverStatus,
   maxActors,
@@ -28,6 +29,7 @@ const rootReducer = combineReducers({
   relationHighlight,
   actorData,
   localisationData,
+  eventData,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

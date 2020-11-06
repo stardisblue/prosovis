@@ -7,6 +7,8 @@ import { lightgray } from '../components/ui/colors';
 import useMount from '../hooks/useMount';
 import { useDispatch } from 'react-redux';
 import { fetchLocalisations } from '../v2/reducers/localisationsDataSlice';
+import { fetchActors } from '../v2/reducers/actorsDataSlice';
+import { fetchEvents } from '../v2/reducers/eventsDataSlice';
 
 export const StyledGlobalView = styled.div`
   display: grid;
@@ -42,6 +44,8 @@ const GlobalView: React.FC = function () {
   const dispatch = useDispatch();
   useMount(() => {
     dispatch(fetchLocalisations());
+    dispatch(fetchActors());
+    dispatch(fetchEvents());
   });
   return (
     <StyledGlobalView>
