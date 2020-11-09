@@ -1,5 +1,4 @@
 import React, { useRef, useLayoutEffect, useMemo } from 'react';
-import prism from '../../data/graph.json';
 import { map } from 'lodash';
 import * as d3 from 'd3';
 import { EasyPZ } from 'easypz';
@@ -12,10 +11,12 @@ import DetailsMenuContext, {
   useDetailsMenuContext,
 } from './DetailsMenuContext';
 import DetailsMenu from './DetailsMenu';
-const wx = d3.max(prism, (n) => n.x + n.width / 2)!;
-const hy = d3.max(prism, (n) => n.y + n.height / 2)!;
+import { ProsoVisGraph } from '../../v2/types/graph';
 
-const GlobalGraph: React.FC = function () {
+const GlobalGraph: React.FC<{ graph: ProsoVisGraph }> = function ({ graph }) {
+  const wx = useMemo(() => d3.max(graph, (n) => n.x + n.width / 2)!, [graph]);
+  const hy = useMemo(() => d3.max(graph, (n) => n.x + n.width / 2)!, [graph]);
+
   const context = useGlobalGraphContext();
   const detailsMenu = useDetailsMenuContext();
   const { setMenuTarget } = detailsMenu;
@@ -27,7 +28,7 @@ const GlobalGraph: React.FC = function () {
 
   const bScale = useMemo(
     () => (dims ? (dims.width - dims.width / 10) / wx : 1),
-    [dims]
+    [dims, wx]
   );
 
   const viewBox = useMemo(
@@ -35,7 +36,7 @@ const GlobalGraph: React.FC = function () {
       dims
         ? [-dims.width / 20, 0, dims.width, bScale * hy - 100].join(',')
         : undefined,
-    [dims, bScale]
+    [dims, bScale, hy]
   );
 
   const { setSparker, setShiner } = context;
@@ -93,10 +94,10 @@ const GlobalGraph: React.FC = function () {
           onClick={handleClick}
         >
           <g ref={$nodeGroup} style={{ transform: `scale(${bScale})` }}>
-            {map(prism, (n) => (
+            {map(graph, (n) => (
               <GlobalGraphNode
-                key={n.index}
-                id={n.index}
+                key={n.id}
+                id={+n.id}
                 x={n.x - n.width / 2}
                 y={n.y - n.height / 2}
                 width={n.width}

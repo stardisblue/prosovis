@@ -14,6 +14,7 @@ import serverStatus from './serverStatusSlice';
 import actorData from '../v2/reducers/actorsDataSlice';
 import localisationData from '../v2/reducers/localisationsDataSlice';
 import eventData from '../v2/reducers/eventsDataSlice';
+import graphData from '../v2/reducers/graphDataSlice';
 const rootReducer = combineReducers({
   serverStatus,
   maxActors,
@@ -30,6 +31,7 @@ const rootReducer = combineReducers({
   actorData,
   localisationData,
   eventData,
+  graphData,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

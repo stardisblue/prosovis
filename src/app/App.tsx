@@ -16,7 +16,7 @@ import Drawer from '../components/ui/Drawer';
 import { lightgray } from '../components/ui/colors';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
 import { OfflineBanner } from '../feature/check-server/OfflineBanner';
-import GlobalView from './GlobalView';
+import GlobalView from '../v2/global/GlobalView';
 
 const Aside = styled.main`
   display: grid;

@@ -1,14 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import GlobalGraph from '../feature/global-graph/GlobalGraph';
-import GlobalMap from '../feature/global-map/GlobalMap';
-import GlobalTimeline from '../feature/global-timeline/GlobalTimeline';
-import { lightgray } from '../components/ui/colors';
-import useMount from '../hooks/useMount';
+import GlobalMap from './map/GlobalMap';
+import GlobalTimeline from './timeline/GlobalTimeline';
+import GlobalGraph from './graph/GlobalGraph';
+import { lightgray } from '../../components/ui/colors';
+import useMount from '../../hooks/useMount';
 import { useDispatch } from 'react-redux';
-import { fetchLocalisations } from '../v2/reducers/localisationsDataSlice';
-import { fetchActors } from '../v2/reducers/actorsDataSlice';
-import { fetchEvents } from '../v2/reducers/eventsDataSlice';
+import { fetchLocalisations } from '../reducers/localisationsDataSlice';
+import { fetchActors } from '../reducers/actorsDataSlice';
+import { fetchEvents } from '../reducers/eventsDataSlice';
+import { fetchGraph } from '../reducers/graphDataSlice';
 
 export const StyledGlobalView = styled.div`
   display: grid;
@@ -46,6 +47,7 @@ const GlobalView: React.FC = function () {
     dispatch(fetchLocalisations());
     dispatch(fetchActors());
     dispatch(fetchEvents());
+    dispatch(fetchGraph());
   });
   return (
     <StyledGlobalView>

@@ -1,9 +1,9 @@
 import React from 'react';
 import L from 'leaflet';
 import { useLeaflet, LeafletProvider } from './context';
-import useLazyRef from '../../hooks/useLazyRef';
+import useLazyRef from '../../../hooks/useLazyRef';
 import { useAddControl } from './Control';
-import useMount from '../../hooks/useMount';
+import useMount from '../../../hooks/useMount';
 
 export const LayerGroup: React.FC<L.LayerOptions> = function ({
   children,

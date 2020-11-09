@@ -1,9 +1,11 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { createSelector } from 'reselect';
-import { selectAllEvents } from '../../v2/selectors/events';
+import { selectAllEvents } from '../../selectors/events';
 import { pipe } from 'lodash/fp';
 import { flatMap } from 'lodash';
+import Loading from '../../components/Loading';
+import { useSelector } from 'react-redux';
 
 export const Timeline = styled.div`
   height: 200px;
@@ -50,11 +52,13 @@ export const selectDiscrete = createSelector(selectAllEvents, function (
 });
 
 const GlobalTimeline: React.FC = function () {
+  const data = useSelector(selectAllEvents);
+
   return (
-    <div>
+    <Loading finished={data}>
       <h3>WIP Timeline</h3>
-      <Timeline></Timeline>
-    </div>
+      <Timeline>Hello world</Timeline>
+    </Loading>
   );
 };
 export default GlobalTimeline;

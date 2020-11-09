@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import L from 'leaflet';
 import { LeafletProvider, LeafletContextProps } from './context';
-import useMount from '../../hooks/useMount';
+import useMount from '../../../hooks/useMount';
 
 function useLeafletMap(
   $ref: React.MutableRefObject<HTMLDivElement>,

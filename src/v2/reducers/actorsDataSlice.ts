@@ -31,17 +31,19 @@ const actorDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchActors.pending, (state) => {
-      state.loading = 'pending';
-    });
-    builder.addCase(fetchActors.fulfilled, (state, action) => {
-      state.loading = 'idle';
-      state.actors = action.payload;
-    });
-
-    builder.addCase(fetchActors.rejected, (state) => {
-      state.loading = 'failed';
-    });
+    builder.addCase(fetchActors.pending, (state) => ({
+      ...state,
+      loading: 'pending',
+    }));
+    builder.addCase(fetchActors.fulfilled, (state, action) => ({
+      ...state,
+      loading: 'pending',
+      actors: action.payload,
+    }));
+    builder.addCase(fetchActors.rejected, (state) => ({
+      ...state,
+      loading: 'failed',
+    }));
   },
 });
 

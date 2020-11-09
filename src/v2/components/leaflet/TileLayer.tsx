@@ -2,7 +2,7 @@ import React from 'react';
 import L from 'leaflet';
 import { useLeaflet } from './context';
 import { useAddControl } from './Control';
-import useMount from '../../hooks/useMount';
+import useMount from '../../../hooks/useMount';
 
 export const TileLayer: React.FC<
   {

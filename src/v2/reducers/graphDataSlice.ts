@@ -1,29 +1,33 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProsoVisEvents } from '../types/events';
 import Axios from 'axios';
+import { ProsoVisGraph } from '../types/graph';
 
 const initialState: {
-  events: ProsoVisEvents | null;
+  graph: ProsoVisGraph | null;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
-} = { events: null, loading: 'idle', url: './v2/data/index-events.json' };
+} = {
+  graph: null,
+  loading: 'idle',
+  url: './v2/data/graph.json',
+};
 
-export const fetchEvents = createAsyncThunk(
-  'events/fetch',
+export const fetchGraph = createAsyncThunk(
+  'graph/fetch',
   async (_, { signal }) => {
     const source = Axios.CancelToken.source();
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('./v2/data/index-events.json', {
+    const response = await Axios.get('./v2/data/graph.json', {
       cancelToken: source.token,
     });
-    return response.data as ProsoVisEvents;
+    return response.data as ProsoVisGraph;
   }
 );
 
-const eventDataSlice = createSlice({
-  name: 'events',
+const actorDataSlice = createSlice({
+  name: 'graph',
   initialState,
   reducers: {
     setUrl(state, { payload }: PayloadAction<string>) {
@@ -31,20 +35,20 @@ const eventDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchEvents.pending, (state) => ({
+    builder.addCase(fetchGraph.pending, (state) => ({
       ...state,
       loading: 'pending',
     }));
-    builder.addCase(fetchEvents.fulfilled, (state, action) => ({
+    builder.addCase(fetchGraph.fulfilled, (state, action) => ({
       ...state,
       loading: 'idle',
-      events: action.payload,
+      graph: action.payload,
     }));
-    builder.addCase(fetchEvents.rejected, (state) => ({
+    builder.addCase(fetchGraph.rejected, (state) => ({
       ...state,
       loading: 'failed',
     }));
   },
 });
 
-export default eventDataSlice.reducer;
+export default actorDataSlice.reducer;

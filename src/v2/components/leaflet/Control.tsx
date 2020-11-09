@@ -1,7 +1,7 @@
 import React, { useRef, useContext } from 'react';
 import L from 'leaflet';
 import { useLeaflet } from './context';
-import useMount from '../../hooks/useMount';
+import useMount from '../../../hooks/useMount';
 
 export type LeafletControlProps = L.Control.Layers;
 const LeafletControl = React.createContext<LeafletControlProps>(null as any);
