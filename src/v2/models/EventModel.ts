@@ -1,6 +1,6 @@
-import { ProsoVisActor } from './types/actors';
-import { ProsoVisPlace } from './types/localisations';
-import { ProsoVisEvents, ProsoVisEvent } from './types/events';
+import { ProsoVisActor } from '../types/actors';
+import { ProsoVisPlace } from '../types/localisations';
+import { ProsoVisEvents, ProsoVisEvent } from '../types/events';
 import { ActorModel } from './ActorModel';
 import { LocalisationModel, RichLocalisation } from './LocalisationModel';
 

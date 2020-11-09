@@ -1,10 +1,6 @@
 import { RootState } from '../../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  LocalisationModel,
-  RichRequiredLocalisation,
-} from '../models/LocalisationModel';
-import { filter } from 'lodash/fp';
+import { LocalisationModel } from '../models/LocalisationModel';
 
 export const selectLocalisations = (state: RootState) => state.localisationData;
 
