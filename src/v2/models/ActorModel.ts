@@ -1,4 +1,4 @@
-import { ProsoVisActors, ProsoVisActor } from './types/actors';
+import { ProsoVisActors, ProsoVisActor } from '../types/actors';
 
 export class ActorModel {
   source: ProsoVisActors;

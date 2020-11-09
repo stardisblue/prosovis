@@ -2,8 +2,8 @@ import {
   ProsoVisLocalisations,
   ProsoVisLocalisation,
   ProsoVisPlace,
-} from './types/localisations';
-import { mapValues } from 'lodash/fp';
+} from '../types/localisations';
+import { mapValues, filter } from 'lodash/fp';
 export type RichLocalisation = {
   value: ProsoVisLocalisation;
   localisation: ProsoVisPlace | null;
@@ -23,10 +23,21 @@ export class LocalisationModel {
     this.source = localisations;
     this.get = this.get.bind(this);
     this.getAll = this.getAll.bind(this);
+    this.getAllLocalised = this.getAllLocalised.bind(this);
   }
 
   getAll() {
     return mapValues(({ id }) => this.get(id)!, this.source.index);
+  }
+
+  getAllLocalised() {
+    return filter(
+      (v) =>
+        v.localisation !== null &&
+        v.localisation.lat !== null &&
+        v.localisation.lng !== null,
+      this.getAll()
+    ) as RichRequiredLocalisation[];
   }
 
   get(id: ProsoVisLocalisation['id']) {

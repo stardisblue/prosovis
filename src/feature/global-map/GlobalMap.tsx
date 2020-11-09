@@ -35,7 +35,7 @@ const GlobalMap: React.FC = function () {
       }}
     >
       <Control>
-        <BaseLayer name="OpenStreetMap" checked>
+        <BaseLayer name="OpenStreetMap">
           <TileLayer
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
@@ -55,7 +55,7 @@ const GlobalMap: React.FC = function () {
             maxZoom={19}
           />
         </BaseLayer>
-        <BaseLayer name="CartoDB.Voyager">
+        <BaseLayer name="CartoDB.Voyager" checked>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
