@@ -27,6 +27,7 @@
     "bootstrap": "^4.5.2",
     "classnames": "^2.2.6",
     "d3": "^5.16.0",
+    "date-fns": "^2.16.1",
     "easypz": "stardisblue/easypz",
     "fuzzysort": "^1.1.4",
     "he": "^1.2.0",
