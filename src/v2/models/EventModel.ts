@@ -4,7 +4,8 @@ import { ProsoVisEvents, ProsoVisEvent } from '../types/events';
 import { ActorModel } from './ActorModel';
 import { LocalisationModel, RichLocalisation } from './LocalisationModel';
 
-import { flatMap, map } from 'lodash/fp';
+import { flatMap, map, pipe, uniqBy, keyBy, identity } from 'lodash/fp';
+import type { Dictionary } from 'lodash';
 
 export type RichEvent = {
   value: ProsoVisEvent;
@@ -16,9 +17,8 @@ export class EventModel {
   source: ProsoVisEvents;
   localisationModel: LocalisationModel;
   actorModel: ActorModel;
-  cache: {
-    [k: string]: RichEvent;
-  } = {};
+  cache: Dictionary<RichEvent> = {};
+
   constructor(
     source: ProsoVisEvents,
     actorModel: ActorModel,
@@ -28,18 +28,20 @@ export class EventModel {
     this.actorModel = actorModel;
     this.localisationModel = localisationModel;
     this.get = this.get.bind(this);
-    this.getAll = this.getAll.bind(this);
+
     this.getEvents = this.getEvents.bind(this);
   }
 
+  getAll = flatMap<ProsoVisEvents['index'], RichEvent>(map(this.get));
+  getKinds = pipe(
+    uniqBy<RichEvent>('value.kind'),
+    map('value.kind'),
+    keyBy(identity)
+  );
   getEvents(actor: ProsoVisActor | ProsoVisActor['id']) {
     const id = typeof actor === 'string' ? actor : actor.id;
 
     return this.source.index[id];
-  }
-
-  getAll() {
-    return flatMap((v) => map(this.get, v), this.source.index);
   }
 
   get(event: ProsoVisEvent) {

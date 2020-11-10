@@ -21,7 +21,7 @@ export const StyledGlobalView = styled.div`
     'rel  map'
     'timeline timeline';
   grid-template-columns: 1fr 1fr auto;
-  grid-template-rows: auto 1fr auto;
+  grid-template-rows: auto 1fr 250px;
 `;
 
 const GraphArea = styled.div`
