@@ -10,6 +10,7 @@ export function stopEventPropagation<E extends { stopPropagation: () => void }>(
 }
 export function useFlatClick(callback: React.MouseEventHandler) {
   return {
+    //eslint-disable-next-line
     onClick: React.useCallback(flatEvent(callback), [callback]),
     onMouseUp: stopEventPropagation,
   };

@@ -40,6 +40,7 @@ export const selectDiscrete = createSelector(selectEvents, function (events) {
           time: d3.timeYear(moment(e.datation[0].clean_date).toDate()),
         };
       }
+      return undefined;
     })
     .concat(
       d3.timeYear

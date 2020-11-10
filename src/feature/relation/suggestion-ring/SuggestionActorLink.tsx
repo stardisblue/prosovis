@@ -103,9 +103,10 @@ export const SuggestionActorLink: React.FC<{
 
   // mutable values, cannot be memoized
   const { x, y }: { x: number; y: number } = nodes.get(datum.source)! as any;
-  const points: [number, number][] = cluster
-    ? [[x, y], cluster, suggestion]
-    : [[x, y], suggestion];
+  const points: [number, number][] = useMemo(
+    () => (cluster ? [[x, y], cluster, suggestion] : [[x, y], suggestion]),
+    [x, y, cluster, suggestion]
+  );
 
   const kvDatum = useMemo(() => [datum, points.slice(1)], [datum, points]);
 

@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
-
-export default function (fn: () => (() => void) | void) {
+function useMount(fn: () => (() => void) | void) {
   // eslint-disable-next-line
   useEffect(fn, []);
 }
+
+export default useMount;

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useLeaflet } from './context';
 import useLazyRef from '../../../hooks/useLazyRef';
 import L from 'leaflet';
@@ -15,9 +15,12 @@ export const Marker: React.FC<MarkerProps> = function ({
   const l = useLeaflet();
   const marker = useLazyRef(() => new L.CircleMarker(latlng, options));
 
+  useEffect(() => {
+    marker.current.setStyle(options);
+  }, [marker, options]);
+
   useMount(() => {
     let m = marker.current.addTo(l.current);
-
     return () => {
       m.remove();
     };

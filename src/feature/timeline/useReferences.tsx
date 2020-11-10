@@ -100,6 +100,7 @@ export function useReferences() {
     //   []
     // ),
     timeline,
+    // eslint-disable-next-line
     timelineRef: useCallback(
       refNotNull(function (dom: HTMLDivElement) {
         // put timeline logic here

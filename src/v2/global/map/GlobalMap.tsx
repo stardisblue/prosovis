@@ -14,12 +14,28 @@ import { useSelector } from 'react-redux';
 import { map } from 'lodash/fp';
 import Loading from '../../components/Loading';
 
+//         fillColor: color.main(event),
+// color: color.border(event),
+// fillOpacity:
+//   _.isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,
+// weight: 1,
+// radius: 5,
+const StyledMarkers = ({ latlng }: { latlng: [number, number] }) => (
+  <Marker
+    latlng={latlng}
+    fillColor="blue"
+    color="black"
+    weight={1}
+    radius={5}
+  />
+);
+
 const GlobalMap: React.FC = function () {
   const locs = useSelector(selectMappableLocalisations);
 
   const markers = map(
     ({ value: { id }, localisation: { lat, lng } }) => (
-      <Marker key={id} latlng={[lat, lng]} />
+      <StyledMarkers key={id} latlng={[lat, lng]} />
     ),
     locs
   );
