@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { area, curveStep, max, min, scalePow, select } from 'd3';
+import { area, curveStep, max, min, scaleLinear, select } from 'd3';
 import { useSelector } from 'react-redux';
 import { height, margin } from './options';
 import { selectStack } from './selectors';
@@ -21,7 +21,7 @@ export const StackedChart: React.FC<{
 
   const y = useMemo(
     () =>
-      scalePow()
+      scaleLinear()
         .domain([
           min(stack, (d) => min(d, (d) => d[0])) as any,
           max(stack, (d) => max(d, (d) => d[1])) as any,

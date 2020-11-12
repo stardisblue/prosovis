@@ -16,7 +16,6 @@ import {
 import {
   stack,
   stackOffsetSilhouette,
-  stackOffsetWiggle,
   stackOrderInsideOut,
   utcDay,
   utcYear,

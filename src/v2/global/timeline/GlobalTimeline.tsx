@@ -2,13 +2,11 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import styled from 'styled-components/macro';
 import Loading from '../../components/Loading';
 import { useSelector } from 'react-redux';
-import { ProsoVisEvent } from '../../types/events';
 import { axisBottom, scaleTime, select } from 'd3';
 import { parseISO } from 'date-fns';
 import useDimensions from '../../../hooks/useDimensions';
 import { height, margin } from './options';
 import { selectDiscrete } from './selectors';
-import { keys } from 'lodash/fp';
 import { StackedChart } from './StackedChart';
 
 export const Timeline = styled.div`
