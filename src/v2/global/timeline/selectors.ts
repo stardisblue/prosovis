@@ -1,29 +1,17 @@
 import { createSelector } from 'reselect';
-import { selectAllEvents, selectAllKinds } from '../../selectors/events';
 import {
   concat,
-  countBy,
   flatMap,
   get,
   groupBy,
   map,
   pipe,
-  sortBy,
   filter,
-  values,
   first,
 } from 'lodash/fp';
-import {
-  stack,
-  stackOffsetSilhouette,
-  stackOrderInsideOut,
-  utcDay,
-  utcYear,
-  utcYears,
-} from 'd3';
+import { utcDay, utcYear, utcYears } from 'd3';
 import { RichEvent } from '../../models/EventModel';
-import { selectMainColor } from '../../../selectors/color';
-import type { Dictionary } from 'lodash';
+import { selectAllMaskedEvents } from '../../selectors/globalKindMask';
 
 export type Tyvent<T> = {
   value: T;
@@ -51,7 +39,7 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ value: e }) => {
   return [];
 };
 
-export const selectDiscrete = createSelector(selectAllEvents, function (
+export const selectDiscrete = createSelector(selectAllMaskedEvents, function (
   events
 ) {
   return pipe(
@@ -68,29 +56,3 @@ export const selectDiscrete = createSelector(selectAllEvents, function (
     }))
   )(events) as Tyvent<Tyvent<string>[]>[];
 });
-
-export const selectStack = createSelector(
-  selectDiscrete,
-  selectMainColor,
-  selectAllKinds,
-  function (events, colors, kinds) {
-    const flatten = pipe(
-      map<Tyvent<Tyvent<string>[]>, Tyvent<Dictionary<number>>>(
-        ({ time, value }) => ({
-          time,
-          value: countBy('value', value),
-        })
-      ),
-      sortBy<Tyvent<Dictionary<number>>>('time')
-    )(events);
-
-    return {
-      stack: stack<any, Tyvent<Dictionary<number>>, string>()
-        .keys(values(kinds))
-        .offset(stackOffsetSilhouette)
-        .order(stackOrderInsideOut)
-        .value((d, k) => d.value[k] || 0)(flatten),
-      color: colors,
-    };
-  }
-);

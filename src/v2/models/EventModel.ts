@@ -32,12 +32,6 @@ export class EventModel {
     this.getEvents = this.getEvents.bind(this);
   }
 
-  getAll = flatMap<ProsoVisEvents['index'], RichEvent>(map(this.get));
-  getKinds = pipe(
-    uniqBy<RichEvent>('value.kind'),
-    map('value.kind'),
-    keyBy(identity)
-  );
   getEvents(actor: ProsoVisActor | ProsoVisActor['id']) {
     const id = typeof actor === 'string' ? actor : actor.id;
 

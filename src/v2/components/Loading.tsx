@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash/fp';
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 
@@ -19,9 +20,9 @@ const rotate = keyframes`{
     to { transform: rotate(360deg); }
   }`;
 
-const Spinner = styled.span`
-  width: 3em;
-  height: 3em;
+const Spinner = styled.span<{ size?: number }>`
+  width: ${({ size = 3 }) => size}em;
+  height: ${({ size = 3 }) => size}em;
   vertical-align: text-bottom;
   border: 0.25em solid white;
   border-right-color: transparent;
@@ -35,16 +36,17 @@ const FullWidth = styled.div`
   position: relative;
 `;
 
-const Loading: React.FC<{ finished?: any }> = function ({
+const Loading: React.FC<{ finished?: any; size?: number }> = function ({
   finished = false,
+  size = 3,
   children,
 }) {
   return (
     <FullWidth>
       {children}
-      {!finished && (
+      {isEmpty(finished) && (
         <LoadingSplash>
-          <Spinner />
+          <Spinner size={size} />
         </LoadingSplash>
       )}
     </FullWidth>

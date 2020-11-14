@@ -3,7 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 import { selectActorsModel } from './actors';
 import { selectLocalisationsModel } from './localisations';
 import { EventModel } from '../models/EventModel';
-import { flatMap, identity, keyBy, map, pipe, uniqBy } from 'lodash/fp';
+import { flatMap, identity, keyBy, map, pipe, sortBy, uniqBy } from 'lodash/fp';
 
 export const selectEvents = (state: RootState) => state.eventData;
 
@@ -26,6 +26,7 @@ export const selectAllKinds = createSelector(selectAllEvents, (all) =>
     ? pipe(
         uniqBy<typeof all[0]>('value.kind'),
         map('value.kind'),
+        sortBy(identity),
         keyBy(identity)
       )(all)
     : undefined
