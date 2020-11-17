@@ -13,6 +13,11 @@ const StyledDrawer = styled.section`
   border-left: 1px solid lightgray;
 `;
 
+/**
+ *
+ * @param param0
+ * @deprecated
+ */
 const Drawer: React.FC<{
   className?: string;
   hideable?: React.ReactNode;

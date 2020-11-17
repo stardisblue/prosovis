@@ -4,7 +4,6 @@ import { ProsoVisEvents, ProsoVisEvent } from '../types/events';
 import { ActorModel } from './ActorModel';
 import { LocalisationModel, RichLocalisation } from './LocalisationModel';
 
-import { flatMap, map, pipe, uniqBy, keyBy, identity } from 'lodash/fp';
 import type { Dictionary } from 'lodash';
 
 export type RichEvent = {

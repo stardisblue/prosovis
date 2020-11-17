@@ -21,15 +21,15 @@ import { StackedChart } from './StackedChart';
 import { countBy, map, pipe, sortBy, values } from 'lodash/fp';
 import type { Dictionary } from 'lodash';
 import { selectAllKinds } from '../../selectors/events';
+import { selectSwitchKindColor } from '../../../selectors/switch';
 
 export const Timeline = styled.div`
-  height: 200px;
+  height: ${height}px;
 `;
 
 const GlobalTimeline: React.FC = function () {
   const $svg = useRef<SVGSVGElement>(null as any);
   const dimensions = useDimensions($svg);
-  const data = useSelector(selectDiscrete);
 
   const width = useMemo(() => dimensions?.width, [dimensions]);
 
@@ -45,13 +45,12 @@ const GlobalTimeline: React.FC = function () {
         .value((d, k) => d.value[k] || 0)(flatten(events)),
     [events, kinds]
   );
-  console.log(st);
+  const color = useSelector(selectSwitchKindColor);
 
   return (
     <Loading finished={st}>
-      <h3>WIP Timeline</h3>
       <svg height={height} width="100%" ref={$svg}>
-        {width && <StreamGraph width={width} stack={st} />}
+        {width && <StreamGraph width={width} stack={st} color={color} />}
       </svg>
     </Loading>
   );
@@ -70,7 +69,8 @@ const flatten = pipe(
 export const StreamGraph: React.FC<{
   width: number;
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
-}> = function ({ width, stack }) {
+  color: d3.ScaleOrdinal<string, string> | null;
+}> = function ({ width, stack, color }) {
   const x = useMemo(
     function () {
       return scaleTime()
@@ -96,7 +96,7 @@ export const StreamGraph: React.FC<{
 
   return (
     <>
-      <StackedChart x={x} y={y} stack={stack} />
+      <StackedChart x={x} y={y} stack={stack} color={color} />
       <Axis
         scale={x}
         position={['0', height - margin.bottom + 'px']}

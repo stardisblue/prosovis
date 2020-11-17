@@ -6,10 +6,6 @@ type IntervalMask = {
   end: string;
 };
 
-export type KindMask = {
-  [k in SiprojurisEvent['kind']]?: boolean;
-};
-
 export type ActorMask = {
   [k in SiprojurisEvent['actor']['id']]?: boolean;
 };
@@ -20,7 +16,6 @@ export const maskSlice = createSlice({
   name: 'filters',
   initialState: {} as {
     interval?: IntervalMask;
-    kind?: KindMask;
     bounds?: BoundsMask;
     actor?: ActorMask;
   },
@@ -30,18 +25,6 @@ export const maskSlice = createSlice({
       { payload }: PayloadAction<IntervalMask>
     ) {
       state.interval = payload;
-    },
-    toggleKindMask: function (
-      state,
-      { payload }: PayloadAction<SiprojurisEvent['kind']>
-    ) {
-      if (state.kind)
-        state.kind[payload] =
-          state.kind[payload] !== undefined ? !state.kind[payload] : false;
-      else state.kind = { [payload]: false };
-    },
-    setKindMask: function (state, { payload }: PayloadAction<KindMask>) {
-      state.kind = payload;
     },
     toggleActorMask: function (
       state,
@@ -66,8 +49,6 @@ export const maskSlice = createSlice({
 
 export const {
   setIntervalMask,
-  setKindMask,
-  toggleKindMask,
   setActorMask,
   toggleActorMask,
   setBoundsMask,

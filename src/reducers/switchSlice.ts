@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 const switchSlice = createSlice({
   name: 'switch',
-  initialState: 'Actor' as 'Actor' | 'Kind',
+  initialState: 'Kind' as 'Actor' | 'Kind',
   reducers: {
     toggleSwitch(state) {
       return state === 'Actor' ? 'Kind' : 'Actor';
@@ -15,8 +15,8 @@ const switchSlice = createSlice({
     },
     switchTo(_state, { payload }: PayloadAction<'Actor' | 'Kind'>) {
       return payload;
-    }
-  }
+    },
+  },
 });
 
 export default switchSlice.reducer;
@@ -25,5 +25,5 @@ export const {
   toggleSwitch,
   switchTo,
   switchToActor,
-  switchToKind
+  switchToKind,
 } = switchSlice.actions;

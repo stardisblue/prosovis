@@ -10,6 +10,10 @@ export const selectEventsAsMap = createSelector(selectEvents, (events) =>
   _.keyBy(events, 'id')
 );
 
+/**
+ * @deprecated
+ * @see selectGlobalKindMask
+ */
 export const selectKinds = createSelector(selectEvents, (events) =>
   _(events).uniqBy('kind').map('kind').keyBy().value()
 );

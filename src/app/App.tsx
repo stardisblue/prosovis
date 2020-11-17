@@ -12,53 +12,34 @@ import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
-import Drawer from '../components/ui/Drawer';
-import { lightgray } from '../components/ui/colors';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
 import { OfflineBanner } from '../feature/check-server/OfflineBanner';
 import GlobalView from '../v2/global/GlobalView';
-
-const Aside = styled.main`
-  display: grid;
-  width: 100%;
-  height: 100vh;
-  grid-template-areas:
-    'search main'
-    'info main';
-  grid-template-columns: 25% 1fr;
-  grid-template-rows: auto 1fr;
-`;
+import Side1Main3 from '../v2/components/ui/Side1Main3';
+import GridAutoRest from '../v2/components/ui/GridAutoRest';
+import Flip from '../v2/components/ui/Flip';
+import theme from '../v2/components/theme';
 
 const Main = styled.div`
-  grid-area: main;
   display: grid;
   position: relative;
   width: 100%;
   height: 100%;
   grid-template-areas:
-    'header header'
     'rel  map'
     'timeline timeline';
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto 1fr;
-`;
-
-const Search = styled.section`
-  grid-area: search;
-`;
-
-const StyledInformation = styled(Information)`
-  grid-area: info;
+  grid-template-rows: 1fr auto;
 `;
 
 const StyledMap = styled(SiprojurisMap)`
   grid-area: map;
-  border-left: 1px solid ${lightgray};
+  border-left: 1px solid ${theme.lightgray};
 `;
 
 const StyledRelation = styled(Relation)`
   grid-area: rel;
-  border-top: 1px solid ${lightgray};
+  border-top: 1px solid ${theme.lightgray};
 `;
 
 const StyledTimeline = styled(SiprojurisTimeline)`
@@ -66,7 +47,6 @@ const StyledTimeline = styled(SiprojurisTimeline)`
 `;
 
 const Header = styled.div`
-  grid-area: header;
   display: grid;
   justify-content: center;
   grid-template-columns: 1fr auto;
@@ -123,25 +103,27 @@ function App() {
     []
   );
   return (
-    <div ref={$ref}>
-      <Aside {...bind}>
-        <Search>
+    <div ref={$ref} {...bind}>
+      <Side1Main3>
+        <GridAutoRest>
           <Autocomplete />
-        </Search>
-        <StyledInformation />
-        <Main>
+          <Information />
+        </GridAutoRest>
+        <GridAutoRest>
           <Header>
             <Mask />
             <StyledInfoBubble />
           </Header>
-          <StyledRelation />
-          <StyledMap />
-          <StyledTimeline />
-          <Drawer>
+          <Flip>
             <GlobalView />
-          </Drawer>
-        </Main>
-      </Aside>
+            <Main>
+              <StyledRelation />
+              <StyledMap />
+              <StyledTimeline />
+            </Main>
+          </Flip>
+        </GridAutoRest>
+      </Side1Main3>
       <ActorModal />
       <OfflineBanner />
     </div>

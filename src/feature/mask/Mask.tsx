@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import ColorSwitch from './ColorSwitch';
 import ActorList from './ActorList';
-import KindList from './KindList';
+import { KindMaskView } from '../../v2/views/KindMaskView';
 
 const StyledSection = styled.section`
   display: grid;
@@ -24,10 +24,14 @@ const SwitchArea = styled.div`
 
 const ActorsArea = styled.div`
   grid-area: actors;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 `;
 
 const KindsArea = styled.div`
   grid-area: kinds;
+  padding-left: 0.5em;
+  padding-right: 0.5em;
 `;
 
 const Mask: React.FC<{ className?: string }> = function ({ className }) {
@@ -40,7 +44,7 @@ const Mask: React.FC<{ className?: string }> = function ({ className }) {
         <ActorList />
       </ActorsArea>
       <KindsArea>
-        <KindList />
+        <KindMaskView />
       </KindsArea>
     </StyledSection>
   );

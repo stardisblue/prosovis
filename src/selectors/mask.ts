@@ -5,15 +5,16 @@ import moment from 'moment';
 import _ from 'lodash';
 import { selectEvents } from './event';
 import L from 'leaflet';
-import { ActorMask, KindMask } from '../reducers/maskSlice';
+import { ActorMask } from '../reducers/maskSlice';
 import { SiprojurisEvent } from '../data/sip-models';
+import { selectKindMask } from '../v2/selectors/globalKindMask';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
   selectMask,
   (mask) => mask.interval
 );
-export const selectKindMask = createSelector(selectMask, (mask) => mask.kind);
+
 export const selectActorMask = createSelector(selectMask, (mask) => mask.actor);
 export const selectBoundsMask = createSelector(
   selectMask,
@@ -96,7 +97,6 @@ export function actorMaskState(
   return state !== undefined ? state : true;
 }
 
-export function kindMaskState(kind: SiprojurisEvent['kind'], masks?: KindMask) {
-  const state = masks && masks[kind];
-  return state !== undefined ? state : true;
+export function kindMaskState(kind: string, masks: _.Dictionary<string>) {
+  return masks[kind] === undefined;
 }
