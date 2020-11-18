@@ -5,6 +5,8 @@ export const red = '#d73a49';
 export const orange = '#f66a0a';
 export const blue = '#2188ff';
 
+export const animation = '200ms';
+
 const theme = {
   moongray,
   lightgray,
@@ -12,5 +14,6 @@ const theme = {
   red,
   orange,
   blue,
+  animation,
 };
 export default theme;
