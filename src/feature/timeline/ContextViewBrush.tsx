@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import * as d3 from 'd3';
 import ContextOptions from './ContextOptions';
+import { pointer } from 'd3-selection';
 
 type ViewReference = {
   dom: SVGGElement;
@@ -56,7 +57,7 @@ export const ContextViewBrush: React.FC<{
     function () {
       const { brush } = view.current;
 
-      brush.on('brush', function (event) {
+      brush.on('brush', function (event: any) {
         if (event.sourceEvent && event.selection) {
           const [start, end] = event.selection.map(x.invert);
           onBrush(start, end);
@@ -82,7 +83,7 @@ export const ContextViewBrush: React.FC<{
 
             const [start, end] = brushSelection;
             const dx = end - start;
-            const [cx] = d3.pointer(event);
+            const [cx] = pointer(event);
             const [x0, x1] = [cx - dx / 2, cx + dx / 2];
             const [X0, X1] = x.range();
 

@@ -144,7 +144,7 @@ export const ContextMaskBrush: React.FC<{
 
   useEffect(
     function () {
-      mask.current.brush.on('start brush end', function (event) {
+      mask.current.brush.on('start brush end', function (event: any) {
         if (event.selection) {
           d3.select(this).call(brushHandles, event.selection);
 

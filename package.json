@@ -11,6 +11,7 @@
     "@types/bootstrap": "^4.5.0",
     "@types/classnames": "^2.2.10",
     "@types/d3": "^6.2.0",
+    "@types/d3-selection": "^2.0.0",
     "@types/he": "^1.1.1",
     "@types/jest": "^26.0.10",
     "@types/jquery": "^3.5.1",
