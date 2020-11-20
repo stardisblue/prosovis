@@ -13,7 +13,6 @@ import { DetailsMenuEvents } from './DetailsMenuEvents';
 import Axios from 'axios';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
-import { SiprojurisActor } from '../../data/sip-models';
 import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../components/ui/IconSpacer';
 import { lightgray, red } from '../../components/ui/colors';
@@ -21,9 +20,10 @@ import { setOffline, setOnline } from '../../reducers/serverStatusSlice';
 import { selectServerStatus } from '../../selectors/serverStatus';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import { Button } from '../../components/Button';
+import { ProsoVisActor } from '../../v2/types/actors';
 
 export const DetailsMenuContent: React.FC<{
-  actor: SiprojurisActor;
+  actor: ProsoVisActor;
 }> = function ({ actor }) {
   const dispatch = useDispatch();
   const online = useSelector(selectServerStatus);

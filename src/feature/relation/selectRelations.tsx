@@ -1,24 +1,22 @@
-import indexLocalisations from '../../data/index-localisations.json';
+import indexLocalisations from '../../data/index-localisations';
 import indexActors from '../../data/index-actors';
 
-import rawLinks from '../../data/relations.json';
+import relations from '../../data/relations';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
-import { RelationEvent, ActorRelationsMap, RelationNodeType } from './models';
+import { ActorRelationsMap } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
-import { pipe, toPairs, map } from 'lodash/fp';
+import { toPairs } from 'lodash/fp';
+import { ProsoVisSignedRelation } from '../../v2/types/relations';
+import { ProsoVisActor } from '../../v2/types/actors';
 
-const locs: Map<number, RelationNodeType> = new Map(
-  pipe(
-    toPairs,
-    map(([k, v]) => [+k, v] as [number, RelationNodeType])
-  )(indexLocalisations)
-);
+const locs = new Map(toPairs(indexLocalisations.index));
+export const selectLocalisations = () => locs;
 
 export type RelationType = {
-  locLinks: Map<number, Map<string, RelationEvent>>;
-  links: Map<string, RelationEvent>; // link between actors
+  locLinks: Map<string, Map<string, ProsoVisSignedRelation>>;
+  links: Map<string, ProsoVisSignedRelation>; // link between actors
 
   /**
    * ```
@@ -28,15 +26,15 @@ export type RelationType = {
    *     locId => { linkId => RelationLink }}}}
    * ```
    */
-  actorRing: Map<number, { ghosts: Set<number>; locsLinks: ActorRelationsMap }>;
-  ghosts: Map<number, RelationNodeType>;
-  actors: Map<number, RelationNodeType>; // all people information ( actors)
+  actorRing: Map<string, { ghosts: Set<string>; locsLinks: ActorRelationsMap }>;
+  ghosts: Map<string, ProsoVisActor>;
+  actors: Map<string, ProsoVisActor>; // all people information ( actors)
 };
 
 function addRelation(
   relations: RelationType,
-  rawNodes: _.Dictionary<RelationNodeType>,
-  link: RelationEvent
+  actors: _.Dictionary<ProsoVisActor>,
+  link: ProsoVisSignedRelation
 ) {
   let outer = relations.actorRing.get(link.source);
   if (!outer) {
@@ -54,10 +52,10 @@ function addRelation(
   locLinks.set(link.id, link);
 
   if (!relations.ghosts.has(link.target))
-    relations.ghosts.set(link.target, rawNodes[link.target]);
+    relations.ghosts.set(link.target, actors[link.target]);
 
   if (!relations.actors.has(link.source))
-    relations.actors.set(link.source, rawNodes[link.source]);
+    relations.actors.set(link.source, actors[link.source]);
 }
 
 const compareByKeySelector = createSelectorCreator(defaultMemoize, function (
@@ -72,36 +70,43 @@ export const selectActorsFromMaskedEvents = createSelector(
   (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
 
-const links: RelationEvent[] = _.map(rawLinks, ({ actors, ...props }) => ({
-  ...props,
-  id: actors.join(':'),
-  source: actors[0],
-  target: actors[1],
-}));
+export const selectLinks: () => ProsoVisSignedRelation[] = () =>
+  _.map(relations, ({ actors, ...props }) => ({
+    ...props,
+    id: actors.join(':'),
+    source: actors[0],
+    target: actors[1],
+  }));
 
-export const actorLinksMap = _(links)
-  .transform((relations, l) => {
-    let srels = relations.get(l.source);
-    if (srels === undefined) {
-      srels = { events: new Set(), actors: new Map() };
-      relations.set(l.source, srels);
-    }
-    srels.actors.set(l.target, l);
-    l.events.forEach((e) => srels!.events.add(e));
+export const selectActorLinksMap = createSelector(selectLinks, (links) =>
+  _(links)
+    .transform((relations, l) => {
+      let srels = relations.get(l.source);
+      if (srels === undefined) {
+        srels = { events: new Set(), actors: new Map() };
+        relations.set(l.source, srels);
+      }
+      srels.actors.set(l.target, l);
+      l.events.forEach((e) => srels!.events.add(e));
 
-    let trels = relations.get(l.target);
-    if (trels === undefined) {
-      trels = { events: new Set(), actors: new Map() };
-      relations.set(l.target, trels);
-    }
-    trels.actors.set(l.source, l);
-    l.events.forEach((e) => trels!.events.add(e));
-  }, new Map<number, { events: Set<number>; actors: Map<number, RelationEvent> }>())
-  .value();
+      let trels = relations.get(l.target);
+      if (trels === undefined) {
+        trels = { events: new Set(), actors: new Map() };
+        relations.set(l.target, trels);
+      }
+      trels.actors.set(l.source, l);
+      l.events.forEach((e) => trels!.events.add(e));
+    }, new Map<string, { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }>())
+    .value()
+);
+
+export const selectActorsData = () => indexActors;
 
 export const selectRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
-  (actors) => {
+  selectLinks,
+  selectActorsData,
+  (actors, links, indexActors) => {
     return _.transform(
       links,
       function (relations, link) {
@@ -117,11 +122,11 @@ export const selectRelations = compareByKeySelector(
               relations.actors.set(target, _.get(indexActors, target));
             relations.links.set(link.id, link);
           } else if (actors[source]) {
-            addRelation(relations, indexActors, link);
+            addRelation(relations, indexActors.index, link);
           } else if (actors[target]) {
             link.source = target;
             link.target = source;
-            addRelation(relations, indexActors, link);
+            addRelation(relations, indexActors.index, link);
           }
         }
         let l = relations.locLinks.get(link.loc);
@@ -141,7 +146,6 @@ export const selectRelations = compareByKeySelector(
   }
 );
 
-export const selectLocalisations = () => locs;
 export const selectRelationNodes = createSelector(
   selectRelations,
   ({ actors }) => actors

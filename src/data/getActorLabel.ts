@@ -1,6 +1,7 @@
 import { pipe, split, map, join } from 'lodash/fp';
 import { isSiprojurisActor, SiprojurisActor } from './sip-models';
 import { ActorCard } from './models';
+import { ProsoVisActor } from '../v2/types/actors';
 
 const splitActorLabel = split(',');
 const compactFirstNames = (f: string) => f.trim().replace(/[^A-Z]+/g, '. ');
@@ -23,6 +24,9 @@ export function computeActorShortLabel(
   };
 }
 
-export function getActorLabel(actor: SiprojurisActor, short: boolean = false) {
+export function getActorLabel(
+  actor: SiprojurisActor | ProsoVisActor,
+  short: boolean = false
+) {
   return short ? actor.shortLabel : actor.label;
 }

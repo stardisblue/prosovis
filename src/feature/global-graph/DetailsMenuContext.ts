@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { SiprojurisActor } from '../../data/sip-models';
+import { ProsoVisActor } from '../../v2/types/actors';
 type Menu = {
-  actor: SiprojurisActor;
+  actor: ProsoVisActor;
   ref: SVGGElement;
   x: number;
   y: number;

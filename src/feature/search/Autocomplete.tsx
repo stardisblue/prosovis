@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import rawNodes from '../../data/index-actors';
 import _ from 'lodash';
 import fuzzysort from 'fuzzysort';
 import { useSelector } from 'react-redux';
@@ -7,13 +6,17 @@ import { selectActors } from '../../selectors/event';
 import styled from 'styled-components/macro';
 import { AutocompleteItem } from './AutocompleteItem';
 import { stopEventPropagation } from '../../hooks/useClick';
+import { createSelector } from 'reselect';
+import { selectActorsData } from '../relation/selectRelations';
 
-const actorLabels: Fuzzysort.Prepared[] = _.map(rawNodes, (n) => ({
-  id: n.id,
-  ...fuzzysort.prepare(
-    n.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  )!,
-}));
+const selectActorLabels = createSelector(selectActorsData, (nodes) =>
+  _.map(nodes.index, (n) => ({
+    id: n.id,
+    ...fuzzysort.prepare(
+      n.label.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    )!,
+  }))
+);
 
 const options = { limit: 20, threshold: -10000 };
 
@@ -50,6 +53,7 @@ const Autocomplete: React.FC = function () {
   const [text, setText] = useState('');
   const [results, setResults] = useState<Fuzzysort.Result[]>([]);
   const activeActors = useSelector(selectActors);
+  const actorLabels = useSelector(selectActorLabels);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     setText(e.target.value);
@@ -66,7 +70,7 @@ const Autocomplete: React.FC = function () {
         (r) => activeActors[(r as any).id] === undefined
       )
     );
-  }, [text, activeActors]);
+  }, [text, activeActors, actorLabels]);
 
   return (
     <Container onMouseUpCapture={stopEventPropagation}>

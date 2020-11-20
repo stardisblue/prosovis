@@ -1,10 +1,13 @@
+import { ProsoVisActor } from '../v2/types/actors';
 import { ActorCard, NamedPlace, AnyEvent } from './models';
 
 export type SiprojurisActor = ActorCard & {
   shortLabel: string;
 };
 
-export function isSiprojurisActor(object: any): object is SiprojurisActor {
+export function isSiprojurisActor(
+  object: any
+): object is SiprojurisActor | ProsoVisActor {
   return object?.kind === 'Actor' && typeof object?.shortLabel === 'string';
 }
 
@@ -32,7 +35,7 @@ export type SipError = {
 
 export type SiprojurisEvent = Readonly<
   AnyEvent<SiprojurisActor, SiprojurisNamedPlace>
-> & { computed?: ComputedLabels; errors?: SipError[] };
+> & { id: string; computed?: ComputedLabels; errors?: SipError[] };
 
 export type ComputedLabels = {
   actorNote: string;

@@ -1,6 +1,8 @@
 import React, { useContext, useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
-import GlobalGraphContext, { getActorInformations } from './GlobalGraphContext';
+import GlobalGraphContext, {
+  selectGetActorInformations,
+} from './GlobalGraphContext';
 import { useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
 import { selectSwitchActorColor } from '../../selectors/switch';
@@ -8,6 +10,7 @@ import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { useFlatClick } from '../../hooks/useClick';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
+import { ProsoVisNode } from '../../v2/types/graph';
 
 export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
   fill: ${({ fill }) => fill ?? 'lightgray'};
@@ -20,7 +23,7 @@ export const StyledText = styled.text`
   user-select: none;
 `;
 
-function useFill(id: number) {
+function useFill(id: string) {
   const actors = useSelector(selectActors);
   const color = useSelector(selectSwitchActorColor);
   return color && actors[id] ? color(id) : undefined;
@@ -52,16 +55,21 @@ function getHighlightState<T>(index: T, shiner: T, sparky: boolean) {
   return undefined;
 }
 
-export const GlobalGraphNode: React.FC<{
-  id: number;
-  label: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}> = function ({ id, label, x, y, width, height }) {
+export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
+  id,
+  label,
+  x,
+  y,
+  width,
+  height,
+}) {
   const $ref = useRef<SVGGElement>(null as any);
-  const { actor, eventIds } = useMemo(() => getActorInformations(id), [id]);
+  const getActorInformations = useSelector(selectGetActorInformations);
+
+  const { actor, eventIds } = useMemo(() => getActorInformations(id), [
+    id,
+    getActorInformations,
+  ]);
   const {
     sparker,
     shiner,

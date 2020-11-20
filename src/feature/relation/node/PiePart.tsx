@@ -14,7 +14,7 @@ import {
 export const PiePart: React.FC<{
   a: d3.PieArcDatum<LocEvents>;
   arc: d3.Arc<any, d3.PieArcDatum<LocEvents>>;
-  parent: number;
+  parent: string;
 }> = function ({ arc, a, parent }) {
   const dispatch = useDispatch();
   const emph = useSelector(selectRelationEmphasis);

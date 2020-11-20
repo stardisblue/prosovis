@@ -1,12 +1,6 @@
-import { mapValues } from 'lodash/fp';
 import rawNodes from './index-actors.json';
-import { computeActorShortLabel } from './getActorLabel';
-import { ActorCard } from './models';
-import { SiprojurisActor } from './sip-models';
+import { ProsoVisActors } from '../v2/types/actors';
 
-const indexActors: { [k: string]: SiprojurisActor } = mapValues(
-  (v) => computeActorShortLabel(v),
-  rawNodes as { [k: string]: ActorCard }
-);
+const indexActors: ProsoVisActors = rawNodes as any;
 
 export default indexActors;

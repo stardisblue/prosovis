@@ -17,6 +17,7 @@ import styled from 'styled-components/macro';
 import { PlusIcon } from '@primer/octicons-react';
 import { fetchActorThunk } from '../../../thunks/actor';
 import { darkgray } from '../../../components/ui/colors';
+import { ProsoVisSignedRelation } from '../../../v2/types/relations';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
@@ -34,7 +35,7 @@ const selectGroups = createSelector(
 export const SuggestionNodes: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
   color: string | null | undefined;
-  x: (v: number) => number;
+  x: (v: string) => number;
 }> = function ({ $g, color, x }) {
   const sorted = useSelector(selectSortedGhosts);
   const domain = d3.extent<number>(_.map(sorted, 'd')) as [number, number];
@@ -59,9 +60,9 @@ export const SuggestionNodes: React.FC<{
 };
 
 export const SuggestionNode: React.FC<{
-  actors: { [k: number]: number };
-  datum: RelationEvent;
-  x: (value: number) => number;
+  actors: _.Dictionary<string>;
+  datum: ProsoVisSignedRelation;
+  x: (value: string) => number;
   y: d3.ScaleLogarithmic<number, number>;
   color: string;
 }> = function ({ actors, datum, x, y, color }) {

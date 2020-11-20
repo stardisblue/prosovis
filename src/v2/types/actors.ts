@@ -9,5 +9,5 @@ export type ProsoVisActor = {
 export type ProsoVisActors = {
   url: string;
   uri: string;
-  index: { [k: string]: ProsoVisActor };
+  index: _.Dictionary<ProsoVisActor>;
 };

@@ -97,7 +97,7 @@ const GlobalGraph: React.FC<{ graph: ProsoVisGraph }> = function ({ graph }) {
             {map(graph, (n) => (
               <GlobalGraphNode
                 key={n.id}
-                id={+n.id}
+                id={n.id}
                 x={n.x - n.width / 2}
                 y={n.y - n.height / 2}
                 width={n.width}

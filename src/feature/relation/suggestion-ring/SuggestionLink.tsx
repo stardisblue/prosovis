@@ -5,10 +5,11 @@ import { useDatum } from '../../../hooks/useD3';
 // import { useSelector } from 'react-redux';
 import { RelationEvent } from '../models';
 import path from './path';
+import { ProsoVisSignedRelation } from '../../../v2/types/relations';
 
 export const SuggestionLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
-  x: (value: number) => number;
+  x: (value: string) => number;
 }> = function ({ $g, x }) {
   // const links = useSelector(selectDisplayedRingLinks);
 
@@ -22,8 +23,8 @@ export const SuggestionLinks: React.FC<{
 };
 
 export const SuggestionLink: React.FC<{
-  datum: RelationEvent;
-  x: (value: number) => number;
+  datum: ProsoVisSignedRelation;
+  x: (value: string) => number;
 }> = function ({ datum, x }) {
   // const { locLinks } = useSelector(selectRelations);
   // const activeRelation = useSelector(selectRelationSelection);

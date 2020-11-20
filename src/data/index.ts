@@ -59,11 +59,13 @@ export function getSiprojurisEvents(
 
 function convertToSiprojurisEvents({
   actor,
+  id,
   ...e
 }: AnyEvent<ActorCard, NamedPlace>): SiprojurisEvent {
   let se: SiprojurisEvent;
   if (e.kind === 'PassageExamen') {
     se = {
+      id: id.toString(),
       ...e,
       actor_evalue: e.actor_evalue
         ? computeActorShortLabel(e.actor_evalue)
@@ -87,12 +89,14 @@ function convertToSiprojurisEvents({
         }
       : null;
     se = {
+      id: id.toString(),
       ...e,
       passage_examen,
       actor: computeActorShortLabel(actor),
     };
   } else {
     se = {
+      id: id.toString(),
       ...e,
       actor: computeActorShortLabel(actor),
       datation: sortDatation(e.datation),

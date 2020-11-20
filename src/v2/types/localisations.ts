@@ -18,11 +18,7 @@ export type ProsoVisPlace = {
 export type ProsoVisLocalisation = ProsoVisCollective | ProsoVisPlace;
 
 export type ProsoVisLocalisations = {
-  url: {
-    [k: string]: string;
-  };
+  url: _.Dictionary<string>;
   uri: string;
-  index: {
-    [k: string]: ProsoVisLocalisation;
-  };
+  index: _.Dictionary<ProsoVisLocalisation>;
 };

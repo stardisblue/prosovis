@@ -2,20 +2,21 @@ import React, { useMemo } from 'react';
 import _ from 'lodash';
 
 import * as d3 from 'd3';
-import { LocEvents, RelationNodeType } from '../models';
+import { LocEvents } from '../models';
 import PiePart from './PiePart';
 import { useDatum } from '../../../hooks/useD3';
 import { useSelector } from 'react-redux';
 import { selectRelationActorRing } from '../selectRelations';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { darkgray } from '../../../components/ui/colors';
+import { ProsoVisActor } from '../../../v2/types/actors';
 
 const scale = d3.scaleSqrt().range([0, 3]);
 
 export const RelationNode: React.FC<{
-  datum: RelationNodeType;
+  datum: ProsoVisActor;
 }> = function ({ datum }) {
-  const $g = useDatum<SVGGElement, RelationNodeType>(datum);
+  const $g = useDatum<SVGGElement, ProsoVisActor>(datum);
   const { locsLinks, ghosts } = useSelector(selectRelationActorRing).get(
     datum.id
   )!;

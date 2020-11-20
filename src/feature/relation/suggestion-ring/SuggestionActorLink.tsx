@@ -57,7 +57,7 @@ export const selectClusteredSuggestionActorLinks = createSelector(
 
 export const SuggestionActorLinks: React.FC<{
   $g?: React.MutableRefObject<SVGGElement>;
-  x: (v: number) => number;
+  x: (v: string) => number;
 }> = function ({ $g, x }) {
   const clusters = useSelector(selectClusteredSuggestionActorLinks);
 

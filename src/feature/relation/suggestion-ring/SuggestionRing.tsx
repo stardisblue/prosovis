@@ -19,9 +19,9 @@ const selectActiveActorColor = createSelector(
   }
 );
 
-const xBand = scaleBand<number>().range([0, 2 * Math.PI]);
+const xBand = scaleBand<string>().range([0, 2 * Math.PI]);
 
-const x = (value: number) => xBand(value)! + (xBand.bandwidth() - Math.PI) / 2;
+const x = (value: string) => xBand(value)! + (xBand.bandwidth() - Math.PI) / 2;
 
 export const SuggestionRing: React.FC<{
   $nodes?: React.MutableRefObject<SVGGElement>;
