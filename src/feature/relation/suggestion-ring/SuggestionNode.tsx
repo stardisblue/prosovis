@@ -1,7 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import _ from 'lodash';
 import * as d3 from 'd3';
-import { RelationEvent } from '../models';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectRelationGhosts } from '../selectRelations';
 import {
@@ -11,7 +10,6 @@ import {
 } from './selectors';
 import { createSelector } from 'reselect';
 import { useFlatClick } from '../../../hooks/useClick';
-// import { selectActors } from '../../../selectors/event';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components/macro';
 import { PlusIcon } from '@primer/octicons-react';

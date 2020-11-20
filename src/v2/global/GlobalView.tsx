@@ -39,9 +39,9 @@ const TimelineArea = styled.div`
 const GlobalView: React.FC = function () {
   const dispatch = useDispatch();
   useMount(() => {
-    //   dispatch(fetchLocalisations());
-    //   dispatch(fetchActors());
-    //   dispatch(fetchEvents());
+    dispatch(fetchLocalisations());
+    dispatch(fetchActors());
+    dispatch(fetchEvents());
     dispatch(fetchGraph());
   });
   return (

@@ -1,9 +1,6 @@
 import React from 'react';
 import { toCartesian } from '../../../utils';
 import { useDatum } from '../../../hooks/useD3';
-// import { selectRelationNodes } from '../selectRelations';
-// import { useSelector } from 'react-redux';
-import { RelationEvent } from '../models';
 import path from './path';
 import { ProsoVisSignedRelation } from '../../../v2/types/relations';
 

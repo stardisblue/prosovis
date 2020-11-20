@@ -4,7 +4,6 @@ import DetailsMenuContext from './DetailsMenuContext';
 import { Spring, animated } from 'react-spring/renderprops';
 import { DetailsMenuContent } from './DetailsMenuContent';
 import { stopEventPropagation } from '../../hooks/useClick';
-import { SiprojurisActor } from '../../data/sip-models';
 import { ProsoVisActor } from '../../v2/types/actors';
 
 const StyledDetailsOnWheelDiv = styled.div`
