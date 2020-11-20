@@ -144,12 +144,12 @@ export const ContextMaskBrush: React.FC<{
 
   useEffect(
     function () {
-      mask.current.brush.on('start brush end', function () {
-        if (d3.event.selection) {
-          d3.select(this).call(brushHandles, d3.event.selection);
+      mask.current.brush.on('start brush end', function (event) {
+        if (event.selection) {
+          d3.select(this).call(brushHandles, event.selection);
 
-          if (d3.event.sourceEvent) {
-            const [start, end] = d3.event.selection.map(x.invert);
+          if (event.sourceEvent) {
+            const [start, end] = event.selection.map(x.invert);
             onBrush(start, end);
             updateMask(start, end);
           }

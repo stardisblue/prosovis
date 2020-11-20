@@ -13,10 +13,10 @@ export const ContextViewBrush: React.FC<{
   width: number;
   onBrush: (start: Date, end: Date) => void;
   sync?: [Date, Date];
-}> = function({ width, x, onBrush, sync }) {
+}> = function ({ width, x, onBrush, sync }) {
   // ! assuming that ref is instantaneously populated
   const view = useRef<ViewReference>(null as any);
-  const handleRef = useCallback(function(dom: SVGGElement | null) {
+  const handleRef = useCallback(function (dom: SVGGElement | null) {
     if (dom === null) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
@@ -25,15 +25,15 @@ export const ContextViewBrush: React.FC<{
 
   // sync width
   useEffect(
-    function() {
+    function () {
       const { brush, selection } = view.current;
 
       brush.extent([
         [ContextOptions.margin.view.left, ContextOptions.margin.view.top],
         [
           width - ContextOptions.margin.view.right,
-          ContextOptions.height - ContextOptions.margin.view.bottom
-        ]
+          ContextOptions.height - ContextOptions.margin.view.bottom,
+        ],
       ]);
       selection.call(brush);
     },
@@ -42,7 +42,7 @@ export const ContextViewBrush: React.FC<{
 
   // update brush position
   useEffect(
-    function() {
+    function () {
       if (!sync) return;
       const { brush, selection } = view.current;
 
@@ -53,12 +53,12 @@ export const ContextViewBrush: React.FC<{
 
   // notify when brush is moved
   useEffect(
-    function() {
+    function () {
       const { brush } = view.current;
 
-      brush.on('brush', function() {
-        if (d3.event.sourceEvent && d3.event.selection) {
-          const [start, end] = d3.event.selection.map(x.invert);
+      brush.on('brush', function (event) {
+        if (event.sourceEvent && event.selection) {
+          const [start, end] = event.selection.map(x.invert);
           onBrush(start, end);
         }
       });
@@ -68,11 +68,11 @@ export const ContextViewBrush: React.FC<{
 
   // Allows the window to be teleported when clicking on the context
   useEffect(
-    function() {
-      view.current.selection.call(function(g) {
+    function () {
+      view.current.selection.call(function (g) {
         g.select('.overlay')
           .datum({ type: 'selection' })
-          .on('mousedown touchstart', function(this: any) {
+          .on('mousedown touchstart', function (event) {
             const { brush, dom, selection } = view.current;
 
             const brushSelection = d3.brushSelection(dom) as
@@ -82,7 +82,7 @@ export const ContextViewBrush: React.FC<{
 
             const [start, end] = brushSelection;
             const dx = end - start;
-            const [cx] = d3.mouse(this);
+            const [cx] = d3.pointer(event);
             const [x0, x1] = [cx - dx / 2, cx + dx / 2];
             const [X0, X1] = x.range();
 
