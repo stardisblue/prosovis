@@ -1,42 +1,38 @@
 import React, { useMemo, useEffect, useState, useContext } from 'react';
-import { PlusIcon, XIcon, XCircleFillIcon } from '@primer/octicons-react';
+import { PlusIcon, XIcon } from '@primer/octicons-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchActorThunk } from '../../thunks/actor';
-import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
+import { stopEventPropagation } from '../../hooks/useClick';
 import { selectActors } from '../../selectors/event';
 import { deleteActor } from '../../reducers/eventSlice';
-import { fetchActor } from '../../data/fetchActor';
-import { getEvents } from '../../data';
-import { SiprojurisEvent } from '../../data/sip-models';
-import { DetailsMenuSpinner } from './DetailsMenuSpinner';
 import { DetailsMenuEvents } from './DetailsMenuEvents';
-import Axios from 'axios';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
 import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../components/ui/IconSpacer';
-import { lightgray, red } from '../../components/ui/colors';
-import { setOffline, setOnline } from '../../reducers/serverStatusSlice';
-import { selectServerStatus } from '../../selectors/serverStatus';
+import { lightgray } from '../../components/ui/colors';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
-import { Button } from '../../components/Button';
 import { ProsoVisActor } from '../../v2/types/actors';
+import { selectEventsModel } from '../../v2/selectors/events';
+import { ProsoVisEvent } from '../../v2/types/events';
+import Loading from '../../v2/components/Loading';
 
 export const DetailsMenuContent: React.FC<{
   actor: ProsoVisActor;
 }> = function ({ actor }) {
   const dispatch = useDispatch();
-  const online = useSelector(selectServerStatus);
   const { setMenuTarget } = useContext(DetailsMenuContext);
   const actors = useSelector(selectActors);
   const actorExists = actor && actors[actor.id] !== undefined;
+
+  const eventsDB = useSelector(selectEventsModel);
 
   const [handleClick, Icon] = useMemo(
     () =>
       actorExists
         ? [
             () => {
-              if (actor) dispatch(deleteActor(actor.id));
+              dispatch(deleteActor(actor.id));
               setMenuTarget(null);
             },
             <XIcon
@@ -47,7 +43,7 @@ export const DetailsMenuContent: React.FC<{
           ]
         : [
             () => {
-              if (actor) dispatch(fetchActorThunk(actor.id));
+              dispatch(fetchActorThunk(actor.id));
               setMenuTarget(null);
             },
             <PlusIcon
@@ -59,86 +55,26 @@ export const DetailsMenuContent: React.FC<{
     [actorExists, actor, dispatch, setMenuTarget]
   );
 
-  const [events, setEvents] = useState<SiprojurisEvent[] | null>(null);
-
-  const [retry, setRetryCount] = useState(0);
-  const [disableRetryButton, setRetryButtonState] = useState(false);
+  const [events, setEvents] = useState<ProsoVisEvent[] | null>(null);
 
   useEffect(() => {
-    if (retry !== 0) {
-      setRetryButtonState(true);
-    }
-  }, [retry]);
-
-  const flatRetryClick = useFlatClick(() => {
-    setRetryCount((state) => {
-      return state + 1;
-    });
-  });
-
-  useEffect(() => {
-    setEvents(null);
-    const source = Axios.CancelToken.source();
-    fetchActor(actor.id, {
-      cancelToken: source.token,
-    })
-      .then((response) => {
-        dispatch(setOnline());
-        setEvents(getEvents(response.data));
-      })
-      .catch((thrown) => {
-        if (Axios.isCancel(thrown)) {
-          console.log('Request canceled', thrown.message);
-        } else {
-          setRetryButtonState(false);
-          dispatch(setOffline());
-        }
-      });
-
-    return () => {
-      // cancelling to avoid collision between fetches
-      source.cancel('changed to new actor');
-    };
-  }, [actor.id, online, retry, dispatch]);
+    setEvents(eventsDB ? eventsDB.getEvents(actor.id) : null);
+  }, [actor.id, eventsDB]);
 
   return (
-    actor && (
-      <Base onMouseUp={stopEventPropagation}>
-        <ActorTitle>
-          <IconSpacerPointer spaceRight onClick={handleClick}>
-            {Icon}
-          </IconSpacerPointer>
-          <ActorLabel actor={actor} />
-        </ActorTitle>
-        {events ? (
-          <DetailsMenuEvents events={events} />
-        ) : online ? (
-          <DetailsMenuSpinner />
-        ) : (
-          <OfflineBase>
-            <SipErrorIcon size={24} />
-            <div>
-              Le serveur distant n'as pas pu être joint, veuillez réessayer plus
-              tard ou notifiez nous à chen@lirmm.fr
-            </div>
-            <Button {...flatRetryClick} disabled={disableRetryButton}>
-              Réessayer {retry !== 0 && retry}
-            </Button>
-          </OfflineBase>
-        )}
-      </Base>
-    )
+    <Base onMouseUp={stopEventPropagation}>
+      <ActorTitle>
+        <IconSpacerPointer spaceRight onClick={handleClick}>
+          {Icon}
+        </IconSpacerPointer>
+        <ActorLabel actor={actor} />
+      </ActorTitle>
+      <Loading finished={events}>
+        {events && <DetailsMenuEvents events={events} />}
+      </Loading>
+    </Base>
   );
 };
-
-const SipErrorIcon = styled(XCircleFillIcon)`
-  color: ${red};
-`;
-
-const OfflineBase = styled(StyledFlex)`
-  align-items: center;
-  flex-direction: column;
-`;
 
 const ActorTitle = styled(StyledFlex)`
   border-bottom: 1px solid ${lightgray};

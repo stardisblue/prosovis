@@ -16,23 +16,23 @@ import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import eventKind from '../../i18n/event-kind';
 import { EventDates } from '../../components/DateComponent';
-import { SiprojurisEvent } from '../../data/sip-models';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import styled from 'styled-components/macro';
 import { IconSpacer } from '../../components/ui/IconSpacer';
 import { scrollbar } from '../../components/scrollbar';
+import { ProsoVisDate, ProsoVisEvent } from '../../v2/types/events';
 
 type EventsByKind = {
-  kind: SiprojurisEvent['kind'];
-  events: SiprojurisEvent[];
+  kind: string;
+  events: ProsoVisEvent[];
 };
 
 type EventsByKindStartEndDate = EventsByKind & {
   datation: Datation[];
 };
 
-const eventsByFirstDate = sortBy<SiprojurisEvent>('datation[0].clean_date');
-const groupEventsByKind = (acc: EventsByKind[], curr: SiprojurisEvent) => {
+const eventsByFirstDate = sortBy<ProsoVisEvent>('datation[0].value');
+const groupEventsByKind = (acc: EventsByKind[], curr: ProsoVisEvent) => {
   const prev = last(acc);
   if (prev?.kind === curr.kind) {
     prev.events.push(curr);
@@ -40,10 +40,24 @@ const groupEventsByKind = (acc: EventsByKind[], curr: SiprojurisEvent) => {
     acc.push({ kind: curr.kind, events: [curr] });
   }
 };
+/**
+ * @deprecated
+ * TODO: Delete once Datation has been refactored
+ */
+function convertProsoVisDateToDatation(d: ProsoVisDate): Datation {
+  return {
+    id: d.id,
+    label: d.kind as any,
+    value: d.label,
+    clean_date: d.value,
+    uri: d.uri,
+    url: '',
+  };
+}
 
-const getDatationsFromEvents = flatMap((e: SiprojurisEvent) => e.datation);
-const minDate = minBy<Datation>('clean_date');
-const maxDate = maxBy<Datation>('clean_date');
+const getDatationsFromEvents = flatMap((e: ProsoVisEvent) => e.datation);
+const minDate = minBy<ProsoVisDate>('value');
+const maxDate = maxBy<ProsoVisDate>('value');
 
 const addStartEndDateToEventGroup = (v: EventsByKind) => {
   const datation = getDatationsFromEvents(v.events);
@@ -52,7 +66,9 @@ const addStartEndDateToEventGroup = (v: EventsByKind) => {
 
   return {
     ...v,
-    datation: compact(min === max ? [min] : [min, max]),
+    datation: compact(min === max ? [min] : [min, max]).map(
+      convertProsoVisDateToDatation
+    ),
   };
 };
 
@@ -79,11 +95,11 @@ const Base = styled.div`
   ${scrollbar}
 `;
 
-export function DetailsMenuEvents({ events }: { events: SiprojurisEvent[] }) {
+export function DetailsMenuEvents({ events }: { events: ProsoVisEvent[] }) {
   const grouped = useMemo(() => {
     return pipe<
-      [SiprojurisEvent[]],
-      SiprojurisEvent[],
+      [ProsoVisEvent[]],
+      ProsoVisEvent[],
       EventsByKind[],
       EventsByKindStartEndDate[],
       JSX.Element[]
@@ -103,8 +119,8 @@ function DetailsMenuEvent({
   events,
   datation,
 }: {
-  kind: SiprojurisEvent['kind'];
-  events: SiprojurisEvent[];
+  kind: string;
+  events: ProsoVisEvent[];
   datation: Datation[];
 }) {
   const color = useSelector(selectSwitchKindColor);

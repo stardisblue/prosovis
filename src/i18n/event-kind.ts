@@ -1,6 +1,4 @@
-import { SiprojurisEvent } from '../data/sip-models';
-
-const fr: { [k in SiprojurisEvent['kind']]: string } = {
+const fr: _.Dictionary<string> = {
   Birth: 'Naissance',
   Death: 'Décès',
   Education: 'Enseignement',
@@ -10,7 +8,7 @@ const fr: { [k in SiprojurisEvent['kind']]: string } = {
   SuspensionActivity: "Suspension d'activité",
 };
 
-function eventKind(kind: SiprojurisEvent['kind']) {
+function eventKind(kind: string) {
   return fr[kind];
 }
 export default eventKind;

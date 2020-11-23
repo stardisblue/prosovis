@@ -5,18 +5,27 @@ import {
   BookmarkIcon,
   HomeIcon,
   Icon,
+  IconProps,
 } from '@primer/octicons-react';
 import Pause from '../feature/info/event/Pause';
 import Grave from '../feature/info/event/Grave';
 
-import styled from 'styled-components/macro';
-import { SiprojurisEvent } from './sip-models';
+import styled, { StyledComponent } from 'styled-components/macro';
 
 export const styleIcon = (icon: Icon) =>
   styled(icon)<{
     iconColor?: string;
   }>(({ iconColor }) => (iconColor ? `color: ${iconColor};` : ''));
-export const kindMap = {
+export const kindMap: _.Dictionary<
+  StyledComponent<
+    React.FC<IconProps>,
+    any,
+    {
+      iconColor?: string | undefined;
+    },
+    never
+  >
+> = {
   Birth: styleIcon(PlusIcon),
   Death: styleIcon(Grave),
   Education: styleIcon(BookIcon),
@@ -26,7 +35,7 @@ export const kindMap = {
   SuspensionActivity: styleIcon(Pause),
 };
 
-function getEventIcon(kind: SiprojurisEvent['kind']) {
+function getEventIcon(kind: string) {
   return kindMap[kind];
 }
 
