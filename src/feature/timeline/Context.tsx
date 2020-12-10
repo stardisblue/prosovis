@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import moment from 'moment';
 import ContextStackedChart from './ContextStackedChart';
-import ContextTimeAxis from './ContextTimeAxis';
 import ContextViewBrush from './ContextViewBrush';
-import ContextMaskBrush from './ContextMaskBrush';
 import ContextOptions from './ContextOptions';
 import * as d3 from 'd3';
+import BrushX from '../../v2/components/brush/BrushX';
+import { Axis } from '../../v2/components/Axis';
 
 const options = {
   max: '2000-01-01', //Maximum date of timeline
-  min: '1700-01-01' // Minimum date of timeline
+  min: '1700-01-01', // Minimum date of timeline
 };
 
 export const Context: React.FC<{
@@ -18,15 +18,15 @@ export const Context: React.FC<{
   view?: [Date, Date];
   onViewUpdate: (start: Date, end: Date) => void;
   width: number;
-}> = function({ mask, onMaskUpdate, view, onViewUpdate, width }) {
+}> = function ({ mask, onMaskUpdate, view, onViewUpdate, width }) {
   const x = useMemo(
-    function() {
+    function () {
       return d3
         .scaleTime()
         .domain([moment(options.min), moment(options.max)])
         .range([
           ContextOptions.margin.left,
-          width - ContextOptions.margin.right
+          width - ContextOptions.margin.right,
         ])
         .nice()
         .clamp(true);
@@ -39,13 +39,22 @@ export const Context: React.FC<{
       width="100%"
       height={ContextOptions.height + 'px'}
     >
-      <ContextTimeAxis x={x} />
+      <Axis
+        scale={x}
+        position={[
+          '0',
+          ContextOptions.height - ContextOptions.margin.bottom + 'px',
+        ]}
+        axis={d3.axisBottom}
+      />
       <ContextStackedChart x={x} />
-      <ContextMaskBrush
+      <BrushX
+        x={x}
+        sync={mask}
         onBrush={onMaskUpdate}
         width={width}
-        sync={mask}
-        x={x}
+        height={ContextOptions.height}
+        margin={ContextOptions.margin.mask}
       />
       <ContextViewBrush
         onBrush={onViewUpdate}

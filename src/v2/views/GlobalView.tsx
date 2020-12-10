@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import GlobalMap from './map/GlobalMap';
-import GlobalTimeline from './timeline/GlobalTimeline';
-import GlobalGraph from './graph/GlobalGraph';
+import GlobalMap from '../global/map/GlobalMap';
+import GlobalTimeline from '../global/timeline/GlobalTimeline';
+import GlobalGraph from '../global/graph/GlobalGraph';
 import { lightgray } from '../../components/ui/colors';
 import useMount from '../../hooks/useMount';
 import { useDispatch } from 'react-redux';
@@ -25,7 +25,6 @@ export const StyledGlobalView = styled.div`
 
 const GraphArea = styled.div`
   grid-area: rel;
-  border-top: 1px solid ${lightgray};
 `;
 
 const MapArea = styled.div`
@@ -34,6 +33,7 @@ const MapArea = styled.div`
 `;
 const TimelineArea = styled.div`
   grid-area: timeline;
+  border-top: 1px solid ${lightgray};
 `;
 
 const GlobalView: React.FC = function () {

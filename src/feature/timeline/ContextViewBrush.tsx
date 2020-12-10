@@ -18,7 +18,7 @@ export const ContextViewBrush: React.FC<{
   // ! assuming that ref is instantaneously populated
   const view = useRef<ViewReference>(null as any);
   const handleRef = useCallback(function (dom: SVGGElement | null) {
-    if (dom === null) return;
+    if (!dom) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
     view.current = { dom, selection, brush };

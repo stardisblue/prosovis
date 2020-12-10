@@ -1,13 +1,11 @@
 import { filter } from 'lodash/fp';
 import { createSelector } from 'reselect';
-import { RootState } from '../../reducers';
-import { selectAllEvents } from './events';
-
-export const selectKindMask = (state: RootState) => state.globalKindMask;
+import { selectAllEvents } from '../events';
+import { selectMaskKind } from './kind';
 
 export const selectAllMaskedEvents = createSelector(
   selectAllEvents,
-  selectKindMask,
+  selectMaskKind,
   (events, mask) =>
     filter(({ value: { kind } }) => mask[kind] === undefined, events)
 );

@@ -58,28 +58,32 @@ function addRelation(
     relations.actors.set(link.source, actors[link.source]);
 }
 
-const compareByKeySelector = createSelectorCreator(defaultMemoize, function (
-  a,
-  b
-) {
-  return _.isEqual(_.keys(a), _.keys(b));
-});
+const compareByKeySelector = createSelectorCreator(
+  defaultMemoize,
+  function (a, b) {
+    return _.isEqual(_.keys(a), _.keys(b));
+  }
+);
 
 export const selectActorsFromMaskedEvents = createSelector(
   selectMaskedEvents,
   (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
 );
 
-export const selectLinks: () => ProsoVisSignedRelation[] = () =>
-  _.map(relations, ({ actors, ...props }) => ({
-    ...props,
-    id: actors.join(':'),
-    source: actors[0],
-    target: actors[1],
-  }));
+export const selectLinks = createSelector(
+  () => relations,
+  (relations) => {
+    return _.map(relations, ({ actors, ...props }) => ({
+      ...props,
+      id: actors.join(':'),
+      source: actors[0],
+      target: actors[1],
+    }));
+  }
+);
 
-export const selectActorLinksMap = createSelector(selectLinks, (links) =>
-  _(links)
+export const selectActorLinksMap = createSelector(selectLinks, (links) => {
+  return _(links)
     .transform((relations, l) => {
       let srels = relations.get(l.source);
       if (srels === undefined) {
@@ -97,8 +101,8 @@ export const selectActorLinksMap = createSelector(selectLinks, (links) =>
       trels.actors.set(l.source, l);
       l.events.forEach((e) => trels!.events.add(e));
     }, new Map<string, { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }>())
-    .value()
-);
+    .value();
+});
 
 export const selectActorsData = () => indexActors;
 

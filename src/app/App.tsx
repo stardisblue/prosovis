@@ -1,12 +1,7 @@
 import React, { useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
-
-import SiprojurisTimeline from '../feature/timeline/SiprojurisTimeline';
 import Information from '../feature/info/Information';
-import SiprojurisMap from '../feature/map/SiprojurisMap';
-import Relation from '../feature/relation/Relation';
 import { useDispatch } from 'react-redux';
-
 import Mask from '../feature/mask/Mask';
 import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
@@ -14,42 +9,22 @@ import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
 import { OfflineBanner } from '../feature/check-server/OfflineBanner';
-import GlobalView from '../v2/global/GlobalView';
+import GlobalView from '../v2/views/GlobalView';
 import Side1Main3 from '../v2/components/ui/Side1Main3';
 import GridAutoRest from '../v2/components/ui/GridAutoRest';
 import Flip from '../v2/components/ui/Flip';
-import theme from '../v2/components/theme';
+import { lightgray } from '../v2/components/theme';
+import { SpecificView } from '../v2/views/SpecificView';
 
-const Main = styled.div`
-  display: grid;
-  position: relative;
-  width: 100%;
-  height: 100%;
-  grid-template-areas:
-    'rel  map'
-    'timeline timeline';
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr auto;
-`;
-
-const StyledMap = styled(SiprojurisMap)`
-  grid-area: map;
-  border-left: 1px solid ${theme.lightgray};
-`;
-
-const StyledRelation = styled(Relation)`
-  grid-area: rel;
-  border-top: 1px solid ${theme.lightgray};
-`;
-
-const StyledTimeline = styled(SiprojurisTimeline)`
-  grid-area: timeline;
+const BorderedGridAutoRest = styled(GridAutoRest)`
+  border-right: 1px solid ${lightgray};
 `;
 
 const Header = styled.div`
   display: grid;
   justify-content: center;
   grid-template-columns: 1fr auto;
+  border-bottom: 1px solid ${lightgray};
 `;
 
 const StyledInfoBubble = styled(HelpInfoBubble)`
@@ -105,10 +80,10 @@ function App() {
   return (
     <div ref={$ref} {...bind}>
       <Side1Main3>
-        <GridAutoRest>
+        <BorderedGridAutoRest>
           <Autocomplete />
           <Information />
-        </GridAutoRest>
+        </BorderedGridAutoRest>
         <GridAutoRest>
           <Header>
             <Mask />
@@ -116,11 +91,7 @@ function App() {
           </Header>
           <Flip>
             <GlobalView />
-            <Main>
-              <StyledRelation />
-              <StyledMap />
-              <StyledTimeline />
-            </Main>
+            <SpecificView />
           </Flip>
         </GridAutoRest>
       </Side1Main3>

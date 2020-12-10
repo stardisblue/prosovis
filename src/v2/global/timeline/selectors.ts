@@ -11,7 +11,7 @@ import {
 } from 'lodash/fp';
 import { utcDay, utcYear, utcYears } from 'd3';
 import { RichEvent } from '../../models/EventModel';
-import { selectAllMaskedEvents } from '../../selectors/globalKindMask';
+import { selectAllMaskedEvents } from '../../selectors/mask';
 
 export type Tyvent<T> = {
   value: T;
@@ -39,20 +39,21 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ value: e }) => {
   return [];
 };
 
-export const selectDiscrete = createSelector(selectAllMaskedEvents, function (
-  events
-) {
-  return pipe(
-    flatMap(discretize),
-    concat(
-      utcYear
-        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
-    ),
-    groupBy(pipe(get('time'), (v) => +v!)),
-    map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
-      time: pipe(first, get('time'))(v),
-      value: filter('value', v),
-    }))
-  )(events) as Tyvent<Tyvent<string>[]>[];
-});
+export const selectDiscrete = createSelector(
+  selectAllMaskedEvents,
+  function (events) {
+    return pipe(
+      flatMap(discretize),
+      concat(
+        utcYear
+          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+          .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
+      ),
+      groupBy(pipe(get('time'), (v) => +v!)),
+      map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
+        time: pipe(first, get('time'))(v),
+        value: filter('value', v),
+      }))
+    )(events) as Tyvent<Tyvent<string>[]>[];
+  }
+);

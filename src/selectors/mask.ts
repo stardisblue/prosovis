@@ -7,7 +7,7 @@ import { selectEvents } from './event';
 import L from 'leaflet';
 import { ActorMask } from '../reducers/maskSlice';
 import { SiprojurisEvent } from '../data/sip-models';
-import { selectKindMask } from '../v2/selectors/globalKindMask';
+import { selectMaskKind } from '../v2/selectors/mask/kind';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -42,7 +42,7 @@ export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
     : undefined
 );
 
-export const selectKindFun = createSelector(selectKindMask, (res) =>
+export const selectKindFun = createSelector(selectMaskKind, (res) =>
   res ? (e: SiprojurisEvent) => kindMaskState(e.kind, res) : undefined
 );
 

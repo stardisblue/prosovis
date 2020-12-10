@@ -4,8 +4,8 @@ import { pickBy } from 'lodash/fp';
 
 const initialState: _.Dictionary<string> = {};
 
-const actorDataSlice = createSlice({
-  name: 'globalKindMask',
+const maskKindSlice = createSlice({
+  name: 'mask-kind',
   initialState,
   reducers: {
     add(state, { payload }: PayloadAction<string>) {
@@ -24,5 +24,5 @@ const actorDataSlice = createSlice({
   },
 });
 
-export default actorDataSlice.reducer;
-export const { toggle: toggleKindMask } = actorDataSlice.actions;
+export default maskKindSlice.reducer;
+export const { toggle: toggleMaskKind } = maskKindSlice.actions;

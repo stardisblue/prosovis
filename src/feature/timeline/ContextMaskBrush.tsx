@@ -1,11 +1,9 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import { useDispatch } from 'react-redux';
-import { setIntervalMask } from '../../reducers/maskSlice';
-import _ from 'lodash';
 import ContextOptions from './ContextOptions';
 import styled from 'styled-components/macro';
 import { darkgray } from '../../components/ui/colors';
+import { useUpdateMask } from './useUpdateMask';
 
 const StyledG = styled.g`
   .selection {
@@ -69,6 +67,12 @@ const brushHandles = function (
       );
 };
 
+type BrushReference = {
+  dom: SVGGElement;
+  selection: d3.Selection<SVGGElement, unknown, null, undefined>;
+  brush: d3.BrushBehavior<unknown>;
+};
+
 export const ContextMaskBrush: React.FC<{
   width: number;
   x: d3.ScaleTime<number, number>;
@@ -76,19 +80,13 @@ export const ContextMaskBrush: React.FC<{
   sync?: [Date, Date];
 }> = function ({ width, onBrush, x, sync }) {
   // ! assuming that ref is instantaneously populated
-  const mask = useRef<{
-    dom: SVGGElement;
-    selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-    brush: d3.BrushBehavior<unknown>;
-  }>(null as any);
+  const mask = useRef<BrushReference>(null as any);
   const handleRef = useCallback(function (dom: SVGGElement) {
     if (!dom) return;
     const brush = d3.brushX();
     const selection = d3.select(dom).call(brush);
     mask.current = { dom, brush, selection };
   }, []);
-
-  const dispatch = useDispatch();
 
   useEffect(
     function () {
@@ -100,20 +98,9 @@ export const ContextMaskBrush: React.FC<{
     [width]
   );
 
-  const updateMask = useMemo(
-    function () {
-      return _.throttle((start: Date, end: Date) => {
-        dispatch(
-          setIntervalMask({
-            start: start.toDateString(),
-            end: end.toDateString(),
-          })
-        );
-      }, 100);
-    },
-    [dispatch]
-  );
+  const updateMask = useUpdateMask();
 
+  // sync width
   useEffect(
     function () {
       mask.current.brush.extent([
@@ -135,9 +122,11 @@ export const ContextMaskBrush: React.FC<{
   useEffect(
     function () {
       if (!sync) return;
-      mask.current.selection.call(mask.current.brush.move, sync.map(x));
+      const { brush, selection } = mask.current;
 
-      updateMask(sync[0], sync[1]);
+      selection.call(brush.move, sync.map(x));
+
+      // updateMask(sync[0], sync[1]);
     },
     [sync, updateMask, x]
   );
@@ -151,7 +140,7 @@ export const ContextMaskBrush: React.FC<{
           if (event.sourceEvent) {
             const [start, end] = event.selection.map(x.invert);
             onBrush(start, end);
-            updateMask(start, end);
+            // updateMask(start, end);
           }
         }
       });

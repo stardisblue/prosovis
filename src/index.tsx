@@ -18,7 +18,10 @@ const store = configureStore({
   // preloadedState: {
   //   events,
   // },
-  middleware: getDefaultMiddleware({ immutableCheck: false }),
+  middleware: getDefaultMiddleware({
+    immutableCheck: false,
+    serializableCheck: false,
+  }),
 });
 
 ReactDOM.render(

@@ -6,7 +6,6 @@ import { selectGraph } from '../../selectors/graph';
 
 const GlobalGraph: React.FC = function () {
   const graph = useSelector(selectGraph);
-  console.log(graph);
 
   return (
     <Loading finished={graph}>{graph && <V1Graph graph={graph} />}</Loading>

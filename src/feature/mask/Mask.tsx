@@ -24,12 +24,14 @@ const SwitchArea = styled.div`
 
 const ActorsArea = styled.div`
   grid-area: actors;
+  min-height: 1.25em;
   padding-left: 0.5em;
   padding-right: 0.5em;
 `;
 
 const KindsArea = styled.div`
   grid-area: kinds;
+  min-height: 1.25em;
   padding-left: 0.5em;
   padding-right: 0.5em;
 `;

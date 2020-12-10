@@ -15,7 +15,8 @@ import actorData from '../v2/reducers/actorsDataSlice';
 import localisationData from '../v2/reducers/localisationsDataSlice';
 import eventData from '../v2/reducers/eventsDataSlice';
 import graphData from '../v2/reducers/graphDataSlice';
-import globalKindMask from '../v2/reducers/globalKindMaskSlice';
+import maskKind from '../v2/reducers/mask/kindSlice';
+import maskGlobalTime from '../v2/reducers/mask/globalTimeSlice';
 const rootReducer = combineReducers({
   serverStatus,
   maxActors,
@@ -33,7 +34,8 @@ const rootReducer = combineReducers({
   localisationData,
   eventData,
   graphData,
-  globalKindMask,
+  maskKind,
+  maskGlobalTime,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

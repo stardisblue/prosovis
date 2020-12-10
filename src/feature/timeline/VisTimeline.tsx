@@ -9,7 +9,7 @@ import './VisTimeline.css';
 
 import classnames from 'classnames';
 import _ from 'lodash';
-import { map } from 'lodash/fp';
+import { map, noop } from 'lodash/fp';
 import { Nullable, PrimaryKey, Datation } from '../../data/models';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
@@ -42,6 +42,7 @@ import ActorPlaceSwitch from './header/ActorPlaceSwitch';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
 import { SiprojurisActor, SiprojurisNamedPlace } from '../../data/sip-models';
+import { useUpdateMask } from './useUpdateMask';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
@@ -150,19 +151,23 @@ const VisTimeline: React.FC = function () {
   /*
    * CONTEXT
    */
-  const updateMarkers = useMemo(
+  const updateMask = useUpdateMask();
+  const [maskSync, setMaskSync] = useState<[Date, Date]>();
+  const handleUpdateMask = useMemo(
     function () {
-      if (!timeline) return () => {};
+      if (!timeline) return noop;
       return _.throttle((start: Date, end: Date) => {
         timeline.vis.setCustomTime(start, 'a');
         timeline.vis.setCustomTime(end, 'b');
+        updateMask(start, end);
       }, 16);
     },
-    [timeline]
+    [timeline, updateMask]
   );
 
-  const updateView = useMemo(() => {
-    if (!timeline) return () => {};
+  const [viewSync, setViewSync] = useState<[Date, Date]>();
+  const handleUpdateView = useMemo(() => {
+    if (!timeline) return noop;
 
     return _.throttle((start: Date, end: Date) => {
       timeline.vis.setWindow(start, end, {
@@ -170,9 +175,6 @@ const VisTimeline: React.FC = function () {
       });
     }, 16);
   }, [timeline]);
-
-  const [maskSync, setMaskSync] = useState<[Date, Date]>();
-  const [viewSync, setViewSync] = useState<[Date, Date]>();
 
   useEffect(() => {
     if (!timeline) return;
@@ -191,6 +193,8 @@ const VisTimeline: React.FC = function () {
           : timeline.vis.getCustomTime('a'),
       ]) as [Date, Date];
       setMaskSync(interval);
+      const [start, end] = interval;
+      updateMask(start, end);
     }, 16);
 
     timeline.vis.on('rangechange', (e: any) => {
@@ -202,7 +206,7 @@ const VisTimeline: React.FC = function () {
     timeline.vis.on('timechange', (e: VisTimeMarker) => {
       maskSyncThrottle(e);
     });
-  }, [timeline]);
+  }, [timeline, updateMask]);
 
   // Syncs the context window view and the timeline view
 
@@ -439,9 +443,9 @@ const VisTimeline: React.FC = function () {
       {width && (
         <Context
           mask={maskSync}
-          onMaskUpdate={updateMarkers}
+          onMaskUpdate={handleUpdateMask}
           view={viewSync}
-          onViewUpdate={updateView}
+          onViewUpdate={handleUpdateView}
           width={width}
         />
       )}
