@@ -1,5 +1,4 @@
 import React, { useMemo, useRef } from 'react';
-import styled from 'styled-components/macro';
 import Loading from '../../components/Loading';
 import { useSelector } from 'react-redux';
 import { stack, stackOrderAscending } from 'd3';

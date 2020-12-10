@@ -12,7 +12,7 @@ export const Axis: React.FC<{
 
   useEffect(() => {
     selection.current.transition().call(axisDirection(scale));
-  }, [scale, axisDirection]);
+  }, [selection, scale, axisDirection]);
 
   return (
     <g
