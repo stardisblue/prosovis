@@ -6,7 +6,7 @@ const axiosConfig = {
 };
 
 const baseurl =
-  'https://cors-anywhere.herokuapp.com/http://advanse.lirmm.fr/siprojuris/api/';
+  'https://prosovis-observable-cors.glitch.me/http://advanse.lirmm.fr/siprojuris/api/';
 
 export function fetchActor(payload: PrimaryKey, config?: AxiosRequestConfig) {
   return axios.get(baseurl + 'actor/' + payload, axiosConfig);
