@@ -1,41 +1,46 @@
 import { RootState } from '../../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { selectActorsModel } from './actors';
-import { selectLocalisationsModel } from './localisations';
-import { EventModel } from '../models/EventModel';
-import { flatMap, identity, keyBy, map, pipe, sortBy, uniqBy } from 'lodash/fp';
+import {
+  flatMap,
+  identity,
+  keyBy,
+  map,
+  pipe,
+  sortBy,
+  uniqBy,
+  values,
+} from 'lodash/fp';
+import { ProsoVisEvent } from '../types/events';
 
-export const selectEvents = (state: RootState) => state.eventData;
+export const selectEventsData = (state: RootState) => state.eventData;
 
-export const selectEventsModel = createSelector(
+export const selectEventIndex = createSelector(
+  selectEventsData,
+  (events) => events.events?.index
+);
+
+export const selectEvents = createSelector(
+  selectEventIndex,
+  pipe<[any | undefined], ProsoVisEvent[], _.Dictionary<ProsoVisEvent>>(
+    flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
+    keyBy<ProsoVisEvent>('id')
+  )
+);
+
+export const selectUniqueKinds = createSelector(
   selectEvents,
-  selectActorsModel,
-  selectLocalisationsModel,
-  (evs, actorModel, locModel) =>
-    evs.events && actorModel && locModel
-      ? new EventModel(evs.events, actorModel, locModel)
-      : undefined
+  pipe<
+    [_.Dictionary<ProsoVisEvent>],
+    ProsoVisEvent[],
+    ProsoVisEvent[],
+    string[],
+    string[],
+    _.Dictionary<string>
+  >(
+    values,
+    uniqBy<ProsoVisEvent>('kind'),
+    map('kind'),
+    sortBy(identity),
+    keyBy(identity)
+  )
 );
-
-export const selectAllEvents = createSelector(selectEventsModel, (m) =>
-  m ? flatMap(map(m.get), m.source.index) : undefined
-);
-
-export const selectAllKinds = createSelector(selectAllEvents, (all) =>
-  all
-    ? pipe(
-        uniqBy<typeof all[0]>('value.kind'),
-        map('value.kind'),
-        sortBy(identity),
-        keyBy(identity)
-      )(all)
-    : undefined
-);
-
-export const selectDateExtent = createSelector(selectAllEvents, (all) => {
-  return null;
-});
-
-// function optional<T extends any>(callback: ){
-//   return function()value ? value : value
-// }

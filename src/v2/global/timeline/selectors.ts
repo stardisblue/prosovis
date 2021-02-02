@@ -10,15 +10,15 @@ import {
   first,
 } from 'lodash/fp';
 import { utcDay, utcYear, utcYears } from 'd3';
-import { RichEvent } from '../../models/EventModel';
-import { selectAllMaskedEvents } from '../../selectors/mask';
+import { selectEventsWithoutKinds } from '../../selectors/mask';
+import { SiprojurisEvent } from '../../../data/sip-models';
 
 export type Tyvent<T> = {
   value: T;
   time: Date;
 };
 
-const discretize: (e: RichEvent) => Tyvent<string>[] = ({ value: e }) => {
+const discretize: (e: SiprojurisEvent) => Tyvent<string>[] = (e) => {
   if (e.datation.length === 2) {
     const [start, end] = map(
       pipe(get('value'), (d) => new Date(d), utcYear.floor),
@@ -40,7 +40,7 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ value: e }) => {
 };
 
 export const selectDiscrete = createSelector(
-  selectAllMaskedEvents,
+  selectEventsWithoutKinds,
   function (events) {
     return pipe(
       flatMap(discretize),

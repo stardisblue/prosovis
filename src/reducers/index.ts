@@ -15,6 +15,7 @@ import actorData from '../v2/reducers/actorsDataSlice';
 import localisationData from '../v2/reducers/localisationsDataSlice';
 import eventData from '../v2/reducers/eventsDataSlice';
 import graphData from '../v2/reducers/graphDataSlice';
+import relationsData from '../v2/reducers/relationsDataSlice';
 import maskKind from '../v2/reducers/mask/kindSlice';
 import maskGlobalTime from '../v2/reducers/mask/globalTimeSlice';
 const rootReducer = combineReducers({
@@ -34,6 +35,7 @@ const rootReducer = combineReducers({
   localisationData,
   eventData,
   graphData,
+  relationsData,
   maskKind,
   maskGlobalTime,
 });

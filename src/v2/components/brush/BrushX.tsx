@@ -23,51 +23,38 @@ export const BrushX: React.FC<{
 
   const path = usePath(height);
 
-  useEffect(
-    function () {
-      brush.extent([
-        [margin.left, margin.top],
-        [width - margin.right, height - margin.bottom],
-      ]);
-      mask.current.call(
-        brushHandles,
-        [margin.left, width - margin.right],
-        path,
-        height
-      );
-      mask.current.call(brush);
-      mask.current.call(brush.move, [margin.left, width - margin.right]);
-    },
-    [brush, path, mask, width, height, margin]
-  );
+  useEffect(() => {
+    brush.extent([
+      [margin.left, margin.top],
+      [width - margin.right, height - margin.bottom],
+    ]);
+    mask.current
+      .call(brushHandles, [margin.left, width - margin.right], path, height)
+      .call(brush)
+      .call(brush.move, [margin.left, width - margin.right]);
+  }, [brush, path, mask, width, height, margin]);
 
-  useEffect(
-    function () {
-      if (!sync) return;
-      mask.current.call(brush.move, sync.map(x));
-    },
-    [brush, mask, sync, x]
-  );
+  useEffect(() => {
+    if (!sync) return;
+    mask.current.call(brush.move, sync.map(x));
+  }, [brush, mask, sync, x]);
 
-  useEffect(
-    function () {
-      brush.on('start brush end', function (event: any) {
-        if (event.selection) {
-          d3.select(this).call(brushHandles, event.selection, path, height);
+  useEffect(() => {
+    brush.on('start brush end', function (event: any) {
+      if (event.selection) {
+        d3.select(this).call(brushHandles, event.selection, path, height);
 
-          if (event.sourceEvent) {
-            const [start, end] = event.selection.map(x.invert);
-            onBrush(start, end);
-          }
+        if (event.sourceEvent) {
+          const [start, end] = event.selection.map(x.invert);
+          onBrush(start, end);
         }
-      });
+      }
+    });
 
-      return () => {
-        brush.on('start brush end', null);
-      };
-    },
-    [brush, path, onBrush, height, x]
-  );
+    return () => {
+      brush.on('start brush end', null);
+    };
+  }, [brush, path, onBrush, height, x]);
 
   return <StyledG ref={refFn} />;
 };

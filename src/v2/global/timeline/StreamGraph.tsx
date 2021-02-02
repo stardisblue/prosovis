@@ -8,12 +8,15 @@ import { Dictionary } from 'lodash';
 import { Axis } from '../../components/Axis';
 import BrushX from '../../components/brush/BrushX';
 import { useUpdateMaskGlobalTime } from './useUpdateMask';
+import { useSelector } from 'react-redux';
+import { selectSwitchKindColor } from '../../../selectors/switch';
 
 export const StreamGraph: React.FC<{
   width: number;
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
-  color: d3.ScaleOrdinal<string, string> | null;
-}> = function ({ width, stack, color }) {
+}> = function ({ width, stack }) {
+  const color = useSelector(selectSwitchKindColor);
+
   const handleBrush = useUpdateMaskGlobalTime();
   const x = useMemo(
     function () {

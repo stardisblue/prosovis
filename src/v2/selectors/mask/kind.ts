@@ -1,3 +1,3 @@
 import { RootState } from '../../../reducers';
 
-export const selectMaskKind = (state: RootState) => state.maskKind;
+export const selectActiveKinds = (state: RootState) => state.maskKind;

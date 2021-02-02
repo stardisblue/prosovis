@@ -5,6 +5,20 @@ import type { Tyvent } from './selectors';
 import theme from '../../components/theme';
 type D3Selection = d3.Selection<SVGGElement, unknown, any, undefined>;
 
+type EnterType = d3.Selection<
+  d3.EnterElement,
+  d3.Series<Tyvent<Dictionary<number>>, string>,
+  SVGGElement,
+  unknown
+>;
+
+type UpdateType = d3.Selection<
+  SVGGElement,
+  d3.Series<Tyvent<Dictionary<number>>, string>,
+  SVGGElement,
+  unknown
+>;
+
 function useSelect(): [
   React.MutableRefObject<D3Selection>,
   (dom: SVGGElement) => void
@@ -24,7 +38,7 @@ export const StackedChart: React.FC<{
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
   color: d3.ScaleOrdinal<string, string> | null;
 }> = function ({ x, y, stack, color }) {
-  const [chart, refFn] = useSelect();
+  const [chart, ref] = useSelect();
 
   const d3Area = useMemo(
     function () {
@@ -47,28 +61,30 @@ export const StackedChart: React.FC<{
       .selectAll<SVGGElement, d3.Series<Tyvent<Dictionary<number>>, string>>(
         'path'
       )
-      .data(stack, (d, i) => d.key)
-      .join(
-        (enter) =>
-          enter
-            .append('path')
-            .attr('fill', colorize)
-            .attr('stroke', colorize)
-            .attr('d', d3Area as any)
-            .append('title')
-            .text((d) => d.key),
-        (update) => {
-          update
-            .transition()
-            .attr('fill', colorize)
-            .attr('stroke', colorize)
-            .attr('d', d3Area as any)
-            .select('title')
-            .text((d) => d.key);
-          return update;
-        }
-      );
-  }, [chart, d3Area, stack, colorize]);
+      .data(stack, (d) => d.key)
+      .join(onEnter, onUpdate);
 
-  return <g ref={refFn}></g>;
+    function onEnter(enter: EnterType) {
+      return enter
+        .append('path')
+        .attr('fill', colorize)
+        .attr('stroke', colorize)
+        .attr('d', d3Area as any)
+        .call((g) => g.append('title').text((d) => d.key));
+    }
+
+    function onUpdate(update: UpdateType) {
+      return update.call((g) =>
+        g
+          .transition()
+          .attr('fill', colorize)
+          .attr('stroke', colorize)
+          .attr('d', d3Area as any)
+          .select('title')
+          .text((d: d3.Series<any, string>) => d.key)
+      );
+    }
+  }, [chart, stack, colorize, d3Area]);
+
+  return <g ref={ref}></g>;
 };

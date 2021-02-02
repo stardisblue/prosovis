@@ -6,8 +6,7 @@ import useDimensions from '../../../hooks/useDimensions';
 import { height } from './options';
 import { selectDiscrete, Tyvent } from './selectors';
 import { countBy, map, pipe, sortBy, values } from 'lodash/fp';
-import { selectAllKinds } from '../../selectors/events';
-import { selectSwitchKindColor } from '../../../selectors/switch';
+import { selectUniqueKinds } from '../../selectors/events';
 import { StreamGraph } from './StreamGraph';
 
 const flatten = pipe(
@@ -25,8 +24,7 @@ const GlobalTimeline: React.FC = function () {
   const dimensions = useDimensions($svg);
 
   const events = useSelector(selectDiscrete);
-  const kinds = useSelector(selectAllKinds);
-  const color = useSelector(selectSwitchKindColor);
+  const kinds = useSelector(selectUniqueKinds);
 
   const st = useMemo(
     () =>
@@ -42,7 +40,7 @@ const GlobalTimeline: React.FC = function () {
     <Loading finished={st}>
       <svg height={height} width="100%" ref={$svg}>
         {dimensions?.width && (
-          <StreamGraph width={dimensions.width} stack={st} color={color} />
+          <StreamGraph width={dimensions.width} stack={st} />
         )}
       </svg>
     </Loading>

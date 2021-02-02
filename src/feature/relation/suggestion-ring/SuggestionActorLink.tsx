@@ -14,6 +14,7 @@ import {
 import { select } from 'd3';
 import { createSelector } from 'reselect';
 import path from './path';
+import { disabled } from '../../../components/ui/colors';
 
 export const selectClusteredSuggestionActorLinks = createSelector(
   selectDisplayedActorRingLinks,
@@ -62,7 +63,7 @@ export const SuggestionActorLinks: React.FC<{
   const clusters = useSelector(selectClusteredSuggestionActorLinks);
 
   return (
-    <g ref={$g} stroke="#ccc" strokeWidth={1.5} fill="none">
+    <g ref={$g} stroke={disabled} strokeWidth={1.5} fill="none">
       {_.flatMap(clusters, (cluster) => {
         const coordinates = _.map(cluster, (datum) => ({
           theta: x(datum.target),

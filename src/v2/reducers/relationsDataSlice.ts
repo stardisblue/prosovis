@@ -1,35 +1,33 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProsoVisEvents } from '../types/events';
 import Axios from 'axios';
+import { ProsoVisRelations } from '../types/relations';
 
-export type EventDataStore = {
-  events: ProsoVisEvents | null;
+const initialState: {
+  relations: ProsoVisRelations | null;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
-};
-
-const initialState: EventDataStore = {
-  events: null,
+} = {
+  relations: null,
   loading: 'idle',
-  url: './data/index-events.json',
+  url: './data/relations.json',
 };
 
-export const fetchEvents = createAsyncThunk(
-  'events/fetch',
+export const fetchRelations = createAsyncThunk(
+  'relations/fetch',
   async (_, { signal }) => {
     const source = Axios.CancelToken.source();
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('./data/index-events.json', {
+    const response = await Axios.get('./data/relations.json', {
       cancelToken: source.token,
     });
-    return response.data as ProsoVisEvents;
+    return response.data as ProsoVisRelations;
   }
 );
 
-const eventDataSlice = createSlice({
-  name: 'events',
+const actorDataSlice = createSlice({
+  name: 'relations',
   initialState,
   reducers: {
     setUrl(state, { payload }: PayloadAction<string>) {
@@ -37,20 +35,20 @@ const eventDataSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchEvents.pending, (state) => ({
+    builder.addCase(fetchRelations.pending, (state) => ({
       ...state,
       loading: 'pending',
     }));
-    builder.addCase(fetchEvents.fulfilled, (state, action) => ({
+    builder.addCase(fetchRelations.fulfilled, (state, action) => ({
       ...state,
       loading: 'idle',
-      events: action.payload,
+      relations: action.payload,
     }));
-    builder.addCase(fetchEvents.rejected, (state) => ({
+    builder.addCase(fetchRelations.rejected, (state) => ({
       ...state,
       loading: 'failed',
     }));
   },
 });
 
-export default eventDataSlice.reducer;
+export default actorDataSlice.reducer;

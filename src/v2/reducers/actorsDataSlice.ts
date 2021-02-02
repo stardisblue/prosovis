@@ -6,7 +6,7 @@ const initialState: {
   actors: ProsoVisActors | null;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
-} = { actors: null, loading: 'idle', url: './v2/data/index-actors.json' };
+} = { actors: null, loading: 'idle', url: './data/index-actors.json' };
 
 export const fetchActors = createAsyncThunk(
   'actors/fetch',
@@ -15,7 +15,7 @@ export const fetchActors = createAsyncThunk(
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('./v2/data/index-actors.json', {
+    const response = await Axios.get('./data/index-actors.json', {
       cancelToken: source.token,
     });
     return response.data as ProsoVisActors;

@@ -9,7 +9,7 @@ export function useUpdateMaskGlobalTime() {
     () =>
       _.throttle((start: Date, end: Date) => {
         dispatch(setMaskGlobalTime({ start, end }));
-      }, 1000),
+      }, 100),
     [dispatch]
   );
 }

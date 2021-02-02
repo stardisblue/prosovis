@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAllKinds } from '../selectors/events';
-import { selectMaskKind } from '../selectors/mask/kind';
+import { selectUniqueKinds } from '../selectors/events';
+import { selectActiveKinds } from '../selectors/mask/kind';
 import { map } from 'lodash/fp';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
@@ -12,7 +12,7 @@ import { SmallFont } from '../../feature/mask/styled-components';
 import theme from '../components/theme';
 
 export const KindMaskView: React.FC = function () {
-  const kinds = useSelector(selectAllKinds);
+  const kinds = useSelector(selectUniqueKinds);
 
   return (
     <Loading finished={kinds} size={1.5}>
@@ -31,7 +31,7 @@ export const KindMaskView: React.FC = function () {
 const Kind: React.FC<{ kind: string }> = function ({ kind }) {
   const dispatch = useDispatch();
 
-  const mask = useSelector(selectMaskKind);
+  const mask = useSelector(selectActiveKinds);
   const color = useSelector(selectSwitchKindColor);
 
   const handleCheck = useCallback(() => {

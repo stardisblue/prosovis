@@ -1,11 +1,10 @@
-import { filter } from 'lodash/fp';
+import { pickBy } from 'lodash/fp';
 import { createSelector } from 'reselect';
-import { selectAllEvents } from '../events';
-import { selectMaskKind } from './kind';
+import { selectEvents } from '../events';
+import { selectActiveKinds } from './kind';
 
-export const selectAllMaskedEvents = createSelector(
-  selectAllEvents,
-  selectMaskKind,
-  (events, mask) =>
-    filter(({ value: { kind } }) => mask[kind] === undefined, events)
+export const selectEventsWithoutKinds = createSelector(
+  selectEvents,
+  selectActiveKinds,
+  (events, kinds) => pickBy(({ kind }) => kinds[kind] === undefined, events)
 );

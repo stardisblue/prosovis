@@ -9,7 +9,7 @@ const initialState: {
 } = {
   graph: null,
   loading: 'idle',
-  url: './v2/data/graph.json',
+  url: './data/graph.json',
 };
 
 export const fetchGraph = createAsyncThunk(
@@ -19,7 +19,7 @@ export const fetchGraph = createAsyncThunk(
     signal.addEventListener('abort', () => {
       source.cancel();
     });
-    const response = await Axios.get('./v2/data/graph.json', {
+    const response = await Axios.get('./data/graph.json', {
       cancelToken: source.token,
     });
     return response.data as ProsoVisGraph;
