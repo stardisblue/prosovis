@@ -1,11 +1,9 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import {
-  selectActorLinksMap,
-  selectActorsData,
-} from '../relation/selectRelations';
+import { selectActorLinksMap } from '../relation/selectRelations';
 import { get, debounce } from 'lodash';
 import { useSelector } from 'react-redux';
-import { createSelector } from 'reselect';
+// import { selectEventIndex } from '../../v2/selectors/events';
+// import { selectActors } from '../../v2/selectors/actors';
 
 type Key = string | null;
 type GlobalGraphProps = {
@@ -20,29 +18,12 @@ export const GlobalGraphContext = React.createContext<GlobalGraphProps>(
   {} as any
 );
 
-export const selectGetActorInformations = createSelector(
-  selectActorLinksMap,
-  selectActorsData,
-  (actorLinksMap, actors) =>
-    function getActorInformations(id: string) {
-      console.assert(
-        actorLinksMap.get(id) !== undefined,
-        actorLinksMap,
-        id,
-        'actorLinksMap.get(actorId: %s) cannot be undefined',
-        id
-      );
-      return {
-        actor: get(actors.index, id)!,
-        eventIds: actorLinksMap.get(id)!.events,
-      };
-    }
-);
-
 export const useGlobalGraphContext = function (): GlobalGraphProps {
   const [sparker, setSparker] = useState<Key>(null);
   const [shiner, setShiner] = useState<Key>(null);
   const actorLinksMap = useSelector(selectActorLinksMap);
+  // const eventIndex = useSelector(selectEventIndex);
+  // const actorIndex = useSelector(selectActors);
 
   const canISpark = useCallback(
     (id: string) => {

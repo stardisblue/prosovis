@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { ProsoVisActor } from '../../v2/types/actors';
 type Menu = {
-  actor: ProsoVisActor;
+  actor: string;
   ref: SVGGElement;
   x: number;
   y: number;

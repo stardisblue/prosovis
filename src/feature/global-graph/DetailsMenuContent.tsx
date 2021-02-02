@@ -12,19 +12,18 @@ import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../components/ui/IconSpacer';
 import { lightgray } from '../../components/ui/colors';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
-import { ProsoVisActor } from '../../v2/types/actors';
 import { selectEventIndex } from '../../v2/selectors/events';
 import { ProsoVisEvent } from '../../v2/types/events';
 import Loading from '../../v2/components/Loading';
 import { get } from 'lodash/fp';
 
 export const DetailsMenuContent: React.FC<{
-  actor: ProsoVisActor;
-}> = function ({ actor }) {
+  actor: string;
+}> = function ({ actor: actorId }) {
   const dispatch = useDispatch();
   const { setMenuTarget } = useContext(DetailsMenuContext);
   const actors = useSelector(selectActors);
-  const actorExists = actor && actors[actor.id] !== undefined;
+  const actorExists = actorId && actors[actorId] !== undefined;
 
   const eventsIndex = useSelector(selectEventIndex);
 
@@ -33,7 +32,7 @@ export const DetailsMenuContent: React.FC<{
       actorExists
         ? [
             () => {
-              dispatch(deleteActor(actor.id));
+              dispatch(deleteActor(actorId));
               setMenuTarget(null);
             },
             <XIcon
@@ -44,7 +43,7 @@ export const DetailsMenuContent: React.FC<{
           ]
         : [
             () => {
-              dispatch(fetchActorThunk(actor.id));
+              dispatch(fetchActorThunk(actorId));
               setMenuTarget(null);
             },
             <PlusIcon
@@ -53,14 +52,14 @@ export const DetailsMenuContent: React.FC<{
               aria-label={'ajouter'}
             />,
           ],
-    [actorExists, actor, dispatch, setMenuTarget]
+    [actorExists, actorId, dispatch, setMenuTarget]
   );
 
   const [events, setEvents] = useState<ProsoVisEvent[] | null>(null);
 
   useEffect(() => {
-    setEvents(get(actor.id, eventsIndex) || null);
-  }, [actor.id, eventsIndex]);
+    setEvents(get(actorId, eventsIndex) || null);
+  }, [actorId, eventsIndex]);
 
   return (
     <Base onMouseUp={stopEventPropagation}>
@@ -68,7 +67,7 @@ export const DetailsMenuContent: React.FC<{
         <IconSpacerPointer spaceRight onClick={handleClick}>
           {Icon}
         </IconSpacerPointer>
-        <ActorLabel id={actor} />
+        <ActorLabel id={actorId} />
       </ActorTitle>
       <Loading finished={events}>
         {events && <DetailsMenuEvents events={events} />}

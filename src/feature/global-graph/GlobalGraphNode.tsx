@@ -1,8 +1,6 @@
 import React, { useContext, useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
-import GlobalGraphContext, {
-  selectGetActorInformations,
-} from './GlobalGraphContext';
+import GlobalGraphContext from './GlobalGraphContext';
 import { useSelector } from 'react-redux';
 import { selectActors } from '../../selectors/event';
 import { selectSwitchActorColor } from '../../selectors/switch';
@@ -11,6 +9,9 @@ import { useFlatClick } from '../../hooks/useClick';
 import DetailsMenuContext from './DetailsMenuContext';
 import ActorLabel from '../../components/ActorLabel';
 import { ProsoVisNode } from '../../v2/types/graph';
+import { get } from 'lodash/fp';
+import { selectEventIndex } from '../../v2/selectors/events';
+import { RootState } from '../../reducers';
 
 export const StyledRect = styled.rect<{ fill?: string; stroke?: string }>`
   fill: ${({ fill }) => fill ?? 'lightgray'};
@@ -64,12 +65,10 @@ export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
   height,
 }) {
   const $ref = useRef<SVGGElement>(null as any);
-  const getActorInformations = useSelector(selectGetActorInformations);
+  const events = useSelector(
+    (state: RootState) => get(id, selectEventIndex(state)) || []
+  );
 
-  const { actor, eventIds } = useMemo(() => getActorInformations(id), [
-    id,
-    getActorInformations,
-  ]);
   const {
     sparker,
     shiner,
@@ -81,8 +80,8 @@ export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
 
   const { setMenuTarget } = useContext(DetailsMenuContext);
   const interactive = useMemo(
-    () => Array.from(eventIds, (id) => ({ id, kind: 'Event' })),
-    [eventIds]
+    () => Array.from(events, ({ id }) => ({ id, kind: 'Event' })),
+    [events]
   );
 
   const highlight = useHoverHighlight(interactive);
@@ -112,9 +111,16 @@ export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
   const handleContextMenu = useCallback<React.MouseEventHandler<SVGGElement>>(
     (e) => {
       e.preventDefault();
-      setMenuTarget({ actor, ref: $ref.current, x, y, width, height });
+      setMenuTarget({
+        actor: id,
+        ref: $ref.current,
+        x,
+        y,
+        width,
+        height,
+      });
     },
-    [setMenuTarget, actor, x, y, width, height]
+    [setMenuTarget, id, x, y, width, height]
   );
 
   const fill = useFill(id);
@@ -133,7 +139,7 @@ export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
       onContextMenu={handleContextMenu}
       sOpacity={opacity}
     >
-      <ActorLabel as="title" id={actor} />
+      <ActorLabel as="title" id={id} />
       <StyledRect
         width={width}
         height={height}

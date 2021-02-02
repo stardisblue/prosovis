@@ -4,7 +4,6 @@ import DetailsMenuContext from './DetailsMenuContext';
 import { Spring, animated } from 'react-spring/renderprops';
 import { DetailsMenuContent } from './DetailsMenuContent';
 import { stopEventPropagation } from '../../hooks/useClick';
-import { ProsoVisActor } from '../../v2/types/actors';
 
 const StyledDetailsOnWheelDiv = styled.div`
   width: 100%;
@@ -16,7 +15,7 @@ const StyledDetailsOnWheelDiv = styled.div`
   box-shadow: 0 0 3px gray;
 `;
 
-function DetailsOnWheelDiv({ actor }: { actor: ProsoVisActor }) {
+function DetailsOnWheelDiv({ actor }: { actor: string }) {
   const ref = useRef<HTMLDivElement>(null as any);
 
   useEffect(() => {
