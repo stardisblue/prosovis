@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { selectActorLinksMap } from '../relation/selectRelations';
-import { get, debounce } from 'lodash';
+import { debounce } from 'lodash';
 import { useSelector } from 'react-redux';
 // import { selectEventIndex } from '../../v2/selectors/events';
 // import { selectActors } from '../../v2/selectors/actors';
