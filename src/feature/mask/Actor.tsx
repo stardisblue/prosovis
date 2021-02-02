@@ -29,7 +29,7 @@ const Actor: React.FC<{
       checked={actorMaskState(actor, actorMask)}
       handleCheck={handleCheck}
     >
-      <ActorLabel as={SmallFont} actor={actor} short />
+      <ActorLabel as={SmallFont} id={actor} short />
     </CheckBoxSwitch>
   );
 };

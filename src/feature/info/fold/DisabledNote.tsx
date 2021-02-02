@@ -70,7 +70,7 @@ const DisabledActorNote: React.FC<{
         />
       </IconSpacer>
       <Masked>
-        <ActorLabel as="span" actor={group} short />
+        <ActorLabel as="span" id={group} short />
       </Masked>
     </InteractiveEnlarge>
   );

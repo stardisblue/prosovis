@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { getActorLabel } from '../data/getActorLabel';
-import { SiprojurisActor, isSiprojurisActor } from '../data/sip-models';
+import { SiprojurisActor } from '../data/sip-models';
 import { selectActors } from '../v2/selectors/actors';
 import { ProsoVisActor } from '../v2/types/actors';
 

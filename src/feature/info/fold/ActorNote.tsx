@@ -97,7 +97,7 @@ export const ActorNote: React.FC<{
           aria-label="individu"
         />
       </IconSpacer>
-      <ActorLabel as="span" actor={group} />
+      <ActorLabel as="span" id={group} />
     </InteractiveEnlarge>
   );
 

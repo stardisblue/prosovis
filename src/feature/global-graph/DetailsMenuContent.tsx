@@ -13,9 +13,10 @@ import { IconSpacerPointer } from '../../components/ui/IconSpacer';
 import { lightgray } from '../../components/ui/colors';
 import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import { ProsoVisActor } from '../../v2/types/actors';
-import { selectEventsModel } from '../../v2/selectors/events';
+import { selectEventIndex } from '../../v2/selectors/events';
 import { ProsoVisEvent } from '../../v2/types/events';
 import Loading from '../../v2/components/Loading';
+import { get } from 'lodash/fp';
 
 export const DetailsMenuContent: React.FC<{
   actor: ProsoVisActor;
@@ -25,7 +26,7 @@ export const DetailsMenuContent: React.FC<{
   const actors = useSelector(selectActors);
   const actorExists = actor && actors[actor.id] !== undefined;
 
-  const eventsDB = useSelector(selectEventsModel);
+  const eventsIndex = useSelector(selectEventIndex);
 
   const [handleClick, Icon] = useMemo(
     () =>
@@ -58,8 +59,8 @@ export const DetailsMenuContent: React.FC<{
   const [events, setEvents] = useState<ProsoVisEvent[] | null>(null);
 
   useEffect(() => {
-    setEvents(eventsDB ? eventsDB.getEvents(actor.id) : null);
-  }, [actor.id, eventsDB]);
+    setEvents(get(actor.id, eventsIndex) || null);
+  }, [actor.id, eventsIndex]);
 
   return (
     <Base onMouseUp={stopEventPropagation}>
@@ -67,7 +68,7 @@ export const DetailsMenuContent: React.FC<{
         <IconSpacerPointer spaceRight onClick={handleClick}>
           {Icon}
         </IconSpacerPointer>
-        <ActorLabel actor={actor} />
+        <ActorLabel id={actor} />
       </ActorTitle>
       <Loading finished={events}>
         {events && <DetailsMenuEvents events={events} />}

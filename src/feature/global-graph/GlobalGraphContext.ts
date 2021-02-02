@@ -3,7 +3,7 @@ import {
   selectActorLinksMap,
   selectActorsData,
 } from '../relation/selectRelations';
-import { get, debounce, Cancelable } from 'lodash';
+import { get, debounce } from 'lodash';
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 
@@ -11,7 +11,7 @@ type Key = string | null;
 type GlobalGraphProps = {
   sparker: Key;
   shiner: Key;
-  setSparker: React.Dispatch<React.SetStateAction<Key>> & Cancelable;
+  setSparker: _.DebouncedFunc<React.Dispatch<React.SetStateAction<Key>>>;
   setShiner: React.Dispatch<React.SetStateAction<Key>>;
   canIShine: (id: string) => boolean;
   canISpark: (id: string) => boolean;

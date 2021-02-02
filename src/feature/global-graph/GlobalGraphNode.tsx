@@ -133,7 +133,7 @@ export const GlobalGraphNode: React.FC<ProsoVisNode> = function ({
       onContextMenu={handleContextMenu}
       sOpacity={opacity}
     >
-      <ActorLabel as="title" actor={actor} />
+      <ActorLabel as="title" id={actor} />
       <StyledRect
         width={width}
         height={height}

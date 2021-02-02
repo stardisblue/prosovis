@@ -99,7 +99,7 @@ export const ActorModal: React.FC = function () {
             {current && (
               <div>
                 Nouvel acteur :{' '}
-                <ActorLabel actor={computeActorShortLabel(current)} />
+                <ActorLabel id={computeActorShortLabel(current)} />
               </div>
             )}
             <hr />
@@ -153,7 +153,7 @@ export const ActorLine: React.FC<any> = function ({
           aria-label={'Supprimer'}
         />
       </span>
-      <ActorLabel actor={actor} />
+      <ActorLabel id={actor} />
     </div>
   );
 };
