@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import L from 'leaflet';
 import { LeafletProvider, LeafletContextProps } from './context';
 import useMount from '../../../hooks/useMount';
@@ -28,10 +28,22 @@ function useLeafletMap(
 const Map: React.FC<{
   defaultBounds: L.LatLngBounds;
   options?: L.MapOptions;
-}> = function ({ defaultBounds, options, children }) {
+  onMoveEnd?: L.LeafletEventHandlerFn;
+}> = function ({ defaultBounds, options, children, onMoveEnd }) {
   const $div = useRef(null as any);
 
   const value = useLeafletMap($div, defaultBounds, options);
+
+  useEffect(() => {
+    if (value && onMoveEnd) {
+      const map = value.top;
+      map.on('moveend', onMoveEnd);
+
+      return () => {
+        map.off('moveend');
+      };
+    }
+  }, [onMoveEnd, value]);
 
   return (
     <div ref={$div}>

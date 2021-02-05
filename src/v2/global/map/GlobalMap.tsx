@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import Map from '../../components/leaflet/Map';
 import {
   Control,
@@ -9,11 +9,12 @@ import {
 import { TileLayer } from '../../components/leaflet/TileLayer';
 import { LayerGroup } from '../../components/leaflet/LayerGroup';
 import { Marker } from '../../components/leaflet/Marker';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash/fp';
 import Loading from '../../components/Loading';
 import { selectRichEventLocalised } from '../../selectors/mask';
 import { latLngBounds } from 'leaflet';
+import { setMaskGlobalMapBounds } from '../../reducers/mask/globalMapBoundsSlice';
 
 //         fillColor: color.main(event),
 // color: color.border(event),
@@ -42,7 +43,25 @@ const GlobalMap: React.FC = function () {
 };
 
 const LoadedGlobalMap: React.FC<{ locs: any }> = function ({ locs }) {
+  const dispatch = useDispatch();
+
   const [bounds] = useState(() => latLngBounds(map((l) => l.place, locs)));
+
+  const onZoomEnd = useCallback(
+    function (e: L.LeafletEvent) {
+      const bounds = (e.target as L.Map).getBounds();
+      const sw = bounds.getSouthWest();
+      const ne = bounds.getNorthEast();
+
+      dispatch(
+        setMaskGlobalMapBounds([
+          { lat: sw.lat, lng: sw.lng },
+          { lat: ne.lat, lng: ne.lng },
+        ])
+      );
+    },
+    [dispatch]
+  );
 
   return (
     <Map
@@ -50,6 +69,7 @@ const LoadedGlobalMap: React.FC<{ locs: any }> = function ({ locs }) {
       options={{
         maxZoom: 15,
       }}
+      onMoveEnd={onZoomEnd}
     >
       <Control>
         <BaseLayers />

@@ -19,6 +19,6 @@ const maskGlobalMapBoundsSlice = createSlice({
 
 export default maskGlobalMapBoundsSlice.reducer;
 export const {
-  set: setMaskGlobalTime,
-  clear: clearMaskGlobalTime,
+  set: setMaskGlobalMapBounds,
+  clear: clearMaskGlobalMapBounds,
 } = maskGlobalMapBoundsSlice.actions;

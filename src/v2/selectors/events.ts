@@ -21,26 +21,30 @@ export const selectEventIndex = createSelector(
 
 export const selectEvents = createSelector(
   selectEventIndex,
-  pipe<[any | undefined], ProsoVisEvent[], _.Dictionary<ProsoVisEvent>>(
-    flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
-    keyBy<ProsoVisEvent>('id')
-  )
+  (events) =>
+    events &&
+    pipe<[any], ProsoVisEvent[], _.Dictionary<ProsoVisEvent>>(
+      flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
+      keyBy<ProsoVisEvent>('id')
+    )(events)
 );
 
 export const selectUniqueKinds = createSelector(
   selectEvents,
-  pipe<
-    [_.Dictionary<ProsoVisEvent>],
-    ProsoVisEvent[],
-    ProsoVisEvent[],
-    string[],
-    string[],
-    _.Dictionary<string>
-  >(
-    values,
-    uniqBy<ProsoVisEvent>('kind'),
-    map('kind'),
-    sortBy(identity),
-    keyBy(identity)
-  )
+  (events) =>
+    events &&
+    pipe<
+      [_.Dictionary<ProsoVisEvent>],
+      ProsoVisEvent[],
+      ProsoVisEvent[],
+      string[],
+      string[],
+      _.Dictionary<string>
+    >(
+      values,
+      uniqBy<ProsoVisEvent>('kind'),
+      map('kind'),
+      sortBy(identity),
+      keyBy(identity)
+    )(events)
 );

@@ -12,6 +12,7 @@ import {
 import { utcDay, utcYear, utcYears } from 'd3';
 import { selectRichEventsTimed } from '../../selectors/mask';
 import { RichEvent } from '../../types/events';
+import { isNil } from 'lodash';
 
 export type Tyvent<T> = {
   value: T;
@@ -42,6 +43,7 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
 export const selectDiscrete = createSelector(
   selectRichEventsTimed,
   function (events) {
+    if (isNil(events)) return;
     return pipe(
       flatMap(discretize),
       concat(

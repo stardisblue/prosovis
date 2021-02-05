@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash/fp';
+import { isNil } from 'lodash/fp';
 import React from 'react';
 import styled, { keyframes } from 'styled-components/macro';
 
@@ -37,11 +37,11 @@ const FullWidth = styled.div`
 `;
 
 const Loading: React.FC<{
-  finished?: any;
+  finished: any;
   size?: number;
   hide?: boolean;
-}> = function ({ finished = false, size = 3, children, hide = false }) {
-  const loading = isEmpty(finished);
+}> = function ({ finished, size = 3, children, hide = false }) {
+  const loading = isNil(finished);
   return (
     <FullWidth>
       {!(loading && hide) && children}

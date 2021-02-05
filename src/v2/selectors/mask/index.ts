@@ -16,7 +16,8 @@ import { selectActiveKinds } from './kind';
 export const selectEventsWithoutKinds = createSelector(
   selectEvents,
   selectActiveKinds,
-  (events, kinds) => pickBy(({ kind }) => kinds[kind] === undefined, events)
+  (events, kinds) =>
+    events && pickBy(({ kind }) => kinds[kind] === undefined, events)
 );
 
 /**
@@ -25,7 +26,8 @@ export const selectEventsWithoutKinds = createSelector(
 const selectRichEvents = createSelector(
   selectEventsWithoutKinds,
   selectLocalisationsIndex,
-  (events, localisations) => map((e) => localize(localisations, e), events)
+  (events, localisations) =>
+    events && map((e) => localize(localisations, e), events)
 );
 
 /**
@@ -35,6 +37,7 @@ export const selectRichEventsWithoutMapBounds = createSelector(
   selectRichEvents,
   selectMaskGlobalMapBounds,
   function (events, bounds) {
+    if (!events) return;
     const lBounds = bounds ? latLngBounds(bounds) : null;
 
     return filter(({ place }) => {
@@ -87,7 +90,8 @@ export function localize(
  */
 export const selectRichEventsTimed = createSelector(
   selectRichEventsWithoutMapBounds,
-  filter(({ event: { datation } }) => datation.length > 0)
+  (events) =>
+    events && filter(({ event: { datation } }) => datation.length > 0, events)
 );
 
 /**
@@ -97,6 +101,7 @@ export const selectRichEventsFiltered = createSelector(
   selectRichEventsWithoutMapBounds,
   selectMaskGlobalTime,
   function (events, bounds) {
+    if (!events) return;
     return filter(({ event: { datation } }) => {
       if (datation.length === 0 || isNil(bounds)) return true;
 
@@ -120,9 +125,12 @@ export const selectRichEventsFiltered = createSelector(
 export const selectRichEventLocalised = createSelector(
   selectRichEventsFiltered,
 
-  filter(({ place }) => hasCoordinates(place)) as (
-    e: RichEvent[]
-  ) => (Omit<RichEvent, 'place'> & {
-    place: Omit<ProsoVisPlace, 'lng' | 'lat'> & { lat: number; lng: number };
-  })[]
+  (events) =>
+    events &&
+    (filter(({ place }) => hasCoordinates(place), events) as (Omit<
+      RichEvent,
+      'place'
+    > & {
+      place: Omit<ProsoVisPlace, 'lng' | 'lat'> & { lat: number; lng: number };
+    })[])
 );

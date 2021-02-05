@@ -28,6 +28,7 @@ const GlobalTimeline: React.FC = function () {
 
   const st = useMemo(
     () =>
+      events &&
       stack<any, Tyvent<_.Dictionary<number>>, string>()
         .keys(values(kinds))
         // .offset(stackOffsetSilhouette)
@@ -40,7 +41,7 @@ const GlobalTimeline: React.FC = function () {
     <Loading finished={st}>
       <svg height={height} width="100%" ref={$svg}>
         {dimensions?.width && (
-          <StreamGraph width={dimensions.width} stack={st} />
+          <StreamGraph width={dimensions.width} stack={st ?? []} />
         )}
       </svg>
     </Loading>
