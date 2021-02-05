@@ -36,15 +36,16 @@ const FullWidth = styled.div`
   position: relative;
 `;
 
-const Loading: React.FC<{ finished?: any; size?: number }> = function ({
-  finished = false,
-  size = 3,
-  children,
-}) {
+const Loading: React.FC<{
+  finished?: any;
+  size?: number;
+  hide?: boolean;
+}> = function ({ finished = false, size = 3, children, hide = false }) {
+  const loading = isEmpty(finished);
   return (
     <FullWidth>
-      {children}
-      {isEmpty(finished) && (
+      {!(loading && hide) && children}
+      {loading && (
         <LoadingSplash>
           <Spinner size={size} />
         </LoadingSplash>

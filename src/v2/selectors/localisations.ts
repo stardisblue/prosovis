@@ -3,12 +3,7 @@ import { createSelector } from '@reduxjs/toolkit';
 
 export const selectLocalisations = (state: RootState) => state.localisationData;
 
-export const selectLocalisationsModel = createSelector(
+export const selectLocalisationsIndex = createSelector(
   selectLocalisations,
   (locs) => locs.localisations?.index
-);
-
-export const selectMappableLocalisations = createSelector(
-  selectLocalisationsModel,
-  (model) => undefined
 );

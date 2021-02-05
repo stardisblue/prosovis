@@ -1,3 +1,5 @@
+import { ProsoVisLocalisation, ProsoVisPlace } from './localisations';
+
 export type ComputedLabels = {
   actorNote: string;
   placeNote: string;
@@ -30,4 +32,10 @@ export type ProsoVisEvents = {
   url: { [k: string]: string };
   uri: string;
   index: { [k: string]: ProsoVisEvent[] };
+};
+
+export type RichEvent = {
+  event: ProsoVisEvent;
+  localisation?: ProsoVisLocalisation;
+  place?: ProsoVisPlace;
 };

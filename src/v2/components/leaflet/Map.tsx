@@ -5,7 +5,7 @@ import useMount from '../../../hooks/useMount';
 
 function useLeafletMap(
   $ref: React.MutableRefObject<HTMLDivElement>,
-  bounds: [[number, number], [number, number]],
+  defaultBounds: L.LatLngBounds,
   options?: L.MapOptions
 ) {
   const [value, setValue] = useState<LeafletContextProps>();
@@ -14,7 +14,7 @@ function useLeafletMap(
     const m = new L.Map($ref.current, {
       ...options,
     });
-    m.fitBounds(bounds);
+    m.fitBounds(defaultBounds);
     setValue({ top: m, current: m });
 
     return () => {
@@ -26,12 +26,12 @@ function useLeafletMap(
 }
 
 const Map: React.FC<{
-  bounds: [[number, number], [number, number]];
+  defaultBounds: L.LatLngBounds;
   options?: L.MapOptions;
-}> = function ({ bounds, options, children }) {
+}> = function ({ defaultBounds, options, children }) {
   const $div = useRef(null as any);
 
-  const value = useLeafletMap($div, bounds, options);
+  const value = useLeafletMap($div, defaultBounds, options);
 
   return (
     <div ref={$div}>

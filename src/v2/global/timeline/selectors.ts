@@ -10,29 +10,29 @@ import {
   first,
 } from 'lodash/fp';
 import { utcDay, utcYear, utcYears } from 'd3';
-import { selectEventsWithoutKinds } from '../../selectors/mask';
-import { SiprojurisEvent } from '../../../data/sip-models';
+import { selectRichEventsTimed } from '../../selectors/mask';
+import { RichEvent } from '../../types/events';
 
 export type Tyvent<T> = {
   value: T;
   time: Date;
 };
 
-const discretize: (e: SiprojurisEvent) => Tyvent<string>[] = (e) => {
-  if (e.datation.length === 2) {
+const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
+  if (event.datation.length === 2) {
     const [start, end] = map(
       pipe(get('value'), (d) => new Date(d), utcYear.floor),
-      e.datation
+      event.datation
     );
     return utcYears(start, utcDay.offset(end, 1)).map((time) => ({
-      value: e.kind,
+      value: event.kind,
       time,
     }));
-  } else if (e.datation.length === 1) {
+  } else if (event.datation.length === 1) {
     return [
       {
-        value: e.kind,
-        time: pipe((d) => new Date(d), utcYear)(e.datation[0].value),
+        value: event.kind,
+        time: pipe((d) => new Date(d), utcYear)(event.datation[0].value),
       },
     ];
   }
@@ -40,7 +40,7 @@ const discretize: (e: SiprojurisEvent) => Tyvent<string>[] = (e) => {
 };
 
 export const selectDiscrete = createSelector(
-  selectEventsWithoutKinds,
+  selectRichEventsTimed,
   function (events) {
     return pipe(
       flatMap(discretize),

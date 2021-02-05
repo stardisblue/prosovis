@@ -21,6 +21,7 @@ export const selectBoundsMask = createSelector(
   (mask) => mask.bounds
 );
 
+/** see filter:time in v2/selectors/masks */
 export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
   res
     ? function ({ datation }: SiprojurisEvent) {
