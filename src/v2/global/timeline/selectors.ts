@@ -10,7 +10,7 @@ import {
   first,
 } from 'lodash/fp';
 import { utcDay, utcYear, utcYears } from 'd3';
-import { selectRichEventsTimed } from '../../selectors/mask';
+import { selectRichEvents, selectRichEventsTimed } from '../../selectors/mask';
 import { RichEvent } from '../../types/events';
 import { isNil } from 'lodash';
 
@@ -40,22 +40,27 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
   return [];
 };
 
-export const selectDiscrete = createSelector(
-  selectRichEventsTimed,
-  function (events) {
-    if (isNil(events)) return;
-    return pipe(
-      flatMap(discretize),
-      concat(
-        utcYear
-          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-          .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
-      ),
-      groupBy(pipe(get('time'), (v) => +v!)),
-      map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
-        time: pipe(first, get('time'))(v),
-        value: filter('value', v),
-      }))
-    )(events) as Tyvent<Tyvent<string>[]>[];
-  }
+export const selectBackgroundDiscrete = createSelector(
+  selectRichEvents,
+  fillEmpty
 );
+
+export const selectDiscrete = createSelector(selectRichEventsTimed, fillEmpty);
+function fillEmpty(
+  events: RichEvent[] | undefined
+): Tyvent<Tyvent<string>[]>[] | undefined {
+  if (isNil(events)) return;
+  return pipe(
+    flatMap(discretize),
+    concat(
+      utcYear
+        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+        .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
+    ),
+    groupBy(pipe(get('time'), (v) => +v!)),
+    map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
+      time: pipe(first, get('time'))(v),
+      value: filter('value', v),
+    }))
+  )(events) as Tyvent<Tyvent<string>[]>[];
+}

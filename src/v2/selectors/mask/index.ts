@@ -23,7 +23,7 @@ export const selectEventsWithoutKinds = createSelector(
 /**
  * f(x): localize
  */
-const selectRichEvents = createSelector(
+export const selectRichEvents = createSelector(
   selectEventsWithoutKinds,
   selectLocalisationsIndex,
   (events, localisations) =>
@@ -85,13 +85,9 @@ export function localize(
   return { event };
 }
 
-/**
- * Exist:Time
- */
-export const selectRichEventsTimed = createSelector(
+export const selectRichEventsBackgroundTimed = createSelector(
   selectRichEventsWithoutMapBounds,
-  (events) =>
-    events && filter(({ event: { datation } }) => datation.length > 0, events)
+  existTime
 );
 
 /**
@@ -120,6 +116,14 @@ export const selectRichEventsFiltered = createSelector(
 );
 
 /**
+ * Exist:Time
+ */
+export const selectRichEventsTimed = createSelector(
+  selectRichEventsFiltered,
+  existTime
+);
+
+/**
  * Exist: GPS
  */
 export const selectRichEventLocalised = createSelector(
@@ -134,3 +138,10 @@ export const selectRichEventLocalised = createSelector(
       place: Omit<ProsoVisPlace, 'lng' | 'lat'> & { lat: number; lng: number };
     })[])
 );
+
+/** exist: Time */
+function existTime(events: RichEvent[] | undefined) {
+  return (
+    events && filter(({ event: { datation } }) => datation.length > 0, events)
+  );
+}

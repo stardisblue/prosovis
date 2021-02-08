@@ -37,7 +37,8 @@ export const StackedChart: React.FC<{
   y: d3.ScaleLinear<number, number>;
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
   color: d3.ScaleOrdinal<string, string> | null;
-}> = function ({ x, y, stack, color }) {
+  defaultColor?: string;
+}> = function ({ x, y, stack, color, defaultColor = theme.darkgray }) {
   const [chart, ref] = useSelect();
 
   const d3Area = useMemo(
@@ -52,8 +53,8 @@ export const StackedChart: React.FC<{
   );
 
   const colorize = useCallback(
-    (d: any) => (color ? color(d.key) : theme.darkgray),
-    [color]
+    (d: any) => (color ? color(d.key) : defaultColor),
+    [color, defaultColor]
   );
 
   useEffect(() => {
@@ -65,12 +66,14 @@ export const StackedChart: React.FC<{
       .join(onEnter, onUpdate);
 
     function onEnter(enter: EnterType) {
-      return enter
-        .append('path')
-        .attr('fill', colorize)
-        .attr('stroke', colorize)
-        .attr('d', d3Area as any)
-        .call((g) => g.append('title').text((d) => d.key));
+      return (
+        enter
+          .append('path')
+          .attr('fill', colorize)
+          // .attr('stroke', colorize)
+          .attr('d', d3Area as any)
+          .call((g) => g.append('title').text((d) => d.key))
+      );
     }
 
     function onUpdate(update: UpdateType) {
@@ -78,7 +81,7 @@ export const StackedChart: React.FC<{
         g
           .transition()
           .attr('fill', colorize)
-          .attr('stroke', colorize)
+          // .attr('stroke', colorize)
           .attr('d', d3Area as any)
           .select('title')
           .text((d: d3.Series<any, string>) => d.key)

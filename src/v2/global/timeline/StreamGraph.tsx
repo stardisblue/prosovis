@@ -1,5 +1,13 @@
 import React, { useMemo } from 'react';
-import { axisBottom, axisLeft, max, min, scaleLinear, scaleTime } from 'd3';
+import {
+  axisBottom,
+  axisLeft,
+  lch,
+  max,
+  min,
+  scaleLinear,
+  scaleTime,
+} from 'd3';
 import { parseISO } from 'date-fns';
 import { height, margin } from './options';
 import { Tyvent } from './selectors';
@@ -10,12 +18,31 @@ import BrushX from '../../components/brush/BrushX';
 import { useUpdateMaskGlobalTime } from './useUpdateMask';
 import { useSelector } from 'react-redux';
 import { selectSwitchKindColor } from '../../../selectors/switch';
+import { lightgray } from '../../../components/ui/colors';
 
 export const StreamGraph: React.FC<{
   width: number;
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
-}> = function ({ width, stack }) {
+  reference: d3.Series<Tyvent<Dictionary<number>>, string>[];
+}> = function ({ width, stack, reference }) {
   const color = useSelector(selectSwitchKindColor);
+
+  const colorReference = useMemo(() => {
+    const grayscale = color?.copy();
+
+    if (grayscale) {
+      grayscale.range(
+        grayscale.range().map((c) => {
+          const lchColor = lch(c);
+          lchColor.c = 0;
+          return lchColor.formatRgb();
+        })
+      );
+
+      return grayscale;
+    }
+    return null;
+  }, [color]);
 
   const handleBrush = useUpdateMaskGlobalTime();
   const x = useMemo(
@@ -33,15 +60,22 @@ export const StreamGraph: React.FC<{
     () =>
       scaleLinear()
         .domain([
-          min(stack, (d) => min(d, (d) => d[0])) as any,
-          max(stack, (d) => max(d, (d) => d[1])) as any,
+          min(reference, (d) => min(d, (d) => d[0])) as any,
+          max(reference, (d) => max(d, (d) => d[1])) as any,
         ])
         .range([height - margin.bottom, margin.top]),
-    [stack]
+    [reference]
   );
 
   return (
     <>
+      <StackedChart
+        stack={reference}
+        color={colorReference}
+        x={x}
+        y={y}
+        defaultColor={lightgray}
+      />
       <StackedChart stack={stack} color={color} x={x} y={y} />
       <Axis
         scale={x}
