@@ -43,10 +43,13 @@ export const ControlOverlay: React.FC<{
   const control = useControl();
   return (
     <LeafletAddControl.Provider
-      value={(layer) => {
-        if (checked) layer.addTo(l.top);
-        return control.addOverlay(layer, name);
-      }}
+      value={Object.assign(
+        (layer: L.Layer) => {
+          if (checked) layer.addTo(l.top);
+          return control.addOverlay(layer, name);
+        },
+        { control }
+      )}
     >
       {children}
     </LeafletAddControl.Provider>

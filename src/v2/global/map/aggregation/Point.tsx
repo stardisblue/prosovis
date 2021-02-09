@@ -1,6 +1,6 @@
 export const padding = 1;
 
-export class Point {
+export class Point<D = any> {
   protected _bbox?: {
     minX: number;
     minY: number;
@@ -10,17 +10,25 @@ export class Point {
   id: string;
   x: number;
   y: number;
-  items?: Point[];
-  _size?: number;
+  private _clusters?: Point<D>[];
+  private _size?: number;
+  private _items?: D[];
   static cid: number = 0;
+  data?: D;
   constructor(
     id: string,
-    { x, y, items }: { x: number; y: number; items?: Point[] }
+    { x, y, items }: { x: number; y: number; items?: Point<D>[] },
+    data?: D
   ) {
     this.id = id;
     this.x = x;
     this.y = y;
-    if (items) this.items = items;
+    if (data) this.data = data;
+    if (items) this._clusters = items;
+  }
+
+  isCluster() {
+    return this._clusters !== undefined;
   }
 
   overlaps(point: Point) {
@@ -48,19 +56,25 @@ export class Point {
   size(): number {
     return (
       this._size ??
-      (this._size = !this.items
+      (this._size = !this._clusters
         ? 1
-        : this.items.reduce((acc, i) => acc + i.size(), 0))
+        : this._clusters.reduce((acc, i) => acc + i.size(), 0))
     );
   }
+
+  items(): D[] {
+    return (
+      this._items ??
+      (this._items = !this._clusters
+        ? [this.data!]
+        : this._clusters.flatMap((v) => v.items()))
+    );
+  }
+
   static merge<T extends Point>(points: T[]) {
     const id = 'c' + this.cid++;
     const props = this.mergeProperties(points);
-    return this.create(id, props) as T;
-  }
-
-  static create(id: string, props: { x: number; y: number; items: Point[] }) {
-    return new this(id, props);
+    return new this(id, props) as T;
   }
 
   static mergeProperties<T extends Point>(items: T[]) {

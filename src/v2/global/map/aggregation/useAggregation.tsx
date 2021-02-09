@@ -12,7 +12,7 @@ export class MyRBush extends RBush<Circle> {
 
 export function useAggregation(
   locs: RichEventLocalised[],
-  map?: L.Map
+  map: L.Map
 ): Circle[] | undefined {
   const [clusters, setClusters] = useState<Circle[]>();
 
@@ -45,28 +45,29 @@ export function useAggregation(
   }, []);
 
   useEffect(() => {
-    if (map) {
-      const positionTree = new MyRBush(); // changed when zooming
+    const positionTree = new MyRBush(); // changed when zooming
 
-      const current = { ping: true };
-      current.ping = true;
-      positionTree.clear();
-      positionTree.load(
-        locs.map(
-          ({ event: { id }, place: { lat, lng } }) =>
-            new Circle(id, map.latLngToLayerPoint([lat, lng]))
-        )
-      );
-      const results = {
-        leafs: positionTree.search(viewBounds(map)),
-      };
+    const current = { ping: true };
+    current.ping = true;
+    positionTree.clear();
+    positionTree.load(
+      locs.map(function (event) {
+        const {
+          event: { id },
+          place: { lat, lng },
+        } = event;
+        return new Circle(id, map.latLngToLayerPoint([lat, lng]), event);
+      })
+    );
+    const results = {
+      leafs: positionTree.search(viewBounds(map)),
+    };
 
-      createClusters(results);
+    createClusters(results);
 
-      return () => {
-        createClusters.stop();
-      };
-    }
+    return () => {
+      createClusters.stop();
+    };
   }, [locs, createClusters, map]);
 
   return clusters;

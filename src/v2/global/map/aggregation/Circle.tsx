@@ -1,10 +1,14 @@
 import { padding, Point } from './Point';
 
-export class Circle extends Point {
+export class Circle<T = any> extends Point<T> {
   radius: number;
-  constructor(id: string, props: { x: number; y: number; items?: Point[] }) {
-    super(id, props);
-    this.radius = Math.sqrt(this.size()) + 4;
+  constructor(
+    id: string,
+    props: { x: number; y: number; items?: Point[] },
+    data?: T
+  ) {
+    super(id, props, data);
+    this.radius = Math.sqrt(this.size()) + 5;
   }
 
   overlaps(circle: Circle) {
