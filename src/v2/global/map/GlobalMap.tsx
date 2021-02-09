@@ -7,14 +7,16 @@ import {
 } from '../../components/leaflet/Control';
 
 import { TileLayer } from '../../components/leaflet/TileLayer';
-import { LayerGroup } from '../../components/leaflet/LayerGroup';
-import { Marker } from '../../components/leaflet/Marker';
 import { useDispatch, useSelector } from 'react-redux';
 import { map } from 'lodash/fp';
 import Loading from '../../components/Loading';
-import { selectRichEventLocalised } from '../../selectors/mask';
+import {
+  RichEventLocalised,
+  selectRichEventLocalised,
+} from '../../selectors/mask';
 import { latLngBounds } from 'leaflet';
 import { setMaskGlobalMapBounds } from '../../reducers/mask/globalMapBoundsSlice';
+import { ClusterGroup } from './ClusterGroup';
 
 //         fillColor: color.main(event),
 // color: color.border(event),
@@ -22,32 +24,25 @@ import { setMaskGlobalMapBounds } from '../../reducers/mask/globalMapBoundsSlice
 //   _.isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,
 // weight: 1,
 // radius: 5,
-const StyledMarkers = ({ latlng }: { latlng: [number, number] }) => (
-  <Marker
-    latlng={latlng}
-    fillColor="blue"
-    color="black"
-    weight={1}
-    radius={5}
-  />
-);
 
 const GlobalMap: React.FC = function () {
   const locs = useSelector(selectRichEventLocalised);
 
   return (
     <Loading finished={locs} hide>
-      <LoadedGlobalMap locs={locs} />
+      <LoadedGlobalMap locs={locs!} />
     </Loading>
   );
 };
 
-const LoadedGlobalMap: React.FC<{ locs: any }> = function ({ locs }) {
+const LoadedGlobalMap: React.FC<{
+  locs: RichEventLocalised[];
+}> = function ({ locs }) {
   const dispatch = useDispatch();
 
   const [bounds] = useState(() => latLngBounds(map((l) => l.place, locs)));
 
-  const onZoomEnd = useCallback(
+  const onMoveEnd = useCallback(
     function (e: L.LeafletEvent) {
       const bounds = (e.target as L.Map).getBounds();
       const sw = bounds.getSouthWest();
@@ -69,19 +64,12 @@ const LoadedGlobalMap: React.FC<{ locs: any }> = function ({ locs }) {
       options={{
         maxZoom: 15,
       }}
-      onMoveEnd={onZoomEnd}
+      onMoveEnd={onMoveEnd}
     >
       <Control>
         <BaseLayers />
         <Overlay name="markers">
-          <LayerGroup>
-            {map(
-              ({ event: { id }, place: { lat, lng } }) => (
-                <StyledMarkers key={id} latlng={[lat, lng]} />
-              ),
-              locs
-            )}
-          </LayerGroup>
+          <ClusterGroup locs={locs}></ClusterGroup>
         </Overlay>
       </Control>
     </Map>

@@ -29,10 +29,33 @@ const Map: React.FC<{
   defaultBounds: L.LatLngBounds;
   options?: L.MapOptions;
   onMoveEnd?: L.LeafletEventHandlerFn;
-}> = function ({ defaultBounds, options, children, onMoveEnd }) {
+  onZoomEnd?: L.LeafletEventHandlerFn;
+  mappy?: (map: L.Map) => void;
+}> = function ({
+  defaultBounds,
+  options,
+  children,
+  onMoveEnd,
+  onZoomEnd,
+  mappy,
+}) {
   const $div = useRef(null as any);
 
   const value = useLeafletMap($div, defaultBounds, options);
+
+  useEffect(() => {
+    if (value && mappy) mappy(value.top);
+  }, [mappy, value]);
+  useEffect(() => {
+    if (value && onZoomEnd) {
+      const map = value.top;
+      map.on('zoomend', onZoomEnd);
+
+      return () => {
+        map.off('zoomend');
+      };
+    }
+  }, [onZoomEnd, value]);
 
   useEffect(() => {
     if (value && onMoveEnd) {

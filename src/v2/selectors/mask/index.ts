@@ -123,6 +123,13 @@ export const selectRichEventsTimed = createSelector(
   existTime
 );
 
+export type RichEventLocalised = Omit<RichEvent, 'place'> & {
+  place: Omit<ProsoVisPlace, 'lng' | 'lat'> & {
+    lat: number;
+    lng: number;
+  };
+};
+
 /**
  * Exist: GPS
  */
@@ -131,12 +138,10 @@ export const selectRichEventLocalised = createSelector(
 
   (events) =>
     events &&
-    (filter(({ place }) => hasCoordinates(place), events) as (Omit<
-      RichEvent,
-      'place'
-    > & {
-      place: Omit<ProsoVisPlace, 'lng' | 'lat'> & { lat: number; lng: number };
-    })[])
+    (filter(
+      ({ place }) => hasCoordinates(place),
+      events
+    ) as RichEventLocalised[])
 );
 
 /** exist: Time */
