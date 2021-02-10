@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash/fp';
 import { createSelector } from 'reselect';
 import { selectGlobalHighlight } from './highlight';
 import { selectGlobalSelection } from './selection';
@@ -11,4 +12,9 @@ export const selectInteractionMap = createSelector(
 
     return createInteractionMap(inter);
   }
+);
+
+export const selectIsInteractionEmpty = createSelector(
+  selectInteractionMap,
+  (interactors) => isEmpty(interactors.events) && isEmpty(interactors.actors)
 );

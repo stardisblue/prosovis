@@ -10,6 +10,7 @@ import { fetchLocalisations } from '../reducers/localisationsDataSlice';
 import { fetchActors } from '../reducers/actorsDataSlice';
 import { fetchEvents } from '../reducers/eventsDataSlice';
 import { fetchGraph } from '../reducers/graphDataSlice';
+import { fetchRelations } from '../reducers/relationsDataSlice';
 
 export const StyledGlobalView = styled.div`
   display: grid;
@@ -43,6 +44,7 @@ const GlobalView: React.FC = function () {
     dispatch(fetchActors());
     dispatch(fetchEvents());
     dispatch(fetchGraph());
+    dispatch(fetchRelations());
   });
   return (
     <StyledGlobalView>
