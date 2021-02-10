@@ -9,9 +9,7 @@ import { Marker } from '../../components/leaflet/Marker';
 import { Circle } from './aggregation/Circle';
 import { groupBy, pipe, sortBy, toPairs } from 'lodash/fp';
 import PieChart from './PieChart';
-import { useSelector } from 'react-redux';
-import { selectSwitchKindColor } from '../../../selectors/switch';
-import { darkgray } from '../../components/theme';
+import { ClusterPiePart } from './ClusterPiePart';
 
 export const ClusterGroup: React.FC<{
   locs: RichEventLocalised[];
@@ -48,35 +46,15 @@ export const Cluster: React.FC<{
     [value]
   );
 
-  console.log(parts);
-
   return (
     <Marker latlng={top.layerPointToLatLng([x, y])} radius={radius}>
       <svg viewBox={`${-radius} ${-radius} ${radius * 2} ${radius * 2}`}>
         <PieChart radius={radius} counts={parts}>
-          {(a, arc) => <PiePart key={a.data[0]} a={a} arc={arc} />}
+          {(a, arc) => (
+            <ClusterPiePart key={a.data[0]} a={a} arc={arc} radius={radius} />
+          )}
         </PieChart>
       </svg>
     </Marker>
-  );
-};
-
-export const PiePart: React.FC<{
-  a: d3.PieArcDatum<[string, any[]]>;
-  arc: d3.Arc<any, d3.PieArcDatum<[string, any[]]>>;
-}> = function ({ a, arc }) {
-  const color = useSelector(selectSwitchKindColor);
-
-  const [id, values] = a.data;
-  const d = arc(a)!;
-  return (
-    <g>
-      <path opacity={0.3} d={d} fill={color ? color(id) : darkgray}>
-        <title>{values.length}</title>
-      </path>
-      <path d={d} fill={color ? color(id) : darkgray}>
-        <title>{values.length}</title>
-      </path>
-    </g>
   );
 };

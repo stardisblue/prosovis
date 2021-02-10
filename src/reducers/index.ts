@@ -19,6 +19,8 @@ import relationsData from '../v2/reducers/relationsDataSlice';
 import maskKind from '../v2/reducers/mask/kindSlice';
 import maskGlobalTime from '../v2/reducers/mask/globalTimeSlice';
 import maskGlobalMapBounds from '../v2/reducers/mask/globalMapBoundsSlice';
+import globalHighlightSlice from '../v2/reducers/global/highlightSlice';
+import globalSelectionSlice from '../v2/reducers/global/selectionSlice';
 const rootReducer = combineReducers({
   serverStatus,
   maxActors,
@@ -40,6 +42,8 @@ const rootReducer = combineReducers({
   maskKind,
   maskGlobalTime,
   maskGlobalMapBounds,
+  globalHighlightSlice,
+  globalSelectionSlice,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

@@ -15,6 +15,7 @@ import GridAutoRest from '../v2/components/ui/GridAutoRest';
 import Flip from '../v2/components/ui/Flip';
 import { lightgray } from '../v2/components/theme';
 import { SpecificView } from '../v2/views/SpecificView';
+import { resetGlobalSelection } from '../v2/reducers/global/selectionSlice';
 
 const BorderedGridAutoRest = styled(GridAutoRest)`
   border-right: 1px solid ${lightgray};
@@ -37,6 +38,7 @@ function App() {
   const dispatch = useDispatch();
   const onClick = useCallback((e) => {
     dispatch(clearSelection());
+    dispatch(resetGlobalSelection());
     // safely ignoring dispatch
     //eslint-disable-next-line
   }, []);
