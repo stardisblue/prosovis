@@ -1,5 +1,5 @@
 type InteractionActor = { actor: string };
-type InteractionEvent = { event: string };
+type InteractionEvent = { event: string; actor: string };
 export type InteractionPayload = InteractionActor | InteractionEvent;
 
 export function isEventInteraction(

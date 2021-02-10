@@ -23,25 +23,24 @@ export const ClusterPiePart: React.FC<{
   const [id, values] = a.data;
 
   const interactive = useMemo(
-    () => map(({ event: { id: event } }) => ({ event }), values),
+    () => map(({ event: { id: event, actor } }) => ({ event, actor }), values),
     [values]
   );
 
   const [handleClick, handleHover, handleHoverOut] = useMemo(
     () => [
       () => {
-        dispatch(setGlobalSelection(interactive));
+        dispatch(setGlobalSelection(interactive)); // onclick
       },
       () => {
-        dispatch(setGlobalHighlight(interactive));
+        dispatch(setGlobalHighlight(interactive)); // onmouseover
       },
       () => {
-        dispatch(resetGlobalHighlight());
+        dispatch(resetGlobalHighlight()); // onmouseout
       },
     ],
     [dispatch, interactive]
   );
-
   const d = arc(a)!;
 
   return (
