@@ -8,7 +8,7 @@ export const Axis: React.FC<{
     scale: d3.AxisScale<Domain>
   ) => d3.Axis<Domain>;
 }> = function ({ scale, position: [x, y], axis: axisDirection }) {
-  const [selection, ref] = useSelect();
+  const [selection, ref] = useSelect<SVGGElement>();
 
   useEffect(() => {
     selection.current.transition().call(axisDirection(scale));
