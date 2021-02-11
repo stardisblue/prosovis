@@ -1,7 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
-import { EventDates } from '../../../components/DateComponent';
 import { StyledFlex } from '../../../components/ui/Flex/styled-components';
 import { IconSpacer } from '../../../components/ui/IconSpacer';
 import getEventIcon from '../../../data/getEventIcon';
