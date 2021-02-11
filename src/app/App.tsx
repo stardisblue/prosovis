@@ -16,6 +16,7 @@ import Flip from '../v2/components/ui/Flip';
 import { lightgray } from '../v2/components/theme';
 import { SpecificView } from '../v2/views/SpecificView';
 import { resetGlobalSelection } from '../v2/reducers/global/selectionSlice';
+import { resetActorSummary } from '../v2/reducers/global/actorSummarySlice';
 
 const BorderedGridAutoRest = styled(GridAutoRest)`
   border-right: 1px solid ${lightgray};
@@ -36,12 +37,14 @@ function App() {
   const $ref = useRef<HTMLDivElement>(null as any);
 
   const dispatch = useDispatch();
-  const onClick = useCallback((e) => {
-    dispatch(clearSelection());
-    dispatch(resetGlobalSelection());
-    // safely ignoring dispatch
-    //eslint-disable-next-line
-  }, []);
+  const onClick = useCallback(
+    (e) => {
+      dispatch(clearSelection());
+      dispatch(resetGlobalSelection());
+      dispatch(resetActorSummary());
+    },
+    [dispatch]
+  );
   const mouse = useMouse();
 
   const bind = useMemo<

@@ -1,15 +1,23 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
+import { selectRelations } from '../../../feature/relation/selectRelations';
 import Loading from '../../components/Loading';
+import { selectSummary } from '../../selectors/global/summary';
 import { selectGraph } from '../../selectors/graph';
 import { ProsoVisGraph } from '../../types/graph';
 import { GraphNode } from './GraphNode';
+import { SummaryWindow } from './SummaryWindow';
 import { useEasyPZ } from './useEasyPZ';
 
 const GlobalGraph: React.FC = function () {
   const graph = useSelector(selectGraph);
+  const relations = useSelector(selectRelations);
 
-  return <Loading finished={graph}>{graph && <Graph graph={graph} />}</Loading>;
+  return (
+    <Loading finished={graph && relations}>
+      {graph && <Graph graph={graph} />}
+    </Loading>
+  );
 };
 
 const useGraphBounds = function (graph: ProsoVisGraph) {
@@ -35,6 +43,7 @@ const useGraphBounds = function (graph: ProsoVisGraph) {
 export const Graph: React.FC<{ graph: ProsoVisGraph }> = function ({ graph }) {
   const bounds = useGraphBounds(graph);
   const { $svg, $g, baseScale, viewBox } = useEasyPZ(bounds);
+  const summary = useSelector(selectSummary);
 
   return (
     <svg ref={$svg} width="100%" height="100%" viewBox={viewBox}>
@@ -48,6 +57,7 @@ export const Graph: React.FC<{ graph: ProsoVisGraph }> = function ({ graph }) {
             {...n}
           />
         ))}
+        {summary && <SummaryWindow target={summary} />}
       </g>
     </svg>
   );

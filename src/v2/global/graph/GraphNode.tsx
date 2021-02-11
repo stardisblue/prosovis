@@ -1,4 +1,4 @@
-import React, { MouseEvent, useMemo } from 'react';
+import React, { MouseEvent, useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import ActorLabel from '../../../components/ActorLabel';
@@ -6,6 +6,7 @@ import { useFlatClick } from '../../../hooks/useClick';
 import { selectActors } from '../../../selectors/event';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { lightgray, moongray, darkgray } from '../../components/theme';
+import { setActorSummary } from '../../reducers/global/actorSummarySlice';
 import {
   resetGlobalHighlight,
   setGlobalHighlight,
@@ -56,6 +57,14 @@ export const GraphNode: React.FC<ProsoVisNode> = function ({
     [dispatch, id]
   );
 
+  const handleContextMenu = useCallback(
+    (e: MouseEvent<SVGGElement>) => {
+      e.preventDefault();
+      dispatch(setActorSummary({ x: x + width, y: y, actor: id }));
+    },
+    [dispatch, id, x, width, y]
+  );
+
   const g = {
     opacity:
       highlighted?.actors[id] ||
@@ -95,6 +104,7 @@ export const GraphNode: React.FC<ProsoVisNode> = function ({
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      onContextMenu={handleContextMenu}
       {...useFlatClick(handleClick)}
     >
       <ActorLabel as="title" id={id} />
