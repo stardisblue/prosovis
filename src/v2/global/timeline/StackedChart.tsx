@@ -43,7 +43,7 @@ export const StackedChart: React.FC<{
 
   const d3Area = useMemo(
     function () {
-      return area()
+      return area<d3.SeriesPoint<Tyvent<Dictionary<number>>>>()
         .x((d: any) => x(d.data.time))
         .y0((d) => y(d[0]))
         .y1((d) => y(d[1]))
@@ -71,7 +71,7 @@ export const StackedChart: React.FC<{
           .append('path')
           .attr('fill', colorize)
           // .attr('stroke', colorize)
-          .attr('d', d3Area as any)
+          .attr('d', d3Area)
           .call((g) => g.append('title').text((d) => d.key))
       );
     }
@@ -82,7 +82,7 @@ export const StackedChart: React.FC<{
           .transition()
           .attr('fill', colorize)
           // .attr('stroke', colorize)
-          .attr('d', d3Area as any)
+          .attr('d', d3Area)
           .select('title')
           .text((d: d3.Series<any, string>) => d.key)
       );
