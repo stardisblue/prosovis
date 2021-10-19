@@ -112,7 +112,6 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
       ringLink.attr('d', ([d, points]: any) => {
         if (nodeMap.get(d.source)) {
           const { x, y } = nodeMap.get(d.source) as any;
-
           return path([[x, y], ...points]);
         }
         return '';

@@ -32,8 +32,13 @@ export type RelationType = {
    */
   actorRing: Map<string, { ghosts: Set<string>; locsLinks: ActorRelationsMap }>;
   ghosts: Map<string, ProsoVisActor>;
-  actors: Map<string, ProsoVisActor>; // all people information ( actors)
+  actors: Map<
+    string,
+    ProsoVisActor & { vx: number; vy: number; x: number; y: number }
+  >; // all people information ( actors)
 };
+
+const vDefaults = { vx: 0, vy: 0, x: 0, y: 0 };
 
 function addRelation(
   relations: RelationType,
@@ -56,10 +61,10 @@ function addRelation(
   locLinks.set(link.id, link);
 
   if (!relations.ghosts.has(link.target))
-    relations.ghosts.set(link.target, { ...actors[link.target] });
+    relations.ghosts.set(link.target, { ...vDefaults, ...actors[link.target] });
 
   if (!relations.actors.has(link.source))
-    relations.actors.set(link.source, { ...actors[link.source] });
+    relations.actors.set(link.source, { ...vDefaults, ...actors[link.source] });
 }
 
 const compareByKeySelector = createSelectorCreator(
@@ -133,9 +138,15 @@ export const selectDetailRelations = compareByKeySelector(
           if (actors[source] && actors[target]) {
             // both are actors
             if (!relations.actors.has(source))
-              relations.actors.set(source, get(source, indexActors));
+              relations.actors.set(source, {
+                ...vDefaults,
+                ...get(source, indexActors),
+              });
             if (!relations.actors.has(target))
-              relations.actors.set(target, get(target, indexActors));
+              relations.actors.set(target, {
+                ...vDefaults,
+                ...get(target, indexActors),
+              });
             relations.links.set(link.id, link);
           } else if (actors[source]) {
             addRelation(relations, indexActors, link);
