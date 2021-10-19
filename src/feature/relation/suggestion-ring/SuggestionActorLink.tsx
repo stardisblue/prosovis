@@ -3,7 +3,6 @@ import { toCartesian } from '../../../utils';
 import { useDatum } from '../../../hooks/useD3';
 import { selectRelationNodes } from '../selectRelations';
 import { useSelector } from 'react-redux';
-import { RelationEvent } from '../models';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import _ from 'lodash';
 import {
@@ -15,6 +14,7 @@ import { select } from 'd3';
 import { createSelector } from 'reselect';
 import path from './path';
 import { disabled } from '../../../components/ui/colors';
+import { ProsoVisSignedRelation } from '../../../v2/types/relations';
 
 export const selectClusteredSuggestionActorLinks = createSelector(
   selectDisplayedActorRingLinks,
@@ -37,7 +37,7 @@ export const selectClusteredSuggestionActorLinks = createSelector(
                 if (acc[acc.length - 1].length > 0) acc.push([]);
               }
             },
-            [[]] as RelationEvent[][]
+            [[]] as ProsoVisSignedRelation[][]
           )
           .value();
 
@@ -96,7 +96,7 @@ export const SuggestionActorLinks: React.FC<{
 };
 
 export const SuggestionActorLink: React.FC<{
-  datum: RelationEvent;
+  datum: ProsoVisSignedRelation;
   suggestion: [number, number];
   cluster?: [number, number];
 }> = function ({ datum, suggestion, cluster }) {

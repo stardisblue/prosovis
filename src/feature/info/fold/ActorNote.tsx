@@ -12,29 +12,33 @@ import {
   IconSpacerPointer,
 } from '../../../components/ui/IconSpacer';
 import { Note } from '../../../components/ui/Note';
-import { SiprojurisActor, SiprojurisEvent } from '../../../data/sip-models';
 import { useClickSelect, useFlatClick } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-import { EventGroup as EventGroupType, SelectedEvent } from '../models';
+import { removeDetailActor } from '../../../v2/reducers/detail/actorSlice';
+import { ProsoVisActor } from '../../../v2/types/actors';
+import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
+import {
+  EventGroup as EventGroupType,
+  Interactive,
+} from '../../../v2/detail/information/types';
 import { InteractiveEnlarge } from './InteractiveEnlarge';
 
 export const ActorNote: React.FC<{
-  events: SelectedEvent<SiprojurisEvent>[];
-  group: SiprojurisActor;
+  events: Interactive<ProsoVisDetailRichEvent>[];
+  group: ProsoVisActor;
   masked?: boolean;
   selected: boolean;
   highlighted: boolean;
 }> = function ({ events, group, selected, highlighted }) {
   const dispatch = useDispatch();
   const interactive = useMemo(
-    () => _.map(events, (e) => ({ id: e.id, kind: 'Event' })),
+    () => _.map(events, (e) => ({ id: e.event.id, kind: 'Event' })),
     [events]
   );
   const handleSelectClick = useClickSelect(interactive);
   const handleDeleteClick = useFlatClick(() => {
-    dispatch(deleteActor(group.id));
+    dispatch(removeDetailActor(group.id));
   });
   const handleHighlightHover = useHoverHighlight(interactive);
 
@@ -43,15 +47,16 @@ export const ActorNote: React.FC<{
       _.reduce(
         events,
         (acc, e) => {
+          const { event } = e;
           let last = _.last(acc);
 
-          if (last === undefined || last.kind !== e.kind) {
+          if (last === undefined || last.kind !== event.kind) {
             acc.push({
-              id: e.id,
-              kind: e.kind,
+              id: event.id,
+              kind: event.kind,
               events: e,
-              start: _.first(e.datation)!,
-              end: _.last(e.datation)!,
+              start: _.first(event.datation)!,
+              end: _.last(event.datation)!,
               masked: e.masked,
               selected: e.selected,
               highlighted: e.highlighted,
@@ -64,16 +69,14 @@ export const ActorNote: React.FC<{
             last.events = [last.events, e];
           }
 
-          last.start = _.minBy(
-            [last.start, _.first(e.datation)],
-            'clean_date'
-          )!;
-          last.end = _.maxBy([last.end, _.last(e.datation)], 'clean_date')!;
+          last.start = _.minBy([last.start, _.first(event.datation)], 'value')!;
+          last.end = _.maxBy([last.end, _.last(event.datation)], 'value')!;
 
           return acc;
         },
         [] as EventGroupType<
-          SelectedEvent<SiprojurisEvent>[] | SelectedEvent<SiprojurisEvent>
+          | Interactive<ProsoVisDetailRichEvent>[]
+          | Interactive<ProsoVisDetailRichEvent>
         >[]
       ),
     [events]
@@ -107,7 +110,7 @@ export const ActorNote: React.FC<{
         Array.isArray(e.events) ? (
           <EventGroup
             key={e.id}
-            {...(e as EventGroupType<SelectedEvent<SiprojurisEvent>[]>)}
+            {...(e as EventGroupType<Interactive<ProsoVisDetailRichEvent>[]>)}
             origin={group.kind}
           />
         ) : (

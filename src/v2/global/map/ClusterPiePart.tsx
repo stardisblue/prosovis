@@ -11,7 +11,7 @@ import {
   setGlobalHighlight,
 } from '../../reducers/global/highlightSlice';
 import { setGlobalSelection } from '../../reducers/global/selectionSlice';
-import { selectInteractionMap } from '../../selectors/global';
+import { selectInteractionMap } from '../../selectors/global/interactions';
 import { RichEventLocalised } from '../../selectors/mask';
 
 export const ClusterPiePart: React.FC<{

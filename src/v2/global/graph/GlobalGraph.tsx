@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
-import { selectRelations } from '../../../feature/relation/selectRelations';
+import { selectDetailRelations } from '../../../feature/relation/selectRelations';
 import Loading from '../../components/Loading';
 import { selectSummary } from '../../selectors/global/summary';
 import { selectGraph } from '../../selectors/graph';
@@ -11,7 +11,7 @@ import { useEasyPZ } from './useEasyPZ';
 
 const GlobalGraph: React.FC = function () {
   const graph = useSelector(selectGraph);
-  const relations = useSelector(selectRelations);
+  const relations = useSelector(selectDetailRelations);
 
   return (
     <Loading finished={graph && relations}>

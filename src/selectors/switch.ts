@@ -1,9 +1,8 @@
 import { RootState } from '../reducers';
 import { selectMainColor, selectActorColor } from './color';
 import { createSelector } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data/models';
 import * as d3 from 'd3';
-import { SiprojurisEvent } from '../data/sip-models';
+import { ProsoVisEvent } from '../v2/types/events';
 
 export const selectSwitch = (state: RootState) => state.switch;
 
@@ -16,7 +15,7 @@ export const selectSwitchColor = createSelector(
   selectMainColor,
   selectActorColor,
   (switcher, main, actor) => {
-    return (switcher ? actor : main) as d3.ScaleOrdinal<PrimaryKey, string>;
+    return (switcher ? actor : main) as d3.ScaleOrdinal<string, string>;
   }
 );
 
@@ -39,7 +38,7 @@ export const selectMarkerColor = createSelector(
   (switcher, actor, main) => {
     if (switcher) {
       const border = d3
-        .scaleOrdinal<PrimaryKey, string>(
+        .scaleOrdinal<string, string>(
           actor.range().map((d) => d3.color(d)!.darker(2).toString())
         )
         .domain(actor.domain());
@@ -50,7 +49,7 @@ export const selectMarkerColor = createSelector(
       };
     } else {
       const border = d3
-        .scaleOrdinal<PrimaryKey, string>(
+        .scaleOrdinal<string, string>(
           main.range().map((d) => d3.color(d)!.darker(2).toString())
         )
         .domain(main.domain());
@@ -70,25 +69,25 @@ export const selectEventColor = createSelector(
     switch (switcher) {
       case true: {
         const border = d3
-          .scaleOrdinal<PrimaryKey, string>(
+          .scaleOrdinal<string, string>(
             actorColor.range().map((d) => d3.color(d)!.darker(2).toString())
           )
           .domain(actorColor.domain());
         return {
-          main: (e: SiprojurisEvent) => actorColor(e.actor.id),
-          border: (e: SiprojurisEvent) => border(e.actor.id),
+          main: (e: ProsoVisEvent) => actorColor(e.actor),
+          border: (e: ProsoVisEvent) => border(e.actor),
         };
       }
       case false:
       default: {
         const border = d3
-          .scaleOrdinal<PrimaryKey, string>(
+          .scaleOrdinal<string, string>(
             mainColor.range().map((d) => d3.color(d)!.darker(2).toString())
           )
           .domain(mainColor.domain());
         return {
-          main: (e: SiprojurisEvent) => mainColor(e.kind),
-          border: (e: SiprojurisEvent) => border(e.kind),
+          main: (e: ProsoVisEvent) => mainColor(e.kind),
+          border: (e: ProsoVisEvent) => border(e.kind),
         };
       }
     }

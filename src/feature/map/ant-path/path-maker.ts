@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { AntPathEvent } from './AntPath';
-import { Datation } from '../../../data/models';
 import * as d3 from 'd3-array';
+import { ProsoVisDate } from '../../../v2/types/events';
 type FlatAntPath = {
   event: AntPathEvent;
   start: string;
@@ -190,6 +190,6 @@ export function segmentify(
 }
 
 export const getFirstDate = ({ event }: AntPathEvent) =>
-  _.first<Datation>(event.dates)!.clean_date;
+  _.first<ProsoVisDate>(event.dates)!.value;
 export const getLastDate = ({ event }: AntPathEvent) =>
-  _.last<Datation>(event.dates)!.clean_date;
+  _.last<ProsoVisDate>(event.dates)!.value;

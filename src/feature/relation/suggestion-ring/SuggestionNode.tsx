@@ -13,9 +13,9 @@ import { useFlatClick } from '../../../hooks/useClick';
 import Modal from '../../modal/Modal';
 import styled from 'styled-components/macro';
 import { PlusIcon } from '@primer/octicons-react';
-import { fetchActorThunk } from '../../../thunks/actor';
 import { darkgray } from '../../../components/ui/colors';
 import { ProsoVisSignedRelation } from '../../../v2/types/relations';
+import { tryAddDetailActorThunk } from '../../../v2/thunks/actors';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
@@ -72,7 +72,7 @@ export const SuggestionNode: React.FC<{
   const [showModal, setShow] = useState({ show: false, x: 0, y: 0 });
 
   const { onClick, onMouseUp } = useFlatClick((e) => {
-    dispatch(fetchActorThunk(datum.target));
+    dispatch(tryAddDetailActorThunk(datum.target));
   });
 
   const handleMouseEnter = useCallback(

@@ -1,8 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data/models';
-import _ from 'lodash';
+import { isArray, pipe, sortBy, sortedUniqBy } from 'lodash/fp';
 
-export type SelectionEvent = { id: PrimaryKey; kind: string; type?: string };
+export type SelectionEvent = { id: string; kind: string; type?: string };
 
 const selectionSlice = createSlice({
   name: 'selection',
@@ -10,22 +9,22 @@ const selectionSlice = createSlice({
   reducers: {
     setSelection(
       _state,
-      action: PayloadAction<SelectionEvent | SelectionEvent[]>
+      { payload }: PayloadAction<SelectionEvent | SelectionEvent[]>
     ) {
-      if (_.isArray(action.payload))
-        return _(action.payload).sortBy('id').sortedUniqBy('id').value();
-      else return [action.payload];
+      if (isArray(payload))
+        return pipe(sortBy<SelectionEvent>('id'), sortedUniqBy('id'))(payload);
+      else return [payload];
     },
     addSelection(
       state,
-      action: PayloadAction<SelectionEvent | SelectionEvent[]>
+      { payload }: PayloadAction<SelectionEvent | SelectionEvent[]>
     ) {
       // if state exists , add to state
-      if (_.isArray(action.payload)) {
-        return state ? state.concat(action.payload) : action.payload;
+      if (isArray(payload)) {
+        return state ? state.concat(payload) : payload;
       } else {
-        if (state) state.push(action.payload);
-        else return [action.payload];
+        if (state) state.push(payload);
+        else return [payload];
       }
     },
     clearSelection() {
@@ -34,10 +33,7 @@ const selectionSlice = createSlice({
   },
 });
 
-export const {
-  setSelection,
-  addSelection,
-  clearSelection,
-} = selectionSlice.actions;
+export const { setSelection, addSelection, clearSelection } =
+  selectionSlice.actions;
 
 export default selectionSlice.reducer;

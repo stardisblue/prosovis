@@ -16,9 +16,9 @@ export function createInteractionMap(state: InteractionPayload[]) {
       return acc;
     },
     { events: {}, partActors: {}, actors: {} } as {
-      events: { [k: string]: boolean };
-      partActors: { [k: string]: boolean };
-      actors: { [k: string]: boolean };
+      events: _.Dictionary<boolean>;
+      partActors: _.Dictionary<boolean>;
+      actors: _.Dictionary<boolean>;
     },
     state
   );

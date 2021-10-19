@@ -8,12 +8,7 @@ import {
   IconSpacerPointer,
   IconSpacer,
 } from '../../../components/ui/IconSpacer';
-import {
-  SiprojurisActor,
-  SiprojurisNamedPlace,
-} from '../../../data/sip-models';
 import { useFlatClick } from '../../../hooks/useClick';
-import { deleteActor } from '../../../reducers/eventSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { ColorablePersonIcon } from '../../../components/ColorablePersonIcon';
 import {
@@ -22,6 +17,9 @@ import {
   highlightable,
   selectable,
 } from './styled-components';
+import { ProsoVisPlace } from '../../../v2/types/localisations';
+import { ProsoVisActor } from '../../../v2/types/actors';
+import { removeDetailActor } from '../../../v2/reducers/detail/actorSlice';
 
 const InteractiveEnlarge = styled(StyledFlex)<
   HighlightableProp & SelectableProp
@@ -33,7 +31,7 @@ const InteractiveEnlarge = styled(StyledFlex)<
 `;
 
 export const DisabledNote: React.FC<{
-  group: SiprojurisActor | SiprojurisNamedPlace;
+  group: ProsoVisActor | ProsoVisPlace;
   selected: boolean;
   highlighted: boolean;
 }> = ({ group, ...rest }) =>
@@ -47,14 +45,14 @@ const Masked = styled.span`
   opacity: 50%;
 `;
 const DisabledActorNote: React.FC<{
-  group: SiprojurisActor;
+  group: ProsoVisActor;
   selected: boolean;
   highlighted: boolean;
 }> = function ({ group, selected, highlighted }) {
   const dispatch = useDispatch();
 
   const handleDeleteClick = useFlatClick(() => {
-    dispatch(deleteActor(group.id));
+    dispatch(removeDetailActor(group.id));
   });
   const color = useSelector(selectSwitchActorColor);
 
@@ -77,7 +75,7 @@ const DisabledActorNote: React.FC<{
 };
 
 const DisabledPlaceNote: React.FC<{
-  group: SiprojurisNamedPlace;
+  group: ProsoVisPlace;
   selected: boolean;
   highlighted: boolean;
 }> = function ({ group, selected, highlighted }) {

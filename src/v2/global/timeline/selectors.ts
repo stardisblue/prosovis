@@ -10,7 +10,10 @@ import {
   first,
 } from 'lodash/fp';
 import { utcDay, utcYear, utcYears } from 'd3';
-import { selectRichEvents, selectRichEventsTimed } from '../../selectors/mask';
+import {
+  selectEventsWithoutKinds,
+  selectRichEventsTimed,
+} from '../../selectors/mask';
 import { RichEvent } from '../../types/events';
 import { isNil } from 'lodash';
 
@@ -41,7 +44,7 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
 };
 
 export const selectBackgroundDiscrete = createSelector(
-  selectRichEvents,
+  selectEventsWithoutKinds,
   fillEmpty
 );
 

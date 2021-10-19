@@ -10,19 +10,15 @@ import _ from 'lodash';
 
 import { useSelector, useDispatch } from 'react-redux';
 import RelationNode from './node/RelationNode';
-import {
-  selectRelationNodes,
-  selectLocalisations,
-  selectRelationLinks,
-} from './selectRelations';
+import { selectRelationNodes, selectRelationLinks } from './selectRelations';
 import { clearRelationSelection } from './selectionSlice';
 import { useDatum } from '../../hooks/useD3';
-import { getSimulation } from './utils/simulation';
-
 import SuggestionRing from './suggestion-ring/SuggestionRing';
 import { selectRelationEmphasis } from './highlightSlice';
 import path from './suggestion-ring/path';
 import { darkgray } from '../../components/ui/colors';
+import { selectLocalisationsIndex } from '../../v2/selectors/localisations';
+import { getSimulation } from './utils/simulation';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
@@ -86,14 +82,18 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         );
         simulation.nodes(node.data());
         simulation.alpha(1).restart();
+
+        console.log(simulation.nodes());
       },
 
       links: function () {
         link = d3.selectAll($links as any);
-        (simulation.force('link') as d3.ForceLink<
-          d3.SimulationNodeDatum,
-          d3.SimulationLinkDatum<d3.SimulationNodeDatum>
-        >).links(link.data());
+        (
+          simulation.force('link') as d3.ForceLink<
+            d3.SimulationNodeDatum,
+            d3.SimulationLinkDatum<d3.SimulationNodeDatum>
+          >
+        ).links(link.data());
         simulation.alpha(1).restart();
       },
       ringLinks: function () {
@@ -184,7 +184,7 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
 
 export const PlaceText: React.FC<any> = function ({ offset }) {
   const emph = useSelector(selectRelationEmphasis);
-  const localisations = useSelector(selectLocalisations);
+  const localisations = useSelector(selectLocalisationsIndex) ?? {};
 
   return (
     <text
@@ -192,7 +192,7 @@ export const PlaceText: React.FC<any> = function ({ offset }) {
       y={offset && 32 - offset.height / 2}
       fontSize="1em"
     >
-      {emph && localisations.get(emph.loc)?.label}
+      {emph && localisations[emph.loc]?.label}
     </text>
   );
 };

@@ -6,15 +6,15 @@ import ActorLabel from '../../../components/ActorLabel';
 import { StyledFlex } from '../../../components/ui/Flex/styled-components';
 import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
 import { useFlatClick } from '../../../hooks/useClick';
-import { deleteActor } from '../../../reducers/eventSlice';
-import { selectActors } from '../../../selectors/event';
-import { fetchActorThunk } from '../../../thunks/actor';
 import { lightgray } from '../../components/theme';
+import { removeDetailActor } from '../../reducers/detail/actorSlice';
 import { resetActorSummary } from '../../reducers/global/actorSummarySlice';
+import { selectDetailActors } from '../../selectors/detail/actors';
+import { tryAddDetailActorThunk } from '../../thunks/actors';
 
 export const SummaryHeader: React.FC<{ actor: string }> = function ({ actor }) {
   const dispatch = useDispatch();
-  const actors = useSelector(selectActors);
+  const actors = useSelector(selectDetailActors);
   const actorExists = actors[actor] !== undefined;
 
   const [handleClick, Icon] = useMemo(
@@ -22,7 +22,7 @@ export const SummaryHeader: React.FC<{ actor: string }> = function ({ actor }) {
       actorExists
         ? [
             () => {
-              dispatch(deleteActor(actor));
+              dispatch(removeDetailActor(actor));
               dispatch(resetActorSummary());
             },
             <XIcon
@@ -33,7 +33,7 @@ export const SummaryHeader: React.FC<{ actor: string }> = function ({ actor }) {
           ]
         : [
             () => {
-              dispatch(fetchActorThunk(actor));
+              dispatch(tryAddDetailActorThunk(actor));
               dispatch(resetActorSummary());
             },
             <PlusIcon

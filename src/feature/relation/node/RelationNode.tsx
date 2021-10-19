@@ -14,9 +14,15 @@ import { ProsoVisActor } from '../../../v2/types/actors';
 const scale = d3.scaleSqrt().range([0, 3]);
 
 export const RelationNode: React.FC<{
-  datum: ProsoVisActor;
+  datum: ProsoVisActor & d3.SimulationNodeDatum;
 }> = function ({ datum }) {
-  const $g = useDatum<SVGGElement, ProsoVisActor>(datum);
+  const $g = useDatum<SVGGElement, ProsoVisActor>({
+    vx: 0,
+    vy: 0,
+    x: 0,
+    y: 0,
+    ...datum,
+  });
   const { locsLinks, ghosts } = useSelector(selectRelationActorRing).get(
     datum.id
   )!;

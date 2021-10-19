@@ -2,11 +2,10 @@ import React, { useCallback } from 'react';
 
 import { PersonIcon, XIcon } from '@primer/octicons-react';
 import { useSelector, useDispatch } from 'react-redux';
-import { PrimaryKey } from '../../../data/models';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-import { deleteActor } from '../../../reducers/eventSlice';
 import styled from 'styled-components/macro';
 import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
+import { removeDetailActor } from '../../../v2/reducers/detail/actorSlice';
 
 const StyledPersonIcon = styled(PersonIcon)<{
   iconColor?: string;
@@ -18,11 +17,11 @@ const StyledPersonIcon = styled(PersonIcon)<{
  * @deprecated
  */
 const ActorIcon: React.FC<{
-  id: PrimaryKey;
+  id: string;
 }> = function ({ id }) {
   const dispatch = useDispatch();
   const handleClick = useCallback(() => {
-    dispatch(deleteActor(id));
+    dispatch(removeDetailActor(id));
   }, [dispatch, id]);
 
   const color = useSelector(selectSwitchActorColor);

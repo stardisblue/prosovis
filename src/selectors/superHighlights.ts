@@ -1,11 +1,7 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import _ from 'lodash';
-import { PrimaryKey } from '../data/models';
 import { selectSelection } from './selection';
-import { SiprojurisEvent } from '../data/sip-models';
-
-type SuperHighlight = { id: PrimaryKey; kind: string; type?: string };
 
 export const selectSuperHighlight = (state: RootState) => state.superHighlight;
 
@@ -25,10 +21,3 @@ export const selectSuperSelection = createSelector(
 export const superSelectionAsMap = createSelector(selectSuperSelection, (sel) =>
   _.keyBy(sel, 'id')
 );
-
-export function isSuperSelected(
-  selections: _.Dictionary<SuperHighlight>,
-  event: SiprojurisEvent
-) {
-  return selections[event.id] !== undefined;
-}

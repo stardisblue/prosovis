@@ -1,13 +1,10 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../reducers';
-import { getLocalisation } from '../../data';
-import _ from 'lodash';
 import { selectMaskedEvents } from '../../selectors/mask';
-import {
-  SiprojurisActor,
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-} from '../../data/sip-models';
+import { ProsoVisActor } from '../../v2/types/actors';
+import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
+import { ProsoVisPlace } from '../../v2/types/localisations';
+import { map, pipe, uniqBy } from 'lodash/fp';
 
 type TimelineGroupTypes = 'Actor' | 'NamedPlace';
 
@@ -27,11 +24,10 @@ export default timelineGroupSlice.reducer;
 
 export const selectTimelineGroup = (state: RootState) => state.timelineGroup;
 
-const defaultLocalisation: SiprojurisNamedPlace = {
-  id: 0,
+const defaultLocalisation: ProsoVisPlace = {
+  id: '-1',
   label: 'Inconnue',
   kind: 'NamedPlace',
-  url: 'unknown',
   uri: 'unknown',
   lat: null,
   lng: null,
@@ -43,33 +39,30 @@ export const selectTimelineEventGroups = createSelector(
   (grouping, events) => {
     switch (grouping) {
       case 'Actor':
-        return _(events)
-          .uniqBy('actor.id')
-          .map('actor')
-          .map(({ label, ...d }) => ({ label: d.shortLabel, ...d }))
-          .value() as SiprojurisActor[];
+        return pipe(
+          uniqBy<ProsoVisDetailRichEvent>('actor.id'),
+          map('actor'),
+          map(
+            ({ label, ...d }) =>
+              ({ label: d.shortLabel, ...d } as ProsoVisActor)
+          )
+        )(events);
       case 'NamedPlace':
-        return _(events)
-          .uniqBy((e) => {
-            const localisation = getLocalisation(e);
-            return (localisation && localisation.id) || 0;
-          })
-          .map((e) => {
-            const localisation = getLocalisation(e);
-            return localisation || defaultLocalisation;
-          })
-          .value();
+        return pipe(
+          uniqBy<ProsoVisDetailRichEvent>((e) => e.localisation?.id ?? '-1'),
+          map((e) => e.localisation ?? defaultLocalisation)
+        )(events);
     }
   }
 );
 
-function groupByActor(a: SiprojurisEvent) {
-  return a.actor.id;
+function groupByActor(e: ProsoVisEvent) {
+  return e.actor;
 }
 
-function groupByNamedPlace(a: SiprojurisEvent) {
-  const loc = getLocalisation(a);
-  return loc ? loc.id : 0;
+function groupByNamedPlace(e: ProsoVisEvent) {
+  const loc = e.localisation;
+  return loc ? loc : 0;
 }
 
 export const selectTimelineGroupBy = createSelector(

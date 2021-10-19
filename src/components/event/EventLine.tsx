@@ -2,11 +2,6 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
-import {
-  SiprojurisActor,
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-} from '../../data/sip-models';
 import getEventIcon from '../../data/getEventIcon';
 import { EventDates } from '../DateComponent';
 import {
@@ -17,12 +12,15 @@ import {
   selectable,
   SelectableProp,
 } from '../../feature/info/fold/styled-components';
-import { SelectedEvent } from '../../feature/info/models';
 import { useClickSelect } from '../../hooks/useClick';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { IconSpacer } from '../ui/IconSpacer';
 import { EventErrors } from './EventErrors';
+import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
+import { ProsoVisPlace } from '../../v2/types/localisations';
+import { ProsoVisActor } from '../../v2/types/actors';
+import { Interactive } from '../../v2/detail/information/types';
 
 export const Base = styled.div<
   { grouped?: boolean } & SelectableProp & MaskableProp & HighlightableProp
@@ -41,7 +39,7 @@ export const Base = styled.div<
   ${highlightable};
 `;
 
-const EventLineIcon: React.FC<{ kind: SiprojurisEvent['kind'] }> = function ({
+const EventLineIcon: React.FC<{ kind: ProsoVisEvent['kind'] }> = function ({
   kind,
 }) {
   const color = useSelector(selectSwitchKindColor);
@@ -56,15 +54,19 @@ const EventLineIcon: React.FC<{ kind: SiprojurisEvent['kind'] }> = function ({
 };
 
 export const EventLine: React.FC<{
-  event: SelectedEvent<SiprojurisEvent>;
-  origin: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'];
+  event: Interactive<ProsoVisDetailRichEvent>;
+  origin: ProsoVisActor['kind'] | ProsoVisPlace['kind'];
   grouped?: boolean;
 }> = function ({ event, origin, grouped = false }) {
-  const dispatchable = { id: event.id, kind: 'Event' };
+  const dispatchable = { id: event.event.id, kind: 'Event' };
   const handleHighlightHover = useHoverHighlight(dispatchable);
   const handleSelectClick = useClickSelect(dispatchable);
 
-  const showIcon = grouped ? <span /> : <EventLineIcon kind={event.kind} />;
+  const showIcon = grouped ? (
+    <span />
+  ) : (
+    <EventLineIcon kind={event.event.kind} />
+  );
 
   const showErrors = useMemo(
     function () {
@@ -91,8 +93,8 @@ export const EventLine: React.FC<{
       grouped={grouped}
     >
       {showIcon}
-      <div>{getEventLabel(event, origin, grouped)}</div>
-      <EventDates dates={event.datation} />
+      <div>{getEventLabel(event.event, origin, grouped)}</div>
+      <EventDates dates={event.event.datation} />
       {showErrors}
     </Base>
   );

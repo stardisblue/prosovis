@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/macro';
 import { TriangleRightIcon } from '@primer/octicons-react';
-import { Datation } from '../data/models';
 import { Popper } from './ui/Popper';
+import { ProsoVisDate } from '../v2/types/events';
 
 const StyledTime = styled.time`
   white-space: nowrap;
@@ -10,22 +10,20 @@ const StyledTime = styled.time`
 `;
 
 export const DateLabel: React.FC<{
-  datation: Datation;
+  datation: ProsoVisDate;
   showTooltip?: boolean;
 }> = function ({ datation: d, showTooltip = true }) {
   if (showTooltip) {
-    return (
-      <Popper content={`${d.label} - ${d.clean_date}`} children={children} />
-    );
+    return <Popper content={`${d.kind} - ${d.value}`} children={children} />;
   }
 
   return (
     <StyledTime
-      aria-label={`${d.label} - ${d.clean_date}`}
-      dateTime={d.clean_date}
+      aria-label={`${d.kind} - ${d.value}`}
+      dateTime={d.value}
       data-uri={d.uri}
     >
-      {d.value}
+      {d.label}
     </StyledTime>
   );
 
@@ -36,8 +34,8 @@ export const DateLabel: React.FC<{
   ) {
     return (
       <StyledTime
-        aria-label={`${d.label} - ${d.clean_date}`}
-        dateTime={d.clean_date}
+        aria-label={`${d.kind} - ${d.value}`}
+        dateTime={d.value}
         data-uri={d.uri}
         ref={$ref}
         onMouseEnter={show}
@@ -45,7 +43,7 @@ export const DateLabel: React.FC<{
         onMouseLeave={hide}
         onBlur={hide}
       >
-        {d.value}
+        {d.label}
       </StyledTime>
     );
   }
@@ -56,7 +54,7 @@ const EventDateBase = styled.div`
 `;
 
 export const EventDates: React.FC<{
-  dates: Datation[];
+  dates: ProsoVisDate[];
   showTooltip?: boolean;
 }> = function ({ dates, showTooltip }) {
   if (dates.length === 1) {

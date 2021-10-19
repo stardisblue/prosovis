@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback, useRef } from 'react';
 import styled from 'styled-components/macro';
-import Information from '../feature/info/Information';
+// import Information from '../feature/info/Information';
 import { useDispatch } from 'react-redux';
 import Mask from '../feature/mask/Mask';
 import { useMouse } from '../feature/timeline/useMouse';
@@ -8,15 +8,15 @@ import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
 import { HelpInfoBubble } from '../feature/help/InfoButton';
-import { OfflineBanner } from '../feature/check-server/OfflineBanner';
 import GlobalView from '../v2/views/GlobalView';
 import Side1Main3 from '../v2/components/ui/Side1Main3';
 import GridAutoRest from '../v2/components/ui/GridAutoRest';
 import Flip from '../v2/components/ui/Flip';
 import { lightgray } from '../v2/components/theme';
-import { SpecificView } from '../v2/views/SpecificView';
+import { DetailView } from '../v2/views/DetailView';
 import { resetGlobalSelection } from '../v2/reducers/global/selectionSlice';
 import { resetActorSummary } from '../v2/reducers/global/actorSummarySlice';
+import Information from '../v2/detail/information/Information';
 
 const BorderedGridAutoRest = styled(GridAutoRest)`
   border-right: 1px solid ${lightgray};
@@ -47,14 +47,12 @@ function App() {
   );
   const mouse = useMouse();
 
-  const bind = useMemo<
-    {
-      [key in
-        | 'onMouseDown'
-        | 'onMouseMove'
-        | 'onMouseUp']: React.MouseEventHandler;
-    }
-  >(
+  const bind = useMemo<{
+    [key in
+      | 'onMouseDown'
+      | 'onMouseMove'
+      | 'onMouseUp']: React.MouseEventHandler;
+  }>(
     () => ({
       onMouseDown: (e) => {
         if (!mouse.current.click) {
@@ -96,12 +94,11 @@ function App() {
           </Header>
           <Flip>
             <GlobalView />
-            <SpecificView />
+            <DetailView />
           </Flip>
         </GridAutoRest>
       </Side1Main3>
       <ActorModal />
-      <OfflineBanner />
     </div>
   );
 }

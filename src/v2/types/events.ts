@@ -1,3 +1,4 @@
+import { ProsoVisActor } from './actors';
 import { ProsoVisLocalisation, ProsoVisPlace } from './localisations';
 
 export type ComputedLabels = {
@@ -29,13 +30,18 @@ export type ProsoVisEvent = {
 };
 
 export type ProsoVisEvents = {
-  url: { [k: string]: string };
+  url: _.Dictionary<string>;
   uri: string;
-  index: { [k: string]: ProsoVisEvent[] };
+  index: _.Dictionary<ProsoVisEvent[]>;
 };
 
 export type RichEvent = {
   event: ProsoVisEvent;
   localisation?: ProsoVisLocalisation;
   place?: ProsoVisPlace;
+};
+
+export type ProsoVisDetailRichEvent = RichEvent & {
+  actor: ProsoVisActor;
+  errors?: any;
 };

@@ -3,13 +3,7 @@ import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getKindString } from '../../data/getEventLabel';
-import {
-  SiprojurisActor,
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-  SipError,
-} from '../../data/sip-models';
-import { Datation } from '../../data/models';
+import { ProsoVisError } from '../../v2/types/errors';
 import getEventIcon from '../../data/getEventIcon';
 import {
   highlightable,
@@ -18,7 +12,6 @@ import {
   MaskableProp,
   SelectableProp,
 } from '../../feature/info/fold/styled-components';
-import { SelectedEvent } from '../../feature/info/models';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { IconSpacer } from '../ui/IconSpacer';
@@ -27,6 +20,14 @@ import { EventLine } from './EventLine';
 import { LeftSpacer } from './LeftSpacer';
 import { EventDates } from '../DateComponent';
 import { SimpleEventErrors } from './EventErrors';
+import {
+  ProsoVisDate,
+  ProsoVisDetailRichEvent,
+  ProsoVisEvent,
+} from '../../v2/types/events';
+import { ProsoVisActor } from '../../v2/types/actors';
+import { Interactive } from '../../v2/detail/information/types';
+import { ProsoVisPlace } from '../../v2/types/localisations';
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
@@ -36,14 +37,14 @@ export const LeftBottomSpacer = styled(LeftSpacer)`
 `;
 
 export const EventGroup: React.FC<{
-  kind: SiprojurisEvent['kind'];
-  events: SelectedEvent<SiprojurisEvent>[];
-  start: Datation;
-  end: Datation;
-  origin: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'];
+  kind: ProsoVisEvent['kind'];
+  events: Interactive<ProsoVisDetailRichEvent>[];
+  start: ProsoVisDate;
+  end: ProsoVisDate;
+  origin: ProsoVisActor['kind'] | ProsoVisPlace['kind'];
 }> = function ({ kind, events, start, end, origin }) {
   const interactive = useMemo(
-    () => events.map(({ id }) => ({ id, kind: 'Event' })),
+    () => events.map(({ event: { id } }) => ({ id, kind: 'Event' })),
     [events]
   );
   const handleHighLightHover = useHoverHighlight(interactive);
@@ -53,14 +54,15 @@ export const EventGroup: React.FC<{
   const Icon = getEventIcon(kind);
 
   /* Computed */
-  const isHighlighted = useMemo(() => some(['highlighted', true], events), [
-    events,
-  ]);
+  const isHighlighted = useMemo(
+    () => some(['highlighted', true], events),
+    [events]
+  );
   const isMasked = useMemo(() => every(['masked', true], events), [events]);
   const isSelected = useMemo(() => some(['selected', true], events), [events]);
 
   const eventErrors = compact(
-    flatMap<typeof events, SipError>(get('errors'), events)
+    flatMap<typeof events, ProsoVisError>(get('errors'), events)
   );
 
   const showErrors = useMemo(
@@ -95,7 +97,7 @@ export const EventGroup: React.FC<{
     >
       <LeftBottomSpacer borderColor={color ? color(kind) : undefined}>
         {events.map((e) => (
-          <EventLine key={e.id} event={e} origin={origin} grouped />
+          <EventLine key={e.event.id} event={e} origin={origin} grouped />
         ))}
       </LeftBottomSpacer>
     </Note>

@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../reducers';
-import { selectRelations } from './selectRelations';
+import { selectDetailRelations } from './selectRelations';
 import { parseEmphase } from './utils/emphase';
 import { Emphase } from './models';
 
@@ -21,14 +21,12 @@ export const selectRelationSelection = (state: RootState) =>
   state.relationSelection;
 
 export const selectSelectedGhosts = createSelector(
-  selectRelations,
+  selectDetailRelations,
   selectRelationSelection,
   parseEmphase
 );
 
-export const {
-  setRelationSelection,
-  clearRelationSelection,
-} = selectionSlice.actions;
+export const { setRelationSelection, clearRelationSelection } =
+  selectionSlice.actions;
 
 export default selectionSlice.reducer;

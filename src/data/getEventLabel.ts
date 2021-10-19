@@ -1,136 +1,15 @@
-import { getActorLabel } from './getActorLabel';
-import { Nullable, Ressource } from './models';
-import {
-  ComputedLabels,
-  SiprojurisActor,
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-} from './sip-models';
-
-/**
- * Displays current string or an emtpy string
- *
- * stands for This Or Nothing
- *
- * @param strings
- * @param label
- */
-function ton<T extends Ressource>(
-  strings: TemplateStringsArray,
-  label: Nullable<T>
-) {
-  if (label === null) {
-    return '';
-  }
-
-  return strings[0] + label.label + strings[1];
-}
-
-export function computeEventLabels(event: SiprojurisEvent): ComputedLabels {
-  switch (event.kind) {
-    case 'Birth': {
-      return {
-        actorNote: 'Naissance' + ton` à ${event.localisation}`,
-        placeNote: `Naissance de ${getActorLabel(event.actor, true)}`,
-        actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: `De ${getActorLabel(event.actor, true)}`,
-      };
-    }
-    case 'Death': {
-      return {
-        actorNote: 'Décès' + ton` à ${event.localisation}`,
-        placeNote: `Décès de ${getActorLabel(event.actor, true)}`,
-        actorNoteAndGrouped: ton`A ${event.localisation}`,
-        placeNoteAndGrouped: `De ${getActorLabel(event.actor, true)}`,
-      };
-    }
-    case 'Education': {
-      return {
-        actorNote:
-          'Enseigne' +
-          ton` "${event.abstract_object}"` +
-          ton` à ${event.collective_actor}`,
-        placeNote:
-          `${getActorLabel(event.actor, true)} enseigne` +
-          ton` "${event.abstract_object}"` +
-          ton` à ${event.collective_actor}`,
-        actorNoteAndGrouped:
-          ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`,
-        placeNoteAndGrouped:
-          getActorLabel(event.actor, true) +
-          ton` "${event.abstract_object}"` +
-          ton` à ${event.collective_actor}`,
-      };
-    }
-    case 'ObtainQualification': {
-      return {
-        actorNote:
-          'Obtient la qualité' +
-          ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
-        placeNote:
-          `${getActorLabel(event.actor, true)} obtient la qualité` +
-          ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
-        actorNoteAndGrouped:
-          ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
-        placeNoteAndGrouped:
-          getActorLabel(event.actor, true) +
-          ton` "${event.social_characteristic}"` +
-          ton` à ${event.collective_actor}`,
-      };
-    }
-    case 'PassageExamen': {
-      const eva = (yes: string, no: string) =>
-        event.actor_evaluer && event.actor.id === event.actor_evaluer.id
-          ? yes
-          : no;
-      const rest =
-        ton` "${event.abstract_object}"` + ton` à ${event.collective_actor}`;
-      return {
-        actorNote:
-          eva(
-            ton`Evalue ${event.actor_evalue}`,
-            ton`Evalué par ${event.actor_evaluer}`
-          ) + rest,
-        placeNote:
-          getActorLabel(event.actor, true) +
-          eva(
-            ton` evalue ${event.actor_evalue}`,
-            ton` evalué par ${event.actor_evaluer}`
-          ) +
-          rest,
-      };
-    }
-    case 'Retirement': {
-      return {
-        actorNote: 'Départ en retraite',
-        placeNote: `Départ en retraite de ${getActorLabel(event.actor, true)}`,
-      };
-    }
-    case 'SuspensionActivity': {
-      return {
-        actorNote: ton` ${event.abstract_object}`,
-        placeNote:
-          getActorLabel(event.actor, true) + ton` ${event.abstract_object}`,
-      };
-    }
-  }
-}
+import { ProsoVisActor } from '../v2/types/actors';
+import { ProsoVisEvent } from '../v2/types/events';
+import { ProsoVisPlace } from '../v2/types/localisations';
 
 export function getEventLabel(
-  event: SiprojurisEvent,
-  noteKind: SiprojurisActor['kind'] | SiprojurisNamedPlace['kind'],
+  event: ProsoVisEvent,
+  noteKind: ProsoVisActor['kind'] | ProsoVisPlace['kind'],
   grouped: boolean = false
 ): string {
   if (event.computed) {
-    const {
-      actorNote,
-      actorNoteAndGrouped,
-      placeNote,
-      placeNoteAndGrouped,
-    } = event.computed;
+    const { actorNote, actorNoteAndGrouped, placeNote, placeNoteAndGrouped } =
+      event.computed;
 
     if (noteKind === 'Actor') {
       // fallback to actorNote
@@ -140,11 +19,11 @@ export function getEventLabel(
       return (grouped && placeNoteAndGrouped) || placeNote;
     }
   }
-  event.computed = computeEventLabels(event);
+  // event.computed = computeEventLabels(event);
 
-  if (event.computed) {
-    return getEventLabel(event, noteKind, grouped);
-  }
+  // if (event.computed) {
+  //   return getEventLabel(event, noteKind, grouped);
+  // }
 
   // fallback to default labellisation
   return event.label;

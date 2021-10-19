@@ -1,11 +1,10 @@
 import { isAfter, isBefore, isWithinInterval, parseISO } from 'date-fns';
 import { latLngBounds } from 'leaflet';
-import { filter, isNil, map, pickBy } from 'lodash/fp';
+import { identity, flatMap, filter, flow, isNil, values } from 'lodash/fp';
 import { createSelector } from 'reselect';
-import { ProsoVisEvent, RichEvent } from '../../types/events';
-import { ProsoVisLocalisation, ProsoVisPlace } from '../../types/localisations';
-import { selectEvents } from '../events';
-import { selectLocalisationsIndex } from '../localisations';
+import { RichEvent } from '../../types/events';
+import { ProsoVisPlace } from '../../types/localisations';
+import { selectRichEvents } from '../events';
 import { selectMaskGlobalMapBounds } from './globalMapBounds';
 import { selectMaskGlobalTime } from './globalTime';
 import { selectActiveKinds } from './kind';
@@ -14,27 +13,22 @@ import { selectActiveKinds } from './kind';
  * filter: kinds
  */
 export const selectEventsWithoutKinds = createSelector(
-  selectEvents,
+  selectRichEvents,
   selectActiveKinds,
   (events, kinds) =>
-    events && pickBy(({ kind }) => kinds[kind] === undefined, events)
-);
-
-/**
- * f(x): localize
- */
-export const selectRichEvents = createSelector(
-  selectEventsWithoutKinds,
-  selectLocalisationsIndex,
-  (events, localisations) =>
-    events && map((e) => localize(localisations, e), events)
+    events &&
+    flow(
+      values as (ev: _.Dictionary<RichEvent[]>) => RichEvent[][],
+      flatMap(identity as (e: RichEvent[]) => RichEvent[]),
+      filter(({ event: { kind } }) => kinds[kind] === undefined)
+    )(events as any)
 );
 
 /**
  * filter: map
  */
 export const selectRichEventsWithoutMapBounds = createSelector(
-  selectRichEvents,
+  selectEventsWithoutKinds,
   selectMaskGlobalMapBounds,
   function (events, bounds) {
     if (!events) return;
@@ -55,34 +49,6 @@ export function hasCoordinates(
   place?: ProsoVisPlace
 ): place is Required<ProsoVisPlace> {
   return !isNil(place?.lat) && !isNil(place?.lng);
-}
-
-export function localize(
-  localisationsIndex: _.Dictionary<ProsoVisLocalisation> | undefined,
-  event: ProsoVisEvent
-): RichEvent {
-  if (localisationsIndex) {
-    const localisation =
-      event.localisation && localisationsIndex[event.localisation]
-        ? localisationsIndex[event.localisation]
-        : undefined;
-
-    if (localisation) {
-      let place;
-      if (localisation.kind === 'CollectiveActor') {
-        if (localisation.localisation)
-          place = localisationsIndex[
-            localisation.localisation
-          ] as ProsoVisPlace;
-      } else {
-        place = localisation;
-      }
-
-      return { event: event, localisation, place };
-    }
-  }
-
-  return { event };
 }
 
 export const selectRichEventsBackgroundTimed = createSelector(

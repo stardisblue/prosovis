@@ -1,5 +1,5 @@
 import React, { useState, useRef, useMemo } from 'react';
-import { SipError } from '../../data/sip-models';
+import { ProsoVisError } from '../../v2/types/errors';
 import { IconSpacerPointer } from '../ui/IconSpacer';
 import { IconProps, XCircleFillIcon } from '@primer/octicons-react';
 import { compact, groupBy } from 'lodash/fp';
@@ -38,7 +38,9 @@ function plural(value: number, singular: string, plural: string) {
   else return `${value} ${plural}`;
 }
 
-function getErrorLabel(errors: { [k in SipError['level']]?: SipError[] }) {
+function getErrorLabel(errors: {
+  [k in ProsoVisError['level']]?: ProsoVisError[];
+}) {
   return compact([
     plural(errors.Error?.length || 0, '1 erreur', 'erreurs'),
     plural(errors.Warning?.length || 0, '1 alerte', 'alertes'),
@@ -57,16 +59,20 @@ type GrayedErrorInfoType = [
   string
 ];
 
-function getErrorInfo(errors: SipError[], gray?: true): ColoredErrorInfoType;
-function getErrorInfo(errors: SipError[], gray: false): GrayedErrorInfoType;
 function getErrorInfo(
-  errors: SipError[],
+  errors: ProsoVisError[],
+  gray?: true
+): ColoredErrorInfoType;
+function getErrorInfo(
+  errors: ProsoVisError[],
+  gray: false
+): GrayedErrorInfoType;
+function getErrorInfo(
+  errors: ProsoVisError[],
   gray: boolean = true
 ): ColoredErrorInfoType | GrayedErrorInfoType {
-  const groupedErrors: { [k in SipError['level']]?: SipError[] } = groupBy(
-    'level',
-    errors
-  );
+  const groupedErrors: { [k in ProsoVisError['level']]?: ProsoVisError[] } =
+    groupBy('level', errors);
   const label = getErrorLabel(groupedErrors);
 
   if (!gray) {
@@ -131,34 +137,34 @@ const ColoredPilledIconSpacer = styled(PilledIconSpacer)<{ color: string }>`
   }
 `;
 
-export const SimpleEventErrors: React.FC<{ errors: SipError[] }> = function ({
-  errors,
-}) {
-  const [Icon, label] = getErrorInfo(errors, false);
+export const SimpleEventErrors: React.FC<{ errors: ProsoVisError[] }> =
+  function ({ errors }) {
+    const [Icon, label] = getErrorInfo(errors, false);
 
-  const [hint, $ref, showHint, hideHint] = useRefPopper<HTMLDivElement>(label);
+    const [hint, $ref, showHint, hideHint] =
+      useRefPopper<HTMLDivElement>(label);
 
-  return (
-    <>
-      <ColoredPilledIconSpacer
-        spaceLeft
-        ref={$ref}
-        onMouseEnter={showHint}
-        onFocus={showHint}
-        onMouseLeave={hideHint}
-        onBlur={hideHint}
-        color={lightgray}
-        data-count={errors.length}
-      >
-        <Icon aria-label={label} />
-      </ColoredPilledIconSpacer>
-      {hint}
-    </>
-  );
-};
+    return (
+      <>
+        <ColoredPilledIconSpacer
+          spaceLeft
+          ref={$ref}
+          onMouseEnter={showHint}
+          onFocus={showHint}
+          onMouseLeave={hideHint}
+          onBlur={hideHint}
+          color={lightgray}
+          data-count={errors.length}
+        >
+          <Icon aria-label={label} />
+        </ColoredPilledIconSpacer>
+        {hint}
+      </>
+    );
+  };
 
 export const EventErrors: React.FC<{
-  errors: SipError[];
+  errors: ProsoVisError[];
   highlight: boolean;
 }> = function ({ errors, highlight }) {
   const $ref = useRef<HTMLDivElement>(null as any);

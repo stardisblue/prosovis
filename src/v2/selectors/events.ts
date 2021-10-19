@@ -5,12 +5,14 @@ import {
   identity,
   keyBy,
   map,
+  mapValues,
   pipe,
   sortBy,
   uniqBy,
-  values,
 } from 'lodash/fp';
-import { ProsoVisEvent } from '../types/events';
+import { ProsoVisEvent, RichEvent } from '../types/events';
+import { selectLocalisationsIndex } from './localisations';
+import { ProsoVisLocalisation, ProsoVisPlace } from '../types/localisations';
 
 export const selectEventsData = (state: RootState) => state.eventData;
 
@@ -19,32 +21,66 @@ export const selectEventIndex = createSelector(
   (events) => events.events?.index
 );
 
-export const selectEvents = createSelector(
+// export const selectEvents = createSelector(
+//   selectEventIndex,
+//   (events) =>
+//     events &&
+//     pipe(
+//       flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
+//       keyBy('id')
+//     )(events as any)
+// );
+
+export const selectUniqueKinds = createSelector(
   selectEventIndex,
   (events) =>
     events &&
-    pipe<[any], ProsoVisEvent[], _.Dictionary<ProsoVisEvent>>(
+    pipe(
       flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
-      keyBy<ProsoVisEvent>('id')
-    )(events)
-);
-
-export const selectUniqueKinds = createSelector(
-  selectEvents,
-  (events) =>
-    events &&
-    pipe<
-      [_.Dictionary<ProsoVisEvent>],
-      ProsoVisEvent[],
-      ProsoVisEvent[],
-      string[],
-      string[],
-      _.Dictionary<string>
-    >(
-      values,
       uniqBy<ProsoVisEvent>('kind'),
       map('kind'),
       sortBy(identity),
       keyBy(identity)
-    )(events)
+    )(events as any)
 );
+
+/**
+ * f(x): localize
+ */
+export const selectRichEvents = createSelector(
+  selectEventIndex,
+  selectLocalisationsIndex,
+  (events, localisations) =>
+    events &&
+    mapValues((es) => es.map((e) => localize(localisations, e)), events)
+);
+
+export function localize(
+  localisationsIndex: _.Dictionary<ProsoVisLocalisation> | undefined,
+  event: ProsoVisEvent
+): RichEvent {
+  if (localisationsIndex) {
+    const localisation =
+      event.localisation && localisationsIndex[event.localisation]
+        ? localisationsIndex[event.localisation]
+        : undefined;
+
+    if (localisation) {
+      let place;
+      if (localisation.kind === 'CollectiveActor') {
+        if (localisation.localisation)
+          place = localisationsIndex[
+            localisation.localisation
+          ] as ProsoVisPlace;
+      } else {
+        place = localisation;
+      }
+
+      return { event: event, localisation, place };
+    }
+  }
+
+  return { event };
+}
+
+export const enrichEvent = localize;

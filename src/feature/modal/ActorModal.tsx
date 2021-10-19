@@ -1,15 +1,17 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components/macro';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { XIcon, PlusIcon } from '@primer/octicons-react';
-import { selectMaxActors, selectCurrent } from '../../selectors/maxActors';
-import { addActorsThunk } from '../../thunks/actor';
-import { resetCurrent } from '../../reducers/maxActorsSlice';
 import { Flex } from '../../components/ui/Flex';
-import { computeActorShortLabel } from '../../data/getActorLabel';
 import ActorLabel from '../../components/ActorLabel';
+import {
+  selectCurrent,
+  selectMaxActors,
+} from '../../v2/selectors/detail/maxActors';
+import { resetCurrent } from '../../v2/reducers/detail/maxActorsSlice';
+import { validateDetailActorsThunk } from '../../v2/thunks/actors';
+import { selectDetailActors } from '../../v2/selectors/detail/actors';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -42,7 +44,7 @@ export const ModalDiv = styled.div`
 
 export const ActorModal: React.FC = function () {
   const dispatch = useDispatch();
-  const actors = useSelector(selectActors);
+  const actors = useSelector(selectDetailActors);
   const maxActors = useSelector(selectMaxActors);
   const current = useSelector(selectCurrent);
   const [show, setShow] = useState(false);
@@ -71,7 +73,8 @@ export const ActorModal: React.FC = function () {
   }, []);
 
   const handleClick = useCallback(() => {
-    if (current !== null) dispatch(addActorsThunk({ current, checkboxs }));
+    if (current !== null)
+      dispatch(validateDetailActorsThunk({ current, checkboxs }));
     setShow(false);
   }, [dispatch, current, checkboxs]);
 
@@ -80,9 +83,10 @@ export const ActorModal: React.FC = function () {
     setShow(false);
   }, [dispatch]);
 
-  const checkedSize = useMemo(() => _.filter(checkboxs, 'checked').length, [
-    checkboxs,
-  ]);
+  const checkedSize = useMemo(
+    () => _.filter(checkboxs, 'checked').length,
+    [checkboxs]
+  );
 
   const color = checkedSize < maxActors ? 'green' : undefined;
   if (show)
@@ -98,8 +102,7 @@ export const ActorModal: React.FC = function () {
             <hr />
             {current && (
               <div>
-                Nouvel acteur :{' '}
-                <ActorLabel id={computeActorShortLabel(current)} />
+                Nouvel acteur : <ActorLabel id={current} />
               </div>
             )}
             <hr />

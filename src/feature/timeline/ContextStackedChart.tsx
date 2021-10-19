@@ -3,88 +3,91 @@ import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import { selectMainColor, selectActorColor } from '../../selectors/color';
 import moment from 'moment';
-import { selectEvents, selectKinds, selectActors } from '../../selectors/event';
 import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../../data/models';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
-import { SiprojurisEvent } from '../../data/sip-models';
-import { map, pipe, get } from 'lodash/fp';
+import { map, pipe, get, values } from 'lodash/fp';
+import {
+  selectDetailActorIds,
+  selectDetailKinds,
+  selectDetailsRichEvents,
+} from '../../v2/selectors/detail/actors';
+import { ProsoVisEvent } from '../../v2/types/events';
 
-export const selectDiscrete = createSelector(selectEvents, function (events) {
-  return _(events)
-    .flatMap<
-      | {
-          kind: SiprojurisEvent['kind'] | '';
-          actor: PrimaryKey | null;
-          time: Date;
+export const selectDiscrete = createSelector(
+  selectDetailsRichEvents,
+  function (events) {
+    return _(events)
+      .flatMap<
+        | {
+            kind: ProsoVisEvent['kind'] | '';
+            actor: string | null;
+            time: Date;
+          }
+        | undefined
+      >(({ event }) => {
+        if (event.datation.length === 2) {
+          const [start, end] = map(
+            pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
+            event.datation
+          );
+
+          return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
+            kind: event.kind,
+            actor: event.actor,
+            time,
+          }));
+        } else if (event.datation.length === 1) {
+          return {
+            kind: event.kind,
+            actor: event.actor,
+            time: d3.timeYear(moment(event.datation[0].value).toDate()),
+          };
         }
-      | undefined
-    >((e) => {
-      if (e.datation.length === 2) {
-        const [start, end] = map(
-          pipe(get('clean_date'), (d) => new Date(d), d3.timeYear.floor),
-          e.datation
-        );
-
-        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
-          kind: e.kind,
-          actor: e.actor.id,
-          time,
-        }));
-      } else if (e.datation.length === 1) {
-        return {
-          kind: e.kind,
-          actor: e.actor.id,
-          time: d3.timeYear(moment(e.datation[0].clean_date).toDate()),
-        };
-      }
-      return undefined;
-    })
-    .concat(
-      d3.timeYear
-        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map((d) => ({ time: d, kind: '', actor: null }))
-    )
-    .groupBy('time');
-});
+        return undefined;
+      })
+      .concat(
+        d3.timeYear
+          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+          .map((d) => ({ time: d, kind: '', actor: null }))
+      )
+      .groupBy('time');
+  }
+);
 
 const selectMap = createSelector(
   selectSwitch,
-  selectActors,
-  selectKinds,
+  selectDetailActorIds,
+  selectDetailKinds,
   selectMainColor,
   selectActorColor,
   (switcher, actors, kinds, mainColor, actorColor) =>
     switcher === 'Actor'
-      ? {
-          countBy: 'actor',
-          keys: _.map(actors, (a) => '' + a.id),
-          color: actorColor,
-        }
-      : { countBy: 'kind', keys: _.values(kinds), color: mainColor }
+      ? { countBy: 'actor', keys: actors, color: actorColor }
+      : { countBy: 'kind', keys: values(kinds), color: mainColor }
 );
 
-const selectStack = createSelector(selectDiscrete, selectMap, function (
-  events,
-  selection
-) {
-  const flatten = _(events)
-    .mapValues((v) => _.countBy(v, selection.countBy))
-    .map((value, time) => ({ time: new Date(time), ...value }))
-    .sortBy('time')
-    .value();
+const selectStack = createSelector(
+  selectDiscrete,
+  selectMap,
+  function (events, selection) {
+    const flatten = _(events)
+      .mapValues((v) => _.countBy(v, selection.countBy))
+      .map((value, time) => ({ time: new Date(time), ...value }))
+      .sortBy('time')
+      .value();
 
-  return {
-    stack: d3
-      .stack()
-      .keys(selection.keys)
-      .order(d3.stackOrderInsideOut)
-      .value((d, k) => d[k] || 0)(flatten as any),
-    color: selection.color,
-  };
-});
+    return {
+      stack: d3
+        .stack()
+        .keys(selection.keys)
+        .order(d3.stackOrderInsideOut)
+        .value((d, k) => d[k] || 0)(flatten as any),
+      color: selection.color,
+    };
+  }
+);
 
 type D3Selection = d3.Selection<
   SVGGElement,

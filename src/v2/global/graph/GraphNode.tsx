@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import ActorLabel from '../../../components/ActorLabel';
 import { useFlatClick } from '../../../hooks/useClick';
-import { selectActors } from '../../../selectors/event';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { lightgray, moongray, darkgray } from '../../components/theme';
 import { setActorSummary } from '../../reducers/global/actorSummarySlice';
@@ -12,6 +11,7 @@ import {
   setGlobalHighlight,
 } from '../../reducers/global/highlightSlice';
 import { setGlobalSelection } from '../../reducers/global/selectionSlice';
+import { selectDetailActors } from '../../selectors/detail/actors';
 import { ProsoVisNode } from '../../types/graph';
 import {
   selectActorsFiltered,
@@ -20,7 +20,7 @@ import {
 } from './selectors';
 
 function useColor(id: string) {
-  const actors = useSelector(selectActors);
+  const actors = useSelector(selectDetailActors);
   const color = useSelector(selectSwitchActorColor);
 
   return color && actors[id] ? color(id) : undefined;

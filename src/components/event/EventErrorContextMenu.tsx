@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import { SipError } from '../../data/sip-models';
+import { ProsoVisError } from '../../v2/types/errors';
 import { IconSpacer, IconSpacerPointer } from '../ui/IconSpacer';
 import {
   XIcon,
@@ -22,13 +22,13 @@ import Modal from '../../feature/modal/Modal';
 import styled from 'styled-components';
 import { darkgray } from '../ui/colors';
 
-const errorLevelTranslation: { [k in SipError['level']]: string } = {
+const errorLevelTranslation: { [k in ProsoVisError['level']]: string } = {
   Error: 'erreur',
   Warning: 'alerte',
   Info: 'note',
 };
 
-function getErrorLevel(error: SipError) {
+function getErrorLevel(error: ProsoVisError) {
   return errorLevelTranslation[error.level];
 }
 
@@ -98,7 +98,9 @@ const ContentTitle = styled.p`
   text-align: center;
 `;
 
-const DetailsMenuContent: React.FC<{ error: SipError }> = function ({ error }) {
+const DetailsMenuContent: React.FC<{ error: ProsoVisError }> = function ({
+  error,
+}) {
   return (
     <ContentBase>
       <ContentTitle>{error.message}</ContentTitle>
@@ -141,7 +143,7 @@ const DraggableIcon = styled(IconSpacer)`
 `;
 
 export const EventErrorContextMenu: React.FC<{
-  errors: SipError[];
+  errors: ProsoVisError[];
   highlight: boolean;
   $parentRef: React.MutableRefObject<HTMLElement>;
   close: () => void;
@@ -185,7 +187,7 @@ export const EventErrorContextMenu: React.FC<{
   );
 
   const [[currentErrorIndex, currentError], setCurrentError] = useState<
-    [number, SipError]
+    [number, ProsoVisError]
   >([0, sortedErrors[0]]);
 
   const next = useCallback(() => {

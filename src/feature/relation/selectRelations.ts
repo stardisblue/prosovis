@@ -1,18 +1,22 @@
-import indexLocalisations from '../../data/index-localisations';
-import indexActors from '../../data/index-actors';
-
-import relations from '../../data/relations';
-import _ from 'lodash';
 import { createSelector } from '@reduxjs/toolkit';
 import { createSelectorCreator, defaultMemoize } from 'reselect';
 import { ActorRelationsMap } from './models';
 import { selectMaskedEvents } from '../../selectors/mask';
-import { toPairs } from 'lodash/fp';
 import { ProsoVisSignedRelation } from '../../v2/types/relations';
 import { ProsoVisActor } from '../../v2/types/actors';
-
-const locs = new Map(toPairs(indexLocalisations.index));
-export const selectLocalisations = () => locs;
+import { selectActors } from '../../v2/selectors/actors';
+import {
+  get,
+  isEqual,
+  keyBy,
+  keys,
+  map,
+  pipe,
+  transform,
+  uniqBy,
+} from 'lodash/fp';
+import { selectRelations } from '../../v2/selectors/relations';
+import { ProsoVisDetailRichEvent } from '../../v2/types/events';
 
 export type RelationType = {
   locLinks: Map<string, Map<string, ProsoVisSignedRelation>>;
@@ -52,39 +56,45 @@ function addRelation(
   locLinks.set(link.id, link);
 
   if (!relations.ghosts.has(link.target))
-    relations.ghosts.set(link.target, actors[link.target]);
+    relations.ghosts.set(link.target, { ...actors[link.target] });
 
   if (!relations.actors.has(link.source))
-    relations.actors.set(link.source, actors[link.source]);
+    relations.actors.set(link.source, { ...actors[link.source] });
 }
 
 const compareByKeySelector = createSelectorCreator(
   defaultMemoize,
   function (a, b) {
-    return _.isEqual(_.keys(a), _.keys(b));
+    return isEqual(keys(a), keys(b));
   }
 );
 
 export const selectActorsFromMaskedEvents = createSelector(
   selectMaskedEvents,
-  (events) => _(events).uniqBy('actor.id').map('actor').keyBy('id').value()
+  (events) =>
+    pipe(
+      uniqBy<ProsoVisDetailRichEvent>('actor.id'),
+      map('actor'),
+      keyBy<ProsoVisActor>('id')
+    )(events)
 );
 
-export const selectLinks = createSelector(
-  () => relations,
-  (relations) => {
-    return _.map(relations, ({ actors, ...props }) => ({
+export const selectLinks = createSelector(selectRelations, (relations) => {
+  return map(
+    ({ actors, ...props }) => ({
       ...props,
       id: actors.join(':'),
       source: actors[0],
       target: actors[1],
-    }));
-  }
-);
+    }),
+    relations
+  );
+});
 
+/** @deprecated */
 export const selectActorLinksMap = createSelector(selectLinks, (links) => {
-  return _(links)
-    .transform((relations, l) => {
+  return transform(
+    (relations, l) => {
       let srels = relations.get(l.source);
       if (srels === undefined) {
         srels = { events: new Set(), actors: new Map() };
@@ -100,19 +110,21 @@ export const selectActorLinksMap = createSelector(selectLinks, (links) => {
       }
       trels.actors.set(l.source, l);
       l.events.forEach((e) => trels!.events.add(e));
-    }, new Map<string, { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }>())
-    .value();
+    },
+    new Map<
+      string,
+      { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }
+    >(),
+    links
+  );
 });
 
-export const selectActorsData = () => indexActors;
-
-export const selectRelations = compareByKeySelector(
+export const selectDetailRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,
   selectLinks,
-  selectActorsData,
-  (actors, links, indexActors) => {
-    return _.transform(
-      links,
+  selectActors,
+  (actors, links, indexActors = {}) => {
+    return transform(
       function (relations, link) {
         const { source, target } = link;
         if (actors[source] || actors[target]) {
@@ -121,16 +133,16 @@ export const selectRelations = compareByKeySelector(
           if (actors[source] && actors[target]) {
             // both are actors
             if (!relations.actors.has(source))
-              relations.actors.set(source, _.get(indexActors, source));
+              relations.actors.set(source, get(source, indexActors));
             if (!relations.actors.has(target))
-              relations.actors.set(target, _.get(indexActors, target));
+              relations.actors.set(target, get(target, indexActors));
             relations.links.set(link.id, link);
           } else if (actors[source]) {
-            addRelation(relations, indexActors.index, link);
+            addRelation(relations, indexActors, link);
           } else if (actors[target]) {
             link.source = target;
             link.target = source;
-            addRelation(relations, indexActors.index, link);
+            addRelation(relations, indexActors, link);
           }
         }
         let l = relations.locLinks.get(link.loc);
@@ -145,27 +157,28 @@ export const selectRelations = compareByKeySelector(
         links: new Map(),
         ghosts: new Map(),
         actors: new Map(),
-      } as RelationType
+      } as RelationType,
+      links
     );
   }
 );
 
 export const selectRelationNodes = createSelector(
-  selectRelations,
+  selectDetailRelations,
   ({ actors }) => actors
 );
 
 export const selectRelationActorRing = createSelector(
-  selectRelations,
+  selectDetailRelations,
   ({ actorRing }) => actorRing
 );
 
 export const selectRelationLinks = createSelector(
-  selectRelations,
+  selectDetailRelations,
   ({ links }) => links
 );
 
 export const selectRelationGhosts = createSelector(
-  selectRelations,
+  selectDetailRelations,
   ({ ghosts }) => ghosts
 );

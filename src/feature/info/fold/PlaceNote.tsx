@@ -6,24 +6,25 @@ import { EventLine } from '../../../components/event/EventLine';
 import { LeftBottomSpacer } from '../../../components/event/LeftSpacer';
 import { IconSpacer } from '../../../components/ui/IconSpacer';
 import { Note } from '../../../components/ui/Note';
-import {
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-} from '../../../data/sip-models';
 import { useClickSelect } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { EventGroup as EventGroupType, SelectedEvent } from '../models';
+import {
+  EventGroup as EventGroupType,
+  Interactive,
+} from '../../../v2/detail/information/types';
+import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
+import { ProsoVisPlace } from '../../../v2/types/localisations';
 import { InteractiveEnlarge } from './InteractiveEnlarge';
 
 export const PlaceNote: React.FC<{
-  events: SelectedEvent<SiprojurisEvent>[];
-  group: SiprojurisNamedPlace;
+  events: Interactive<ProsoVisDetailRichEvent>[];
+  group: ProsoVisPlace;
   masked?: boolean;
   selected: boolean;
   highlighted: boolean;
 }> = function ({ events, group, selected, highlighted }) {
   const interactive = useMemo(
-    () => _.map(events, (e) => ({ id: e.id, kind: 'Event' })),
+    () => _.map(events, (e) => ({ id: e.event.id, kind: 'Event' })),
     [events]
   );
   const handleSelectClick = useClickSelect(interactive);
@@ -35,15 +36,16 @@ export const PlaceNote: React.FC<{
       _.reduce(
         events,
         (acc, e) => {
+          const { event } = e;
           let last = _.last(acc);
 
-          if (last === undefined || last.kind !== e.kind) {
+          if (last === undefined || last.kind !== event.kind) {
             acc.push({
-              id: e.id,
-              kind: e.kind,
+              id: event.id,
+              kind: event.kind,
               events: e,
-              start: _.first(e.datation)!,
-              end: _.last(e.datation)!,
+              start: _.first(event.datation)!,
+              end: _.last(event.datation)!,
               masked: e.masked,
               selected: e.selected,
               highlighted: e.highlighted,
@@ -56,16 +58,14 @@ export const PlaceNote: React.FC<{
             last.events = [last.events, e];
           }
 
-          last.start = _.minBy(
-            [last.start, _.first(e.datation)],
-            'clean_date'
-          )!;
-          last.end = _.maxBy([last.end, _.last(e.datation)], 'clean_date')!;
+          last.start = _.minBy([last.start, _.first(event.datation)], 'value')!;
+          last.end = _.maxBy([last.end, _.last(event.datation)], 'value')!;
 
           return acc;
         },
         [] as EventGroupType<
-          SelectedEvent<SiprojurisEvent>[] | SelectedEvent<SiprojurisEvent>
+          | Interactive<ProsoVisDetailRichEvent>[]
+          | Interactive<ProsoVisDetailRichEvent>
         >[]
       ),
     [events]
@@ -91,7 +91,7 @@ export const PlaceNote: React.FC<{
         Array.isArray(e.events) ? (
           <EventGroup
             key={e.id}
-            {...(e as EventGroupType<SelectedEvent<SiprojurisEvent>[]>)}
+            {...(e as EventGroupType<Interactive<ProsoVisDetailRichEvent>[]>)}
             origin={group.kind}
           />
         ) : (

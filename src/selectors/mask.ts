@@ -1,13 +1,13 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { getLocalisation } from '../data';
 import moment from 'moment';
 import _ from 'lodash';
-import { selectEvents } from './event';
 import L from 'leaflet';
 import { ActorMask } from '../reducers/maskSlice';
-import { SiprojurisEvent } from '../data/sip-models';
 import { selectActiveKinds } from '../v2/selectors/mask/kind';
+import { ProsoVisActor } from '../v2/types/actors';
+import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
+import { ProsoVisDetailRichEvent } from '../v2/types/events';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -24,12 +24,12 @@ export const selectBoundsMask = createSelector(
 /** see filter:time in v2/selectors/masks */
 export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
   res
-    ? function ({ datation }: SiprojurisEvent) {
+    ? function ({ event: { datation } }: ProsoVisDetailRichEvent) {
         if (datation.length === 1) {
-          return moment(datation[0].clean_date).isBetween(res.start, res.end);
+          return moment(datation[0].value).isBetween(res.start, res.end);
         } else {
-          const datatStart = datation[0].clean_date;
-          const datatEnd = datation[1].clean_date;
+          const datatStart = datation[0].value;
+          const datatEnd = datation[1].value;
 
           return !(
             moment(res.end).isBefore(datatStart) ||
@@ -44,17 +44,19 @@ export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
 );
 
 export const selectKindFun = createSelector(selectActiveKinds, (res) =>
-  res ? (e: SiprojurisEvent) => kindMaskState(e.kind, res) : undefined
+  res
+    ? (e: ProsoVisDetailRichEvent) => kindMaskState(e.event.kind, res)
+    : undefined
 );
 
 export const selectActorFun = createSelector(selectActorMask, (res) =>
-  res ? (e: SiprojurisEvent) => actorMaskState(e.actor, res) : undefined
+  res ? (e: ProsoVisDetailRichEvent) => actorMaskState(e.actor, res) : undefined
 );
 
 export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
   res
-    ? (e: SiprojurisEvent) => {
-        const loc = getLocalisation(e);
+    ? (e: ProsoVisDetailRichEvent) => {
+        const loc = e.place;
         if (loc && loc.lat !== null && loc.lng !== null) {
           return L.latLngBounds(res).contains([+loc.lat, +loc.lng]);
         } else {
@@ -70,7 +72,7 @@ export const maskAllFun = createSelector(
   selectActorFun,
   selectBoundsFun,
   function (interval, kind, actor, bound) {
-    return (e: SiprojurisEvent) => {
+    return (e: ProsoVisDetailRichEvent) => {
       if (interval && !interval(e)) return false;
       if (kind && !kind(e)) return false;
       if (actor && !actor(e)) return false;
@@ -81,19 +83,16 @@ export const maskAllFun = createSelector(
 );
 
 export const selectMaskedEvents = createSelector(
-  selectEvents,
+  selectDetailsRichEvents,
   maskAllFun,
-  (events, maskF) => _.filter(events, maskF)
+  (events, maskF) => events.filter(maskF)
 );
 
 export const maskedEventsAsMap = createSelector(selectMaskedEvents, (events) =>
-  _.keyBy(events, 'id')
+  _.keyBy(events, 'event.id')
 );
 
-export function actorMaskState(
-  actor: SiprojurisEvent['actor'],
-  masks?: ActorMask
-) {
+export function actorMaskState(actor: ProsoVisActor, masks?: ActorMask) {
   const state = masks && masks[actor.id];
   return state !== undefined ? state : true;
 }

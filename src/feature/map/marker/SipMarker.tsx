@@ -1,34 +1,22 @@
 import React, { useCallback, useMemo } from 'react';
 import { Marker } from './Marker';
 import L from 'leaflet';
-import { PrimaryKey, Datation } from '../../../data/models';
-
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../../selectors/switch';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import _ from 'lodash';
 import { setSelection } from '../../../reducers/selectionSlice';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import {
-  SiprojurisActor,
-  SiprojurisEvent,
-  SiprojurisNamedPlace,
-} from '../../../data/sip-models';
+import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
   $map: React.MutableRefObject<L.Map>;
-  event: {
-    localisation: SiprojurisNamedPlace;
-    label: string;
-    actor: SiprojurisActor['id'];
-    id: PrimaryKey;
-    kind: SiprojurisEvent['kind'];
-    datation: Datation[];
-  };
+  event: Required<ProsoVisDetailRichEvent>;
 }> = function ({ $l, $map, event }) {
   const dispatch = useDispatch();
-  const { id, actor, kind, localisation, datation } = event;
+  const { place } = event;
+  const { id, actor, kind, datation } = event.event;
   const color = useSelector(selectMarkerColor);
   const selected = useSelector(superSelectionAsMap);
   const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
@@ -46,7 +34,7 @@ const SipMarker: React.FC<{
       )}
       onMouseOver={onMouseEnter}
       onMouseOut={onMouseLeave}
-      latlng={[+localisation.lat!, +localisation.lng!]}
+      latlng={[+place.lat!, +place.lng!]}
       options={{
         id,
         kind,

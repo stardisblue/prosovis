@@ -1,9 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { PrimaryKey } from '../data/models';
-import _ from 'lodash';
+import { isArray } from 'lodash/fp';
 
 export type SuperHightlightEvent = {
-  id: PrimaryKey;
+  id: string;
   kind: string;
   type?: string;
 };
@@ -16,7 +15,7 @@ export const superHighlightSlice = createSlice({
       _state,
       action: PayloadAction<SuperHightlightEvent | SuperHightlightEvent[]>
     ) {
-      return _.isArray(action.payload) ? action.payload : [action.payload];
+      return isArray(action.payload) ? action.payload : [action.payload];
     },
     clearSuperHighlights() {
       return null;
@@ -24,9 +23,7 @@ export const superHighlightSlice = createSlice({
   },
 });
 
-export const {
-  setSuperHighlights,
-  clearSuperHighlights,
-} = superHighlightSlice.actions;
+export const { setSuperHighlights, clearSuperHighlights } =
+  superHighlightSlice.actions;
 
 export default superHighlightSlice.reducer;

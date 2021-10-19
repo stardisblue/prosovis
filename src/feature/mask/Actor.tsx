@@ -5,12 +5,12 @@ import { selectSwitchActorColor } from '../../selectors/switch';
 import { actorMaskState, selectActorMask } from '../../selectors/mask';
 import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
 import ActorLabel from '../../components/ActorLabel';
-import { SiprojurisActor } from '../../data/sip-models';
 import { SmallFont } from './styled-components';
 import { darkgray } from '../../components/ui/colors';
+import { ProsoVisActor } from '../../v2/types/actors';
 
 const Actor: React.FC<{
-  actor: SiprojurisActor;
+  actor: ProsoVisActor;
 }> = function ({ actor }) {
   const { id } = actor;
 

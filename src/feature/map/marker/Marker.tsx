@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
-import { PrimaryKey } from '../../../data/models';
 import useLazyRef from '../../../hooks/useLazyRef';
 
 type DataMarkerOptions = L.CircleMarkerOptions & {
-  id: PrimaryKey;
+  id: string;
   kind: string;
-  actor: PrimaryKey;
+  actor: string;
 };
 interface DataMarkerType extends L.CircleMarker {
   new (latlng: L.LatLngExpression, options?: DataMarkerOptions): DataMarkerType;
@@ -14,18 +13,18 @@ interface DataMarkerType extends L.CircleMarker {
   options: DataMarkerOptions;
 }
 
-const DataMarker = (L.CircleMarker.extend({
+const DataMarker = L.CircleMarker.extend({
   options: { id: null, kind: null, actor: null },
-}) as any) as DataMarkerType;
+}) as any as DataMarkerType;
 
 export const Marker: React.FC<{
   $map: React.MutableRefObject<L.Map>;
   $l: React.MutableRefObject<L.LayerGroup>;
   latlng: L.LatLngExpression;
   options: L.CircleMarkerOptions & {
-    id: PrimaryKey;
+    id: string;
     kind: string;
-    actor: PrimaryKey;
+    actor: string;
     dates: any[];
   };
   onMouseOver?: L.LeafletEventHandlerFn;

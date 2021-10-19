@@ -1,8 +1,8 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
 import { useFlatClick } from '../../hooks/useClick';
-import { fetchActorThunk } from '../../thunks/actor';
 import fuzzysort from 'fuzzysort';
+import { tryAddDetailActorThunk } from '../../v2/thunks/actors';
 
 const highlight = (r: any, f: any, s = '\xA9') =>
   fuzzysort
@@ -16,7 +16,7 @@ export const AutocompleteItem: React.FC<any> = function ({
 }) {
   const dispatch = useDispatch();
   const clicky = useFlatClick(() => {
-    dispatch(fetchActorThunk(r.id));
+    dispatch(tryAddDetailActorThunk(r.id));
     onClick();
   });
   return (

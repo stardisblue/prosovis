@@ -10,7 +10,7 @@ import './VisTimeline.css';
 import classnames from 'classnames';
 import _ from 'lodash';
 import { map, noop } from 'lodash/fp';
-import { Nullable, PrimaryKey, Datation } from '../../data/models';
+import { Nullable } from '../../v2/types/utils';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
 import { Moment } from 'moment';
@@ -41,13 +41,15 @@ import {
 import ActorPlaceSwitch from './header/ActorPlaceSwitch';
 import styled from 'styled-components/macro';
 import { getEventLabel } from '../../data/getEventLabel';
-import { SiprojurisActor, SiprojurisNamedPlace } from '../../data/sip-models';
 import { useUpdateMask } from './useUpdateMask';
+import { ProsoVisDate } from '../../v2/types/events';
+import { ProsoVisActor } from '../../v2/types/actors';
+import { ProsoVisLocalisation } from '../../v2/types/localisations';
 
 type VisEventProps = {
   event: MouseEvent | PointerEvent;
-  item: Nullable<number | string>;
-  group: Nullable<number | string>;
+  item: Nullable<string>;
+  group: Nullable<string>;
   what: Nullable<string>;
   pageX: number;
   pageY: number;
@@ -59,17 +61,17 @@ type VisEventProps = {
 
 type VisEventGroup = VisEventProps & {
   what: 'group-label';
-  group: PrimaryKey;
+  group: string;
 };
 type VisEventItem = VisEventProps & {
   what: 'item';
-  item: PrimaryKey;
-  group: PrimaryKey;
+  item: string;
+  group: string;
 };
 type VisEventBackground = VisEventProps & {
   what: 'background';
   item: null;
-  group: PrimaryKey;
+  group: string;
 };
 type VisTimeMarker = {
   id: string;
@@ -79,14 +81,14 @@ type VisTimeMarker = {
 
 type VisEvent = VisEventGroup | VisEventItem | VisEventBackground;
 
-function resolveDatation([start, end]: Datation[]): {
+function resolveDatation([start, end]: ProsoVisDate[]): {
   start: string;
   end: Nullable<string>;
   type: string;
 } {
   return {
-    start: start.clean_date,
-    end: end ? end.clean_date : null,
+    start: start.value,
+    end: end ? end.value : null,
     type: end ? 'range' : 'box',
   };
 }
@@ -113,7 +115,7 @@ const selectTimelineEvents = createSelector(
   (events, groupBy, eventColor) => {
     return _.transform(
       events,
-      function (acc, e) {
+      function (acc, { event: e }) {
         if (e.datation && e.datation.length > 0) {
           const { id, kind, datation } = e;
           acc.push({
@@ -429,7 +431,7 @@ const VisTimeline: React.FC = function () {
           id,
           content: newLineLongString(label),
         }),
-        groups as (SiprojurisActor | SiprojurisNamedPlace)[]
+        groups as (ProsoVisActor | ProsoVisLocalisation)[]
       )
     );
     // visTimeline.current!.redraw();
