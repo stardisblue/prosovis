@@ -35,7 +35,6 @@ export const validateDetailActorsThunk = function (payload: {
 }): ThunkAction<void, RootState, unknown, Action<string>> {
   return (dispatch, getState) => {
     const relationSelection = selectRelationSelection(getState());
-    console.log(payload);
     flow(
       filter((v: CheckType) => v.checked),
       map((v: CheckType) => v.actor.id),

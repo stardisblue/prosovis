@@ -82,8 +82,6 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         );
         simulation.nodes(node.data());
         simulation.alpha(1).restart();
-
-        console.log(simulation.nodes());
       },
 
       links: function () {

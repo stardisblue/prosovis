@@ -38,7 +38,7 @@ function computePosition(
       };
 
     case 'north-west':
-      console.log(content.width, child.left);
+      // console.log(content.width, child.left);
       return {
         left: child.left - (content.width + 8),
         top: child.top + 4,

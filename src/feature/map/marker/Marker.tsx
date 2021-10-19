@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
 import useLazyRef from '../../../hooks/useLazyRef';
+import { ProsoVisDate } from '../../../v2/types/events';
 
-type DataMarkerOptions = L.CircleMarkerOptions & {
+export type DataMarkerOptions = L.CircleMarkerOptions & {
   id: string;
   kind: string;
   actor: string;
+  dates: ProsoVisDate[];
 };
-interface DataMarkerType extends L.CircleMarker {
+
+export interface DataMarkerType extends L.CircleMarker {
   new (latlng: L.LatLngExpression, options?: DataMarkerOptions): DataMarkerType;
 
   options: DataMarkerOptions;
@@ -21,12 +24,7 @@ export const Marker: React.FC<{
   $map: React.MutableRefObject<L.Map>;
   $l: React.MutableRefObject<L.LayerGroup>;
   latlng: L.LatLngExpression;
-  options: L.CircleMarkerOptions & {
-    id: string;
-    kind: string;
-    actor: string;
-    dates: any[];
-  };
+  options: DataMarkerOptions;
   onMouseOver?: L.LeafletEventHandlerFn;
   onMouseOut?: L.LeafletEventHandlerFn;
   onClick?: L.LeafletEventHandlerFn;

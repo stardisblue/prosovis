@@ -1,18 +1,18 @@
 import _ from 'lodash';
 import { AntPathEvent } from './AntPath';
 import * as d3 from 'd3-array';
-import { ProsoVisDate } from '../../../v2/types/events';
-type FlatAntPath = {
-  event: AntPathEvent;
+import { DataMarkerOptions } from '../marker/Marker';
+type FlatAntPath<T> = {
+  event: AntPathEvent<T>;
   start: string;
   end: string;
 }[];
 
 export default function pathMaker(this: any) {
-  let stack: AntPathEvent[] = [];
-  let results: FlatAntPath = [];
+  let stack: AntPathEvent<DataMarkerOptions>[] = [];
+  let results: FlatAntPath<DataMarkerOptions> = [];
 
-  function add(event: AntPathEvent) {
+  function add(event: AntPathEvent<DataMarkerOptions>) {
     const eventFirst = getFirstDate(event);
 
     solve(eventFirst);
@@ -70,10 +70,10 @@ export default function pathMaker(this: any) {
 }
 
 export class PathMaker {
-  stack: AntPathEvent[] = [];
-  results: FlatAntPath = [];
+  stack: AntPathEvent<DataMarkerOptions>[] = [];
+  results: FlatAntPath<DataMarkerOptions> = [];
 
-  add = (event: AntPathEvent) => {
+  add = (event: AntPathEvent<DataMarkerOptions>) => {
     const eventFirst = getFirstDate(event);
 
     this.solve(eventFirst);
@@ -128,7 +128,7 @@ export class PathMaker {
   };
 }
 
-export function flatify(events: AntPathEvent[]) {
+export function flatify(events: AntPathEvent<DataMarkerOptions>[]) {
   // console.groupCollapsed('pathmaker');
   const { solve, add, results } = pathMaker();
 
@@ -140,14 +140,14 @@ export function flatify(events: AntPathEvent[]) {
   return results();
 }
 
-type SimpleAntPath = {
-  interval: [AntPathEvent, AntPathEvent];
+type SimpleAntPath<T> = {
+  interval: [AntPathEvent<T>, AntPathEvent<T>];
   id: string;
   start: string;
   end: string;
 }[];
 
-export function simplify(flatPath: FlatAntPath) {
+export function simplify(flatPath: FlatAntPath<DataMarkerOptions>) {
   return _.transform(
     flatPath,
     (acc, { event, start, end }) => {
@@ -159,24 +159,27 @@ export function simplify(flatPath: FlatAntPath) {
         acc.push({ interval: [event, event], id: event.groupId, start, end });
       }
     },
-    [] as SimpleAntPath
+    [] as SimpleAntPath<DataMarkerOptions>
   );
 }
 
-type PathSegment = {
-  segment: [AntPathEvent, AntPathEvent];
+export type PathSegment<T> = {
+  segment: [AntPathEvent<T>, AntPathEvent<T>];
   diff: number;
   // dist: number;
 };
 
 export function segmentify(
   // this: L.Map,
-  simplePath: SimpleAntPath
-): PathSegment[] {
+  simplePath: SimpleAntPath<DataMarkerOptions>
+): PathSegment<DataMarkerOptions>[] {
   return d3.pairs(
     simplePath,
     ({ interval: [, first], end }, { interval: [last], start }) => {
-      const segment: [AntPathEvent, AntPathEvent] = [first, last];
+      const segment: [
+        AntPathEvent<DataMarkerOptions>,
+        AntPathEvent<DataMarkerOptions>
+      ] = [first, last];
 
       // const [p1, p2] = _.map(segment, (v) => this.latLngToLayerPoint(v.latLng));
 
@@ -189,7 +192,7 @@ export function segmentify(
   );
 }
 
-export const getFirstDate = ({ event }: AntPathEvent) =>
-  _.first<ProsoVisDate>(event.dates)!.value;
-export const getLastDate = ({ event }: AntPathEvent) =>
-  _.last<ProsoVisDate>(event.dates)!.value;
+export const getFirstDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
+  _.first(event.dates)!.value;
+export const getLastDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
+  _.last(event.dates)!.value;

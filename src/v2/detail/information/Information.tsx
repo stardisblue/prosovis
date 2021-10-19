@@ -21,7 +21,7 @@ export const Information: React.FC<{ className?: string }> = function ({
   className,
 }) {
   const events = useSelector(selectInformationGroups);
-  console.log(events);
+
   return (
     <Base className={className}>
       {map(

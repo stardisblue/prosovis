@@ -7,8 +7,8 @@ import PolylineOffset from '../../../polylineoffset/index';
 import { useSelector } from 'react-redux';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
 
-export type AntPathEvent = {
-  event: { id: string; [k: string]: any };
+export type AntPathEvent<T = { id: string; [k: string]: any }> = {
+  event: T;
   groupId: any;
   latLng: L.LatLng;
 };

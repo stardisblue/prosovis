@@ -1,24 +1,42 @@
 import React, { useMemo, useState, useReducer } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
-import _ from 'lodash';
 import { PayloadAction } from '@reduxjs/toolkit';
 import useLazyRef from '../../../hooks/useLazyRef';
 import { ActorPath } from './ActorPath';
 import { AntPathEvent } from './AntPath';
-import { flatify, simplify, segmentify } from './path-maker';
+import { flatify, simplify, segmentify, PathSegment } from './path-maker';
+import {
+  keyBy,
+  map,
+  pickBy,
+  flow,
+  groupBy,
+  mapValues,
+  flatMap,
+  sortBy,
+  filter,
+  pipe,
+  join,
+  fromPairs,
+  reverse,
+} from 'lodash/fp';
+import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
 
-const markerReducer = function (state: any, action: PayloadAction<any>) {
+const markerReducer = function (
+  state: _.Dictionary<DataMarkerType>,
+  action: PayloadAction<any>
+) {
   switch (action.type) {
     case 'set':
       return action.payload;
     case 'add':
       return { ...state, [action.payload.options.id]: action.payload };
     case 'remove':
-      return _.pickBy(state, (_value, key) => {
+      return pickBy((_value, key) => {
         // weak equal to mitigate issues between number and string
         return key !== action.payload.options.id.toString();
-      });
+      }, state);
     default:
       throw new Error();
   }
@@ -50,7 +68,7 @@ const SipAnthPaths: React.FC<{
 
     dispatch({
       type: 'set',
-      payload: _(defaultMarkerSet.current).keyBy('options.id').value(),
+      payload: keyBy('options.id', defaultMarkerSet.current),
     });
 
     const handleZoom = () => setZoom(map.getZoom());
@@ -79,59 +97,93 @@ const SipAnthPaths: React.FC<{
   }, []);
 
   const { chens, offset, total } = useMemo(() => {
-    const chens = _(markers)
-      .map<AntPathEvent>((marker) => ({
-        // extracting current cluster or marker position and id
-        event: marker.options,
-        ...getMarkerLatLng(marker, zoom),
-      }))
-      .groupBy('event.actor') // grouping by actors
-      .mapValues((
-        events // chaining values
-      ) => ({
-        events: _.map(events, 'event'),
-        chain: _.flow(flatify, simplify, segmentify)(events),
-        // chain: _.flow(flatify, simplify, segmentify.bind($map.current))(events),
-      }))
-      // 5. we obtain a chain for each actor
-      .value();
-
-    const flatChens = _(chens)
-      .flatMap('chain')
-      .sortBy(
-        ({ segment: [, { event }] }) => _.first<any>(event.dates).clean_date
+    const chens: {
+      events: DataMarkerOptions[];
+      chain: PathSegment<DataMarkerOptions>[];
+    }[] = flow(
+      map(
+        (marker: DataMarkerType) =>
+          ({
+            // extracting current cluster or marker position and id
+            event: marker.options,
+            ...getMarkerLatLng(marker, zoom),
+          } as AntPathEvent<DataMarkerOptions>)
+      ),
+      groupBy('event.actor'),
+      mapValues(
+        (
+          events: AntPathEvent<DataMarkerOptions>[] // chaining values
+        ) =>
+          ({
+            events: map('event', events),
+            chain: flow(flatify, simplify, segmentify)(events),
+            // chain: _.flow(flatify, simplify, segmentify.bind($map.current))(events),
+          } as {
+            events: DataMarkerOptions[];
+            chain: PathSegment<DataMarkerOptions>[];
+          })
       )
-      .value();
+    )(markers); // 5. we obtain a chain for each actor
 
-    const offset = _(flatChens)
-      .groupBy((chain) => _(chain.segment).map('groupId').join(':'))
-      .mapValues((chain) =>
-        _(chain)
-          .map((chen, i) => [_.map(chen.segment, 'event.id').join(':'), i])
-          .value()
+    const flatChens = flow(
+      flatMap('chain'),
+      filter<PathSegment<DataMarkerOptions>>('segment.1.event.dates.0.value'),
+      sortBy(
+        ({ segment: [, { event }] }: PathSegment<DataMarkerOptions>) =>
+          event.dates[0].value
       )
-      .flatMap()
-      .fromPairs()
-      .value();
+    )(chens);
 
-    const total = _(flatChens)
-      .map(({ segment }) => _.map(segment, 'groupId'))
-      .keyBy((ids) => ids.join(':'))
-      .mapValues(
-        (ids, _key, reference) =>
-          reference[[...ids].reverse().join(':')] !== undefined
-      )
-      .value();
+    const offset: _.Dictionary<number> = pipe(
+      groupBy<PathSegment<DataMarkerOptions>>(pipe(map('groupId'), join(':'))),
+      mapValues((chain: PathSegment<DataMarkerOptions>[]) =>
+        chain.map((chen, i) => [
+          pipe(map('event.id'), join(':'))(chen.segment),
+          i,
+        ])
+      ),
+      flatMap,
+      fromPairs
+    )(flatChens);
+
+    // const offset = _(flatChens)
+    //   .groupBy((chain) => _(chain.segment).map('groupId').join(':'))
+    //   .mapValues((chain) =>
+    //     _(chain)
+    //       .map((chen, i) => [_.map(chen.segment, 'event.id').join(':'), i])
+    //       .value()
+    //   )
+    //   .flatMap()
+    //   .fromPairs()
+    //   .value();
+
+    const total = pipe(
+      map(({ segment }: PathSegment<DataMarkerOptions>) =>
+        map('groupId', segment)
+      ),
+      keyBy((ids: string[]) => ids.join(':')),
+      (values) =>
+        mapValues((ids) => values[reverse(ids).join(':')] !== undefined, values)
+    )(flatChens);
+
+    // const total = _(flatChens)
+    //   .map(({ segment }) => _.map(segment, 'groupId'))
+    //   .keyBy((ids) => ids.join(':'))
+    //   .mapValues(
+    //     (ids, _key, reference) =>
+    //       reference[[...ids].reverse().join(':')] !== undefined
+    //   )
+    //   .value();
     return { chens, offset, total };
     // disabling $map ref
     //eslint-disable-next-line
   }, [zoom, markers]);
   return (
     <>
-      {_.map(chens, ({ chain, events }, key) => (
+      {Object.entries(chens).map(([key, { chain, events }]) => (
         <ActorPath
           key={key}
-          id={key}
+          id={'' + key}
           $l={$group}
           chain={chain}
           events={events}
