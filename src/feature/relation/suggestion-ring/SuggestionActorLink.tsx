@@ -1,7 +1,6 @@
 import React, { useMemo, useEffect } from 'react';
 import { toCartesian } from '../../../utils';
 import { useDatum } from '../../../hooks/useD3';
-import { selectRelationNodes } from '../selectRelations';
 import { useSelector } from 'react-redux';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import _ from 'lodash';
@@ -12,7 +11,6 @@ import {
 } from './selectors';
 import { select } from 'd3';
 import { createSelector } from 'reselect';
-import path from './path';
 import { disabled } from '../../../components/ui/colors';
 import { ProsoVisSignedRelation } from '../../../v2/types/relations';
 
