@@ -1,88 +1,26 @@
-import { padding, Point } from './Point';
+import { RichEventLocalised } from '../../../selectors/mask';
 
-export class Circle<T = any> extends Point<T> {
-  radius: number;
-  constructor(
-    id: string,
-    props: { x: number; y: number; items?: Point[] },
-    data?: T
-  ) {
-    super(id, props, data);
-    this.radius = Math.sqrt(this.size()) + 5;
-  }
+export const padding = 1;
+const pad = padding / 2;
+export type Circle = {
+  id: number;
+  x: number;
+  y: number;
+  r: number;
+  n: number;
+  children: Circle[];
+  data?: RichEventLocalised;
+};
 
-  overlaps(circle: Circle) {
-    const minDist = this.radius + circle.radius + padding,
-      x = Math.abs(this.x - circle.x),
-      y = Math.abs(this.y - circle.y);
-    return x * x + y * y < minDist * minDist;
-  }
+export function circleBbox(circle: Circle) {
+  return {
+    minX: circle.x - circle.r - pad,
+    minY: circle.y - circle.r - pad,
+    maxX: circle.x + circle.r + pad,
+    maxY: circle.y + circle.r + pad,
+  };
+}
 
-  getBBox() {
-    const pad = padding / 2;
-
-    return (
-      this._bbox ??
-      (this._bbox = {
-        minX: this.x - this.radius - pad,
-        minY: this.y - this.radius - pad,
-        maxX: this.x + this.radius + pad,
-        maxY: this.y + this.radius + pad,
-      })
-    );
-  }
-
-  // getMarker(latLng: [number, number]) {
-  //   if (this._marker) return this._marker;
-  //   const options: {radius: number,} = {
-  //     radius: this.radius
-  //   };
-  //   if (this.items) {
-  //     options.color = "royalblue";
-  //   }
-  //   if (debug.padding) {
-  //     options.weight = this.constructor.padding;
-  //     options.color = "red";
-  //     options.fill = true;
-  //     options.fillColor = '#3388ff';
-  //   }
-
-  //   return (this._marker = L.circleMarker(
-  //     this.latLng || latLng,
-  //     options
-  //   ).bindTooltip(
-  //     `items: ${this.size()}, radius:${Math.round(this.radius * 100) / 100}`,
-  //     { direction: "top", offset: [0, -this.radius] }
-  //   ));
-  // }
-
-  // getMarkers() {
-  //   return (
-  //     this._markers ||
-  //     (this._markers = !this.items
-  //       ? [this.getMarker()]
-  //       : this.items.reduce((acc, i) => {
-  //           acc.push(...i.getMarkers());
-  //           return acc;
-  //         }, []))
-  //   );
-  // }
-
-  // toMarker(latLng) {
-  //   if (!this.items) return this.getMarker();
-
-  //   const markers = L.layerGroup(this.getMarkers());
-  //   const icon = this.getMarker(latLng);
-  //   const cluster = L.layerGroup([icon]);
-
-  //   icon.on('mouseover', () => {
-  //     cluster.addLayer(markers);
-  //     icon.bringToFront();
-  //   });
-  //   icon.on('mouseout', () => {
-  //     cluster.removeLayer(markers);
-  //   });
-
-  //   return cluster;
-  // }
+export function circleOverlap(a: Circle, b: Circle) {
+  return (a.r + b.r + padding) ** 2 - ((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
 }
