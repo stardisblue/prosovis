@@ -64,11 +64,11 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
 
     const $links = $linkGroup.current.childNodes;
     const $nodes = $nodeGroup.current.childNodes;
-    const ringLinks = $ringLinksGroup.current.childNodes;
+    const $ringLinks = $ringLinksGroup.current.childNodes;
 
     let link: any = d3.selectAll($links as any);
     let node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
-    let ringLink = d3.selectAll(ringLinks as any);
+    let ringLink = d3.selectAll($ringLinks as any);
 
     let nodeMap = new Map();
 
@@ -95,7 +95,14 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         simulation.alpha(1).restart();
       },
       ringLinks: function () {
-        ringLink = d3.selectAll(ringLinks as any);
+        ringLink = d3.selectAll($ringLinks as any);
+        ringLink.attr('d', ([d, points]: any) => {
+          if (nodeMap.has(d.source)) {
+            const { x = 0, y = 0 } = nodeMap.get(d.source) as any;
+            return path([[x, y], ...points]);
+          }
+          return '';
+        });
       },
     };
 
@@ -110,8 +117,8 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         .attr('y2', (d: any) => d.target.y);
 
       ringLink.attr('d', ([d, points]: any) => {
-        if (nodeMap.get(d.source)) {
-          const { x, y } = nodeMap.get(d.source) as any;
+        if (nodeMap.has(d.source)) {
+          const { x = 0, y = 0 } = nodeMap.get(d.source) as any;
           return path([[x, y], ...points]);
         }
         return '';

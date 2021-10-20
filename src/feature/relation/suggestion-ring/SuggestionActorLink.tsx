@@ -100,16 +100,19 @@ export const SuggestionActorLink: React.FC<{
   suggestion: [number, number];
   cluster?: [number, number];
 }> = function ({ datum, suggestion, cluster }) {
-  const nodes = useSelector(selectRelationNodes);
+  // const nodes = useSelector(selectRelationNodes);
 
   // mutable values, cannot be memoized
-  const { x, y }: { x: number; y: number } = nodes.get(datum.source)! as any;
+  // const { x, y }: { x: number; y: number } = nodes.get(datum.source)! as any;
   const points: [number, number][] = useMemo(
-    () => (cluster ? [[x, y], cluster, suggestion] : [[x, y], suggestion]),
-    [x, y, cluster, suggestion]
+    // () => (cluster ? [[x, y], cluster, suggestion] : [[x, y], suggestion]),
+    // [x, y, cluster, suggestion]
+    () => (cluster ? [cluster, suggestion] : [suggestion]),
+    [cluster, suggestion]
   );
 
-  const kvDatum = useMemo(() => [datum, points.slice(1)], [datum, points]);
+  // const kvDatum = useMemo(() => [datum, points.slice(1)], [datum, points]);
+  const kvDatum = useMemo(() => [datum, points], [datum, points]);
 
   const $path = useDatum<SVGPathElement>(kvDatum);
 
@@ -126,7 +129,7 @@ export const SuggestionActorLink: React.FC<{
   return (
     <path
       ref={$path}
-      d={path(points)!}
+      // d={path(points)!}
       style={{ mixBlendMode: 'multiply' }}
       stroke={color ? color(datum.source) : undefined}
       opacity={!active ? 1 : active.actor === datum.source ? 1 : 0.3}
