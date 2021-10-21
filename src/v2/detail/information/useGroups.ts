@@ -4,15 +4,19 @@ import { maskedEventsAsMap } from '../../../selectors/mask';
 import { selectionAsMap } from '../../../selectors/selection';
 import { superHighlightAsMap } from '../../../selectors/superHighlights';
 import { selectDetailsRichEvents } from '../../selectors/detail/actors';
-import { ProsoVisActor } from '../../types/actors';
 import { ProsoVisDetailRichEvent } from '../../types/events';
-import { ProsoVisLocalisation, ProsoVisPlace } from '../../types/localisations';
-import { InformationGroup, Interactive } from './types';
+import { ProsoVisPlace } from '../../types/localisations';
+import {
+  InformationActorGroup,
+  InformationGroup,
+  InformationPlaceGroup,
+  Interactive,
+} from './types';
 
-const unknownLocalisation: ProsoVisLocalisation = {
+export const unknownLocalisation: ProsoVisPlace = {
+  kind: 'Place',
   id: '-1',
   label: 'Inconnue',
-  kind: 'NamedPlace',
   uri: 'unknown',
   lat: null,
   lng: null,
@@ -31,9 +35,7 @@ const selectInformationEvents = createSelector(
         selected: selected[e.event.id] !== undefined,
         masked: masked[e.event.id] === undefined,
       })),
-      sortBy<Interactive<ProsoVisDetailRichEvent>>(
-        'event.datation[0].clean_date'
-      )
+      sortBy<Interactive<ProsoVisDetailRichEvent>>('event.datation[0].value')
     )(events);
   }
 );
@@ -46,12 +48,13 @@ export const selectInformationGroups = createSelector(
       map(
         (events) =>
           ({
+            kind: 'Actor',
             group: get('0.actor', events),
-            events: sortBy('event.datation.0.value', events),
+            events,
             highlighted: events.some((v) => v.highlighted),
             selected: events.some((v) => v.selected),
             masked: !events.some((v) => !v.masked),
-          } as Interactive<InformationGroup<ProsoVisActor>>)
+          } as Required<Interactive<InformationActorGroup>>)
       )
     )(events);
     const localisationGroups = flow(
@@ -59,30 +62,30 @@ export const selectInformationGroups = createSelector(
       map(
         (events) =>
           ({
+            kind: 'Place',
             group: get('0.place', events) ?? unknownLocalisation,
             events,
             highlighted: events.some((v) => v.highlighted),
             selected: events.some((v) => v.selected),
             masked: !events.some((v) => !v.masked),
-          } as Interactive<InformationGroup<ProsoVisPlace>>)
+          } as Required<Interactive<InformationPlaceGroup>>)
       )
     )(events);
 
     return flow(
-      orderBy<Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>>(
-        ['selected', 'group.kind', ' events.0.event.datation.0.value'],
+      orderBy<Required<Interactive<InformationGroup>>>(
+        ['selected', 'kind', ' events.0.event.datation.0.value'],
         ['desc']
       ),
-      sortBy(
-        (e: Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>) =>
-          e.group.id === '-1' ? 1 : 0
+      sortBy((e: Required<Interactive<InformationGroup>>) =>
+        e.group.id === '-1' ? 1 : 0
       ),
-      groupBy<Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>>(
-        (e) => (e.masked === true ? 'yes' : 'no')
+      groupBy<Required<Interactive<InformationGroup>>>((e) =>
+        e.masked === true ? 'yes' : 'no'
       )
     )(concat(actorGroups, localisationGroups)) as {
-      yes: Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>[];
-      no: Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>[];
+      yes: Required<Interactive<InformationGroup>[]>;
+      no: Required<Interactive<InformationGroup>[]>;
     };
   }
 );

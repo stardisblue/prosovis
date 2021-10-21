@@ -55,22 +55,20 @@ function checkDatationType(
   }
 }
 
-export function checkMissingLocalisation(
-  event: RichEvent
-): ProsoVisError | undefined {
-  if (!event.localisation) {
+export function checkMissingPlace(event: RichEvent): ProsoVisError | undefined {
+  if (!event.place) {
     return {
-      kind: 'MissingLocalisation',
+      kind: 'MissingPlace',
       message: "L'evenement n'as pas de lieu défini",
       value: 'null',
-      expected: 'NamedPlace',
+      expected: 'Place',
       level: 'Warning',
     };
   }
 
   if (!event.place?.lat || !event.place?.lng) {
     return {
-      kind: 'MissingLocalisationCoordinates',
+      kind: 'MissingPlaceCoordinates',
       message: "Les coordonnées GPS de l'evenement ne sont pas définis",
       value: 'null',
       expected: 'Coordonnées GPS',
@@ -79,43 +77,15 @@ export function checkMissingLocalisation(
   }
 }
 
-export function checkCollectiveActor(
-  event: RichEvent
-): ProsoVisError | undefined {
+export function checkLocalisation(event: RichEvent): ProsoVisError | undefined {
   if (!event.localisation) {
     return {
-      kind: 'MissingCollectiveActor',
-      message: "L'acteur collectif n'est pas défini",
+      kind: 'MissingLocalisation',
+      message: "La localisation n'est pas défini",
       level: 'Warning',
       value: 'null',
-      expected: 'CollectiveActor',
+      expected: 'Localisation',
     };
-  }
-  const creation = event.localisation;
-  if (creation.kind === 'CollectiveActor') {
-    const loc = event.place;
-
-    if (!loc) {
-      return {
-        kind: 'MissingCollectiveActorLocalisation',
-        message: "La localisation de l'acteur collectif n'est pas défini",
-        level: 'Warning',
-        value: 'null',
-        expected: 'NamedPlace',
-      };
-    }
-
-    if (!loc.lat || !loc.lng) {
-      return {
-        kind: 'MissingCollectiveActorLocalisationCoordinates',
-        message:
-          "Les coordonnées GPS de l'acteur collectif ne sont pas définis",
-        level: 'Warning',
-        value: 'null',
-        expected: 'Coordonnées GPS',
-      };
-    }
-    return;
   }
 }
 
@@ -259,7 +229,7 @@ export function computeEventErrors(
             "Date unique (jusqu'à, inclus)",
           ])
         )
-        .add(checkMissingLocalisation(event));
+        .add(checkMissingPlace(event));
       break;
     }
 
@@ -273,7 +243,7 @@ export function computeEventErrors(
             "Date unique (jusqu'à, inclus)",
           ])
         )
-        .add(checkMissingLocalisation(event));
+        .add(checkMissingPlace(event));
 
       break;
     }
@@ -285,10 +255,10 @@ export function computeEventErrors(
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
       // TODO: fix this
-      const collectiveActorCheck = checkCollectiveActor(event);
-      chain.add(collectiveActorCheck);
-      if (collectiveActorCheck?.kind === 'MissingCollectiveActor') {
-        chain.add(checkMissingLocalisation(event));
+      const localisationCheck = checkLocalisation(event);
+      chain.add(localisationCheck);
+      if (localisationCheck?.kind === 'MissingLocalisation') {
+        chain.add(checkMissingPlace(event));
       }
 
       break;
@@ -303,7 +273,7 @@ export function computeEventErrors(
             "Date unique (jusqu'à, inclus)",
           ])
         )
-        .add(checkCollectiveActor(event))
+        .add(checkLocalisation(event))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
 
@@ -322,10 +292,10 @@ export function computeEventErrors(
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
       // TODO: fix this
-      const collectiveActorCheck = checkCollectiveActor(event);
-      chain.add(collectiveActorCheck);
-      if (collectiveActorCheck?.kind === 'MissingCollectiveActor') {
-        chain.add(checkMissingLocalisation(event));
+      const localisationCheck = checkLocalisation(event);
+      chain.add(localisationCheck);
+      if (localisationCheck?.kind === 'MissingLocalisation') {
+        chain.add(checkMissingPlace(event));
       }
 
       break;

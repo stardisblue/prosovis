@@ -38,7 +38,7 @@ export const ActorPlaceSwitch: React.FC<{ className?: string }> = function ({
   useEffect(
     function () {
       if (checked) {
-        dispatch(setGroup('NamedPlace'));
+        dispatch(setGroup('Place'));
       } else {
         dispatch(setGroup('Actor'));
       }

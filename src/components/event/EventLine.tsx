@@ -18,9 +18,10 @@ import { selectSwitchKindColor } from '../../selectors/switch';
 import { IconSpacer } from '../ui/IconSpacer';
 import { EventErrors } from './EventErrors';
 import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
-import { ProsoVisPlace } from '../../v2/types/localisations';
-import { ProsoVisActor } from '../../v2/types/actors';
-import { Interactive } from '../../v2/detail/information/types';
+import {
+  InformationGroup,
+  Interactive,
+} from '../../v2/detail/information/types';
 
 export const Base = styled.div<
   { grouped?: boolean } & SelectableProp & MaskableProp & HighlightableProp
@@ -55,7 +56,7 @@ const EventLineIcon: React.FC<{ kind: ProsoVisEvent['kind'] }> = function ({
 
 export const EventLine: React.FC<{
   event: Interactive<ProsoVisDetailRichEvent>;
-  origin: ProsoVisActor['kind'] | ProsoVisPlace['kind'];
+  origin: InformationGroup['kind'];
   grouped?: boolean;
 }> = function ({ event, origin, grouped = false }) {
   const dispatchable = { id: event.event.id, kind: 'Event' };

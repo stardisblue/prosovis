@@ -5,10 +5,10 @@ export type ProsoVisErrorKinds =
   | 'DatationBeforeBirth'
   | 'DatationBeforeDeath'
   | 'EventDuplication'
+  | 'MissingPlace'
   | 'MissingLocalisation'
-  | 'MissingCollectiveActor'
-  | 'MissingCollectiveActorLocalisation'
-  | 'MissingCollectiveActorLocalisationCoordinates'
+  | 'MissingPlace'
+  | 'MissingPlaceCoordinates'
   | 'MissingLocalisationCoordinates';
 export type ProsoVisError = {
   kind: ProsoVisErrorKinds;

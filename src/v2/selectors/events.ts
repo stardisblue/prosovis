@@ -67,7 +67,7 @@ export function localize(
 
     if (localisation) {
       let place;
-      if (localisation.kind === 'CollectiveActor') {
+      if (localisation.kind === 'Localisation') {
         if (localisation.localisation)
           place = localisationsIndex[
             localisation.localisation

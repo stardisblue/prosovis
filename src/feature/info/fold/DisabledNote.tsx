@@ -17,9 +17,13 @@ import {
   highlightable,
   selectable,
 } from './styled-components';
-import { ProsoVisPlace } from '../../../v2/types/localisations';
-import { ProsoVisActor } from '../../../v2/types/actors';
 import { removeDetailActor } from '../../../v2/reducers/detail/actorSlice';
+import {
+  InformationActorGroup,
+  InformationGroup,
+  InformationPlaceGroup,
+  Interactive,
+} from '../../../v2/detail/information/types';
 
 const InteractiveEnlarge = styled(StyledFlex)<
   HighlightableProp & SelectableProp
@@ -30,25 +34,21 @@ const InteractiveEnlarge = styled(StyledFlex)<
   ${selectable}
 `;
 
-export const DisabledNote: React.FC<{
-  group: ProsoVisActor | ProsoVisPlace;
-  selected: boolean;
-  highlighted: boolean;
-}> = ({ group, ...rest }) =>
-  group.kind === 'Actor' ? (
-    <DisabledActorNote group={group} {...rest} />
+export const DisabledNote: React.FC<Required<Interactive<InformationGroup>>> = (
+  g
+) =>
+  g.kind === 'Actor' ? (
+    <DisabledActorNote {...g} />
   ) : (
-    <DisabledPlaceNote group={group} {...rest} />
+    <DisabledPlaceNote {...g} />
   );
 
 const Masked = styled.span`
   opacity: 50%;
 `;
-const DisabledActorNote: React.FC<{
-  group: ProsoVisActor;
-  selected: boolean;
-  highlighted: boolean;
-}> = function ({ group, selected, highlighted }) {
+export const DisabledActorNote: React.FC<
+  Required<Interactive<InformationActorGroup>>
+> = function ({ group, selected, highlighted }) {
   const dispatch = useDispatch();
 
   const handleDeleteClick = useFlatClick(() => {
@@ -74,11 +74,9 @@ const DisabledActorNote: React.FC<{
   );
 };
 
-const DisabledPlaceNote: React.FC<{
-  group: ProsoVisPlace;
-  selected: boolean;
-  highlighted: boolean;
-}> = function ({ group, selected, highlighted }) {
+export const DisabledPlaceNote: React.FC<
+  Required<Interactive<InformationPlaceGroup>>
+> = function ({ group, selected, highlighted }) {
   return (
     <InteractiveEnlarge highlighted={highlighted} selected={selected}>
       <IconSpacer as="span" spaceRight>

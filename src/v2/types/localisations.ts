@@ -1,13 +1,13 @@
 export type ProsoVisCollective = {
-  kind: 'CollectiveActor';
+  kind: 'Localisation';
   id: string;
   label: string;
   uri: string;
-  localisation: ProsoVisLocalisation['id'] | null;
+  localisation: ProsoVisPlace['id'] | null;
 };
 
 export type ProsoVisPlace = {
-  kind: 'NamedPlace';
+  kind: 'Place';
   id: string;
   label: string;
   uri: string;

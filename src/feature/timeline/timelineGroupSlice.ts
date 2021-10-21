@@ -3,16 +3,15 @@ import { RootState } from '../../reducers';
 import { selectMaskedEvents } from '../../selectors/mask';
 import { ProsoVisActor } from '../../v2/types/actors';
 import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
-import { ProsoVisPlace } from '../../v2/types/localisations';
 import { map, pipe, uniqBy } from 'lodash/fp';
-
-type TimelineGroupTypes = 'Actor' | 'NamedPlace';
+import { unknownLocalisation } from '../../v2/detail/information/useGroups';
+import { InformationGroup } from '../../v2/detail/information/types';
 
 const timelineGroupSlice = createSlice({
   name: 'timelineGroup',
-  initialState: 'Actor' as TimelineGroupTypes,
+  initialState: 'Actor' as InformationGroup['kind'],
   reducers: {
-    setGroup(_state, action: PayloadAction<TimelineGroupTypes>) {
+    setGroup(_state, action: PayloadAction<InformationGroup['kind']>) {
       return action.payload;
     },
   },
@@ -23,15 +22,6 @@ export const { setGroup } = timelineGroupSlice.actions;
 export default timelineGroupSlice.reducer;
 
 export const selectTimelineGroup = (state: RootState) => state.timelineGroup;
-
-const defaultLocalisation: ProsoVisPlace = {
-  id: '-1',
-  label: 'Inconnue',
-  kind: 'NamedPlace',
-  uri: 'unknown',
-  lat: null,
-  lng: null,
-};
 
 export const selectTimelineEventGroups = createSelector(
   selectTimelineGroup,
@@ -47,10 +37,10 @@ export const selectTimelineEventGroups = createSelector(
               ({ label: d.shortLabel, ...d } as ProsoVisActor)
           )
         )(events);
-      case 'NamedPlace':
+      case 'Place':
         return pipe(
           uniqBy<ProsoVisDetailRichEvent>((e) => e.localisation?.id ?? '-1'),
-          map((e) => e.localisation ?? defaultLocalisation)
+          map((e) => e.localisation ?? unknownLocalisation)
         )(events);
     }
   }
@@ -60,7 +50,7 @@ function groupByActor(e: ProsoVisEvent) {
   return e.actor;
 }
 
-function groupByNamedPlace(e: ProsoVisEvent) {
+function groupByPlace(e: ProsoVisEvent) {
   const loc = e.localisation;
   return loc ? loc : 0;
 }
@@ -71,8 +61,8 @@ export const selectTimelineGroupBy = createSelector(
     switch (grouping) {
       case 'Actor':
         return groupByActor;
-      case 'NamedPlace':
-        return groupByNamedPlace;
+      case 'Place':
+        return groupByPlace;
     }
   }
 );

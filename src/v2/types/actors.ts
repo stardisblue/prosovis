@@ -1,5 +1,5 @@
 export type ProsoVisActor = {
-  kind: 'Actor';
+  // kind: 'Actor';
   id: string;
   label: string;
   shortLabel?: string;

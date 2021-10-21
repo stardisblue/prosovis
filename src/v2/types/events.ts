@@ -2,10 +2,10 @@ import { ProsoVisActor } from './actors';
 import { ProsoVisLocalisation, ProsoVisPlace } from './localisations';
 
 export type ComputedLabels = {
-  actorNote: string;
-  placeNote: string;
-  actorNoteAndGrouped: string;
-  placeNoteAndGrouped: string;
+  actorNote?: string;
+  placeNote?: string;
+  actorNoteAndGrouped?: string;
+  placeNoteAndGrouped?: string;
 };
 
 export type ProsoVisDate = {

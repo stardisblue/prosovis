@@ -4,7 +4,7 @@ import {
   ProsoVisDetailRichEvent,
   ProsoVisEvent,
 } from '../../types/events';
-import { ProsoVisLocalisation } from '../../types/localisations';
+import { ProsoVisPlace } from '../../types/localisations';
 
 export type Interactive<T> = T & {
   highlighted?: boolean;
@@ -12,10 +12,18 @@ export type Interactive<T> = T & {
   masked?: boolean;
 };
 
-export type InformationGroup<T extends ProsoVisActor | ProsoVisLocalisation> = {
-  group: T;
+export type InformationActorGroup = {
+  kind: 'Actor';
+  group: ProsoVisActor;
   events: Interactive<ProsoVisDetailRichEvent>[];
 };
+
+export type InformationPlaceGroup = {
+  kind: 'Place';
+  group: ProsoVisPlace;
+  events: Interactive<ProsoVisDetailRichEvent>[];
+};
+export type InformationGroup = InformationActorGroup | InformationPlaceGroup;
 export type EventGroup<
   T extends
     | Interactive<ProsoVisDetailRichEvent>

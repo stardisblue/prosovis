@@ -25,9 +25,10 @@ import {
   ProsoVisDetailRichEvent,
   ProsoVisEvent,
 } from '../../v2/types/events';
-import { ProsoVisActor } from '../../v2/types/actors';
-import { Interactive } from '../../v2/detail/information/types';
-import { ProsoVisPlace } from '../../v2/types/localisations';
+import {
+  InformationGroup,
+  Interactive,
+} from '../../v2/detail/information/types';
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
@@ -41,7 +42,7 @@ export const EventGroup: React.FC<{
   events: Interactive<ProsoVisDetailRichEvent>[];
   start: ProsoVisDate;
   end: ProsoVisDate;
-  origin: ProsoVisActor['kind'] | ProsoVisPlace['kind'];
+  origin: InformationGroup['kind'];
 }> = function ({ kind, events, start, end, origin }) {
   const interactive = useMemo(
     () => events.map(({ event: { id } }) => ({ id, kind: 'Event' })),

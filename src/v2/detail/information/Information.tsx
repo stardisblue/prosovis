@@ -5,12 +5,12 @@ import styled from 'styled-components/macro';
 import { scrollbar } from '../../../components/scrollbar';
 import { StyledFlex } from '../../../components/ui/Flex/styled-components';
 import { ActorNote } from '../../../feature/info/fold/ActorNote';
-import { DisabledNote } from '../../../feature/info/fold/DisabledNote';
+import {
+  DisabledActorNote,
+  DisabledPlaceNote,
+} from '../../../feature/info/fold/DisabledNote';
 import { PlaceNote } from '../../../feature/info/fold/PlaceNote';
-import { ProsoVisActor } from '../../types/actors';
 import { ProsoVisDate } from '../../types/events';
-import { ProsoVisPlace } from '../../types/localisations';
-import { InformationGroup, Interactive } from './types';
 import { selectInformationGroups } from './useGroups';
 
 export function parseDates(dates: ProsoVisDate[]) {
@@ -26,30 +26,22 @@ export const Information: React.FC<{ className?: string }> = function ({
     <Base className={className}>
       {map(
         (g) =>
-          g.group.kind === 'Actor' ? (
-            <ActorNote
-              key={g.group.uri}
-              {...(g as Required<Interactive<InformationGroup<ProsoVisActor>>>)}
-            />
+          g.kind === 'Actor' ? (
+            <ActorNote key={g.group.uri} {...g} />
           ) : (
-            <PlaceNote
-              key={g.group.uri}
-              {...(g as Required<Interactive<InformationGroup<ProsoVisPlace>>>)}
-            />
+            <PlaceNote key={g.group.uri} {...g} />
           ),
         events.no
       )}
       {size(events.yes) > 0 && <hr />}
       {/* TODO  style */}
       {map(
-        (g) => (
-          <DisabledNote
-            key={g.group.uri}
-            {...(g as Required<
-              Interactive<InformationGroup<ProsoVisPlace | ProsoVisActor>>
-            >)}
-          />
-        ),
+        (g) =>
+          g.kind === 'Actor' ? (
+            <DisabledActorNote {...g} />
+          ) : (
+            <DisabledPlaceNote {...g} />
+          ),
         events.yes
       )}
     </Base>

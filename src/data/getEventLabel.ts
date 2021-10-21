@@ -1,10 +1,9 @@
-import { ProsoVisActor } from '../v2/types/actors';
+import { InformationGroup } from '../v2/detail/information/types';
 import { ProsoVisEvent } from '../v2/types/events';
-import { ProsoVisPlace } from '../v2/types/localisations';
 
 export function getEventLabel(
   event: ProsoVisEvent,
-  noteKind: ProsoVisActor['kind'] | ProsoVisPlace['kind'],
+  noteKind: InformationGroup['kind'],
   grouped: boolean = false
 ): string {
   if (event.computed) {
@@ -12,18 +11,13 @@ export function getEventLabel(
       event.computed;
 
     if (noteKind === 'Actor') {
-      // fallback to actorNote
-      return (grouped && actorNoteAndGrouped) || actorNote;
-    } else if (noteKind === 'NamedPlace') {
-      // fallback to placeNote
-      return (grouped && placeNoteAndGrouped) || placeNote;
+      // fallback to actorNote or event.label
+      return (grouped && actorNoteAndGrouped) || actorNote || event.label;
+    } else if (noteKind === 'Place') {
+      // fallback to placeNote or event.label
+      return (grouped && placeNoteAndGrouped) || placeNote || event.label;
     }
   }
-  // event.computed = computeEventLabels(event);
-
-  // if (event.computed) {
-  //   return getEventLabel(event, noteKind, grouped);
-  // }
 
   // fallback to default labellisation
   return event.label;
