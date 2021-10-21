@@ -1,59 +1,39 @@
 import { RootState } from '../../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import {
-  flatMap,
-  identity,
-  keyBy,
-  map,
-  mapValues,
-  pipe,
-  sortBy,
-  uniqBy,
-} from 'lodash/fp';
+import { identity, keyBy, map, pipe, sortBy, uniqBy, groupBy } from 'lodash/fp';
 import { ProsoVisEvent, RichEvent } from '../types/events';
 import { selectLocalisationsIndex } from './localisations';
 import { ProsoVisLocalisation, ProsoVisPlace } from '../types/localisations';
 
-export const selectEventsData = (state: RootState) => state.eventData;
+export const selectEventsData = (state: RootState) => state.eventData.events;
 
-export const selectEventIndex = createSelector(
+export const selectRichEvents = createSelector(
   selectEventsData,
-  (events) => events.events?.index
+  selectLocalisationsIndex,
+  (events, localisations) =>
+    events && map((e) => localize(localisations, e), events)
 );
 
-// export const selectEvents = createSelector(
-//   selectEventIndex,
-//   (events) =>
-//     events &&
-//     pipe(
-//       flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
-//       keyBy('id')
-//     )(events as any)
-// );
+export const selectEventIndex = createSelector(
+  selectRichEvents,
+  (events) => events && groupBy('event.actor', events)
+);
 
 export const selectUniqueKinds = createSelector(
-  selectEventIndex,
+  selectEventsData,
   (events) =>
     events &&
     pipe(
-      flatMap(identity as (v: ProsoVisEvent[]) => ProsoVisEvent[]),
       uniqBy<ProsoVisEvent>('kind'),
       map('kind'),
       sortBy(identity),
       keyBy(identity)
-    )(events as any)
+    )(events)
 );
 
 /**
  * f(x): localize
  */
-export const selectRichEvents = createSelector(
-  selectEventIndex,
-  selectLocalisationsIndex,
-  (events, localisations) =>
-    events &&
-    mapValues((es) => es.map((e) => localize(localisations, e)), events)
-);
 
 export function localize(
   localisationsIndex: _.Dictionary<ProsoVisLocalisation> | undefined,
@@ -82,5 +62,3 @@ export function localize(
 
   return { event };
 }
-
-export const enrichEvent = localize;

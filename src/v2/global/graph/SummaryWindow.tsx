@@ -39,7 +39,10 @@ export const SummaryWindow: React.FC<{
   }, []);
 
   const eventsIndex = useSelector(selectEventIndex);
-  const events = useMemo(() => get(actor, eventsIndex), [actor, eventsIndex]);
+  const events = useMemo(
+    () => get(actor, eventsIndex)?.map((e) => e.event),
+    [actor, eventsIndex]
+  );
 
   return (
     <animated.foreignObject

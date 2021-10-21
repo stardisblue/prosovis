@@ -147,7 +147,7 @@ const selectTimelineEvents = createSelector(
           const { id, kind, datation } = e;
           acc.push({
             id,
-            title: unescape(getEventLabel(e, 'Actor')),
+            title: unescape(getEventLabel(e, 'ActorNote')),
             // label: "",
             popover: 'true',
             ...resolveDatation(datation),

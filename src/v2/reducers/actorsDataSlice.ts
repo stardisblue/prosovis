@@ -1,12 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProsoVisActors } from '../types/actors';
+import { ProsoVisActor } from '../types/actors';
 import Axios from 'axios';
 
 const initialState: {
-  actors: ProsoVisActors | null;
+  actors?: _.Dictionary<ProsoVisActor>;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
-} = { actors: null, loading: 'idle', url: './data/index-actors.json' };
+} = { loading: 'idle', url: './data/index-actors.json' };
 
 export const fetchActors = createAsyncThunk(
   'actors/fetch',
@@ -18,7 +18,7 @@ export const fetchActors = createAsyncThunk(
     const response = await Axios.get('./data/index-actors.json', {
       cancelToken: source.token,
     });
-    return response.data as ProsoVisActors;
+    return response.data as _.Dictionary<ProsoVisActor>;
   }
 );
 

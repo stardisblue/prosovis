@@ -1,15 +1,14 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProsoVisEvents } from '../types/events';
+import { ProsoVisEvent } from '../types/events';
 import Axios from 'axios';
 
 export type EventDataStore = {
-  events: ProsoVisEvents | null;
+  events?: ProsoVisEvent[];
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
 };
 
 const initialState: EventDataStore = {
-  events: null,
   loading: 'idle',
   url: './data/index-events.json',
 };
@@ -24,7 +23,7 @@ export const fetchEvents = createAsyncThunk(
     const response = await Axios.get('./data/index-events.json', {
       cancelToken: source.token,
     });
-    return response.data as ProsoVisEvents;
+    return response.data as ProsoVisEvent[];
   }
 );
 

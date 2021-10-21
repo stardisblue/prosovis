@@ -8,7 +8,7 @@ import { RootState } from '../../../reducers';
 import { ProsoVisActor } from '../../types/actors';
 import { ProsoVisDetailRichEvent } from '../../types/events';
 import { selectActors } from '../actors';
-import { selectRichEvents } from '../events';
+import { selectEventIndex } from '../events';
 
 export const selectDetailActorIds = (state: RootState) => state.detailActors;
 export const selectDetailActors = createSelector(
@@ -25,7 +25,7 @@ export const selectDetailActors = createSelector(
 
 export const selectDetailsRichEvents = createSelector(
   selectDetailActors,
-  selectRichEvents,
+  selectEventIndex,
   (actors, events) =>
     events
       ? flatMap((actor) => {

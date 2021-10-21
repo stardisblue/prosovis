@@ -26,7 +26,7 @@ export const Information: React.FC<{ className?: string }> = function ({
     <Base className={className}>
       {map(
         (g) =>
-          g.kind === 'Actor' ? (
+          g.kind === 'ActorNote' ? (
             <ActorNote key={g.group.uri} {...g} />
           ) : (
             <PlaceNote key={g.group.uri} {...g} />
@@ -37,7 +37,7 @@ export const Information: React.FC<{ className?: string }> = function ({
       {/* TODO  style */}
       {map(
         (g) =>
-          g.kind === 'Actor' ? (
+          g.kind === 'ActorNote' ? (
             <DisabledActorNote key={g.group.uri} {...g} />
           ) : (
             <DisabledPlaceNote key={g.group.uri} {...g} />
@@ -46,31 +46,6 @@ export const Information: React.FC<{ className?: string }> = function ({
       )}
     </Base>
   );
-  // const selectedEvents = useSelector(selectInformationEvents);
-
-  // const groups = useGroups(selectedEvents);
-
-  // return (
-  //   <Base className={className}>
-  //     {map(
-  //       (g) =>
-  //         g.kind === 'Actor' ? (
-  //           <ActorNote key={g.group.uri} {...g} />
-  //         ) : (
-  //           <PlaceNote key={g.group.uri} {...g} />
-  //         ),
-  //       groups.no
-  //     )}
-  //     {size(groups.yes) > 0 && <hr />}
-  //     {/* TODO  style */}
-  //     {map(
-  //       (g) => (
-  //         <DisabledNote key={g.group.uri} {...g} />
-  //       ),
-  //       groups.yes
-  //     )}
-  //   </Base>
-  // );
 };
 
 export const Base = styled(StyledFlex)`

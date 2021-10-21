@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { TriangleRightIcon } from '@primer/octicons-react';
+// import { TriangleRightIcon } from '@primer/octicons-react';
 import { Popper } from './ui/Popper';
 import { ProsoVisDate } from '../v2/types/events';
 
@@ -12,7 +12,8 @@ const StyledTime = styled.time`
 export const DateLabel: React.FC<{
   datation: ProsoVisDate;
   showTooltip?: boolean;
-}> = function ({ datation: d, showTooltip = true }) {
+  className?: string;
+}> = function ({ datation: d, showTooltip = true, className }) {
   if (showTooltip) {
     return <Popper content={`${d.kind} - ${d.value}`} children={children} />;
   }
@@ -22,6 +23,7 @@ export const DateLabel: React.FC<{
       aria-label={`${d.kind} - ${d.value}`}
       dateTime={d.value}
       data-uri={d.uri}
+      className={className}
     >
       {d.label}
     </StyledTime>
@@ -38,6 +40,7 @@ export const DateLabel: React.FC<{
         dateTime={d.value}
         data-uri={d.uri}
         ref={$ref}
+        className={className}
         onMouseEnter={show}
         onFocus={show}
         onMouseLeave={hide}
@@ -51,6 +54,17 @@ export const DateLabel: React.FC<{
 
 const EventDateBase = styled.div`
   text-align: right;
+`;
+
+const WrapEventDate = styled(EventDateBase)`
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 7em;
+  justify-content: flex-end;
+`;
+
+const SpacedDateLabel = styled(DateLabel)`
+  margin-left: 0.5em;
 `;
 
 export const EventDates: React.FC<{
@@ -69,10 +83,11 @@ export const EventDates: React.FC<{
     console.error('there is more than two dates', dates);
   }
   return (
-    <EventDateBase>
+    <WrapEventDate>
       <DateLabel datation={dates[0]} showTooltip={showTooltip} />
-      <TriangleRightIcon />
-      <DateLabel datation={dates[1]} showTooltip={showTooltip} />
-    </EventDateBase>
+
+      {/* <TriangleRightIcon /> */}
+      <SpacedDateLabel datation={dates[1]} showTooltip={showTooltip} />
+    </WrapEventDate>
   );
 };

@@ -1,6 +1,6 @@
 import { isAfter, isBefore, isWithinInterval, parseISO } from 'date-fns';
 import { latLngBounds } from 'leaflet';
-import { identity, flatMap, filter, flow, isNil, values } from 'lodash/fp';
+import { filter, isNil } from 'lodash/fp';
 import { createSelector } from 'reselect';
 import { RichEvent } from '../../types/events';
 import { ProsoVisPlace } from '../../types/localisations';
@@ -17,11 +17,7 @@ export const selectEventsWithoutKinds = createSelector(
   selectActiveKinds,
   (events, kinds) =>
     events &&
-    flow(
-      values as (ev: _.Dictionary<RichEvent[]>) => RichEvent[][],
-      flatMap(identity as (e: RichEvent[]) => RichEvent[]),
-      filter(({ event: { kind } }) => kinds[kind] === undefined)
-    )(events as any)
+    filter(({ event: { kind } }) => kinds[kind] === undefined, events as any)
 );
 
 /**

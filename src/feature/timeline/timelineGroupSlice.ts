@@ -28,7 +28,7 @@ export const selectTimelineEventGroups = createSelector(
   selectMaskedEvents,
   (grouping, events) => {
     switch (grouping) {
-      case 'Actor':
+      case 'ActorNote':
         return pipe(
           uniqBy<ProsoVisDetailRichEvent>('actor.id'),
           map('actor'),
@@ -37,7 +37,7 @@ export const selectTimelineEventGroups = createSelector(
               ({ label: d.shortLabel, ...d } as ProsoVisActor)
           )
         )(events);
-      case 'Place':
+      case 'PlaceNote':
         return pipe(
           uniqBy<ProsoVisDetailRichEvent>((e) => e.localisation?.id ?? '-1'),
           map((e) => e.localisation ?? unknownLocalisation)
@@ -59,9 +59,9 @@ export const selectTimelineGroupBy = createSelector(
   selectTimelineGroup,
   (grouping) => {
     switch (grouping) {
-      case 'Actor':
+      case 'ActorNote':
         return groupByActor;
-      case 'Place':
+      case 'PlaceNote':
         return groupByPlace;
     }
   }

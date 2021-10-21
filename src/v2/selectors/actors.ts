@@ -5,5 +5,5 @@ export const selectActorsData = (state: RootState) => state.actorData;
 
 export const selectActors = createSelector(
   selectActorsData,
-  (actors) => actors.actors?.index
+  (actors) => actors.actors
 );

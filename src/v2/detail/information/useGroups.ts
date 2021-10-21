@@ -48,7 +48,7 @@ export const selectInformationGroups = createSelector(
       map(
         (events) =>
           ({
-            kind: 'Actor',
+            kind: 'ActorNote',
             group: get('0.actor', events),
             events,
             highlighted: events.some((v) => v.highlighted),
@@ -62,7 +62,7 @@ export const selectInformationGroups = createSelector(
       map(
         (events) =>
           ({
-            kind: 'Place',
+            kind: 'PlaceNote',
             group: get('0.place', events) ?? unknownLocalisation,
             events,
             highlighted: events.some((v) => v.highlighted),

@@ -16,7 +16,7 @@ const ActorLabel: React.FC<{
   let Base = as ? as : React.Fragment;
 
   if (typeof actor === 'string') {
-    if (!actors) return <Base>Lel</Base>;
+    if (!actors) return <Base>Actor reference not found</Base>;
     actor = actors[actor];
   }
   let display = actor;

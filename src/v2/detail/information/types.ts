@@ -13,13 +13,13 @@ export type Interactive<T> = T & {
 };
 
 export type InformationActorGroup = {
-  kind: 'Actor';
+  kind: 'ActorNote';
   group: ProsoVisActor;
   events: Interactive<ProsoVisDetailRichEvent>[];
 };
 
 export type InformationPlaceGroup = {
-  kind: 'Place';
+  kind: 'PlaceNote';
   group: ProsoVisPlace;
   events: Interactive<ProsoVisDetailRichEvent>[];
 };

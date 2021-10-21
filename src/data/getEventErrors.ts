@@ -41,14 +41,14 @@ function checkDatationLength(
 }
 function checkDatationType(
   event: ProsoVisEvent,
-  expected: ProsoVisDate['label'][]
+  expected: ProsoVisDate['kind'][]
 ): ProsoVisError | undefined {
   // all event.datation is one of the allowed type
-  if (!every((e) => some(isEqual(e.label), expected), event.datation)) {
+  if (!every((e) => some(isEqual(e.kind), expected), event.datation)) {
     return {
       kind: 'DatationType',
       message: 'Le type de(s) date(s) est incorrect',
-      value: map('label', event.datation),
+      value: map('kind', event.datation),
       expected,
       level: 'Warning',
     };
