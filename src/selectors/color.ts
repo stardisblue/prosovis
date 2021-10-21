@@ -1,8 +1,8 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import * as d3 from 'd3';
-import _ from 'lodash';
 import { selectDetailActors } from '../v2/selectors/detail/actors';
+import { map, slice, zip, filter, find, unzip, concat } from 'lodash';
 
 export const selectColor = (state: RootState) => state.color;
 export const selectDomain = createSelector(selectColor, (c) => c.kindDomain);
@@ -26,55 +26,55 @@ export const selectActorColor = createSelector(
   (range, actors) => {
     let oldDomain = actorColor.domain();
     if (oldDomain.length === 0) {
-      oldDomain = _.map(actors, 'id');
+      oldDomain = map(actors, 'id');
     }
 
     let oldRange = actorColor.range();
     if (oldRange.length === 0) oldRange = range;
 
-    const trimmedRange = _.slice(oldRange, 0, oldDomain.length);
-    const left = _.slice(oldRange, oldDomain.length);
+    const trimmedRange = slice(oldRange, 0, oldDomain.length);
+    const left = slice(oldRange, oldDomain.length);
 
-    const zipped = _.zip(oldDomain, trimmedRange) as [string, string][];
+    const zipped = zip(oldDomain, trimmedRange) as [string, string][];
     // what's in zipped and actor
-    const keep = _.filter(
+    const keep = filter(
       zipped,
-      ([id]) => _.find(actors, (a) => a.id === id) !== undefined
+      ([id]) => find(actors, (a) => a.id === id) !== undefined
     );
     // what's in zipped but not actor
-    const discard = _.filter(
+    const discard = filter(
       zipped,
-      ([id]) => _.find(actors, (a) => a.id === id) === undefined
+      ([id]) => find(actors, (a) => a.id === id) === undefined
     );
     // what's in actor but not in zipped
-    const add = _.filter(
+    const add = filter(
       actors,
-      (a) => _.find(zipped, ([id]) => a.id === id) === undefined
+      (a) => find(zipped, ([id]) => a.id === id) === undefined
     );
     if (discard.length >= add.length) {
-      const [, rainbow] = _(discard).unzip().value() as [string[], string[]];
+      const [, rainbow] = unzip(discard) as [string[], string[]];
       keep.push(
-        ...(_.zip(_.map(add, 'id'), _.slice(rainbow, 0, add.length)) as [
+        ...(zip(map(add, 'id'), slice(rainbow, 0, add.length)) as [
           string,
           string
         ][])
       );
 
-      const [newDomain, newRange] = _.unzip(keep) as [string[], string[]];
+      const [newDomain, newRange] = unzip(keep) as [string[], string[]];
 
       if (!newDomain && !newRange) {
         return actorColor.range([]).domain([]).copy();
       }
 
       actorColor
-        .range(_.concat(newRange, _.slice(rainbow, add.length), left))
+        .range(concat(newRange, slice(rainbow, add.length), left))
         .domain(newDomain);
       return actorColor.copy();
     } else {
-      const [newDomain, newRange] = _.unzip(keep) as [string[], string[]];
+      const [newDomain, newRange] = unzip(keep) as [string[], string[]];
       actorColor
-        .range(_.concat(newRange, left))
-        .domain(_.concat(newDomain, _.map(add, 'id')));
+        .range(concat(newRange, left))
+        .domain(concat(newDomain, map(add, 'id')));
       return actorColor.copy();
     }
   }

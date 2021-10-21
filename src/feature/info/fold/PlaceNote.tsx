@@ -1,6 +1,5 @@
 import { LocationIcon } from '@primer/octicons-react';
-import _ from 'lodash';
-import { reduce } from 'lodash/fp';
+import { isArray } from 'lodash/fp';
 import React, { useMemo } from 'react';
 import { EventGroup } from '../../../components/event/EventGroup';
 import { EventLine } from '../../../components/event/EventLine';
@@ -16,59 +15,19 @@ import {
 } from '../../../v2/detail/information/types';
 import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
 import { InteractiveEnlarge } from './InteractiveEnlarge';
+import { useGroupEvents } from './useGroupEvents';
 
-export const PlaceNote: React.FC<Required<Interactive<InformationPlaceGroup>>> =
+export const PlaceNote: React.FC<Interactive<InformationPlaceGroup>> =
   function ({ kind, events, group, selected, highlighted }) {
     const interactive = useMemo(
-      () => _.map(events, (e) => ({ id: e.event.id, kind: 'Event' })),
+      () => events.map((e) => ({ id: e.event.id, kind: 'Event' })),
       [events]
     );
     const handleSelectClick = useClickSelect(interactive);
 
     const handleHighlightHover = useHoverHighlight(interactive);
 
-    const groupedEvents = useMemo(
-      () =>
-        reduce(
-          (acc, e) => {
-            const { event } = e;
-            let last = _.last(acc);
-
-            if (last === undefined || last.kind !== event.kind) {
-              acc.push({
-                id: event.id,
-                kind: event.kind,
-                events: e,
-                start: _.first(event.datation)!,
-                end: _.last(event.datation)!,
-                masked: e.masked,
-                selected: e.selected,
-                highlighted: e.highlighted,
-              });
-              return acc;
-            }
-            if (_.isArray(last.events)) {
-              last.events.push(e);
-            } else {
-              last.events = [last.events, e];
-            }
-
-            last.start = _.minBy(
-              [last.start, _.first(event.datation)],
-              'value'
-            )!;
-            last.end = _.maxBy([last.end, _.last(event.datation)], 'value')!;
-
-            return acc;
-          },
-          [] as EventGroupType<
-            | Interactive<ProsoVisDetailRichEvent>[]
-            | Interactive<ProsoVisDetailRichEvent>
-          >[],
-          events
-        ),
-      [events]
-    );
+    const groupedEvents = useGroupEvents(events);
 
     const title = (
       <InteractiveEnlarge
@@ -87,7 +46,7 @@ export const PlaceNote: React.FC<Required<Interactive<InformationPlaceGroup>>> =
     const content = (
       <LeftBottomSpacer>
         {groupedEvents.map((e) =>
-          Array.isArray(e.events) ? (
+          isArray(e.events) ? (
             <EventGroup
               key={e.id}
               {...(e as EventGroupType<Interactive<ProsoVisDetailRichEvent>[]>)}

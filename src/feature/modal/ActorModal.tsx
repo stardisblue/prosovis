@@ -1,7 +1,6 @@
 import React, { useCallback, useState, useEffect, useMemo } from 'react';
 import styled from 'styled-components/macro';
 import { useDispatch, useSelector } from 'react-redux';
-import _ from 'lodash';
 import { XIcon, PlusIcon } from '@primer/octicons-react';
 import { Flex } from '../../components/ui/Flex';
 import ActorLabel from '../../components/ActorLabel';
@@ -12,6 +11,8 @@ import {
 import { resetCurrent } from '../../v2/reducers/detail/maxActorsSlice';
 import { validateDetailActorsThunk } from '../../v2/thunks/actors';
 import { selectDetailActors } from '../../v2/selectors/detail/actors';
+import { filter, size } from 'lodash/fp';
+import { mapValues, map } from 'lodash';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -50,21 +51,21 @@ export const ActorModal: React.FC = function () {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if (_.size(actors) >= maxActors && current != null) {
+    if (size(actors) >= maxActors && current != null) {
       setShow(true);
-      setCheckboxs(_.mapValues(actors, (actor) => ({ actor, checked: true })));
+      setCheckboxs(mapValues(actors, (actor) => ({ actor, checked: true })));
     }
   }, [actors, maxActors, current]);
 
-  const [checkboxs, setCheckboxs] = useState({} as any);
+  const [checkboxs, setCheckboxs] = useState({} as _.Dictionary<any>);
 
   useEffect(() => {
-    setCheckboxs(_.mapValues(actors, (actor) => ({ actor, checked: true })));
+    setCheckboxs(mapValues(actors, (actor) => ({ actor, checked: true })));
   }, [actors]);
 
   const switchCheckBox = useCallback((key: string) => {
-    setCheckboxs((state: any) =>
-      _.mapValues(state, (v, id) =>
+    setCheckboxs((state) =>
+      mapValues(state, (v, id) =>
         id.toString() === key.toString()
           ? { actor: v.actor, checked: !v.checked }
           : v
@@ -84,7 +85,7 @@ export const ActorModal: React.FC = function () {
   }, [dispatch]);
 
   const checkedSize = useMemo(
-    () => _.filter(checkboxs, 'checked').length,
+    () => filter('checked', checkboxs).length,
     [checkboxs]
   );
 
@@ -107,7 +108,7 @@ export const ActorModal: React.FC = function () {
             )}
             <hr />
             <ul>
-              {_.map(checkboxs, ({ actor, checked }, key) => (
+              {map(checkboxs, ({ actor, checked }, key) => (
                 <ActorLine
                   key={key}
                   actor={actor}

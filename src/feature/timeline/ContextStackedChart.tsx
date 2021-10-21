@@ -3,57 +3,107 @@ import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import { selectMainColor, selectActorColor } from '../../selectors/color';
 import moment from 'moment';
-import _ from 'lodash';
+
 import { createSelector } from '@reduxjs/toolkit';
 import ContextOptions from './ContextOptions';
 import { selectSwitch } from '../../selectors/switch';
-import { map, pipe, get, values } from 'lodash/fp';
+import { map as _map } from 'lodash';
+import {
+  map,
+  pipe,
+  get,
+  values,
+  flatMap,
+  concat,
+  groupBy,
+  countBy,
+  mapValues,
+  sortBy,
+} from 'lodash/fp';
 import {
   selectDetailActorIds,
   selectDetailKinds,
   selectDetailsRichEvents,
 } from '../../v2/selectors/detail/actors';
-import { ProsoVisEvent } from '../../v2/types/events';
+import { ProsoVisDetailRichEvent } from '../../v2/types/events';
 
+// TODO extract this
+const defaultInterval = d3.timeYear
+  .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+  .map((d) => ({ time: d, kind: '', actor: null }));
 export const selectDiscrete = createSelector(
   selectDetailsRichEvents,
-  function (events) {
-    return _(events)
-      .flatMap<
-        | {
-            kind: ProsoVisEvent['kind'] | '';
-            actor: string | null;
-            time: Date;
-          }
-        | undefined
-      >(({ event }) => {
-        if (event.datation.length === 2) {
-          const [start, end] = map(
-            pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
-            event.datation
-          );
+  pipe(
+    flatMap(({ event }: ProsoVisDetailRichEvent) => {
+      if (event.datation.length === 2) {
+        const [start, end] = map(
+          pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
+          event.datation
+        );
 
-          return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
-            kind: event.kind,
-            actor: event.actor,
-            time,
-          }));
-        } else if (event.datation.length === 1) {
-          return {
+        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
+          kind: event.kind,
+          actor: event.actor,
+          time,
+        }));
+      } else if (event.datation.length === 1) {
+        return [
+          {
             kind: event.kind,
             actor: event.actor,
             time: d3.timeYear(moment(event.datation[0].value).toDate()),
-          };
-        }
-        return undefined;
-      })
-      .concat(
-        d3.timeYear
-          .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-          .map((d) => ({ time: d, kind: '', actor: null }))
-      )
-      .groupBy('time');
-  }
+          },
+        ];
+      }
+      return [];
+    }),
+    concat(defaultInterval),
+    groupBy<{
+      time: Date;
+      kind: string;
+      actor: string;
+    }>('time')
+  ) as (v: any) => _.Dictionary<
+    {
+      time: Date;
+      kind: string;
+      actor: string;
+    }[]
+  >
+  // function (events) {
+  // return pipe()
+  // return _(events)
+  //   .flatMap<
+  //     | {
+  //         kind: ProsoVisEvent['kind'] | '';
+  //         actor: string | null;
+  //         time: Date;
+  //       }
+  //     | undefined
+  // >(({ event }) => {
+  //   if (event.datation.length === 2) {
+  //     const [start, end] = map(
+  //       pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
+  //       event.datation
+  //     );
+
+  //     return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
+  //       kind: event.kind,
+  //       actor: event.actor,
+  //       time,
+  //     }));
+  //   } else if (event.datation.length === 1) {
+  //     return {
+  //       kind: event.kind,
+  //       actor: event.actor,
+  //       time: d3.timeYear(moment(event.datation[0].value).toDate()),
+  //     };
+  //   }
+  //   return undefined;
+  //   })
+  //   .concat(defaultInterval)
+  //   .groupBy('time');
+  // }
 );
 
 const selectMap = createSelector(
@@ -72,11 +122,24 @@ const selectStack = createSelector(
   selectDiscrete,
   selectMap,
   function (events, selection) {
-    const flatten = _(events)
-      .mapValues((v) => _.countBy(v, selection.countBy))
-      .map((value, time) => ({ time: new Date(time), ...value }))
-      .sortBy('time')
-      .value();
+    const flatten = pipe(
+      mapValues(
+        countBy<
+          {
+            time: Date;
+            kind: string;
+            actor: string;
+          }[]
+        >(selection.countBy)
+      ),
+      (v) => _map(v, (value, time) => ({ time: new Date(time), ...value })),
+      sortBy<
+        _.Dictionary<number> &
+          {
+            time: Date;
+          }[]
+      >('time')
+    )(events);
 
     return {
       stack: d3
@@ -91,12 +154,7 @@ const selectStack = createSelector(
 
 type D3Selection = d3.Selection<
   SVGGElement,
-  d3.Series<
-    {
-      [key: string]: number;
-    },
-    string
-  >[],
+  d3.Series<_.Dictionary<number>, string>[],
   any,
   undefined
 >;

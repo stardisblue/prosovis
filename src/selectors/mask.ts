@@ -1,13 +1,13 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import moment from 'moment';
-import _ from 'lodash';
 import L from 'leaflet';
 import { ActorMask } from '../reducers/maskSlice';
 import { selectActiveKinds } from '../v2/selectors/mask/kind';
 import { ProsoVisActor } from '../v2/types/actors';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
 import { ProsoVisDetailRichEvent } from '../v2/types/events';
+import { keyBy } from 'lodash/fp';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -88,8 +88,9 @@ export const selectMaskedEvents = createSelector(
   (events, maskF) => events.filter(maskF)
 );
 
-export const maskedEventsAsMap = createSelector(selectMaskedEvents, (events) =>
-  _.keyBy(events, 'event.id')
+export const maskedEventsAsMap = createSelector(
+  selectMaskedEvents,
+  keyBy<ProsoVisDetailRichEvent>('event.id')
 );
 
 export function actorMaskState(actor: ProsoVisActor, masks?: ActorMask) {

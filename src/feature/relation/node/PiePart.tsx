@@ -1,5 +1,5 @@
 import React, { useMemo, useCallback } from 'react';
-import _ from 'lodash';
+
 import { LocEvents } from '../models';
 import { useFlatClick } from '../../../hooks/useClick';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
@@ -10,6 +10,7 @@ import {
   clearRelationHighligh,
   selectRelationEmphasis,
 } from '../highlightSlice';
+import { flatMap } from 'lodash';
 
 export const PiePart: React.FC<{
   a: d3.PieArcDatum<LocEvents>;
@@ -22,7 +23,7 @@ export const PiePart: React.FC<{
 
   const interactive = useMemo(
     () =>
-      _.flatMap(
+      flatMap(
         Array.from(value.values(), (v) =>
           v.events.map((e) => ({ id: e, kind: 'Event' }))
         )

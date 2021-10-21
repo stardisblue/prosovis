@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import _ from 'lodash';
+
 import fuzzysort from 'fuzzysort';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
@@ -8,7 +8,7 @@ import { stopEventPropagation } from '../../hooks/useClick';
 import { createSelector } from 'reselect';
 import { selectDetailActors } from '../../v2/selectors/detail/actors';
 import { selectActors } from '../../v2/selectors/actors';
-import { map } from 'lodash/fp';
+import { filter, map } from 'lodash/fp';
 
 const selectActorLabels = createSelector(selectActors, (actors) =>
   map(
@@ -69,9 +69,9 @@ const Autocomplete: React.FC = function () {
 
   useEffect(() => {
     setResults(
-      _.filter(
-        fuzzysort.go(text, actorLabels, options),
-        (r) => activeActors[(r as any).id] === undefined
+      filter(
+        (r) => activeActors[(r as any).id] === undefined,
+        fuzzysort.go(text, actorLabels, options)
       )
     );
   }, [text, activeActors, actorLabels]);
@@ -88,8 +88,8 @@ const Autocomplete: React.FC = function () {
       />
       {results.length > 0 && (
         <AutocompleteItems>
-          {_.map(results, (r: any) => (
-            <Item key={r.id} r={r} onClick={clear} />
+          {results.map((r) => (
+            <Item key={(r as any).id} r={r} onClick={clear} />
           ))}
         </AutocompleteItems>
       )}

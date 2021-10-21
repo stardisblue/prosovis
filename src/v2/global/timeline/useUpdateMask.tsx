@@ -1,15 +1,15 @@
+import { throttle } from 'lodash/fp';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
-import _ from 'lodash';
 import { setMaskGlobalTime } from '../../reducers/mask/globalTimeSlice';
 
 export function useUpdateMaskGlobalTime() {
   const dispatch = useDispatch();
   return useMemo(
     () =>
-      _.throttle((start: Date, end: Date) => {
+      throttle(100, (start: Date, end: Date) => {
         dispatch(setMaskGlobalTime({ start, end }));
-      }, 100),
+      }),
     [dispatch]
   );
 }

@@ -3,7 +3,7 @@ import { toCartesian } from '../../../utils';
 import { useDatum } from '../../../hooks/useD3';
 import { useSelector } from 'react-redux';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-import _ from 'lodash';
+import { map } from 'lodash';
 import {
   selectIntersection,
   selectDisplayedActorRingLinks,
@@ -13,21 +13,31 @@ import { select } from 'd3';
 import { createSelector } from 'reselect';
 import { disabled } from '../../../components/ui/colors';
 import { ProsoVisSignedRelation } from '../../../v2/types/relations';
+import {
+  keyBy,
+  pipe,
+  transform,
+  map as fpmap,
+  flatMap,
+  groupBy,
+  chunk,
+  meanBy,
+} from 'lodash/fp';
 
 export const selectClusteredSuggestionActorLinks = createSelector(
   selectDisplayedActorRingLinks,
   selectSortedGhosts,
   function (links, sorted) {
     const quarter = Math.floor(sorted.length / 4);
-    const targets = _.map(sorted, 'target');
+    const targets = map(sorted, 'target');
 
-    const clusters = _(Array.from(links.values()))
-      .groupBy('source')
-      .flatMap((byActor) => {
-        const ordered = _.keyBy(byActor, 'target');
-        const clusters = _(targets)
-          .map((i) => ordered[i])
-          .transform(
+    const clusters: ProsoVisSignedRelation[][] = pipe(
+      groupBy<ProsoVisSignedRelation>('source'),
+      flatMap((byActor: ProsoVisSignedRelation[]) => {
+        const ordered = keyBy('target', byActor);
+        const clusters = pipe(
+          fpmap((i: string) => ordered[i]),
+          transform(
             (acc, v) => {
               if (v) {
                 acc[acc.length - 1].push(v);
@@ -37,19 +47,22 @@ export const selectClusteredSuggestionActorLinks = createSelector(
             },
             [[]] as ProsoVisSignedRelation[][]
           )
-          .value();
+        )(targets);
 
         if (clusters[clusters.length - 1].length === 0) {
           clusters.pop();
         }
 
-        return _.flatMap(clusters, (v) =>
-          v.length <= quarter + Math.ceil(quarter / 4)
-            ? [v]
-            : _.chunk(v, quarter)
+        return flatMap(
+          (v) =>
+            v.length <= quarter + Math.ceil(quarter / 4)
+              ? [v]
+              : chunk(quarter, v),
+          clusters
         );
       })
-      .value();
+    )(Array.from(links.values()));
+
     return clusters;
   }
 );
@@ -62,8 +75,8 @@ export const SuggestionActorLinks: React.FC<{
 
   return (
     <g ref={$g} stroke={disabled} strokeWidth={1.5} fill="none">
-      {_.flatMap(clusters, (cluster) => {
-        const coordinates = _.map(cluster, (datum) => ({
+      {flatMap((cluster) => {
+        const coordinates = cluster.map((datum) => ({
           theta: x(datum.target),
           length: 200,
         }));
@@ -73,19 +86,19 @@ export const SuggestionActorLinks: React.FC<{
           return [x1, y1] as [number, number];
         };
 
-        return _.map(cluster, (re, i) => (
+        return cluster.map((re, i) => (
           <SuggestionActorLink
             key={re.id}
             datum={re}
             cluster={
               cluster.length > 1
-                ? toCart({ theta: _.meanBy(coordinates, 'theta'), length: 190 })
+                ? toCart({ theta: meanBy('theta', coordinates), length: 190 })
                 : undefined
             }
             suggestion={toCart(coordinates[i])}
           />
         ));
-      })}
+      }, clusters)}
       {/* {Array.from(links, ([key, datum]) => (
         <SuggestionActorLink key={key} datum={datum} x={x} />
       ))} */}

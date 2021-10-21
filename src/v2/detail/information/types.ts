@@ -7,9 +7,9 @@ import {
 import { ProsoVisPlace } from '../../types/localisations';
 
 export type Interactive<T> = T & {
-  highlighted?: boolean;
-  selected?: boolean;
-  masked?: boolean;
+  highlighted: boolean;
+  selected: boolean;
+  masked: boolean;
 };
 
 export type InformationActorGroup = {

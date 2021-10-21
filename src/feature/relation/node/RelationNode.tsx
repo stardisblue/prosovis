@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import _ from 'lodash';
 
 import * as d3 from 'd3';
 import { LocEvents } from '../models';
@@ -44,7 +43,7 @@ export const RelationNode: React.FC<{
   return (
     <g ref={$g} fill={color ? color(datum.id) : darkgray} cursor="pointer">
       <circle r={scale(ghosts.size)} fill={'white'} />
-      {_.map(arcs, (a) => (
+      {arcs.map((a) => (
         <PiePart key={a.data[0]} parent={datum.id} a={a} arc={arc} />
       ))}
     </g>

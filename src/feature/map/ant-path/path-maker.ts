@@ -1,7 +1,15 @@
-import _ from 'lodash';
 import { AntPathEvent } from './AntPath';
 import * as d3 from 'd3-array';
 import { DataMarkerOptions } from '../marker/Marker';
+import {
+  compact,
+  first,
+  forEach,
+  last,
+  pipe,
+  sortBy,
+  transform,
+} from 'lodash/fp';
 type FlatAntPath<T> = {
   event: AntPathEvent<T>;
   start: string;
@@ -17,12 +25,12 @@ export default function pathMaker(this: any) {
 
     solve(eventFirst);
 
-    const last = _.last(stack);
-    if (last) {
+    const lastEvent = last(stack);
+    if (lastEvent) {
       // case 2 or 3
       results.push({
-        event: last,
-        start: getFirstDate(last),
+        event: lastEvent,
+        start: getFirstDate(lastEvent),
         end: eventFirst,
       });
     }
@@ -55,14 +63,14 @@ export default function pathMaker(this: any) {
           results.push({ event: previous, start, end: prevLast });
         }
 
-        stack = _.compact(stack);
+        stack = compact(stack);
       }
     }
     // console.log('solve', _.map(results));
   }
 
   function clean(threshold: string) {
-    stack = _.filter(stack, (s) => threshold < getLastDate(s));
+    stack = stack.filter((s) => threshold < getLastDate(s));
     // console.log('clean', _.map(stack));
   }
 
@@ -78,12 +86,12 @@ export class PathMaker {
 
     this.solve(eventFirst);
 
-    const last = _.last(this.stack);
-    if (last) {
+    const lastEvent = last(this.stack);
+    if (lastEvent) {
       // case 2 or 3
       this.results.push({
-        event: last,
-        start: getFirstDate(last),
+        event: lastEvent,
+        start: getFirstDate(lastEvent),
         end: eventFirst,
       });
     }
@@ -116,14 +124,14 @@ export class PathMaker {
           this.results.push({ event: previous, start, end: prevLast });
         }
 
-        this.stack = _.compact(this.stack);
+        this.stack = compact(this.stack);
       }
     }
     // console.log('solve', _.map(this.results));
   };
 
   private clean = (threshold: string) => {
-    this.stack = _.filter(this.stack, (s) => threshold < getLastDate(s));
+    this.stack = this.stack.filter((s) => threshold < getLastDate(s));
     // console.log('clean', _.map(this.stack));
   };
 }
@@ -132,7 +140,7 @@ export function flatify(events: AntPathEvent<DataMarkerOptions>[]) {
   // console.groupCollapsed('pathmaker');
   const { solve, add, results } = pathMaker();
 
-  _(events).sortBy(getFirstDate).forEach(add);
+  pipe(sortBy(getFirstDate), forEach(add))(events);
 
   solve();
 
@@ -148,10 +156,9 @@ type SimpleAntPath<T> = {
 }[];
 
 export function simplify(flatPath: FlatAntPath<DataMarkerOptions>) {
-  return _.transform(
-    flatPath,
+  return transform(
     (acc, { event, start, end }) => {
-      const prev = _.last(acc);
+      const prev = last(acc);
       if (prev !== undefined && prev.id === event.groupId) {
         prev.interval[1] = event;
         prev.end = end;
@@ -159,7 +166,8 @@ export function simplify(flatPath: FlatAntPath<DataMarkerOptions>) {
         acc.push({ interval: [event, event], id: event.groupId, start, end });
       }
     },
-    [] as SimpleAntPath<DataMarkerOptions>
+    [] as SimpleAntPath<DataMarkerOptions>,
+    flatPath
   );
 }
 
@@ -193,6 +201,6 @@ export function segmentify(
 }
 
 export const getFirstDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  _.first(event.dates)!.value;
+  first(event.dates)!.value;
 export const getLastDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  _.last(event.dates)!.value;
+  last(event.dates)!.value;

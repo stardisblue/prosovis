@@ -6,7 +6,6 @@ import 'leaflet.markercluster';
 
 import { useSelector } from 'react-redux';
 import SipMarker from '../marker/SipMarker';
-import _ from 'lodash';
 import { selectLocalisedEvents } from '../selectLocalisedEvents';
 
 export const SipMarkerClusterGroup: React.FC<{
@@ -47,7 +46,7 @@ export const SipMarkerClusterGroup: React.FC<{
 
   const getMarkers = useCallback(
     (ref: React.MutableRefObject<L.MarkerClusterGroup>) => {
-      return _.map(events, (event) => (
+      return events.map((event) => (
         <SipMarker $map={$map} $l={ref} key={event.event.id} event={event} />
       ));
     },

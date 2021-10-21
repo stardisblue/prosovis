@@ -3,12 +3,13 @@ import { SuggestionNodes } from './SuggestionNode';
 import { scaleBand } from 'd3-scale';
 import { SuggestionActorLinks } from './SuggestionActorLink';
 import { SuggestionLinks } from './SuggestionLink';
-import _ from 'lodash';
+
 import { useSelector } from 'react-redux';
 import { createSelector } from 'reselect';
 import { selectRelationEmphasis } from '../highlightSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { selectSortedGhosts, selectDisplayedActorRingLinks } from './selectors';
+import { map } from 'lodash/fp';
 
 const selectActiveActorColor = createSelector(
   selectSwitchActorColor,
@@ -39,7 +40,7 @@ export const SuggestionRing: React.FC<{
   const color = useSelector(selectActiveActorColor);
 
   const sorted = useSelector(selectSortedGhosts);
-  xBand.domain(_.map(sorted, 'target'));
+  xBand.domain(map('target', sorted));
 
   const actorRingLinks = useSelector(selectDisplayedActorRingLinks);
   useEffect(() => {

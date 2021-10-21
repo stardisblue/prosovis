@@ -1,7 +1,6 @@
 import React, { useMemo, useCallback, useContext } from 'react';
 import L from 'leaflet';
 import { useEffect } from 'react';
-import _ from 'lodash';
 import { AntPath, AntPathEvent } from './AntPath';
 import useLazyRef from '../../../hooks/useLazyRef';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +10,7 @@ import { setSelection } from '../../../reducers/selectionSlice';
 import { HoverContext } from '../HoverContext';
 import * as d3 from 'd3-scale';
 import { darkgray } from '../../../components/ui/colors';
+import { debounce, map } from 'lodash/fp';
 
 const scale = d3.scaleLog().domain([1, 10]).range([2, 50]);
 
@@ -47,22 +47,22 @@ export const ActorPath: React.FC<{
   const colorFn = useSelector(selectSwitchActorColor);
 
   const interactive = useMemo(
-    () => _.map(events, ({ id }) => ({ id, kind: 'Event' })),
+    () => events.map(({ id }) => ({ id, kind: 'Event' })),
     [events]
   );
   const handleHover = useHoverHighlight(interactive);
-  const click = useCallback(() => dispatch(setSelection(interactive)), [
-    dispatch,
-    interactive,
-  ]);
+  const click = useCallback(
+    () => dispatch(setSelection(interactive)),
+    [dispatch, interactive]
+  );
   // event listeners
   useEffect(() => {
-    const debounceMouseOut = _.debounce(function () {
+    const debounceMouseOut = debounce(100, function () {
       if ($hover.current.id === id) {
         $hover.current.id = null;
         handleHover.onMouseLeave();
       }
-    }, 100);
+    });
 
     const handlers: L.LeafletEventHandlerFnMap = {
       mouseover: function () {
@@ -87,9 +87,9 @@ export const ActorPath: React.FC<{
 
   return (
     <>
-      {_.map(chain, ({ segment, diff }) => {
-        const key = _.map(segment, 'event.id').join(':');
-        const grp = _.map(segment, 'groupId').join(':');
+      {chain.map(({ segment, diff }) => {
+        const key = map('event.id', segment).join(':');
+        const grp = map('groupId', segment).join(':');
 
         return (
           <AntPath

@@ -38,9 +38,9 @@ export const Information: React.FC<{ className?: string }> = function ({
       {map(
         (g) =>
           g.kind === 'Actor' ? (
-            <DisabledActorNote {...g} />
+            <DisabledActorNote key={g.group.uri} {...g} />
           ) : (
-            <DisabledPlaceNote {...g} />
+            <DisabledPlaceNote key={g.group.uri} {...g} />
           ),
         events.yes
       )}

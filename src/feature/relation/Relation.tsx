@@ -5,10 +5,9 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import * as d3 from 'd3';
-import _ from 'lodash';
-
 import { useSelector, useDispatch } from 'react-redux';
+import * as d3 from 'd3';
+
 import RelationNode from './node/RelationNode';
 import { selectRelationNodes, selectRelationLinks } from './selectRelations';
 import { clearRelationSelection } from './selectionSlice';
@@ -19,14 +18,15 @@ import path from './suggestion-ring/path';
 import { darkgray } from '../../components/ui/colors';
 import { selectLocalisationsIndex } from '../../v2/selectors/localisations';
 import { getSimulation } from './utils/simulation';
+import { debounce, transform } from 'lodash/fp';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();
   const $svg = useCallback(function (dom: SVGSVGElement | null) {
     if (!dom) return;
-    const handleResize = _.debounce(function () {
+    const handleResize = debounce(100, function () {
       setDims(dom.getBoundingClientRect());
-    }, 100);
+    });
 
     window.addEventListener('resize', handleResize);
     handleResize();
@@ -75,10 +75,10 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
     updateRef.current = {
       nodes: function () {
         node = d3.selectAll<SVGGElement, d3.SimulationNodeDatum>($nodes as any);
-        nodeMap = _.transform(
-          node.data(),
+        nodeMap = transform(
           (m, n: any) => m.set(n.id!, n),
-          new Map()
+          new Map(),
+          node.data()
         );
         simulation.nodes(node.data());
         simulation.alpha(1).restart();

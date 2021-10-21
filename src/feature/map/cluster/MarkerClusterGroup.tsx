@@ -1,13 +1,13 @@
 import React, { useEffect, useState, ReactPortal, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet.markercluster';
-import _ from 'lodash';
 import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import PieChart from '../PieChart';
 import ReactDOM from 'react-dom';
 import { selectSwitchIsActor } from '../../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
+import { groupBy, map, pipe, sortBy, toPairs } from 'lodash/fp';
 
 export const selectMarkerGroupBy = createSelector(
   selectSwitchIsActor,
@@ -40,7 +40,7 @@ function getChildClusters(current: Cluster, aggregator: Cluster[]) {
       // childrens[0]._svg = current._svg;
       // childrens[0]._svg_is_child = true;
     }
-    _.forEach(childrens, (c) => getChildClusters(c, aggregator));
+    childrens.forEach((c) => getChildClusters(c, aggregator));
   }
 
   return aggregator;
@@ -91,7 +91,7 @@ export const MarkerClusterGroup: React.FC<{
     []
   );
 
-  const groupBy = useSelector(selectMarkerGroupBy);
+  const markerGroupBy = useSelector(selectMarkerGroupBy);
 
   const [portals, setPortals] = useState<(ReactPortal | null)[]>([]);
   useEffect(() => {
@@ -101,17 +101,17 @@ export const MarkerClusterGroup: React.FC<{
     );
 
     setPortals(
-      _.map(clusters, (c) => {
+      clusters.map((c) => {
         const markers = c.getAllChildMarkers();
         const radius = scale(markers.length);
         const size = radius * 2;
 
-        const counts = _(markers)
-          .map('options')
-          .groupBy(groupBy)
-          .toPairs()
-          .sortBy('[0]')
-          .value();
+        const counts = pipe(
+          map('options'),
+          groupBy<L.MarkerOptions>(markerGroupBy),
+          toPairs,
+          sortBy<[string, L.MarkerOptions[]]>('0')
+        )(markers);
 
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(
@@ -129,7 +129,7 @@ export const MarkerClusterGroup: React.FC<{
         // return null;
       })
     );
-  }, [markers, groupBy]);
+  }, [markers, markerGroupBy]);
 
   // useEffect(
   //   function() {

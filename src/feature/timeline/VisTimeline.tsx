@@ -8,8 +8,22 @@ import React, {
 import './VisTimeline.css';
 
 import classnames from 'classnames';
-import _ from 'lodash';
-import { map, noop } from 'lodash/fp';
+import {
+  chunk,
+  filter,
+  forEach,
+  identity,
+  isEmpty,
+  join,
+  kebabCase,
+  map,
+  noop,
+  pipe,
+  sortBy,
+  split,
+  throttle,
+  transform,
+} from 'lodash/fp';
 import { Nullable } from '../../v2/types/utils';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
@@ -97,24 +111,37 @@ function newLineLongString(str: string, maxLenght = 30): string {
   if (str.length < maxLenght) {
     return str.padEnd(maxLenght, '\u00a0');
   }
-  const parts = _.split(str, ' ');
+  const parts = split(' ', str);
   const half = Math.floor((parts.length + 1) / 2);
 
-  return _(parts)
-    .chunk(half)
-    .map((i) => _.join(i, ' ').padEnd(maxLenght, '\u00a0'))
-    .join('<br/>');
+  return pipe(
+    chunk(half),
+    map((i) => join(' ', i).padEnd(maxLenght, '\u00a0')),
+    join('<br/>')
+  )(parts);
 }
 
 const OPACITY_CLASS = 'o-50';
+
+type TimelineEvent = {
+  id: string;
+  title: string;
+  start: string;
+  end: Nullable<string>;
+  type: string;
+  popover: 'true';
+  className: string;
+  style: string;
+  group: string | 0;
+  kind: string;
+};
 
 const selectTimelineEvents = createSelector(
   selectMaskedEvents,
   selectTimelineGroupBy,
   selectEventColor,
   (events, groupBy, eventColor) => {
-    return _.transform(
-      events,
+    return transform(
       function (acc, { event: e }) {
         if (e.datation && e.datation.length > 0) {
           const { id, kind, datation } = e;
@@ -124,7 +151,7 @@ const selectTimelineEvents = createSelector(
             // label: "",
             popover: 'true',
             ...resolveDatation(datation),
-            className: classnames(_.kebabCase(kind), 'timeline-event'),
+            className: classnames(kebabCase(kind), 'timeline-event'),
             style: `border:0 solid white;
             border-left: 1px solid white;
             border-right: 1px solid white;
@@ -134,7 +161,8 @@ const selectTimelineEvents = createSelector(
           });
         }
       },
-      [] as any[]
+      [] as TimelineEvent[],
+      events
     );
   }
 );
@@ -158,11 +186,11 @@ const VisTimeline: React.FC = function () {
   const handleUpdateMask = useMemo(
     function () {
       if (!timeline) return noop;
-      return _.throttle((start: Date, end: Date) => {
+      return throttle(16, (start: Date, end: Date) => {
         timeline.vis.setCustomTime(start, 'a');
         timeline.vis.setCustomTime(end, 'b');
         updateMask(start, end);
-      }, 16);
+      });
     },
     [timeline, updateMask]
   );
@@ -171,24 +199,24 @@ const VisTimeline: React.FC = function () {
   const handleUpdateView = useMemo(() => {
     if (!timeline) return noop;
 
-    return _.throttle((start: Date, end: Date) => {
+    return throttle(16, (start: Date, end: Date) => {
       timeline.vis.setWindow(start, end, {
         animation: false,
       });
-    }, 16);
+    });
   }, [timeline]);
 
   useEffect(() => {
     if (!timeline) return;
 
     // view sync with context
-    const viewSyncThrottle = _.throttle(function (start: Date, end: Date) {
+    const viewSyncThrottle = throttle(16, function (start: Date, end: Date) {
       setViewSync([start, end]);
-    }, 16);
+    });
 
     // mask sync with context
-    const maskSyncThrottle = _.throttle(function (e: VisTimeMarker) {
-      const interval = _.sortBy([
+    const maskSyncThrottle = throttle(16, function (e: VisTimeMarker) {
+      const interval = sortBy(identity, [
         e.time,
         e.id === 'a'
           ? timeline.vis.getCustomTime('b')
@@ -197,7 +225,7 @@ const VisTimeline: React.FC = function () {
       setMaskSync(interval);
       const [start, end] = interval;
       updateMask(start, end);
-    }, 16);
+    });
 
     timeline.vis.on('rangechange', (e: any) => {
       if (e.byUser) {
@@ -294,10 +322,10 @@ const VisTimeline: React.FC = function () {
         }
       }
       if ($events.current) {
-        _.forEach($events.current, ($event) => {
+        forEach(($event) => {
           const isDimmed = $event.classList.contains(OPACITY_CLASS);
 
-          if (_.isEmpty(selection)) {
+          if (isEmpty(selection)) {
             if (isDimmed) {
               // console.debug('timeline:opacity:undefined');
               $event.classList.remove(OPACITY_CLASS);
@@ -312,7 +340,7 @@ const VisTimeline: React.FC = function () {
               $event.classList.add(OPACITY_CLASS);
             }
           }
-        });
+        }, $events.current);
       }
     };
     change();
@@ -327,11 +355,16 @@ const VisTimeline: React.FC = function () {
       switch (e.what) {
         case 'group-label':
           // console.debug('selection:group', e.group);
-          const groupEvents = _(timelineEvents)
-            .filter({ group: e.group })
-            .map(({ id }) => ({ id, kind: 'Event' }))
-            .sortBy('id')
-            .value();
+          const groupEvents = pipe(
+            filter<TimelineEvent>({ group: e.group }),
+            map(({ id }) => ({ id, kind: 'Event' })),
+            sortBy<{ id: string; kind: 'Event' }>('id')
+          )(timelineEvents);
+          // const groupEvents = _(timelineEvents)
+          //   .filter({ group: e.group })
+          //   .map(({ id }) => ({ id, kind: 'Event' }))
+          //   .sortBy('id')
+          //   .value();
           if (e.event.ctrlKey || e.event.metaKey) {
             dispatch(addSelection(groupEvents));
           } else {
@@ -342,7 +375,7 @@ const VisTimeline: React.FC = function () {
           if (e.event.ctrlKey || e.event.metaKey) {
             if (selection[e.item]) {
               // console.debug('selection:item:unselect', e.item);
-              const filtered = _.filter(selection, (i) => i.id !== e.item);
+              const filtered = filter((i) => i.id !== e.item, selection);
               if (filtered) {
                 dispatch(setSelection(filtered));
               }
@@ -375,13 +408,15 @@ const VisTimeline: React.FC = function () {
   useEffect(() => {
     actions.current.mouseOver = (e: VisEvent) => {
       if (e.what === 'group-label') {
-        const groupEvents = _(timelineEvents)
-          .filter({ group: e.group })
-          .map(({ id }) => ({ id, kind: 'Event' }))
-          .sortBy('id')
-          .value();
+        pipe(
+          filter<TimelineEvent>({ group: e.group }),
+          map(({ id }) => ({ id, kind: 'Event' })),
+          sortBy<{ id: string; kind: 'Event' }>('id'),
+          setSuperHighlights,
+          dispatch
+        )(timelineEvents);
 
-        dispatch(setSuperHighlights(groupEvents));
+        // dispatch(setSuperHighlights(groupEvents));
       } else if (e.what === 'item') {
         dispatch(setSuperHighlights({ id: e.item, kind: 'Event' }));
       } else if (highlights) {
@@ -402,7 +437,7 @@ const VisTimeline: React.FC = function () {
   useEffect(() => {
     if (!timeline) return;
 
-    timeline.vis.setItems(timelineEvents);
+    timeline.vis.setItems(timelineEvents as any[]);
     if (firstEvent === false) {
       setFirstEvent(true);
     }

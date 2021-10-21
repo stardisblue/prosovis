@@ -1,11 +1,11 @@
 import React, { useRef } from 'react';
 import { useEffect } from 'react';
-import _ from 'lodash';
 import { antPath } from 'leaflet-ant-path';
 import '../../../polylineoffset/index';
 import PolylineOffset from '../../../polylineoffset/index';
 import { useSelector } from 'react-redux';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
+import { isEmpty, map, some } from 'lodash/fp';
 
 export type AntPathEvent<T = { id: string; [k: string]: any }> = {
   event: T;
@@ -59,7 +59,7 @@ export const AntPath: React.FC<{
 
   // update path
   useEffect(() => {
-    $antpath.current.setLatLngs(_.map(events, 'latLng'));
+    $antpath.current.setLatLngs(map('latLng', events));
   }, [events]);
 
   // update color
@@ -84,8 +84,8 @@ export const AntPath: React.FC<{
   useEffect(() => {
     $antpath.current.setStyle({
       opacity:
-        _.isEmpty(selected) ||
-        _.some(events, ({ event: { id } }) => selected[id] !== undefined)
+        isEmpty(selected) ||
+        some(({ event: { id } }) => selected[id] !== undefined, events)
           ? undefined
           : 0.3,
     });

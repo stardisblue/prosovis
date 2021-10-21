@@ -4,10 +4,11 @@ import L from 'leaflet';
 import { useSelector, useDispatch } from 'react-redux';
 import { selectMarkerColor } from '../../../selectors/switch';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
-import _ from 'lodash';
+
 import { setSelection } from '../../../reducers/selectionSlice';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
+import { isEmpty } from 'lodash/fp';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
@@ -42,8 +43,7 @@ const SipMarker: React.FC<{
         dates: datation,
         fillColor: color.main(event),
         color: color.border(event),
-        fillOpacity:
-          _.isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,
+        fillOpacity: isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,
         weight: 1,
         radius: 5,
       }}

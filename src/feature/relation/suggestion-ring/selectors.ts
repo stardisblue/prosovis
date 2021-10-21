@@ -5,7 +5,8 @@ import {
 } from '../selectionSlice';
 import { selectRelationHighlights } from '../highlightSlice';
 import { selectHighlightedGhosts } from '../highlightSlice';
-import _ from 'lodash';
+import { orderBy } from 'lodash';
+
 export const selectIntersection = createSelector(
   selectRelationSelection,
   selectRelationHighlights,
@@ -36,5 +37,5 @@ export const selectDisplayedGhosts = createSelector(
 
 export const selectSortedGhosts = createSelector(
   selectDisplayedGhosts,
-  (ghosts) => _.orderBy(Array.from(ghosts.values()), ['med', 'd'])
+  (ghosts) => orderBy(Array.from(ghosts.values()), ['med', 'd'])
 );

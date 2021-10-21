@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import _ from 'lodash';
+import { isArray } from 'lodash/fp';
 
 type HightlightEvent = { id: string; kind: string; type?: string };
 
@@ -11,7 +11,7 @@ export const highlightSlice = createSlice({
       _state,
       action: PayloadAction<HightlightEvent | HightlightEvent[]>
     ) {
-      return _.isArray(action.payload) ? action.payload : [action.payload];
+      return isArray(action.payload) ? action.payload : [action.payload];
     },
     clearHighlights() {
       return null;

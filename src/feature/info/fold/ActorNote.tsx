@@ -1,5 +1,4 @@
 import { XIcon } from '@primer/octicons-react';
-import _ from 'lodash';
 import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ActorLabel from '../../../components/ActorLabel';
@@ -23,12 +22,13 @@ import {
   Interactive,
 } from '../../../v2/detail/information/types';
 import { InteractiveEnlarge } from './InteractiveEnlarge';
+import { useGroupEvents } from './useGroupEvents';
 
 export const ActorNote: React.FC<Required<Interactive<InformationActorGroup>>> =
   function ({ kind, events, group, selected, highlighted }) {
     const dispatch = useDispatch();
     const interactive = useMemo(
-      () => _.map(events, (e) => ({ id: e.event.id, kind: 'Event' })),
+      () => events.map((e) => ({ id: e.event.id, kind: 'Event' })),
       [events]
     );
     const handleSelectClick = useClickSelect(interactive);
@@ -37,48 +37,7 @@ export const ActorNote: React.FC<Required<Interactive<InformationActorGroup>>> =
     });
     const handleHighlightHover = useHoverHighlight(interactive);
 
-    const groupedEvents = useMemo(
-      () =>
-        _.reduce(
-          events,
-          (acc, e) => {
-            const { event } = e;
-            let last = _.last(acc);
-
-            if (last === undefined || last.kind !== event.kind) {
-              acc.push({
-                id: event.id,
-                kind: event.kind,
-                events: e,
-                start: _.first(event.datation)!,
-                end: _.last(event.datation)!,
-                masked: e.masked,
-                selected: e.selected,
-                highlighted: e.highlighted,
-              });
-              return acc;
-            }
-            if (_.isArray(last.events)) {
-              last.events.push(e);
-            } else {
-              last.events = [last.events, e];
-            }
-
-            last.start = _.minBy(
-              [last.start, _.first(event.datation)],
-              'value'
-            )!;
-            last.end = _.maxBy([last.end, _.last(event.datation)], 'value')!;
-
-            return acc;
-          },
-          [] as EventGroupType<
-            | Interactive<ProsoVisDetailRichEvent>[]
-            | Interactive<ProsoVisDetailRichEvent>
-          >[]
-        ),
-      [events]
-    );
+    const groupedEvents = useGroupEvents(events);
 
     const color = useSelector(selectSwitchActorColor);
 

@@ -10,10 +10,15 @@ export const emptymap: {
   actorRingLinks: new Map(),
   ringLinks: new Map(),
 };
+
 export function parseEmphase(
   { actorRing, locLinks, actors }: RelationType,
   selection: Emphase | null
-) {
+): {
+  ghosts: RelationMap;
+  actorRingLinks: RelationMap;
+  ringLinks: RelationMap;
+} {
   if (!selection) return emptymap;
 
   const actor = actorRing.get(selection.actor);

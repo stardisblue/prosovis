@@ -54,7 +54,7 @@ export const selectInformationGroups = createSelector(
             highlighted: events.some((v) => v.highlighted),
             selected: events.some((v) => v.selected),
             masked: !events.some((v) => !v.masked),
-          } as Required<Interactive<InformationActorGroup>>)
+          } as Interactive<InformationActorGroup>)
       )
     )(events);
     const localisationGroups = flow(
@@ -68,24 +68,24 @@ export const selectInformationGroups = createSelector(
             highlighted: events.some((v) => v.highlighted),
             selected: events.some((v) => v.selected),
             masked: !events.some((v) => !v.masked),
-          } as Required<Interactive<InformationPlaceGroup>>)
+          } as Interactive<InformationPlaceGroup>)
       )
     )(events);
 
     return flow(
-      orderBy<Required<Interactive<InformationGroup>>>(
+      orderBy<Interactive<InformationGroup>>(
         ['selected', 'kind', ' events.0.event.datation.0.value'],
         ['desc']
       ),
-      sortBy((e: Required<Interactive<InformationGroup>>) =>
+      sortBy((e: Interactive<InformationGroup>) =>
         e.group.id === '-1' ? 1 : 0
       ),
-      groupBy<Required<Interactive<InformationGroup>>>((e) =>
+      groupBy<Interactive<InformationGroup>>((e) =>
         e.masked === true ? 'yes' : 'no'
       )
     )(concat(actorGroups, localisationGroups)) as {
-      yes: Required<Interactive<InformationGroup>[]>;
-      no: Required<Interactive<InformationGroup>[]>;
+      yes: Interactive<InformationGroup>[];
+      no: Interactive<InformationGroup>[];
     };
   }
 );
