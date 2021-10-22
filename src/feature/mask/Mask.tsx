@@ -36,7 +36,7 @@ const KindsArea = styled.div`
   padding-left: 0.5em;
   padding-right: 0.5em;
   overflow-y: hidden;
-  overflow-x: scroll;
+  overflow-x: auto;
   ${scrollbar}
 `;
 
