@@ -22,6 +22,7 @@ export default function pathMaker(this: any) {
 
   function add(event: AntPathEvent<DataMarkerOptions>) {
     const eventFirst = getFirstDate(event);
+    if (!eventFirst) return; // makes sures that there is a date for this event, if not, the event is not added.
 
     solve(eventFirst);
 
@@ -75,65 +76,6 @@ export default function pathMaker(this: any) {
   }
 
   return { solve, add, results: () => results };
-}
-
-export class PathMaker {
-  stack: AntPathEvent<DataMarkerOptions>[] = [];
-  results: FlatAntPath<DataMarkerOptions> = [];
-
-  add = (event: AntPathEvent<DataMarkerOptions>) => {
-    const eventFirst = getFirstDate(event);
-
-    this.solve(eventFirst);
-
-    const lastEvent = last(this.stack);
-    if (lastEvent) {
-      // case 2 or 3
-      this.results.push({
-        event: lastEvent,
-        start: getFirstDate(lastEvent),
-        end: eventFirst,
-      });
-    }
-
-    this.clean(getLastDate(event));
-    this.stack.push(event);
-    // console.log('add', _.map(this.stack), _.map(this.results));
-  };
-
-  solve = (threshold?: string) => {
-    if (this.stack.length > 0) {
-      let previous = this.stack[this.stack.length - 1];
-      let prevLast = getLastDate(previous);
-
-      if (threshold === undefined || prevLast <= threshold) {
-        let start = getFirstDate(previous);
-        this.stack[this.stack.length - 1] = null!; // destroying from stack
-
-        for (let i = this.stack.length - 2; i >= 0; i--) {
-          if (threshold !== undefined && threshold < prevLast) break; //ignore next possibles
-
-          this.results.push({ event: previous, start, end: prevLast });
-          start = prevLast;
-          previous = this.stack[i];
-          prevLast = getLastDate(previous);
-          this.stack[i] = null!;
-        }
-
-        if (threshold === undefined || prevLast <= threshold) {
-          this.results.push({ event: previous, start, end: prevLast });
-        }
-
-        this.stack = compact(this.stack);
-      }
-    }
-    // console.log('solve', _.map(this.results));
-  };
-
-  private clean = (threshold: string) => {
-    this.stack = this.stack.filter((s) => threshold < getLastDate(s));
-    // console.log('clean', _.map(this.stack));
-  };
 }
 
 export function flatify(events: AntPathEvent<DataMarkerOptions>[]) {
@@ -201,6 +143,6 @@ export function segmentify(
 }
 
 export const getFirstDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  first(event.dates)!.value;
+  first(event.dates)?.value!;
 export const getLastDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  last(event.dates)!.value;
+  last(event.dates)?.value!;

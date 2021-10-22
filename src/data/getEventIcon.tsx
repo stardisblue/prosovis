@@ -6,6 +6,7 @@ import {
   HomeIcon,
   Icon,
   IconProps,
+  QuestionIcon,
 } from '@primer/octicons-react';
 import Pause from '../feature/info/event/Pause';
 import Grave from '../feature/info/event/Grave';
@@ -36,7 +37,7 @@ export const kindMap: _.Dictionary<
 };
 
 function getEventIcon(kind: string) {
-  return kindMap[kind];
+  return kindMap[kind] ?? styleIcon(QuestionIcon);
 }
 
 export default getEventIcon;

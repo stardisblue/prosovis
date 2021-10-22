@@ -5,5 +5,5 @@ export const selectLocalisations = (state: RootState) => state.localisationData;
 
 export const selectLocalisationsIndex = createSelector(
   selectLocalisations,
-  (locs) => locs.localisations?.index
+  (locs) => locs.localisations
 );

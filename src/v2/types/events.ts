@@ -13,7 +13,7 @@ export type ProsoVisDate = {
   id: string;
   label: string;
   value: string;
-  uri: string;
+  uri?: string;
 };
 
 export type ProsoVisEvent = {
@@ -22,17 +22,11 @@ export type ProsoVisEvent = {
   label: string;
   actor: string;
   localisation: string | null;
-  datation: ProsoVisDate[];
-  uri: string;
+  datation: [] | [ProsoVisDate] | [ProsoVisDate, ProsoVisDate] | ProsoVisDate[];
+  uri?: string;
   created: string;
   creator: string;
   computed?: ComputedLabels;
-};
-
-export type ProsoVisEvents = {
-  url: _.Dictionary<string>;
-  uri: string;
-  index: _.Dictionary<ProsoVisEvent[]>;
 };
 
 export type RichEvent = {

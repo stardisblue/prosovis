@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { useLeaflet } from './context';
 import useLazyRef from '../../../hooks/useLazyRef';
 import L from 'leaflet';
@@ -38,6 +38,20 @@ export const Marker: React.FC<MarkerProps> = function ({
       m.removeFrom(l.current as any);
     };
   });
+
+  useLayoutEffect(() => {
+    marker.current.setLatLng(latlng);
+  }, [marker, latlng]);
+
+  useLayoutEffect(() => {
+    marker.current.setIcon(
+      L.divIcon({
+        html: $div.current,
+        className: '',
+        iconSize: [radius * 2, radius * 2],
+      })
+    );
+  }, [$div, marker, radius]);
 
   return createPortal(children, $div.current);
 };

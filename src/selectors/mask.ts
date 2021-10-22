@@ -6,7 +6,7 @@ import { ActorMask } from '../reducers/maskSlice';
 import { selectActiveKinds } from '../v2/selectors/mask/kind';
 import { ProsoVisActor } from '../v2/types/actors';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
-import { ProsoVisDetailRichEvent } from '../v2/types/events';
+import { ProsoVisDate, ProsoVisDetailRichEvent } from '../v2/types/events';
 import { keyBy } from 'lodash/fp';
 
 export const selectMask = (state: RootState) => state.mask;
@@ -25,17 +25,20 @@ export const selectBoundsMask = createSelector(
 export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
   res
     ? function ({ event: { datation } }: ProsoVisDetailRichEvent) {
+        if (datation.length === 0) return true; // unbound by interval filter
+
         if (datation.length === 1) {
           return moment(datation[0].value).isBetween(res.start, res.end);
-        } else {
-          const datatStart = datation[0].value;
-          const datatEnd = datation[1].value;
-
-          return !(
-            moment(res.end).isBefore(datatStart) ||
-            moment(res.start).isAfter(datatEnd)
-          );
         }
+        datation = datation as [ProsoVisDate, ProsoVisDate];
+        const datatStart = datation[0].value;
+        const datatEnd = datation[1].value;
+
+        return !(
+          moment(res.end).isBefore(datatStart) ||
+          moment(res.start).isAfter(datatEnd)
+        );
+
         // return _.some(datation, function({ clean_date }) {
         //   return moment(clean_date).isBetween(res.start, res.end);
         // });

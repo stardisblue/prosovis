@@ -21,8 +21,8 @@ export const useGroupEvents = function (
               id: event.id,
               kind: event.kind,
               events: e,
-              start: first(event.datation)!,
-              end: last(event.datation)!,
+              start: first(event.datation),
+              end: last(event.datation),
               masked: e.masked,
               selected: e.selected,
               highlighted: e.highlighted,
@@ -38,11 +38,8 @@ export const useGroupEvents = function (
           lastEvent.start = minBy('value', [
             lastEvent.start,
             first(event.datation),
-          ])!;
-          lastEvent.end = maxBy('value', [
-            lastEvent.end,
-            last(event.datation),
-          ])!;
+          ]);
+          lastEvent.end = maxBy('value', [lastEvent.end, last(event.datation)]);
 
           return acc;
         },

@@ -20,12 +20,9 @@ import { EventLine } from './EventLine';
 import { LeftSpacer } from './LeftSpacer';
 import { EventDates } from '../DateComponent';
 import { SimpleEventErrors } from './EventErrors';
+import { ProsoVisDetailRichEvent } from '../../v2/types/events';
 import {
-  ProsoVisDate,
-  ProsoVisDetailRichEvent,
-  ProsoVisEvent,
-} from '../../v2/types/events';
-import {
+  EventGroup as EventGroupType,
   InformationGroup,
   Interactive,
 } from '../../v2/detail/information/types';
@@ -37,13 +34,11 @@ export const LeftBottomSpacer = styled(LeftSpacer)`
   margin-right: 2px;
 `;
 
-export const EventGroup: React.FC<{
-  kind: ProsoVisEvent['kind'];
-  events: Interactive<ProsoVisDetailRichEvent>[];
-  start: ProsoVisDate;
-  end: ProsoVisDate;
-  origin: InformationGroup['kind'];
-}> = function ({ kind, events, start, end, origin }) {
+export const EventGroup: React.FC<
+  EventGroupType<Interactive<ProsoVisDetailRichEvent>[]> & {
+    origin: InformationGroup['kind'];
+  }
+> = function ({ kind, events, start, end, origin }) {
   const interactive = useMemo(
     () => events.map(({ event: { id } }) => ({ id, kind: 'Event' })),
     [events]
@@ -91,7 +86,7 @@ export const EventGroup: React.FC<{
           <div>
             {events.length} {getKindString(kind)}
           </div>
-          <EventDates dates={[start, end]} />
+          <EventDates dates={compact([start, end])} />
           {showErrors}
         </InteractableEnlarge>
       }

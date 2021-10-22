@@ -1,7 +1,7 @@
+import React, { useMemo } from 'react';
 import { arc, scaleSqrt } from 'd3';
 import { isEmpty } from 'lodash';
 import { map, sumBy } from 'lodash/fp';
-import React, { useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFlatClick } from '../../../hooks/useClick';
 import { selectSwitchKindColor } from '../../../selectors/switch';

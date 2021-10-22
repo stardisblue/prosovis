@@ -6,6 +6,7 @@ import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
 import { map, pipe, uniqBy } from 'lodash/fp';
 import { unknownLocalisation } from '../../v2/detail/information/useGroups';
 import { InformationGroup } from '../../v2/detail/information/types';
+import { getActorLabel } from '../../components/ActorLabel';
 
 const timelineGroupSlice = createSlice({
   name: 'timelineGroup',
@@ -33,8 +34,8 @@ export const selectTimelineEventGroups = createSelector(
           uniqBy<ProsoVisDetailRichEvent>('actor.id'),
           map('actor'),
           map(
-            ({ label, ...d }) =>
-              ({ label: d.shortLabel, ...d } as ProsoVisActor)
+            ({ ...d }) =>
+              ({ ...d, label: getActorLabel(d, true) } as ProsoVisActor)
           )
         )(events);
       case 'PlaceNote':
@@ -52,12 +53,13 @@ function groupByActor(e: ProsoVisEvent) {
 
 function groupByPlace(e: ProsoVisEvent) {
   const loc = e.localisation;
-  return loc ? loc : 0;
+  return loc ? loc : unknownLocalisation.id;
 }
 
 export const selectTimelineGroupBy = createSelector(
   selectTimelineGroup,
   (grouping) => {
+    console.log(grouping);
     switch (grouping) {
       case 'ActorNote':
         return groupByActor;

@@ -3,12 +3,12 @@ import { RichEventLocalised } from '../../../selectors/mask';
 export const padding = 1;
 const pad = padding / 2;
 export type Circle = {
-  id: number;
+  id: string;
   x: number;
   y: number;
   r: number;
   n: number;
-  children: Circle[];
+  children: [Circle, Circle] | null;
   data?: RichEventLocalised;
 };
 

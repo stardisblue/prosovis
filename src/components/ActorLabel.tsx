@@ -3,8 +3,11 @@ import { useSelector } from 'react-redux';
 import { selectActors } from '../v2/selectors/actors';
 import { ProsoVisActor } from '../v2/types/actors';
 
-export function getActorLabel(actor: ProsoVisActor, short: boolean = false) {
-  return short ? actor.shortLabel : actor.label;
+export function getActorLabel(
+  actor: Pick<ProsoVisActor, 'label' | 'shortLabel'>,
+  short: boolean = false
+) {
+  return short ? actor.shortLabel ?? actor.label : actor.label;
 }
 
 const ActorLabel: React.FC<{

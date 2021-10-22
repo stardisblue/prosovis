@@ -3,6 +3,7 @@ import styled from 'styled-components/macro';
 import ColorSwitch from './ColorSwitch';
 import ActorList from './ActorList';
 import { KindMaskView } from '../../v2/views/KindMaskView';
+import { scrollbar } from '../../components/scrollbar';
 
 const StyledSection = styled.section`
   display: grid;
@@ -34,6 +35,9 @@ const KindsArea = styled.div`
   min-height: 1.25em;
   padding-left: 0.5em;
   padding-right: 0.5em;
+  overflow-y: hidden;
+  overflow-x: scroll;
+  ${scrollbar}
 `;
 
 const Mask: React.FC<{ className?: string }> = function ({ className }) {

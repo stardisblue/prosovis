@@ -32,8 +32,8 @@ export type EventGroup<
   id: ProsoVisEvent['id'];
   kind: ProsoVisEvent['kind'];
   events: T;
-  start: ProsoVisDate;
-  end: ProsoVisDate;
+  start?: ProsoVisDate;
+  end?: ProsoVisDate;
   highlighted?: boolean;
   selected?: boolean;
   masked?: boolean;

@@ -1,13 +1,12 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
-import { ProsoVisLocalisations } from '../types/localisations';
+import { ProsoVisLocalisation } from '../types/localisations';
 import Axios from 'axios';
 
 const initialState: {
-  localisations: ProsoVisLocalisations | null;
+  localisations?: _.Dictionary<ProsoVisLocalisation>;
   loading: 'idle' | 'pending' | 'succeeded' | 'failed';
   url: string;
 } = {
-  localisations: null,
   loading: 'idle',
   url: './data/index-localisations.json',
 };
@@ -22,7 +21,7 @@ export const fetchLocalisations = createAsyncThunk(
     const response = await Axios.get('./data/index-localisations.json', {
       cancelToken: source.token,
     });
-    return response.data as ProsoVisLocalisations;
+    return response.data as _.Dictionary<ProsoVisLocalisation>;
   }
 );
 

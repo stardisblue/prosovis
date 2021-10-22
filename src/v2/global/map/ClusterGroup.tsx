@@ -50,11 +50,13 @@ export const Cluster: React.FC<{ value: RichEventCluster }> = function ({
         toPairs,
         sortBy<[string, RichEventCluster[]]>('0')
       )(value.children),
-    [value]
+    [value.children]
   );
-
   return (
-    <Marker latlng={top.layerPointToLatLng([x, y])} radius={r}>
+    <Marker
+      latlng={useMemo(() => top.layerPointToLatLng([x, y]), [top, x, y])}
+      radius={r}
+    >
       <svg viewBox={`${-r} ${-r} ${r * 2} ${r * 2}`}>
         <PieChart radius={r} counts={parts}>
           {(a, arc) => (

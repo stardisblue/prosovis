@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import SiprojurisMap from '../../feature/map/SiprojurisMap';
 import Relation from '../../feature/relation/Relation';
-import SiprojurisTimeline from '../../feature/timeline/SiprojurisTimeline';
+import ProsoVisTimeline from '../../feature/timeline/ProsoVisTimeline';
 import { lightgray } from '../components/theme';
 
 const Main = styled.div`
@@ -27,7 +27,7 @@ const StyledRelation = styled(Relation)`
   border-top: 1px solid ${lightgray};
 `;
 
-const StyledTimeline = styled(SiprojurisTimeline)`
+const StyledTimeline = styled(ProsoVisTimeline)`
   grid-area: timeline;
 `;
 

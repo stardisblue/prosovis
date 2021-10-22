@@ -5,7 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from 'react';
-import './VisTimeline.css';
+import './ProsoVisTimeline.css';
 
 import classnames from 'classnames';
 import {
@@ -167,7 +167,9 @@ const selectTimelineEvents = createSelector(
   }
 );
 
-const VisTimeline: React.FC = function () {
+const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
+  className,
+}) {
   const dispatch = useDispatch();
 
   const groups = useSelector(selectTimelineEventGroups);
@@ -473,7 +475,7 @@ const VisTimeline: React.FC = function () {
   }, [groups, timeline]);
 
   return (
-    <>
+    <div className={className}>
       <div id="timeline" ref={timelineRef}>
         <VisHeader />
       </div>
@@ -486,7 +488,7 @@ const VisTimeline: React.FC = function () {
           width={width}
         />
       )}
-    </>
+    </div>
   );
 };
 
@@ -498,4 +500,4 @@ const VisHeader = styled(ActorPlaceSwitch)`
   background-color: white;
 `;
 
-export default VisTimeline;
+export default ProsoVisTimeline;

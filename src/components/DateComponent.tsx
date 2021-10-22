@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 // import { TriangleRightIcon } from '@primer/octicons-react';
 import { Popper } from './ui/Popper';
-import { ProsoVisDate } from '../v2/types/events';
+import { ProsoVisDate, ProsoVisEvent } from '../v2/types/events';
 
 const StyledTime = styled.time`
   white-space: nowrap;
@@ -68,9 +68,11 @@ const SpacedDateLabel = styled(DateLabel)`
 `;
 
 export const EventDates: React.FC<{
-  dates: ProsoVisDate[];
+  dates: ProsoVisEvent['datation'];
   showTooltip?: boolean;
 }> = function ({ dates, showTooltip }) {
+  if (dates.length === 0) return null;
+
   if (dates.length === 1) {
     return (
       <EventDateBase>
@@ -78,10 +80,12 @@ export const EventDates: React.FC<{
       </EventDateBase>
     );
   }
+  dates = dates as [ProsoVisDate, ProsoVisDate, ...ProsoVisDate[]];
 
   if (dates.length > 2) {
     console.error('there is more than two dates', dates);
   }
+
   return (
     <WrapEventDate>
       <DateLabel datation={dates[0]} showTooltip={showTooltip} />
