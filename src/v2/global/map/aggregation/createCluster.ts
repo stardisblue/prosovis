@@ -47,14 +47,17 @@ export const createClusters = (() => {
           Rbush: RefCircleRbush,
         }
       );
+
       if (instance !== stopper.instance) return;
 
-      return hierarchy({ children: results } as Circle).children!.map((v) => {
-        return {
-          ...v.data,
-          children: v.leaves().map((v) => v.data.data),
-        } as RichEventCluster;
-      });
+      return (
+        hierarchy({ children: results } as Circle).children?.map((v) => {
+          return {
+            ...v.data,
+            children: v.leaves().map((v) => v.data.data),
+          } as RichEventCluster;
+        }) || ([] as RichEventCluster[])
+      );
     },
     {
       stop() {
