@@ -11,7 +11,7 @@ type PopperType<T extends HTMLElement | SVGElement> = {
     x: number;
     y: number;
   };
-  position?: 'north' | 'north-west' | 'north-east';
+  position?: 'north' | 'north-west' | 'north-east' | 'south-west-right';
   children: (
     $ref: React.MutableRefObject<T>,
     showPopper: () => void,
@@ -42,6 +42,11 @@ function computePosition(
       return {
         left: child.left - (content.width + 8),
         top: child.top + 4,
+      };
+    case 'south-west-right':
+      return {
+        left: child.right - content.width,
+        top: child.bottom + 4,
       };
   }
 }

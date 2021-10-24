@@ -10,8 +10,8 @@ export function useUpdateMask() {
       return throttle((start: Date, end: Date) => {
         dispatch(
           setIntervalMask({
-            start: start.toDateString(),
-            end: end.toDateString(),
+            start: start.toISOString(),
+            end: end.toISOString(),
           })
         );
       }, 100);

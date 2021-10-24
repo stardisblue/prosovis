@@ -2,7 +2,7 @@ import { RootState } from '../reducers';
 import { selectMainColor, selectActorColor } from './color';
 import { createSelector } from '@reduxjs/toolkit';
 import * as d3 from 'd3';
-import { ProsoVisEvent } from '../v2/types/events';
+import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../v2/types/events';
 
 export const selectSwitch = (state: RootState) => state.switch;
 
@@ -44,8 +44,8 @@ export const selectMarkerColor = createSelector(
         .domain(actor.domain());
 
       return {
-        main: (e: any) => actor(e.actor),
-        border: (e: any) => border(e.actor),
+        main: (e: Required<ProsoVisDetailRichEvent>) => actor(e.actor.id),
+        border: (e: Required<ProsoVisDetailRichEvent>) => border(e.actor.id),
       };
     } else {
       const border = d3
@@ -55,8 +55,8 @@ export const selectMarkerColor = createSelector(
         .domain(main.domain());
 
       return {
-        main: (e: any) => main(e.kind),
-        border: (e: any) => border(e.kind),
+        main: (e: Required<ProsoVisDetailRichEvent>) => main(e.event.kind),
+        border: (e: Required<ProsoVisDetailRichEvent>) => border(e.event.kind),
       };
     }
   }

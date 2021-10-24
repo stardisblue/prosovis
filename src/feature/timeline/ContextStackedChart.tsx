@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import * as d3 from 'd3';
 import { selectMainColor, selectActorColor } from '../../selectors/color';
-import moment from 'moment';
 
 import { createSelector } from '@reduxjs/toolkit';
 import ContextOptions from './ContextOptions';
@@ -26,11 +25,13 @@ import {
   selectDetailsRichEvents,
 } from '../../v2/selectors/detail/actors';
 import { ProsoVisDetailRichEvent } from '../../v2/types/events';
+import { parseISO } from 'date-fns';
 
 // TODO extract this
 const defaultInterval = d3.timeYear
   .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
   .map((d) => ({ time: d, kind: '', actor: null }));
+
 export const selectDiscrete = createSelector(
   selectDetailsRichEvents,
   pipe(
@@ -51,7 +52,7 @@ export const selectDiscrete = createSelector(
           {
             kind: event.kind,
             actor: event.actor,
-            time: d3.timeYear(moment(event.datation[0].value).toDate()),
+            time: d3.timeYear(parseISO(event.datation[0].value)),
           },
         ];
       }
@@ -70,40 +71,6 @@ export const selectDiscrete = createSelector(
       actor: string;
     }[]
   >
-  // function (events) {
-  // return pipe()
-  // return _(events)
-  //   .flatMap<
-  //     | {
-  //         kind: ProsoVisEvent['kind'] | '';
-  //         actor: string | null;
-  //         time: Date;
-  //       }
-  //     | undefined
-  // >(({ event }) => {
-  //   if (event.datation.length === 2) {
-  //     const [start, end] = map(
-  //       pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
-  //       event.datation
-  //     );
-
-  //     return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
-  //       kind: event.kind,
-  //       actor: event.actor,
-  //       time,
-  //     }));
-  //   } else if (event.datation.length === 1) {
-  //     return {
-  //       kind: event.kind,
-  //       actor: event.actor,
-  //       time: d3.timeYear(moment(event.datation[0].value).toDate()),
-  //     };
-  //   }
-  //   return undefined;
-  //   })
-  //   .concat(defaultInterval)
-  //   .groupBy('time');
-  // }
 );
 
 const selectMap = createSelector(

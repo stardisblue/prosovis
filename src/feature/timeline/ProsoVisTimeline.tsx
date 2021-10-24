@@ -27,7 +27,6 @@ import {
 import { Nullable } from '../../v2/types/utils';
 import { unescape } from 'he';
 import { useMouse } from './useMouse';
-import { Moment } from 'moment';
 import { useReferences } from './useReferences';
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -70,7 +69,7 @@ type VisEventProps = {
   x: number;
   y: number;
   time: Date;
-  snappedTime: Moment;
+  snappedTime: Date;
 };
 
 type VisEventGroup = VisEventProps & {

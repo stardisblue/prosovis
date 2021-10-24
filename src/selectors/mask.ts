@@ -1,6 +1,5 @@
 import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import moment from 'moment';
 import L from 'leaflet';
 import { ActorMask } from '../reducers/maskSlice';
 import { selectActiveKinds } from '../v2/selectors/mask/kind';
@@ -8,6 +7,7 @@ import { ProsoVisActor } from '../v2/types/actors';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
 import { ProsoVisDate, ProsoVisDetailRichEvent } from '../v2/types/events';
 import { keyBy } from 'lodash/fp';
+import { isAfter, isBefore, parseISO } from 'date-fns';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -28,20 +28,21 @@ export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
         if (datation.length === 0) return true; // unbound by interval filter
 
         if (datation.length === 1) {
-          return moment(datation[0].value).isBetween(res.start, res.end);
+          const parsed = parseISO(datation[0].value);
+
+          return (
+            isAfter(parsed, parseISO(res.start)) &&
+            isBefore(parsed, parseISO(res.end))
+          );
         }
         datation = datation as [ProsoVisDate, ProsoVisDate];
-        const datatStart = datation[0].value;
-        const datatEnd = datation[1].value;
+        const datatStart = parseISO(datation[0].value);
+        const datatEnd = parseISO(datation[1].value);
 
         return !(
-          moment(res.end).isBefore(datatStart) ||
-          moment(res.start).isAfter(datatEnd)
+          isBefore(parseISO(res.end), datatStart) ||
+          isAfter(parseISO(res.start), datatEnd)
         );
-
-        // return _.some(datation, function({ clean_date }) {
-        //   return moment(clean_date).isBetween(res.start, res.end);
-        // });
       }
     : undefined
 );

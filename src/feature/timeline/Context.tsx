@@ -1,15 +1,16 @@
 import React, { useMemo } from 'react';
-import moment from 'moment';
 import ContextStackedChart from './ContextStackedChart';
 import ContextViewBrush from './ContextViewBrush';
 import ContextOptions from './ContextOptions';
 import * as d3 from 'd3';
 import BrushX from '../../v2/components/brush/BrushX';
 import { Axis } from '../../v2/components/Axis';
+import { parseISO } from 'date-fns';
 
+// todo extract this
 const options = {
-  max: '2000-01-01', //Maximum date of timeline
-  min: '1700-01-01', // Minimum date of timeline
+  max: parseISO('2000-01-01'), //Maximum date of timeline
+  min: parseISO('1700-01-01'), // Minimum date of timeline
 };
 
 export const Context: React.FC<{
@@ -23,7 +24,7 @@ export const Context: React.FC<{
     function () {
       return d3
         .scaleTime()
-        .domain([moment(options.min), moment(options.max)])
+        .domain([options.min, options.max])
         .range([
           ContextOptions.margin.left,
           width - ContextOptions.margin.right,

@@ -30,12 +30,12 @@ export type ProsoVisEvent = {
 };
 
 export type RichEvent = {
+  actor: ProsoVisActor;
   event: ProsoVisEvent;
   localisation?: ProsoVisLocalisation;
   place?: ProsoVisPlace;
 };
 
 export type ProsoVisDetailRichEvent = RichEvent & {
-  actor: ProsoVisActor;
   errors?: any;
 };

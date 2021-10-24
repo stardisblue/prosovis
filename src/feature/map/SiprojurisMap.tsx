@@ -1,6 +1,6 @@
 import React from 'react';
 import { useEffect, useRef, useCallback } from 'react';
-import { LayersControl, TileLayer, Map } from 'react-leaflet';
+import { LayersControl, Map, TileLayer } from 'react-leaflet';
 import { useDispatch } from 'react-redux';
 import './SiprojurisMap.css';
 import { setBoundsMask } from '../../reducers/maskSlice';

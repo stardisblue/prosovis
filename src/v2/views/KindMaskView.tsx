@@ -10,12 +10,16 @@ import Loading from '../components/Loading';
 import { selectSwitchKindColor } from '../../selectors/switch';
 import { SmallFont } from '../../feature/mask/styled-components';
 import theme from '../components/theme';
+import styled from 'styled-components/macro';
 
+const MinWidthLoader = styled(Loading)`
+  min-width: 100px;
+`;
 export const KindMaskView: React.FC = function () {
   const kinds = useSelector(selectUniqueKinds);
 
   return (
-    <Loading finished={kinds} size={1.5}>
+    <MinWidthLoader finished={kinds} size={1}>
       <StyledFlex>
         {map(
           (kind) => (
@@ -24,7 +28,7 @@ export const KindMaskView: React.FC = function () {
           kinds
         )}
       </StyledFlex>
-    </Loading>
+    </MinWidthLoader>
   );
 };
 

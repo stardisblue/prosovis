@@ -40,7 +40,6 @@ export const selectDetailsRichEvents = createSelector(
             (e) =>
               ({
                 ...e,
-                actor,
                 errors: computeEventErrors(e, actorWide),
               } as ProsoVisDetailRichEvent)
           );

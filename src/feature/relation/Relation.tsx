@@ -16,7 +16,7 @@ import SuggestionRing from './suggestion-ring/SuggestionRing';
 import { selectRelationEmphasis } from './highlightSlice';
 import path from './suggestion-ring/path';
 import { darkgray } from '../../components/ui/colors';
-import { selectLocalisationsIndex } from '../../v2/selectors/localisations';
+import { selectLocalisations } from '../../v2/selectors/localisations';
 import { getSimulation } from './utils/simulation';
 import { debounce, transform } from 'lodash/fp';
 
@@ -188,7 +188,7 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
 
 export const PlaceText: React.FC<any> = function ({ offset }) {
   const emph = useSelector(selectRelationEmphasis);
-  const localisations = useSelector(selectLocalisationsIndex) ?? {};
+  const localisations = useSelector(selectLocalisations) ?? {};
 
   return (
     <text

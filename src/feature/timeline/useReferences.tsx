@@ -43,67 +43,34 @@ const options = {
 };
 
 export function useReferences() {
-  // const [context, setContext] = useState<{
-  //   dom: SVGSVGElement;
-  //   selection: Selection<SVGSVGElement, unknown, null, undefined>;
-  // }>();
-
-  // const [contextFilter, setContextFilter] = useState<{
-  //   dom: SVGGElement;
-  //   selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-  //   brush: d3.BrushBehavior<unknown>;
-  // }>();
-
   const [timeline, setTimeline] = useState<{
     dom: HTMLDivElement;
     vis: vis.Timeline;
   }>();
 
-  // const [window, setWindow] = useState<{
-  //   dom: SVGGElement;
-  //   selection: d3.Selection<SVGGElement, unknown, null, undefined>;
-  //   brush: d3.BrushBehavior<unknown>;
-  // }>();
-
   const $events = useRef<HTMLCollectionOf<HTMLDivElement>>();
-  // const x = useMemo(
-  //   () =>
-  //     d3
-  //       .scaleTime()
-  //       .domain([moment(options.min), moment(options.max)])
-  //       .nice()
-  //       .clamp(true),
-  //   []
-  // );
+
   return {
     $events,
-    // axis,
-    // axisRef: useCallback(
-    //   refNotNull(function(dom: SVGGElement) {
-    //     if (x !== undefined)
-    //       setAxis({
-    //         dom,
-    //         selection: d3.select(dom),
-    //         d3Axis: d3.axisBottom(x)
-    //       });
-    //   }),
-    //   //eslint-disable-next-line
-    //   [x]
-    // ),
-    // contextFilter,
-    // contextFilterRef: useCallback(
-    //   refNotNull(function(dom: SVGGElement) {
-    //     const brush = d3.brushX();
-    //     const selection = d3.select(dom).call(brush);
-    //     setContextFilter({ dom, brush, selection });
-    //   }),
-    //   []
-    // ),
+
     timeline,
     // eslint-disable-next-line
     timelineRef: useCallback(
       refNotNull(function (dom: HTMLDivElement) {
         // put timeline logic here
+        // let observer = new MutationObserver(() => {
+        //   dom.querySelectorAll(`[data-popover="true"]`).forEach((v) => {
+        //     console.log(dom);
+
+        //     const $tooltip = document.createElement('div');
+        //     $tooltip.innerHTML = v.getAttribute('date-label') || '';
+        //     createPopper(v, $tooltip, { placement: 'top' });
+        //   });
+        // });
+
+        // observer.observe(dom, { childList: true, subtree: true });
+
+        // TODO change this :(
         $(dom).popover({
           selector: '[data-popover="true"]',
           trigger: 'hover',
@@ -126,19 +93,5 @@ export function useReferences() {
       // eslint-disable-next-line
       []
     ),
-    // window,
-    // windowRef: useCallback(
-    //   refNotNull(function(dom: SVGGElement) {
-    //     const brush = d3.brushX();
-    //     const selection = d3.select(dom).call(brush);
-    //     setWindow({ dom, selection, brush });
-    //   }),
-    //   []
-    // )
-    // contextRef : useCallback(($svg: Nullable<SVGSVGElement>) => {
-    //   if (!$svg) return;
-    //   setContext({ selection: select($svg), dom: $svg });
-    // }, []),
-    // x
   };
 }

@@ -3,12 +3,10 @@ import './App.css';
 import styled from 'styled-components/macro';
 // import Information from '../feature/info/Information';
 import { useDispatch } from 'react-redux';
-import Mask from '../feature/mask/Mask';
 import { useMouse } from '../feature/timeline/useMouse';
 import { clearSelection } from '../reducers/selectionSlice';
 import { ActorModal } from '../feature/modal/ActorModal';
 import Autocomplete from '../feature/search/Autocomplete';
-import { HelpInfoBubble } from '../feature/help/InfoButton';
 import GlobalView from '../v2/views/GlobalView';
 import Side1Main3 from '../v2/components/ui/Side1Main3';
 import GridAutoRest from '../v2/components/ui/GridAutoRest';
@@ -18,20 +16,10 @@ import { DetailView } from '../v2/views/DetailView';
 import { resetGlobalSelection } from '../v2/reducers/global/selectionSlice';
 import { resetActorSummary } from '../v2/reducers/global/actorSummarySlice';
 import Information from '../v2/detail/information/Information';
+import { Header } from '../v2/shared/Header';
 
 const BorderedGridAutoRest = styled(GridAutoRest)`
   border-right: 1px solid ${lightgray};
-`;
-
-const Header = styled.div`
-  display: grid;
-  justify-content: center;
-  grid-template-columns: 1fr auto;
-  border-bottom: 1px solid ${lightgray};
-`;
-
-const StyledInfoBubble = styled(HelpInfoBubble)`
-  padding: 2px;
 `;
 
 function App() {
@@ -89,10 +77,7 @@ function App() {
           <Information />
         </BorderedGridAutoRest>
         <GridAutoRest>
-          <Header>
-            <Mask />
-            <StyledInfoBubble />
-          </Header>
+          <Header />
           <Flip>
             <GlobalView />
             <DetailView />

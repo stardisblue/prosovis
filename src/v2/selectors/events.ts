@@ -2,25 +2,31 @@ import { RootState } from '../../reducers';
 import { createSelector } from '@reduxjs/toolkit';
 import { identity, keyBy, map, pipe, sortBy, uniqBy, groupBy } from 'lodash/fp';
 import { ProsoVisEvent, RichEvent } from '../types/events';
-import { selectLocalisationsIndex } from './localisations';
+import { selectLocalisations } from './localisations';
 import { ProsoVisLocalisation, ProsoVisPlace } from '../types/localisations';
+import { selectActors } from './actors';
+import { ProsoVisActor } from '../types/actors';
 
-export const selectEventsData = (state: RootState) => state.eventData.events;
+export const selectEvents = (state: RootState) => state.eventData.events;
 
 export const selectRichEvents = createSelector(
-  selectEventsData,
-  selectLocalisationsIndex,
-  (events, localisations) =>
-    events && map((e) => localize(localisations, e), events)
+  selectEvents,
+  selectLocalisations,
+  selectActors,
+  (events, localisations, actors) =>
+    events &&
+    localisations &&
+    actors &&
+    map((e) => localize(localisations, e, actors[e.actor]), events)
 );
 
 export const selectEventIndex = createSelector(
   selectRichEvents,
-  (events) => events && groupBy('event.actor', events)
+  (events) => events && groupBy('actor.id', events)
 );
 
 export const selectUniqueKinds = createSelector(
-  selectEventsData,
+  selectEvents,
   (events) =>
     events &&
     pipe(
@@ -37,7 +43,8 @@ export const selectUniqueKinds = createSelector(
 
 export function localize(
   localisationsIndex: _.Dictionary<ProsoVisLocalisation> | undefined,
-  event: ProsoVisEvent
+  event: ProsoVisEvent,
+  actor: ProsoVisActor
 ): RichEvent {
   if (localisationsIndex) {
     const localisation =
@@ -56,9 +63,9 @@ export function localize(
         place = localisation;
       }
 
-      return { event: event, localisation, place };
+      return { actor, event, localisation, place };
     }
   }
 
-  return { event };
+  return { actor, event };
 }
