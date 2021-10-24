@@ -34,23 +34,25 @@ const FullWidth = styled.div`
   width: 100%;
   height: 100%;
   position: relative;
+  overflow: hidden;
 `;
 
 const Loading: React.FC<{
   finished: any;
   size?: number;
   hide?: boolean;
-}> = function ({ finished, size = 3, children, hide = false }) {
+  className?: string;
+}> = function ({ className, finished, size = 3, children, hide = false }) {
   const loading = isNil(finished);
-  return (
-    <FullWidth>
-      {!(loading && hide) && children}
-      {loading && (
-        <LoadingSplash>
-          <Spinner size={size} />
-        </LoadingSplash>
-      )}
+  return loading ? (
+    <FullWidth className={className}>
+      {!hide && children}
+      <LoadingSplash>
+        <Spinner size={size} />
+      </LoadingSplash>
     </FullWidth>
+  ) : (
+    <>{children}</>
   );
 };
 

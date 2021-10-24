@@ -3,12 +3,22 @@ import React, { useEffect, useLayoutEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useSpring, animated } from 'react-spring';
 import styled from 'styled-components/macro';
-import { StyledFlex } from '../../../components/ui/Flex/styled-components';
 import { stopEventPropagation } from '../../../hooks/useClick';
 import Loading from '../../components/Loading';
 import { selectEventIndex } from '../../selectors/events';
 import { SummaryEvents } from './SummaryEvents';
 import { SummaryHeader } from './SummaryHeader';
+
+const Base = styled.div`
+  display: grid;
+  grid-template-rows: auto 1fr;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border: 1px solid gray;
+  border-radius: 3px;
+  box-shadow: 0 0 3px gray;
+`;
 
 type Coordinates = { x: number; y: number };
 export const SummaryWindow: React.FC<{
@@ -63,13 +73,3 @@ export const SummaryWindow: React.FC<{
     </animated.foreignObject>
   );
 };
-
-const Base = styled(StyledFlex)`
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
-  background-color: white;
-  border: 1px solid gray;
-  border-radius: 3px;
-  box-shadow: 0 0 3px gray;
-`;

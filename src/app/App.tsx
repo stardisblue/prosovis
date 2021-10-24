@@ -1,4 +1,5 @@
 import React, { useMemo, useCallback, useRef } from 'react';
+import './App.css';
 import styled from 'styled-components/macro';
 // import Information from '../feature/info/Information';
 import { useDispatch } from 'react-redux';

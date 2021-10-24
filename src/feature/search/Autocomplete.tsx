@@ -34,10 +34,21 @@ const AutocompleteItems = styled.ul`
   list-style-type: none;
   padding: 0.25em;
   border-radius: 3px;
+  margin: 0;
 `;
 
 const Container = styled.div`
   position: relative;
+`;
+
+const StyledInput = styled.input`
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+  background-color: #f1f1f1;
+  width: 100%;
+  line-height: 1.5;
 `;
 
 const Item = styled(AutocompleteItem)`
@@ -78,10 +89,8 @@ const Autocomplete: React.FC = function () {
 
   return (
     <Container onMouseUpCapture={stopEventPropagation}>
-      <input
+      <StyledInput
         type="text"
-        name="fuzzy-search"
-        id="fuzzy-search"
         value={text}
         onChange={handleChange}
         placeholder="Rechercher un acteur"

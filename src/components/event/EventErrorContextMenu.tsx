@@ -19,7 +19,7 @@ import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
 import { useSpring, animated } from 'react-spring';
 import { useDrag } from 'react-use-gesture';
 import Modal from '../../feature/modal/Modal';
-import styled from 'styled-components';
+import styled from 'styled-components/macro';
 import { darkgray } from '../ui/colors';
 
 const errorLevelTranslation: { [k in ProsoVisError['level']]: string } = {
