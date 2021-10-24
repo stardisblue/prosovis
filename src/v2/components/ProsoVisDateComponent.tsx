@@ -1,7 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import { TriangleRightIcon } from '@primer/octicons-react';
-import { ProsoVisDate } from '../types/events';
+import { ProsoVisDate, ProsoVisEvent } from '../types/events';
 import { Popper } from '../../components/ui/Popper';
 
 const StyledTime = styled.time`
@@ -12,7 +11,8 @@ const StyledTime = styled.time`
 export const ProsoVisDateLabel: React.FC<{
   datation: ProsoVisDate;
   showTooltip?: boolean;
-}> = function ({ datation: d, showTooltip = true }) {
+  className?: string;
+}> = function ({ datation: d, showTooltip = true, className }) {
   if (showTooltip) {
     return <Popper content={`${d.kind} - ${d.value}`} children={children} />;
   }
@@ -22,6 +22,7 @@ export const ProsoVisDateLabel: React.FC<{
       aria-label={`${d.kind} - ${d.value}`}
       dateTime={d.value}
       data-uri={d.uri}
+      className={className}
     >
       {d.label}
     </StyledTime>
@@ -38,6 +39,7 @@ export const ProsoVisDateLabel: React.FC<{
         dateTime={d.value}
         data-uri={d.uri}
         ref={$ref}
+        className={className}
         onMouseEnter={show}
         onFocus={show}
         onMouseLeave={hide}
@@ -53,10 +55,23 @@ const EventDateBase = styled.div`
   text-align: right;
 `;
 
+const WrapEventDate = styled(EventDateBase)`
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 7em;
+  justify-content: flex-end;
+`;
+
+const SpacedDateLabel = styled(ProsoVisDateLabel)`
+  margin-left: 0.5em;
+`;
+
 export const ProsoVisDates: React.FC<{
-  dates: ProsoVisDate[];
+  dates: ProsoVisEvent['datation'];
   showTooltip?: boolean;
 }> = function ({ dates, showTooltip }) {
+  if (dates.length === 0) return null;
+
   if (dates.length === 1) {
     return (
       <EventDateBase>
@@ -64,15 +79,16 @@ export const ProsoVisDates: React.FC<{
       </EventDateBase>
     );
   }
+  // dates = dates as [ProsoVisDate, ProsoVisDate, ...ProsoVisDate[]];
 
   if (dates.length > 2) {
     console.error('there is more than two dates', dates);
   }
+
   return (
-    <EventDateBase>
-      <ProsoVisDateLabel datation={dates[0]} showTooltip={showTooltip} />
-      <TriangleRightIcon />
-      <ProsoVisDateLabel datation={dates[1]} showTooltip={showTooltip} />
-    </EventDateBase>
+    <WrapEventDate>
+      <ProsoVisDateLabel datation={dates[0]!} showTooltip={showTooltip} />
+      <SpacedDateLabel datation={dates[1]!} showTooltip={showTooltip} />
+    </WrapEventDate>
   );
 };

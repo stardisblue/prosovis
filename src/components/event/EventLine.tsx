@@ -1,9 +1,8 @@
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
-import { getEventLabel } from '../../data/getEventLabel';
 import getEventIcon from '../../data/getEventIcon';
-import { EventDates } from '../DateComponent';
+import { getEventLabel } from '../../data/getEventLabel';
 import {
   highlightable,
   HighlightableProp,
@@ -15,13 +14,14 @@ import {
 import { useClickSelect } from '../../hooks/useClick';
 import useHoverHighlight from '../../hooks/useHoverHighlight';
 import { selectSwitchKindColor } from '../../selectors/switch';
-import { IconSpacer } from '../ui/IconSpacer';
-import { EventErrors } from './EventErrors';
-import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
+import { ProsoVisDates } from '../../v2/components/ProsoVisDateComponent';
 import {
   InformationGroup,
   Interactive,
 } from '../../v2/detail/information/types';
+import { ProsoVisDetailRichEvent, ProsoVisEvent } from '../../v2/types/events';
+import { IconSpacer } from '../ui/IconSpacer';
+import { EventErrors } from './EventErrors';
 
 export const Base = styled.div<
   { grouped?: boolean } & SelectableProp & MaskableProp & HighlightableProp
@@ -95,7 +95,7 @@ export const EventLine: React.FC<{
     >
       {showIcon}
       <div>{getEventLabel(event.event, origin, grouped)}</div>
-      <EventDates dates={event.event.datation} />
+      <ProsoVisDates dates={event.event.datation} />
       {showErrors}
     </Base>
   );

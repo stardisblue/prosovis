@@ -18,7 +18,6 @@ import { IconSpacer } from '../ui/IconSpacer';
 import { Note } from '../ui/Note';
 import { EventLine } from './EventLine';
 import { LeftSpacer } from './LeftSpacer';
-import { EventDates } from '../DateComponent';
 import { SimpleEventErrors } from './EventErrors';
 import { ProsoVisDetailRichEvent } from '../../v2/types/events';
 import {
@@ -26,6 +25,7 @@ import {
   InformationGroup,
   Interactive,
 } from '../../v2/detail/information/types';
+import { ProsoVisDates } from '../../v2/components/ProsoVisDateComponent';
 
 export const LeftBottomSpacer = styled(LeftSpacer)`
   border-bottom-style: solid;
@@ -86,7 +86,7 @@ export const EventGroup: React.FC<
           <div>
             {events.length} {getKindString(kind)}
           </div>
-          <EventDates dates={compact([start, end])} />
+          <ProsoVisDates dates={compact([start, end])} />
           {showErrors}
         </InteractableEnlarge>
       }
