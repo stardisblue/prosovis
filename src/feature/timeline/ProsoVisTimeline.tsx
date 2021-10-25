@@ -1,10 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useCallback,
-} from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import './ProsoVisTimeline.css';
 
 import classnames from 'classnames';
@@ -247,8 +241,8 @@ const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
     changed: (e: VisEvent) => void;
     mouseOver: (e: VisEvent) => void;
     mouseOut: (e: VisEvent) => void;
-    __click: (e: VisEvent) => void;
-    __drag: (e: VisEvent) => void;
+    // __click: (e: VisEvent) => void;
+    // __drag: (e: VisEvent) => void;
   }>(undefined as any);
   if (actions.current === undefined) {
     actions.current = {
@@ -256,10 +250,8 @@ const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
       changed: (_e: VisEvent) => {},
       mouseOver: (_e: VisEvent) => {},
       mouseOut: (_e: VisEvent) => {},
-      /** @deprecated */
-      __click: (_e: VisEvent) => {},
-      /** @deprecated */
-      __drag: (_e: VisEvent) => {},
+      // __click: (_e: VisEvent) => {},
+      // __drag: (_e: VisEvent) => {},
     };
   }
 
@@ -274,8 +266,8 @@ const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
       if (!timeline) return;
 
       timeline.vis.on('changed', (e: any) => actions.current.changed(e));
-      timeline.vis.on('click', (e: any) => actions.current.__click(e));
-      timeline.vis.on('dragover', (e: any) => actions.current.__drag(e));
+      // timeline.vis.on('click', (e: any) => actions.current.__click(e));
+      // timeline.vis.on('dragover', (e: any) => actions.current.__drag(e));
 
       timeline.vis.on('mouseDown', (e: any) => {
         if (!mouse.current.click) {
@@ -352,8 +344,8 @@ const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
 
   // binds click to selection actions
 
-  actions.current.click = useCallback(
-    (e: VisEvent) => {
+  useEffect(() => {
+    actions.current.click = (e: VisEvent) => {
       switch (e.what) {
         case 'group-label':
           // console.debug('selection:group', e.group);
@@ -396,9 +388,8 @@ const ProsoVisTimeline: React.FC<{ className?: string }> = function ({
             dispatch(clearSelection());
           }
       }
-    },
-    [dispatch, selection, timelineEvents]
-  );
+    };
+  }, [dispatch, selection, timelineEvents]);
 
   /*
    * Highlights

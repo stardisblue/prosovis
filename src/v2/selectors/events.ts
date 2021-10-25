@@ -1,11 +1,11 @@
-import { RootState } from '../../reducers';
 import { createSelector } from '@reduxjs/toolkit';
-import { identity, keyBy, map, pipe, sortBy, uniqBy, groupBy } from 'lodash/fp';
+import { groupBy, map } from 'lodash/fp';
+import { RootState } from '../../reducers';
+import { ProsoVisActor } from '../types/actors';
 import { ProsoVisEvent, RichEvent } from '../types/events';
-import { selectLocalisations } from './localisations';
 import { ProsoVisLocalisation, ProsoVisPlace } from '../types/localisations';
 import { selectActors } from './actors';
-import { ProsoVisActor } from '../types/actors';
+import { selectLocalisations } from './localisations';
 
 export const selectEvents = (state: RootState) => state.eventData.events;
 
@@ -23,19 +23,6 @@ export const selectRichEvents = createSelector(
 export const selectEventIndex = createSelector(
   selectRichEvents,
   (events) => events && groupBy('actor.id', events)
-);
-
-/** @deprecated */
-export const selectUniqueKinds = createSelector(
-  selectEvents,
-  (events) =>
-    events &&
-    pipe(
-      uniqBy<ProsoVisEvent>('kind'),
-      map('kind'),
-      sortBy(identity),
-      keyBy(identity)
-    )(events)
 );
 
 /**

@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { scrollbar } from '../../../components/scrollbar';
 import { StyledFlex } from '../../../components/ui/Flex/styled-components';
+import { SmallFont } from '../../../feature/mask/styled-components';
 import { selectSwitchMainColor } from '../../../selectors/switch';
 import Loading from '../../components/Loading';
 import { moongray } from '../../components/theme';
@@ -49,10 +50,11 @@ export const CustomFilters: React.FC = function () {
     <Loading finished={selected} size={1}>
       <Gridy>
         <ScrollableFlex>
-          <StyledCode>
-            <i>{selected?.name}</i>
-          </StyledCode>
-
+          <SmallFont as={'div'} style={{ alignSelf: 'center' }}>
+            <StyledCode>
+              <i>{selected?.name}</i>
+            </StyledCode>
+          </SmallFont>
           {
             selected &&
               map(selected.values, (state, kind) => (

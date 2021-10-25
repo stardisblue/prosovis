@@ -92,32 +92,32 @@ export const selectLinks = createSelector(selectRelations, (relations) => {
 });
 
 /** @deprecated */
-export const selectActorLinksMap = createSelector(selectLinks, (links) => {
-  return transform(
-    (relations, l) => {
-      let srels = relations.get(l.source);
-      if (srels === undefined) {
-        srels = { events: new Set(), actors: new Map() };
-        relations.set(l.source, srels);
-      }
-      srels.actors.set(l.target, l);
-      l.events.forEach((e) => srels!.events.add(e));
+// export const selectActorLinksMap = createSelector(selectLinks, (links) => {
+//   return transform(
+//     (relations, l) => {
+//       let srels = relations.get(l.source);
+//       if (srels === undefined) {
+//         srels = { events: new Set(), actors: new Map() };
+//         relations.set(l.source, srels);
+//       }
+//       srels.actors.set(l.target, l);
+//       l.events.forEach((e) => srels!.events.add(e));
 
-      let trels = relations.get(l.target);
-      if (trels === undefined) {
-        trels = { events: new Set(), actors: new Map() };
-        relations.set(l.target, trels);
-      }
-      trels.actors.set(l.source, l);
-      l.events.forEach((e) => trels!.events.add(e));
-    },
-    new Map<
-      string,
-      { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }
-    >(),
-    links
-  );
-});
+//       let trels = relations.get(l.target);
+//       if (trels === undefined) {
+//         trels = { events: new Set(), actors: new Map() };
+//         relations.set(l.target, trels);
+//       }
+//       trels.actors.set(l.source, l);
+//       l.events.forEach((e) => trels!.events.add(e));
+//     },
+//     new Map<
+//       string,
+//       { events: Set<string>; actors: Map<string, ProsoVisSignedRelation> }
+//     >(),
+//     links
+//   );
+// });
 
 export const selectDetailRelations = compareByKeySelector(
   selectActorsFromMaskedEvents,

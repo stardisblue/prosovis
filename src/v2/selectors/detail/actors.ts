@@ -1,4 +1,4 @@
-import { flatMap, flow, keyBy, map, mapValues, pipe } from 'lodash/fp';
+import { flatMap, flow, keyBy, map } from 'lodash/fp';
 import { createSelector } from 'reselect';
 import {
   computeEventErrors,
@@ -45,15 +45,4 @@ export const selectDetailsRichEvents = createSelector(
           );
         }, actors)
       : []
-);
-
-// TODO groupby
-/** @deprecated */
-export const selectDetailKinds = createSelector(
-  selectDetailsRichEvents,
-  (events) =>
-    pipe(
-      keyBy('event.kind'),
-      mapValues('event.kind')
-    )(events) as _.Dictionary<string>
 );

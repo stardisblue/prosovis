@@ -88,30 +88,6 @@ function getErrorInfo(
   throw new Error('Unreachable code');
 }
 
-// /**
-//  * @param errors
-//  * @deprecated use simple string instead
-//  */
-// function getRichErrorLabel(
-//   errors: { [k in SipError['level']]?: SipError[] }
-// ) {
-//   const acc: (JSX.Element | number | string)[] = [];
-//   if (errors.Error)
-//     acc.push(<IconSpacer as={XCircleIcon} spaceRight />, errors.Error.length);
-//   if (errors.Warning)
-//     acc.push(
-//       <IconSpacer as={AlertIcon} spaceLeft={acc.length > 0} spaceRight />,
-//       errors.Warning.length
-//     );
-//   if (errors.Info)
-//     acc.push(
-//       <IconSpacer as={InfoIcon} spaceLeft={acc.length > 0} spaceRight />,
-//       errors.Info.length
-//     );
-
-//   return <StyledFlex>{acc}</StyledFlex>;
-// }
-
 const PilledIconSpacer = styled(IconSpacerPointer)`
   position: relative;
   &:before {

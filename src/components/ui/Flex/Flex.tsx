@@ -19,9 +19,9 @@ type FlexProps = {
  * @deprecated
  * @param param0
  */
-export const Flex: React.FC<React.PropsWithChildren<
-  FlexProps & FlexItemProps
->> = function (
+export const Flex: React.FC<
+  React.PropsWithChildren<FlexProps & FlexItemProps>
+> = function (
   {
     tag = 'div',
     className,
@@ -67,4 +67,5 @@ export const Flex: React.FC<React.PropsWithChildren<
  */
 export const FlexMemo = memo(Flex);
 
+/** @deprecated */
 export default FlexMemo;

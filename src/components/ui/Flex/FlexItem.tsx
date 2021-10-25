@@ -2,6 +2,7 @@ import React, { memo } from 'react';
 import classnames from 'classnames';
 import './style.css';
 
+/** @deprecated */
 export type FlexItemProps = {
   auto?: boolean;
   className?: string;
@@ -11,26 +12,29 @@ export type FlexItemProps = {
   tag?: keyof JSX.IntrinsicElements;
 };
 
-export const FlexItem: React.FC<React.PropsWithChildren<
-  FlexItemProps
->> = function (
-  { children, className, tag = 'div', ...flexItemProps } // items
-) {
-  const TagWrapper = tag;
+/** @deprecated */
+export const FlexItem: React.FC<React.PropsWithChildren<FlexItemProps>> =
+  function (
+    { children, className, tag = 'div', ...flexItemProps } // items
+  ) {
+    const TagWrapper = tag;
 
-  return (
-    <TagWrapper
-      className={classnames(className, flexItemClasses(flexItemProps))}
-    >
-      {children}
-    </TagWrapper>
-  );
-};
+    return (
+      <TagWrapper
+        className={classnames(className, flexItemClasses(flexItemProps))}
+      >
+        {children}
+      </TagWrapper>
+    );
+  };
 
+/** @deprecated */
 export const FlexItemMemo = memo(FlexItem);
 
+/** @deprecated */
 export default FlexItemMemo;
 
+/** @deprecated */
 export function flexItemClasses({ self, order, auto, col }: FlexItemProps) {
   return {
     [`self-${self}`]: self,
