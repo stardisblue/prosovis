@@ -59,7 +59,7 @@ function groupByPlace(e: ProsoVisEvent) {
 export const selectTimelineGroupBy = createSelector(
   selectTimelineGroup,
   (grouping) => {
-    console.log(grouping);
+    // console.log(grouping);
     switch (grouping) {
       case 'ActorNote':
         return groupByActor;

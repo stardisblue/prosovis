@@ -14,6 +14,7 @@ import eventData from '../v2/reducers/eventsDataSlice';
 import graphData from '../v2/reducers/graphDataSlice';
 import relationsData from '../v2/reducers/relationsDataSlice';
 import maskKind from '../v2/reducers/mask/kindSlice';
+import customFilter from '../v2/reducers/mask/customFilterSlice';
 import maskGlobalTime from '../v2/reducers/mask/globalTimeSlice';
 import maskGlobalMapBounds from '../v2/reducers/mask/globalMapBoundsSlice';
 import globalHighlight from '../v2/reducers/global/highlightSlice';
@@ -21,6 +22,7 @@ import globalSelection from '../v2/reducers/global/selectionSlice';
 import actorSummary from '../v2/reducers/global/actorSummarySlice';
 import detailActors from '../v2/reducers/detail/actorSlice';
 import maxActors from '../v2/reducers/detail/maxActorsSlice';
+
 const rootReducer = combineReducers({
   maxActors,
   color,
@@ -44,6 +46,7 @@ const rootReducer = combineReducers({
   globalSelection,
   actorSummary,
   detailActors,
+  customFilter,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

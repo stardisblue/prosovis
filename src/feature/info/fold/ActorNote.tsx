@@ -1,5 +1,5 @@
 import { XIcon } from '@primer/octicons-react';
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import ActorLabel from '../../../components/ActorLabel';
 import { ColorablePersonIcon } from '../../../components/ColorablePersonIcon';
@@ -32,9 +32,12 @@ export const ActorNote: React.FC<Required<Interactive<InformationActorGroup>>> =
       [events]
     );
     const handleSelectClick = useClickSelect(interactive);
-    const handleDeleteClick = useFlatClick(() => {
+
+    const deleteClick = useCallback(() => {
       dispatch(removeDetailActor(group.id));
-    });
+    }, [dispatch, group.id]);
+
+    const handleDeleteClick = useFlatClick(deleteClick);
     const handleHighlightHover = useHoverHighlight(interactive);
 
     const groupedEvents = useGroupEvents(events);
