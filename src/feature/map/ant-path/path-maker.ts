@@ -120,7 +120,6 @@ export type PathSegment<T> = {
 };
 
 export function segmentify(
-  // this: L.Map,
   simplePath: SimpleAntPath<DataMarkerOptions>
 ): PathSegment<DataMarkerOptions>[] {
   return d3.pairs(
@@ -131,13 +130,7 @@ export function segmentify(
         AntPathEvent<DataMarkerOptions>
       ] = [first, last];
 
-      // const [p1, p2] = _.map(segment, (v) => this.latLngToLayerPoint(v.latLng));
-
-      return {
-        segment,
-        diff: +start.slice(0, 4) - +end.slice(0, 4),
-        // dist: p1.distanceTo(p2),
-      };
+      return { segment, diff: +start.slice(0, 4) - +end.slice(0, 4) };
     }
   );
 }

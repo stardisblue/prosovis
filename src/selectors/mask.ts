@@ -6,8 +6,10 @@ import { selectActiveKinds } from '../v2/selectors/mask/kind';
 import { ProsoVisActor } from '../v2/types/actors';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
 import { ProsoVisDate, ProsoVisDetailRichEvent } from '../v2/types/events';
-import { keyBy } from 'lodash/fp';
+import { get, keyBy } from 'lodash/fp';
+import { some } from 'lodash';
 import { isAfter, isBefore, parseISO } from 'date-fns';
+import { selectCustomFilters } from '../v2/selectors/mask/customFilter';
 
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
@@ -47,10 +49,9 @@ export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
     : undefined
 );
 
-export const selectKindFun = createSelector(selectActiveKinds, (res) =>
-  res
-    ? (e: ProsoVisDetailRichEvent) => kindMaskState(e.event.kind, res)
-    : undefined
+export const selectKindFun = createSelector(
+  selectActiveKinds,
+  (res) => (e: ProsoVisDetailRichEvent) => kindMaskState(e.event.kind, res)
 );
 
 export const selectActorFun = createSelector(selectActorMask, (res) =>
@@ -70,16 +71,26 @@ export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
     : undefined
 );
 
+export const selectCustomFilterFun = createSelector(
+  selectCustomFilters,
+  (filters) => (e: ProsoVisDetailRichEvent) =>
+    !some(filters, (filter, path) => {
+      return filter[get(path, e)] === null;
+    })
+);
+
 export const maskAllFun = createSelector(
   selectIntervalFun,
   selectKindFun,
   selectActorFun,
   selectBoundsFun,
-  function (interval, kind, actor, bound) {
+  selectCustomFilterFun,
+  function (interval, kind, actor, bound, customFilters) {
     return (e: ProsoVisDetailRichEvent) => {
-      if (interval && !interval(e)) return false;
-      if (kind && !kind(e)) return false;
+      if (!kind(e)) return false;
+      if (!customFilters(e)) return false;
       if (actor && !actor(e)) return false;
+      if (interval && !interval(e)) return false;
       if (bound && !bound(e)) return false;
       return true;
     };

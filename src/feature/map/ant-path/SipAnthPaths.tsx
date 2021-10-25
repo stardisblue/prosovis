@@ -20,6 +20,7 @@ import {
   join,
   fromPairs,
   reverse,
+  identity,
 } from 'lodash/fp';
 import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
 
@@ -117,7 +118,6 @@ const SipAnthPaths: React.FC<{
           ({
             events: map('event', events),
             chain: flow(flatify, simplify, segmentify)(events),
-            // chain: _.flow(flatify, simplify, segmentify.bind($map.current))(events),
           } as {
             events: DataMarkerOptions[];
             chain: PathSegment<DataMarkerOptions>[];
@@ -128,34 +128,23 @@ const SipAnthPaths: React.FC<{
     const flatChens = flow(
       flatMap('chain'),
       filter<PathSegment<DataMarkerOptions>>('segment.1.event.dates.0.value'),
-      sortBy(
-        ({ segment: [, { event }] }: PathSegment<DataMarkerOptions>) =>
-          event.dates[0].value
-      )
+      sortBy<PathSegment<DataMarkerOptions>>('segment.1.event.dates.0.value')
     )(chens);
 
     const offset: _.Dictionary<number> = pipe(
-      groupBy<PathSegment<DataMarkerOptions>>(pipe(map('groupId'), join(':'))),
-      mapValues((chain: PathSegment<DataMarkerOptions>[]) =>
-        chain.map((chen, i) => [
-          pipe(map('event.id'), join(':'))(chen.segment),
-          i,
-        ])
+      groupBy<PathSegment<DataMarkerOptions>>(
+        pipe((v) => v.segment, map('groupId'), join(':'))
       ),
-      flatMap,
+      mapValues(
+        (chain: PathSegment<DataMarkerOptions>[]) =>
+          chain.map(({ segment }, i) => [
+            pipe(map('event.id'), join(':'))(segment),
+            i,
+          ]) as [string, number][]
+      ),
+      flatMap(identity),
       fromPairs
     )(flatChens);
-
-    // const offset = _(flatChens)
-    //   .groupBy((chain) => _(chain.segment).map('groupId').join(':'))
-    //   .mapValues((chain) =>
-    //     _(chain)
-    //       .map((chen, i) => [_.map(chen.segment, 'event.id').join(':'), i])
-    //       .value()
-    //   )
-    //   .flatMap()
-    //   .fromPairs()
-    //   .value();
 
     const total = pipe(
       map(({ segment }: PathSegment<DataMarkerOptions>) =>
@@ -166,17 +155,7 @@ const SipAnthPaths: React.FC<{
         mapValues((ids) => values[reverse(ids).join(':')] !== undefined, values)
     )(flatChens);
 
-    // const total = _(flatChens)
-    //   .map(({ segment }) => _.map(segment, 'groupId'))
-    //   .keyBy((ids) => ids.join(':'))
-    //   .mapValues(
-    //     (ids, _key, reference) =>
-    //       reference[[...ids].reverse().join(':')] !== undefined
-    //   )
-    //   .value();
     return { chens, offset, total };
-    // disabling $map ref
-    //eslint-disable-next-line
   }, [zoom, markers]);
   return (
     <>
