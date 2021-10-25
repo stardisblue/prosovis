@@ -9,16 +9,16 @@ import {
   scaleTime,
 } from 'd3';
 import { parseISO } from 'date-fns';
+import { Dictionary } from 'lodash';
+import { useSelector } from 'react-redux';
+import { selectSwitchKindColor } from '../../../selectors/switch';
+import { Axis } from '../../components/Axis';
+import BrushX from '../../components/brush/BrushX';
 import { height, margin } from './options';
 import { Tyvent } from './selectors';
 import { StackedChart } from './StackedChart';
-import { Dictionary } from 'lodash';
-import { Axis } from '../../components/Axis';
-import BrushX from '../../components/brush/BrushX';
 import { useUpdateMaskGlobalTime } from './useUpdateMask';
-import { useSelector } from 'react-redux';
-import { selectSwitchKindColor } from '../../../selectors/switch';
-import { lightgray } from '../../../components/ui/colors';
+import { lightgray } from '../../components/theme';
 
 export const StreamGraph: React.FC<{
   width: number;

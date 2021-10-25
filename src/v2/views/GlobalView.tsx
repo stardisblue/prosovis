@@ -1,15 +1,15 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components/macro';
+import useMount from '../../hooks/useMount';
+import { lightgray } from '../components/theme';
+import GlobalGraph from '../global/graph/GlobalGraph';
 import GlobalMap from '../global/map/GlobalMap';
 import GlobalTimeline from '../global/timeline/GlobalTimeline';
-import GlobalGraph from '../global/graph/GlobalGraph';
-import { lightgray } from '../../components/ui/colors';
-import useMount from '../../hooks/useMount';
-import { useDispatch } from 'react-redux';
-import { fetchLocalisations } from '../reducers/localisationsDataSlice';
 import { fetchActors } from '../reducers/actorsDataSlice';
 import { fetchEvents } from '../reducers/eventsDataSlice';
 import { fetchGraph } from '../reducers/graphDataSlice';
+import { fetchLocalisations } from '../reducers/localisationsDataSlice';
 import { fetchRelations } from '../reducers/relationsDataSlice';
 
 export const StyledGlobalView = styled.div`

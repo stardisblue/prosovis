@@ -1,23 +1,22 @@
-import React, { useState, useCallback } from 'react';
-
+import React, { useCallback, useState } from 'react';
+import { PlusIcon } from '@primer/octicons-react';
 import * as d3 from 'd3';
-import { useSelector, useDispatch } from 'react-redux';
+import { identity } from 'lodash';
+import { concat, groupBy, keyBy, map, mapValues, pipe } from 'lodash/fp';
+import { useDispatch, useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
+import styled from 'styled-components/macro';
+import { useFlatClick } from '../../../hooks/useClick';
+import { tryAddDetailActorThunk } from '../../../v2/thunks/actors';
+import { ProsoVisSignedRelation } from '../../../v2/types/relations';
+import Modal from '../../modal/Modal';
 import { selectRelationGhosts } from '../selectRelations';
 import {
+  selectDisplayedActorRingLinks,
   selectIntersection,
   selectSortedGhosts,
-  selectDisplayedActorRingLinks,
 } from './selectors';
-import { createSelector } from 'reselect';
-import { useFlatClick } from '../../../hooks/useClick';
-import Modal from '../../modal/Modal';
-import styled from 'styled-components/macro';
-import { PlusIcon } from '@primer/octicons-react';
-import { darkgray } from '../../../components/ui/colors';
-import { ProsoVisSignedRelation } from '../../../v2/types/relations';
-import { tryAddDetailActorThunk } from '../../../v2/thunks/actors';
-import { concat, groupBy, keyBy, map, mapValues, pipe } from 'lodash/fp';
-import { identity } from 'lodash';
+import { darkgray } from '../../../v2/components/theme';
 
 const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
@@ -50,7 +49,7 @@ export const SuggestionNodes: React.FC<{
   y.domain(domain);
 
   return (
-    <g ref={$g} fill={color || darkgray}>
+    <g ref={$g} fill={color ?? darkgray}>
       {sorted.map((datum) => (
         <SuggestionNode
           key={datum.target}

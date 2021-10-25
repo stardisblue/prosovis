@@ -1,4 +1,4 @@
-import { moongray } from '../../../components/ui/colors';
+import { moongray } from '../../../v2/components/theme';
 
 export type HighlightableProp = {
   highlighted: boolean;

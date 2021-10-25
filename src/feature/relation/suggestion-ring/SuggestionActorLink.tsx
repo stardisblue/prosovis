@@ -1,28 +1,28 @@
-import React, { useMemo, useEffect } from 'react';
-import { toCartesian } from '../../../utils';
-import { useDatum } from '../../../hooks/useD3';
-import { useSelector } from 'react-redux';
-import { selectSwitchActorColor } from '../../../selectors/switch';
+import React, { useEffect, useMemo } from 'react';
+import { select } from 'd3';
 import { map } from 'lodash';
 import {
-  selectIntersection,
-  selectDisplayedActorRingLinks,
-  selectSortedGhosts,
-} from './selectors';
-import { select } from 'd3';
-import { createSelector } from 'reselect';
-import { disabled } from '../../../components/ui/colors';
-import { ProsoVisSignedRelation } from '../../../v2/types/relations';
-import {
-  keyBy,
-  pipe,
-  transform,
-  map as fpmap,
+  chunk,
   flatMap,
   groupBy,
-  chunk,
+  keyBy,
+  map as fpmap,
   meanBy,
+  pipe,
+  transform,
 } from 'lodash/fp';
+import { useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
+import { useDatum } from '../../../hooks/useD3';
+import { selectSwitchActorColor } from '../../../selectors/switch';
+import { toCartesian } from '../../../utils';
+import { ProsoVisSignedRelation } from '../../../v2/types/relations';
+import {
+  selectDisplayedActorRingLinks,
+  selectIntersection,
+  selectSortedGhosts,
+} from './selectors';
+import { disabled } from '../../../v2/components/theme';
 
 export const selectClusteredSuggestionActorLinks = createSelector(
   selectDisplayedActorRingLinks,

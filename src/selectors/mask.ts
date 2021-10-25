@@ -1,16 +1,14 @@
-import { RootState } from '../reducers';
 import { createSelector } from '@reduxjs/toolkit';
+import { isAfter, isBefore, parseISO } from 'date-fns';
 import L from 'leaflet';
+import { keyBy } from 'lodash/fp';
+import { RootState } from '../reducers';
 import { ActorMask } from '../reducers/maskSlice';
+import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
+import { selectCustomFiltersFun } from '../v2/selectors/mask/customFilter';
 import { selectActiveKinds } from '../v2/selectors/mask/kind';
 import { ProsoVisActor } from '../v2/types/actors';
-import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
 import { ProsoVisDate, ProsoVisDetailRichEvent } from '../v2/types/events';
-import { get, keyBy } from 'lodash/fp';
-import { some } from 'lodash';
-import { isAfter, isBefore, parseISO } from 'date-fns';
-import { selectCustomFilters } from '../v2/selectors/mask/customFilter';
-
 export const selectMask = (state: RootState) => state.mask;
 export const selectIntervalMask = createSelector(
   selectMask,
@@ -71,20 +69,12 @@ export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
     : undefined
 );
 
-export const selectCustomFilterFun = createSelector(
-  selectCustomFilters,
-  (filters) => (e: ProsoVisDetailRichEvent) =>
-    !some(filters, (filter, path) => {
-      return filter[get(path, e)] === null;
-    })
-);
-
 export const maskAllFun = createSelector(
   selectIntervalFun,
   selectKindFun,
   selectActorFun,
   selectBoundsFun,
-  selectCustomFilterFun,
+  selectCustomFiltersFun,
   function (interval, kind, actor, bound, customFilters) {
     return (e: ProsoVisDetailRichEvent) => {
       if (!kind(e)) return false;

@@ -11,7 +11,7 @@ import {
 } from '../../../components/ui/CheckBoxSwitch';
 import classnames from 'classnames';
 import styled from 'styled-components/macro';
-import { darkgray, lightgray } from '../../../components/ui/colors';
+import { darkgray, lightgray } from '../../../v2/components/theme';
 
 export const PaddedStyledText = styled(StyledText)`
   padding-left: 0.125em;

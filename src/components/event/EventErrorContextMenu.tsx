@@ -1,26 +1,26 @@
 import React, {
-  useState,
-  useRef,
+  useCallback,
   useEffect,
   useMemo,
-  useCallback,
+  useRef,
+  useState,
 } from 'react';
-import { ProsoVisError } from '../../v2/types/errors';
-import { IconSpacer, IconSpacerPointer } from '../ui/IconSpacer';
 import {
-  XIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   GrabberIcon,
+  XIcon,
 } from '@primer/octicons-react';
-import { sortBy, pipe, capitalize } from 'lodash/fp';
-import { useDimsPopper } from '../ui/Popper';
-import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
-import { useSpring, animated } from 'react-spring';
+import { capitalize, pipe, sortBy } from 'lodash/fp';
+import { animated, useSpring } from 'react-spring';
 import { useDrag } from 'react-use-gesture';
-import Modal from '../../feature/modal/Modal';
 import styled from 'styled-components/macro';
-import { darkgray } from '../ui/colors';
+import Modal from '../../feature/modal/Modal';
+import { stopEventPropagation, useFlatClick } from '../../hooks/useClick';
+import { ProsoVisError } from '../../v2/types/errors';
+import { IconSpacer, IconSpacerPointer } from '../ui/IconSpacer';
+import { useDimsPopper } from '../ui/Popper';
+import { darkgray } from '../../v2/components/theme';
 
 const errorLevelTranslation: { [k in ProsoVisError['level']]: string } = {
   Error: 'erreur',

@@ -10,8 +10,8 @@ import { IconSpacerPointer } from '../../../components/ui/IconSpacer';
 import { useDimsPopper } from '../../../components/ui/Popper';
 import { SmallFont } from '../../../feature/mask/styled-components';
 import Modal from '../../../feature/modal/Modal';
-import { useFlatClick } from '../../../hooks/useClick';
-import { darkgray } from '../../components/theme';
+import { stopEventPropagation, useFlatClick } from '../../../hooks/useClick';
+import { darkgray, lightgray, moongray } from '../../components/theme';
 import {
   removeCustomFilter,
   toggleCustomFilter,
@@ -55,34 +55,38 @@ const AbsoluteDiv = styled.div`
   ${scrollbar}
 `;
 
-const AddFilter: React.FC = function () {
+const CustomFiltersInput: React.FC = function () {
   const dispatch = useDispatch();
 
-  const $input = useRef<HTMLInputElement>(null as any);
+  const [input, setInput] = useState('');
+
+  const handleInput = useCallback((e: FormEvent<HTMLInputElement>) => {
+    setInput(e.currentTarget.value);
+  }, []);
 
   const handleSubmit = useCallback(
     (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const trimmed = $input.current.value.trim();
-      if (trimmed) {
-        dispatch(addCustomFilterThunk(trimmed));
-        $input.current.value = '';
-      }
+      if (input) dispatch(addCustomFilterThunk(input));
+      setInput('');
     },
-    [$input, dispatch]
+    [input, dispatch]
   );
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} onMouseUpCapture={stopEventPropagation}>
       <input
         type="text"
         name="add-filter"
         id="add-filter"
         placeholder="add filter"
         aria-label="add filter"
-        ref={$input}
+        value={input}
+        onInput={handleInput}
       />
-      <button type="submit">✔</button>
+      <button type="submit" disabled={input.trim() === ''}>
+        ✔
+      </button>
     </form>
   );
 };
@@ -117,7 +121,7 @@ export const MoreFilters: React.FC = function () {
       </MoreFiltersButton>
       <Modal>
         <AbsoluteDiv ref={$content} style={dims}>
-          <AddFilter />
+          <CustomFiltersInput />
           <div>
             {map(filters, (values, filter) => (
               <SingleFilterView name={filter} filter={values} />
@@ -152,13 +156,30 @@ const CustomFilter: React.FC<{
   );
 };
 
-const FlewWrap = styled(StyledFlex)`
+const SingleFilterContent = styled(StyledFlex)`
   flex-wrap: wrap;
+  flex: 1;
+  max-height: 10em;
+  overflow-y: auto;
+  margin-left: 1em;
+  border-top: 2px solid ${lightgray};
+  border-bottom: 2px solid ${lightgray};
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+  padding-top: 0.125em;
+  ${scrollbar}
+`;
+
+const StyledCode = styled.code`
+  background-color: ${moongray};
+  border-radius: 4px;
+  padding-left: 0.125em;
+  padding-right: 0.125em;
 `;
 
 export const SingleFilterView: React.FC<{
   name: string;
-  filter: _.Dictionary<string | null>;
+  filter: { kinds: string[]; values: _.Dictionary<string | null> };
 }> = function ({ name, filter }) {
   const dispatch = useDispatch();
   const deleteFilter = useCallback(() => {
@@ -167,8 +188,8 @@ export const SingleFilterView: React.FC<{
   const handleDeleteClick = useFlatClick(deleteFilter);
 
   return (
-    <div>
-      <StyledFlex className="pr2">
+    <div className="pr2 mt3">
+      <StyledFlex>
         <IconSpacerPointer
           as="span"
           {...handleDeleteClick}
@@ -177,13 +198,16 @@ export const SingleFilterView: React.FC<{
         >
           <XIcon className="red" aria-label="Supprimer" />
         </IconSpacerPointer>
-        <span className="code">{name}</span>
+        <pre className="ma0">
+          <StyledCode>{name}</StyledCode>:{' '}
+          <StyledCode>{filter.kinds.join(' | ')}</StyledCode>
+        </pre>
       </StyledFlex>
-      <FlewWrap>
-        {map(filter, (state, kind) => (
+      <SingleFilterContent>
+        {map(filter.values, (state, kind) => (
           <CustomFilter key={kind} kind={kind} state={state} parent={name} />
         ))}
-      </FlewWrap>
+      </SingleFilterContent>
     </div>
   );
 };

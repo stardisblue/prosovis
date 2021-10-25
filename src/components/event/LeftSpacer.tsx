@@ -1,5 +1,5 @@
 import styled from 'styled-components/macro';
-import { lightgray } from '../ui/colors';
+import { lightgray } from '../../v2/components/theme';
 import { scrollbar } from '../scrollbar';
 
 export const LeftSpacer = styled.div<{ borderColor?: string }>`

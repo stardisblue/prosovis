@@ -2,7 +2,7 @@ import React, { useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import Modal from '../../feature/modal/Modal';
 import { getDimensionObject } from '../../hooks/useDimensions';
-import { darkgray } from './colors';
+import { darkgray } from '../../v2/components/theme';
 
 type PopperType<T extends HTMLElement | SVGElement> = {
   as?: keyof JSX.IntrinsicElements | React.ComponentType<any>;

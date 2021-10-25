@@ -1,12 +1,11 @@
 import { isAfter, isBefore, isWithinInterval, parseISO } from 'date-fns';
 import { latLngBounds } from 'leaflet';
-import { some } from 'lodash';
-import { filter, get, isNil } from 'lodash/fp';
+import { filter, isNil } from 'lodash/fp';
 import { createSelector } from 'reselect';
 import { RichEvent } from '../../types/events';
 import { ProsoVisPlace } from '../../types/localisations';
 import { selectRichEvents } from '../events';
-import { selectCustomFilters } from './customFilter';
+import { selectCustomFiltersFun } from './customFilter';
 import { selectMaskGlobalMapBounds } from './globalMapBounds';
 import { selectMaskGlobalTime } from './globalTime';
 import { selectActiveKinds } from './kind';
@@ -17,15 +16,12 @@ import { selectActiveKinds } from './kind';
 export const selectEventsWithoutKinds = createSelector(
   selectRichEvents,
   selectActiveKinds,
-  selectCustomFilters,
+  selectCustomFiltersFun,
   (events, kinds, filters) =>
     events &&
     filter(
       (richEvent) =>
-        kinds[richEvent.event.kind] === undefined &&
-        !some(filters, (filter, path) => {
-          return filter[get(path, richEvent)] === null;
-        }),
+        kinds[richEvent.event.kind] === undefined && filters(richEvent),
       events
     )
 );

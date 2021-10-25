@@ -1,4 +1,4 @@
-import { darkgray, lightgray } from './ui/colors';
+import { darkgray, lightgray } from '../v2/components/theme';
 
 export const scrollbar = `
 &::-webkit-scrollbar-corner {

@@ -1,5 +1,5 @@
-import { isNil } from 'lodash/fp';
 import React from 'react';
+import { isNil } from 'lodash/fp';
 import styled, { keyframes } from 'styled-components/macro';
 
 const LoadingSplash = styled.div`

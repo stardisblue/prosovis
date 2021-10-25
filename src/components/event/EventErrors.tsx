@@ -1,14 +1,14 @@
-import React, { useState, useRef, useMemo } from 'react';
-import { ProsoVisError } from '../../v2/types/errors';
-import { IconSpacerPointer } from '../ui/IconSpacer';
 import { IconProps, XCircleFillIcon } from '@primer/octicons-react';
 import { compact, groupBy } from 'lodash/fp';
-import { blue, red, orange, lightgray } from '../ui/colors';
+import React, { useMemo, useRef, useState } from 'react';
 import styled, { StyledComponent } from 'styled-components/macro';
+import { stopEventPropagation } from '../../hooks/useClick';
+import { blue, lightgray, orange, red } from '../../v2/components/theme';
+import { ProsoVisError } from '../../v2/types/errors';
 import AlertFillIcon from '../ui/icon/AlertFillIcon';
 import InfoFillIcon from '../ui/icon/InfoFillIcon';
+import { IconSpacerPointer } from '../ui/IconSpacer';
 import { usePopper, useRefPopper } from '../ui/Popper';
-import { stopEventPropagation } from '../../hooks/useClick';
 import { EventErrorContextMenu } from './EventErrorContextMenu';
 
 const SipErrorIcon = styled(XCircleFillIcon)`

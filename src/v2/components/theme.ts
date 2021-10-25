@@ -1,4 +1,5 @@
 export const moongray = '#eee';
+export const disabled = '#ccc';
 export const lightgray = 'lightgray';
 export const darkgray = '#6c757d';
 export const red = '#d73a49';

@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import StyledInput from '../../feature/mask/StyledInput';
 import { stopEventPropagation } from '../../hooks/useClick';
-import { disabled } from './colors';
+import { disabled } from '../../v2/components/theme';
 
 export const StyledLabel = styled.label`
   line-height: 1.2;
