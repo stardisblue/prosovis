@@ -1,15 +1,15 @@
-import React, { useRef, useState, useCallback } from 'react';
-import { QuestionButton } from './QuestionButton';
-import { useDimsPopper } from '../../components/ui/Popper';
-import Modal from '../modal/Modal';
-import styled from 'styled-components/macro';
-import { darkgray } from '../../components/ui/colors';
-import { IconSpacerPointer } from '../../components/ui/IconSpacer';
+import React, { useCallback, useRef, useState } from 'react';
 import { XIcon } from '@primer/octicons-react';
-import { useFlatClick } from '../../hooks/useClick';
+import styled from 'styled-components/macro';
 import { Organisms } from '../../components/Organisms';
-import { StyledFlex } from '../../components/ui/Flex/styled-components';
 import { ScaledDownImg } from '../../components/ScaledDownImg';
+import { StyledFlex } from '../../components/ui/Flex/styled-components';
+import { IconSpacerPointer } from '../../components/ui/IconSpacer';
+import { useDimsPopper } from '../../components/ui/Popper';
+import { useFlatClick } from '../../hooks/useClick';
+import Modal from '../modal/Modal';
+import { QuestionButton } from './QuestionButton';
+import { darkgray } from '../../v2/components/theme';
 
 const AbsoluteDiv = styled.div`
   top: 0;

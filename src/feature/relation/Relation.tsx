@@ -1,24 +1,23 @@
 import React, {
-  useRef,
-  useEffect,
-  useState,
-  useMemo,
   useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
 import * as d3 from 'd3';
-
-import RelationNode from './node/RelationNode';
-import { selectRelationNodes, selectRelationLinks } from './selectRelations';
-import { clearRelationSelection } from './selectionSlice';
-import { useDatum } from '../../hooks/useD3';
-import SuggestionRing from './suggestion-ring/SuggestionRing';
-import { selectRelationEmphasis } from './highlightSlice';
-import path from './suggestion-ring/path';
-import { darkgray } from '../../components/ui/colors';
-import { selectLocalisations } from '../../v2/selectors/localisations';
-import { getSimulation } from './utils/simulation';
 import { debounce, transform } from 'lodash/fp';
+import { useDispatch, useSelector } from 'react-redux';
+import { useDatum } from '../../hooks/useD3';
+import { selectLocalisations } from '../../v2/selectors/localisations';
+import { selectRelationEmphasis } from './highlightSlice';
+import RelationNode from './node/RelationNode';
+import { clearRelationSelection } from './selectionSlice';
+import { selectRelationLinks, selectRelationNodes } from './selectRelations';
+import path from './suggestion-ring/path';
+import SuggestionRing from './suggestion-ring/SuggestionRing';
+import { getSimulation } from './utils/simulation';
+import { darkgray } from '../../v2/components/theme';
 
 function useDimensions() {
   const [dims, setDims] = useState<DOMRect>();

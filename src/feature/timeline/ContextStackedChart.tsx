@@ -1,34 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
-import { useSelector } from 'react-redux';
-import * as d3 from 'd3';
-import { selectMainColor, selectActorColor } from '../../selectors/color';
-
 import { createSelector } from '@reduxjs/toolkit';
-import ContextOptions from './ContextOptions';
-import { selectSwitch } from '../../selectors/switch';
+import * as d3 from 'd3';
+import { parseISO } from 'date-fns';
 import { map as _map } from 'lodash';
 import {
-  map,
-  pipe,
-  get,
-  values,
-  flatMap,
   concat,
-  groupBy,
   countBy,
+  flatMap,
+  get,
+  groupBy,
+  map,
   mapValues,
+  pipe,
   sortBy,
+  values,
 } from 'lodash/fp';
+import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { selectActorColor, selectKindColor } from '../../selectors/color';
+import { selectSwitch } from '../../selectors/switch';
 import {
   selectDetailActorIds,
   selectDetailKinds,
   selectDetailsRichEvents,
 } from '../../v2/selectors/detail/actors';
 import { ProsoVisDetailRichEvent } from '../../v2/types/events';
-import { parseISO } from 'date-fns';
+import ContextOptions from './ContextOptions';
 
-// TODO extract this
 const defaultInterval = d3.timeYear
+  // TODO extract this date
   .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
   .map((d) => ({ time: d, kind: '', actor: null }));
 
@@ -43,6 +42,7 @@ export const selectDiscrete = createSelector(
         );
 
         return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
+          // TODO groupby
           kind: event.kind,
           actor: event.actor,
           time,
@@ -50,6 +50,7 @@ export const selectDiscrete = createSelector(
       } else if (event.datation.length === 1) {
         return [
           {
+            // TODO groupby
             kind: event.kind,
             actor: event.actor,
             time: d3.timeYear(parseISO(event.datation[0].value)),
@@ -67,6 +68,7 @@ export const selectDiscrete = createSelector(
   ) as (v: any) => _.Dictionary<
     {
       time: Date;
+      // TODO groupby
       kind: string;
       actor: string;
     }[]
@@ -77,12 +79,13 @@ const selectMap = createSelector(
   selectSwitch,
   selectDetailActorIds,
   selectDetailKinds,
-  selectMainColor,
+  selectKindColor,
   selectActorColor,
   (switcher, actors, kinds, mainColor, actorColor) =>
     switcher === 'Actor'
       ? { countBy: 'actor', keys: actors, color: actorColor }
-      : { countBy: 'kind', keys: values(kinds), color: mainColor }
+      : // TODO groupby
+        { countBy: 'kind', keys: values(kinds), color: mainColor }
 );
 
 const selectStack = createSelector(

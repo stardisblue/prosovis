@@ -12,7 +12,7 @@ export const selectActorRange = createSelector(
   (c) => c.actorRange
 );
 
-export const selectMainColor = createSelector(
+export const selectKindColor = createSelector(
   selectDomain,
   selectKindRange,
   (domain, range) =>
@@ -78,14 +78,4 @@ export const selectActorColor = createSelector(
       return actorColor.copy();
     }
   }
-);
-
-export const selectBorderColor = createSelector(
-  selectDomain,
-  selectKindRange,
-  (domain, range) =>
-    d3
-      .scaleOrdinal<string, string>()
-      .domain(domain)
-      .range(range.map((d) => d3.color(d)!.darker(2).toString()))
 );

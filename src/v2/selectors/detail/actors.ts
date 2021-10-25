@@ -47,6 +47,8 @@ export const selectDetailsRichEvents = createSelector(
       : []
 );
 
+// TODO groupby
+/** @deprecated */
 export const selectDetailKinds = createSelector(
   selectDetailsRichEvents,
   (events) =>

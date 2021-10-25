@@ -1,12 +1,11 @@
 import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
+import styled from 'styled-components/macro';
+import { stopEventPropagation } from '../../hooks/useClick';
 import { RootState } from '../../reducers';
 import { toggleSwitch } from '../../reducers/switchSlice';
-import styled from 'styled-components/macro';
+import { darkgray } from '../../v2/components/theme';
 import StyledInput from './StyledInput';
-import { stopEventPropagation } from '../../hooks/useClick';
-import { darkgray } from '../../components/ui/colors';
 
 const StyledLabel = styled.label`
   position: relative;

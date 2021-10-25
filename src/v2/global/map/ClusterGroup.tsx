@@ -9,6 +9,8 @@ import { Marker } from '../../components/leaflet/Marker';
 import { groupBy, pipe, sortBy, toPairs } from 'lodash/fp';
 import PieChart from './PieChart';
 import { ClusterPiePart } from './ClusterPiePart';
+import { useSelector } from 'react-redux';
+import { selectDefaultFilterResolver } from '../../selectors/mask/customFilter';
 
 export const ClusterGroup: React.FC<{ locs: RichEventLocalised[] }> =
   function ({ locs }) {
@@ -43,14 +45,17 @@ export const Cluster: React.FC<{ value: RichEventCluster }> = function ({
   const { r, x, y } = value;
   const { top } = useLeaflet();
 
+  const path = useSelector(selectDefaultFilterResolver);
+
   const parts = useMemo(
     () =>
       pipe(
-        groupBy<RichEventCluster[]>('event.kind'),
+        // TODO groubpy
+        groupBy<RichEventLocalised>(path),
         toPairs,
-        sortBy<[string, RichEventCluster[]]>('0')
+        sortBy<[string, RichEventLocalised[]]>('0')
       )(value.children),
-    [value.children]
+    [value.children, path]
   );
   return (
     <Marker

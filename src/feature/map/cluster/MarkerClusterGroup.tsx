@@ -8,10 +8,15 @@ import ReactDOM from 'react-dom';
 import { selectSwitchIsActor } from '../../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import { groupBy, map, pipe, sortBy, toPairs } from 'lodash/fp';
+import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
 
+// TODO
 export const selectMarkerGroupBy = createSelector(
   selectSwitchIsActor,
-  (switcher) => (switcher ? ({ actor }: any) => actor : ({ kind }: any) => kind)
+  (switcher) =>
+    switcher
+      ? ({ actor }: DataMarkerOptions) => actor
+      : ({ kind }: DataMarkerOptions) => kind
 );
 
 type Cluster = L.MarkerCluster & {
@@ -102,13 +107,13 @@ export const MarkerClusterGroup: React.FC<{
 
     setPortals(
       clusters.map((c) => {
-        const markers = c.getAllChildMarkers();
+        const markers: DataMarkerType[] = c.getAllChildMarkers() as any[];
         const radius = scale(markers.length);
         const size = radius * 2;
 
         const counts = pipe(
           map('options'),
-          groupBy<L.MarkerOptions>(markerGroupBy),
+          groupBy<DataMarkerOptions>(markerGroupBy),
           toPairs,
           sortBy<[string, L.MarkerOptions[]]>('0')
         )(markers);

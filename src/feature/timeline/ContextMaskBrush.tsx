@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-import ContextOptions from './ContextOptions';
 import styled from 'styled-components/macro';
-import { darkgray } from '../../components/ui/colors';
+import ContextOptions from './ContextOptions';
 import { useUpdateMask } from './useUpdateMask';
+import { darkgray } from '../../v2/components/theme';
 
 const StyledG = styled.g`
   .selection {
@@ -13,7 +13,7 @@ const StyledG = styled.g`
 
 const height = ContextOptions.height - ContextOptions.margin.mask.bottom;
 
-const path = d3.line().context(null)([
+const path = d3.line()([
   [0, 0],
   [2, 0],
   [2, height - 10],

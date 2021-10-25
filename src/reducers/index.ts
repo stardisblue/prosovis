@@ -13,7 +13,6 @@ import localisationData from '../v2/reducers/localisationsDataSlice';
 import eventData from '../v2/reducers/eventsDataSlice';
 import graphData from '../v2/reducers/graphDataSlice';
 import relationsData from '../v2/reducers/relationsDataSlice';
-import maskKind from '../v2/reducers/mask/kindSlice';
 import customFilter from '../v2/reducers/mask/customFilterSlice';
 import maskGlobalTime from '../v2/reducers/mask/globalTimeSlice';
 import maskGlobalMapBounds from '../v2/reducers/mask/globalMapBoundsSlice';
@@ -39,7 +38,6 @@ const rootReducer = combineReducers({
   eventData,
   graphData,
   relationsData,
-  maskKind,
   maskGlobalTime,
   maskGlobalMapBounds,
   globalHighlight,

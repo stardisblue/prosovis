@@ -1,13 +1,13 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleActorMask } from '../../reducers/maskSlice';
-import { selectSwitchActorColor } from '../../selectors/switch';
-import { actorMaskState, selectActorMask } from '../../selectors/mask';
-import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
+import { useDispatch, useSelector } from 'react-redux';
 import ActorLabel from '../../components/ActorLabel';
-import { SmallFont } from './styled-components';
-import { darkgray } from '../../components/ui/colors';
+import CheckBoxSwitch from '../../components/ui/CheckBoxSwitch';
+import { toggleActorMask } from '../../reducers/maskSlice';
+import { actorMaskState, selectActorMask } from '../../selectors/mask';
+import { selectSwitchActorColor } from '../../selectors/switch';
+import { darkgray } from '../../v2/components/theme';
 import { ProsoVisActor } from '../../v2/types/actors';
+import { SmallFont } from './styled-components';
 
 const Actor: React.FC<{
   actor: ProsoVisActor;

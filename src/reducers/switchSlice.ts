@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+// TODO groupby
 
 const switchSlice = createSlice({
   name: 'switch',
@@ -21,9 +22,5 @@ const switchSlice = createSlice({
 
 export default switchSlice.reducer;
 
-export const {
-  toggleSwitch,
-  switchTo,
-  switchToActor,
-  switchToKind,
-} = switchSlice.actions;
+export const { toggleSwitch, switchTo, switchToActor, switchToKind } =
+  switchSlice.actions;

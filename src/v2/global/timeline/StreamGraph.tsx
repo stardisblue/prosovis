@@ -11,7 +11,7 @@ import {
 import { parseISO } from 'date-fns';
 import { Dictionary } from 'lodash';
 import { useSelector } from 'react-redux';
-import { selectSwitchKindColor } from '../../../selectors/switch';
+import { selectSwitchMainColor } from '../../../selectors/switch';
 import { Axis } from '../../components/Axis';
 import BrushX from '../../components/brush/BrushX';
 import { height, margin } from './options';
@@ -25,7 +25,7 @@ export const StreamGraph: React.FC<{
   stack: d3.Series<Tyvent<Dictionary<number>>, string>[];
   reference: d3.Series<Tyvent<Dictionary<number>>, string>[];
 }> = function ({ width, stack, reference }) {
-  const color = useSelector(selectSwitchKindColor);
+  const color = useSelector(selectSwitchMainColor);
 
   const colorReference = useMemo(() => {
     const grayscale = color?.copy();
@@ -47,11 +47,14 @@ export const StreamGraph: React.FC<{
   const handleBrush = useUpdateMaskGlobalTime();
   const x = useMemo(
     function () {
-      return scaleTime()
-        .domain([parseISO('1700-01-01'), parseISO('2000-01-01')])
-        .range([margin.left, width - margin.right])
-        .nice()
-        .clamp(true);
+      return (
+        scaleTime()
+          // TODO :)
+          .domain([parseISO('1700-01-01'), parseISO('2000-01-01')])
+          .range([margin.left, width - margin.right])
+          .nice()
+          .clamp(true)
+      );
     },
     [width]
   );
@@ -76,7 +79,7 @@ export const StreamGraph: React.FC<{
         y={y}
         defaultColor={lightgray}
       />
-      <StackedChart stack={stack} color={color} x={x} y={y} />
+      <StackedChart stack={stack} color={color ?? null} x={x} y={y} />
       <Axis
         scale={x}
         position={['0', height - margin.bottom + 'px']}

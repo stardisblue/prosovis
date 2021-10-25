@@ -25,6 +25,7 @@ export const selectEventIndex = createSelector(
   (events) => events && groupBy('actor.id', events)
 );
 
+/** @deprecated */
 export const selectUniqueKinds = createSelector(
   selectEvents,
   (events) =>

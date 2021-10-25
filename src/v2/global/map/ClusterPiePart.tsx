@@ -4,7 +4,7 @@ import { isEmpty } from 'lodash';
 import { map, sumBy } from 'lodash/fp';
 import { useDispatch, useSelector } from 'react-redux';
 import { useFlatClick } from '../../../hooks/useClick';
-import { selectSwitchKindColor } from '../../../selectors/switch';
+import { selectSwitchMainColor } from '../../../selectors/switch';
 import { darkgray } from '../../components/theme';
 import {
   resetGlobalHighlight,
@@ -20,7 +20,8 @@ export const ClusterPiePart: React.FC<{
   radius: number;
 }> = function ({ a, arc, radius }) {
   const dispatch = useDispatch();
-  const color = useSelector(selectSwitchKindColor);
+  // TODO groupby
+  const color = useSelector(selectSwitchMainColor);
   const [id, values] = a.data;
 
   const interactive = useMemo(

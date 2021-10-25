@@ -35,7 +35,7 @@ import {
   clearSelection,
 } from '../../reducers/selectionSlice';
 import { selectMaskedEvents } from '../../selectors/mask';
-import { selectEventColor } from '../../selectors/switch';
+import { selectRichEventColor } from '../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import {
   selectTimelineGroupBy,
@@ -138,10 +138,11 @@ type TimelineEvent = {
 const selectTimelineEvents = createSelector(
   selectMaskedEvents,
   selectTimelineGroupBy,
-  selectEventColor,
+  selectRichEventColor,
   (events, groupBy, eventColor) => {
     return transform(
-      function (acc, { event: e }) {
+      function (acc, richEvent) {
+        const { event: e } = richEvent;
         if (e.datation && e.datation.length > 0) {
           const { id, kind, datation } = e;
           acc.push({
@@ -154,7 +155,7 @@ const selectTimelineEvents = createSelector(
             style: `border:0 solid white;
             border-left: 1px solid white;
             border-right: 1px solid white;
-            background-color: ${eventColor.main(e)};`,
+            background-color: ${eventColor.main(richEvent)};`,
             group: groupBy(e),
             kind,
           });

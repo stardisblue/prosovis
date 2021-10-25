@@ -1,42 +1,45 @@
-import { createSelector } from 'reselect';
+import { utcDay, utcYear, utcYears } from 'd3';
+import { isNil } from 'lodash';
 import {
   concat,
+  filter,
+  first,
   flatMap,
   get,
   groupBy,
   map,
   pipe,
-  filter,
-  first,
 } from 'lodash/fp';
-import { utcDay, utcYear, utcYears } from 'd3';
+import { createSelector } from 'reselect';
 import {
   selectEventsWithoutKinds,
   selectRichEventsTimed,
 } from '../../selectors/mask';
+import { selectDefaultFilterResolver } from '../../selectors/mask/customFilter';
 import { RichEvent } from '../../types/events';
-import { isNil } from 'lodash';
 
 export type Tyvent<T> = {
   value: T;
   time: Date;
 };
 
-const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
-  if (event.datation.length === 2) {
+const discretize: (
+  path: (e: RichEvent) => string
+) => (e: RichEvent) => Tyvent<string>[] = (path) => (event) => {
+  if (event.event.datation.length === 2) {
     const [start, end] = map(
       pipe(get('value'), (d) => new Date(d), utcYear.floor),
-      event.datation
+      event.event.datation
     );
     return utcYears(start, utcDay.offset(end, 1)).map((time) => ({
-      value: event.kind,
+      value: path(event),
       time,
     }));
-  } else if (event.datation.length === 1) {
+  } else if (event.event.datation.length === 1) {
     return [
       {
-        value: event.kind,
-        time: pipe((d) => new Date(d), utcYear)(event.datation[0].value),
+        value: path(event),
+        time: pipe((d) => new Date(d), utcYear)(event.event.datation[0].value),
       },
     ];
   }
@@ -45,18 +48,25 @@ const discretize: (e: RichEvent) => Tyvent<string>[] = ({ event }) => {
 
 export const selectBackgroundDiscrete = createSelector(
   selectEventsWithoutKinds,
+  selectDefaultFilterResolver,
   fillEmpty
 );
 
-export const selectDiscrete = createSelector(selectRichEventsTimed, fillEmpty);
+export const selectDiscrete = createSelector(
+  selectRichEventsTimed,
+  selectDefaultFilterResolver,
+  fillEmpty
+);
 function fillEmpty(
-  events: RichEvent[] | undefined
+  events: RichEvent[] | undefined,
+  path: (e: RichEvent) => string
 ): Tyvent<Tyvent<string>[]>[] | undefined {
   if (isNil(events)) return;
   return pipe(
-    flatMap(discretize),
+    flatMap(discretize(path)),
     concat(
       utcYear
+        // TODO date :)
         .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
         .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
     ),

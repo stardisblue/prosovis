@@ -1,16 +1,15 @@
-import React, { useMemo, useCallback, useContext } from 'react';
-import L from 'leaflet';
-import { useEffect } from 'react';
-import { AntPath, AntPathEvent } from './AntPath';
-import useLazyRef from '../../../hooks/useLazyRef';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectSwitchActorColor } from '../../../selectors/switch';
-import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { setSelection } from '../../../reducers/selectionSlice';
-import { HoverContext } from '../HoverContext';
 import * as d3 from 'd3-scale';
-import { darkgray } from '../../../components/ui/colors';
+import L from 'leaflet';
 import { debounce, map } from 'lodash/fp';
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import useHoverHighlight from '../../../hooks/useHoverHighlight';
+import useLazyRef from '../../../hooks/useLazyRef';
+import { setSelection } from '../../../reducers/selectionSlice';
+import { selectSwitchActorColor } from '../../../selectors/switch';
+import { darkgray } from '../../../v2/components/theme';
+import { HoverContext } from '../HoverContext';
+import { AntPath, AntPathEvent } from './AntPath';
 
 const scale = d3.scaleLog().domain([1, 10]).range([2, 50]);
 

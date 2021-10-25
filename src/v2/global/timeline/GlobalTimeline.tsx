@@ -1,12 +1,12 @@
 import React, { useMemo, useRef } from 'react';
-import Loading from '../../components/Loading';
-import { useSelector } from 'react-redux';
 import { reduce, stack, stackOrderAscending } from 'd3';
+import { countBy, map, pipe, sortBy } from 'lodash/fp';
+import { useSelector } from 'react-redux';
 import useDimensions from '../../../hooks/useDimensions';
+import Loading from '../../components/Loading';
+import { selectCustomFilterDefaultValues } from '../../selectors/mask/customFilter';
 import { height } from './options';
 import { selectBackgroundDiscrete, selectDiscrete, Tyvent } from './selectors';
-import { countBy, map, pipe, sortBy, values } from 'lodash/fp';
-import { selectUniqueKinds } from '../../selectors/events';
 import { StreamGraph } from './StreamGraph';
 
 const flatten = pipe(
@@ -25,13 +25,14 @@ const GlobalTimeline: React.FC = function () {
 
   const events = useSelector(selectDiscrete);
   const backgroundEvents = useSelector(selectBackgroundDiscrete);
-  const kinds = useSelector(selectUniqueKinds);
+  // TODO groupby
+  const kinds = useSelector(selectCustomFilterDefaultValues);
 
   const stBackground = useMemo(
     () =>
       backgroundEvents &&
       stack<any, Tyvent<_.Dictionary<number>>, string>()
-        .keys(values(kinds))
+        .keys(kinds)
         // .offset(stackOffsetSilhouette)
         .order(stackOrderAscending)
         .value((d, k) => d.value[k] || 0)(flatten(backgroundEvents)),

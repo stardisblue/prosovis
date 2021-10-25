@@ -6,7 +6,6 @@ import { RootState } from '../reducers';
 import { ActorMask } from '../reducers/maskSlice';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
 import { selectCustomFiltersFun } from '../v2/selectors/mask/customFilter';
-import { selectActiveKinds } from '../v2/selectors/mask/kind';
 import { ProsoVisActor } from '../v2/types/actors';
 import { ProsoVisDate, ProsoVisDetailRichEvent } from '../v2/types/events';
 export const selectMask = (state: RootState) => state.mask;
@@ -47,11 +46,6 @@ export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
     : undefined
 );
 
-export const selectKindFun = createSelector(
-  selectActiveKinds,
-  (res) => (e: ProsoVisDetailRichEvent) => kindMaskState(e.event.kind, res)
-);
-
 export const selectActorFun = createSelector(selectActorMask, (res) =>
   res ? (e: ProsoVisDetailRichEvent) => actorMaskState(e.actor, res) : undefined
 );
@@ -71,13 +65,11 @@ export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
 
 export const maskAllFun = createSelector(
   selectIntervalFun,
-  selectKindFun,
   selectActorFun,
   selectBoundsFun,
   selectCustomFiltersFun,
-  function (interval, kind, actor, bound, customFilters) {
+  function (interval, actor, bound, customFilters) {
     return (e: ProsoVisDetailRichEvent) => {
-      if (!kind(e)) return false;
       if (!customFilters(e)) return false;
       if (actor && !actor(e)) return false;
       if (interval && !interval(e)) return false;
@@ -101,8 +93,4 @@ export const maskedEventsAsMap = createSelector(
 export function actorMaskState(actor: ProsoVisActor, masks?: ActorMask) {
   const state = masks && masks[actor.id];
   return state !== undefined ? state : true;
-}
-
-export function kindMaskState(kind: string, masks: _.Dictionary<string>) {
-  return masks[kind] === undefined;
 }

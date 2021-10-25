@@ -1,14 +1,14 @@
 import React, { useCallback, useMemo } from 'react';
-import { Marker } from './Marker';
 import L from 'leaflet';
-import { useSelector, useDispatch } from 'react-redux';
-import { selectMarkerColor } from '../../../selectors/switch';
-import { superSelectionAsMap } from '../../../selectors/superHighlights';
-
-import { setSelection } from '../../../reducers/selectionSlice';
-import useHoverHighlight from '../../../hooks/useHoverHighlight';
-import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
 import { isEmpty } from 'lodash/fp';
+import { useDispatch, useSelector } from 'react-redux';
+import useHoverHighlight from '../../../hooks/useHoverHighlight';
+import { setSelection } from '../../../reducers/selectionSlice';
+import { superSelectionAsMap } from '../../../selectors/superHighlights';
+import { selectRichEventColor } from '../../../selectors/switch';
+import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFilter';
+import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
+import { Marker } from './Marker';
 
 const SipMarker: React.FC<{
   $l: React.MutableRefObject<L.LayerGroup>;
@@ -17,8 +17,9 @@ const SipMarker: React.FC<{
 }> = function ({ $l, $map, event }) {
   const dispatch = useDispatch();
   const { place } = event;
-  const { id, actor, kind, datation } = event.event;
-  const color = useSelector(selectMarkerColor);
+  const { id, actor, datation } = event.event;
+  const customPath = useSelector(selectDefaultFilterResolver);
+  const color = useSelector(selectRichEventColor);
   const selected = useSelector(superSelectionAsMap);
   const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
   const { onMouseEnter, onMouseLeave } = useHoverHighlight(interactive);
@@ -38,7 +39,7 @@ const SipMarker: React.FC<{
       latlng={[+place.lat!, +place.lng!]}
       options={{
         id,
-        kind,
+        kind: customPath(event),
         actor,
         dates: datation,
         fillColor: color.main(event),

@@ -1,14 +1,13 @@
 import React, { useMemo } from 'react';
-
 import * as d3 from 'd3';
-import { LocEvents } from '../models';
-import PiePart from './PiePart';
-import { useDatum } from '../../../hooks/useD3';
 import { useSelector } from 'react-redux';
-import { selectRelationActorRing } from '../selectRelations';
+import { useDatum } from '../../../hooks/useD3';
 import { selectSwitchActorColor } from '../../../selectors/switch';
-import { darkgray } from '../../../components/ui/colors';
 import { ProsoVisActor } from '../../../v2/types/actors';
+import { LocEvents } from '../models';
+import { selectRelationActorRing } from '../selectRelations';
+import PiePart from './PiePart';
+import { darkgray } from '../../../v2/components/theme';
 
 const scale = d3.scaleSqrt().range([0, 3]);
 

@@ -8,22 +8,14 @@ import { selectRichEvents } from '../events';
 import { selectCustomFiltersFun } from './customFilter';
 import { selectMaskGlobalMapBounds } from './globalMapBounds';
 import { selectMaskGlobalTime } from './globalTime';
-import { selectActiveKinds } from './kind';
 
 /**
  * filter: kinds
  */
 export const selectEventsWithoutKinds = createSelector(
   selectRichEvents,
-  selectActiveKinds,
   selectCustomFiltersFun,
-  (events, kinds, filters) =>
-    events &&
-    filter(
-      (richEvent) =>
-        kinds[richEvent.event.kind] === undefined && filters(richEvent),
-      events
-    )
+  (events, filters) => events && filter<RichEvent>(filters, events)
 );
 
 /**

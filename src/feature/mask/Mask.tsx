@@ -1,9 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/macro';
-import ColorSwitch from './ColorSwitch';
+import { CustomFilters } from '../../v2/shared/filters/CustomFilters';
 import ActorList from './ActorList';
-import { KindMaskView } from '../../v2/views/KindMaskView';
-import { scrollbar } from '../../components/scrollbar';
+import ColorSwitch from './ColorSwitch';
 
 const StyledSection = styled.section`
   display: grid;
@@ -35,9 +34,6 @@ const KindsArea = styled.div`
   min-height: 1.25em;
   padding-left: 0.5em;
   padding-right: 0.5em;
-  overflow-y: hidden;
-  overflow-x: auto;
-  ${scrollbar}
 `;
 
 const Mask: React.FC<{ className?: string }> = function ({ className }) {
@@ -50,7 +46,7 @@ const Mask: React.FC<{ className?: string }> = function ({ className }) {
         <ActorList />
       </ActorsArea>
       <KindsArea>
-        <KindMaskView />
+        <CustomFilters />
       </KindsArea>
     </StyledSection>
   );
