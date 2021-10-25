@@ -22,6 +22,7 @@ import {
   reverse,
   identity,
 } from 'lodash/fp';
+import { map as _map } from 'lodash';
 import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
 
 const markerReducer = function (
@@ -98,37 +99,36 @@ const SipAnthPaths: React.FC<{
   }, []);
 
   const { chens, offset, total } = useMemo(() => {
-    const chens: {
-      events: DataMarkerOptions[];
+    const chens: _.Dictionary<{
+      markers: DataMarkerOptions[];
       chain: PathSegment<DataMarkerOptions>[];
-    }[] = flow(
+    }> = flow(
       map(
         (marker: DataMarkerType) =>
           ({
             // extracting current cluster or marker position and id
-            event: marker.options,
+            options: marker.options,
             ...getMarkerLatLng(marker, zoom),
           } as AntPathEvent<DataMarkerOptions>)
       ),
-      groupBy('event.actor'),
+      groupBy('options.actor.id'),
       mapValues(
-        (
-          events: AntPathEvent<DataMarkerOptions>[] // chaining values
-        ) =>
-          ({
-            events: map('event', events),
-            chain: flow(flatify, simplify, segmentify)(events),
-          } as {
-            events: DataMarkerOptions[];
-            chain: PathSegment<DataMarkerOptions>[];
-          })
+        // chaining values
+        (markers: AntPathEvent<DataMarkerOptions>[]) => ({
+          markers: map('options', markers),
+          chain: flow(flatify, simplify, segmentify)(markers),
+        })
       )
     )(markers); // 5. we obtain a chain for each actor
 
     const flatChens = flow(
       flatMap('chain'),
-      filter<PathSegment<DataMarkerOptions>>('segment.1.event.dates.0.value'),
-      sortBy<PathSegment<DataMarkerOptions>>('segment.1.event.dates.0.value')
+      filter<PathSegment<DataMarkerOptions>>(
+        'segment.1.options.event.datation.0.value'
+      ),
+      sortBy<PathSegment<DataMarkerOptions>>(
+        'segment.1.options.event.datation.0.value'
+      )
     )(chens);
 
     const offset: _.Dictionary<number> = pipe(
@@ -138,7 +138,7 @@ const SipAnthPaths: React.FC<{
       mapValues(
         (chain: PathSegment<DataMarkerOptions>[]) =>
           chain.map(({ segment }, i) => [
-            pipe(map('event.id'), join(':'))(segment),
+            pipe(map('options.id'), join(':'))(segment),
             i,
           ]) as [string, number][]
       ),
@@ -159,13 +159,13 @@ const SipAnthPaths: React.FC<{
   }, [zoom, markers]);
   return (
     <>
-      {Object.entries(chens).map(([key, { chain, events }]) => (
+      {_map(chens, ({ chain, markers }, key) => (
         <ActorPath
           key={key}
           id={'' + key}
           $l={$group}
           chain={chain}
-          events={events}
+          events={markers}
           offset={offset}
           total={total}
         />

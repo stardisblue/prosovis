@@ -135,7 +135,7 @@ export function segmentify(
   );
 }
 
-export const getFirstDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  first(event.dates)?.value!;
-export const getLastDate = ({ event }: AntPathEvent<DataMarkerOptions>) =>
-  last(event.dates)?.value!;
+export const getFirstDate = ({ options }: AntPathEvent<DataMarkerOptions>) =>
+  first(options.event.datation)?.value!;
+export const getLastDate = ({ options }: AntPathEvent<DataMarkerOptions>) =>
+  last(options.event.datation)?.value!;

@@ -68,8 +68,8 @@ export const SingleFilterView: React.FC<CustomFilterType> = function ({
         <pre className="ma0">
           <StyledCode>{name}</StyledCode>:{' '}
           <StyledCode>{kinds.join(' | ')}</StyledCode>
-        </pre>
-        <button {...handleSetDefault}>🎨 choose as default</button>
+        </pre>{' '}
+        <button {...handleSetDefault}>✔ select</button>
       </StyledFlex>
       <CustomFilterContent>
         {map(values, (state, kind) => (

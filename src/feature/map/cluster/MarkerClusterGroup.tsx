@@ -9,14 +9,14 @@ import { selectSwitchIsActor } from '../../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
 import { groupBy, map, pipe, sortBy, toPairs } from 'lodash/fp';
 import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
+import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFilter';
 
 // TODO
 export const selectMarkerGroupBy = createSelector(
   selectSwitchIsActor,
-  (switcher) =>
-    switcher
-      ? ({ actor }: DataMarkerOptions) => actor
-      : ({ kind }: DataMarkerOptions) => kind
+  selectDefaultFilterResolver,
+  (switcher, path) =>
+    switcher ? ({ actor }: DataMarkerOptions) => actor : path
 );
 
 type Cluster = L.MarkerCluster & {

@@ -8,7 +8,7 @@ import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import { isEmpty, map, some } from 'lodash/fp';
 
 export type AntPathEvent<T = { id: string; [k: string]: any }> = {
-  event: T;
+  options: T;
   groupId: any;
   latLng: L.LatLng;
 };
@@ -85,7 +85,7 @@ export const AntPath: React.FC<{
     $antpath.current.setStyle({
       opacity:
         isEmpty(selected) ||
-        some(({ event: { id } }) => selected[id] !== undefined, events)
+        some(({ options: { id } }) => selected[id] !== undefined, events)
           ? undefined
           : 0.3,
     });

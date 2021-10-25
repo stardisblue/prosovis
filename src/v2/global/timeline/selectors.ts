@@ -1,4 +1,5 @@
 import { utcDay, utcYear, utcYears } from 'd3';
+import { parseISO } from 'date-fns';
 import { isNil } from 'lodash';
 import {
   concat,
@@ -23,12 +24,17 @@ export type Tyvent<T> = {
   time: Date;
 };
 
-const discretize: (
+const defaultInterval = utcYear
+  // TODO date :)
+  .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
+  .map<Tyvent<''>>((d) => ({ time: d, value: '' }));
+
+export const discretize: (
   path: (e: RichEvent) => string
 ) => (e: RichEvent) => Tyvent<string>[] = (path) => (event) => {
   if (event.event.datation.length === 2) {
     const [start, end] = map(
-      pipe(get('value'), (d) => new Date(d), utcYear.floor),
+      pipe(get('value'), parseISO, utcYear.floor),
       event.event.datation
     );
     return utcYears(start, utcDay.offset(end, 1)).map((time) => ({
@@ -39,7 +45,7 @@ const discretize: (
     return [
       {
         value: path(event),
-        time: pipe((d) => new Date(d), utcYear)(event.event.datation[0].value),
+        time: pipe(parseISO, utcYear)(event.event.datation[0].value),
       },
     ];
   }
@@ -57,6 +63,7 @@ export const selectDiscrete = createSelector(
   selectDefaultFilterResolver,
   fillEmpty
 );
+
 function fillEmpty(
   events: RichEvent[] | undefined,
   path: (e: RichEvent) => string
@@ -64,12 +71,7 @@ function fillEmpty(
   if (isNil(events)) return;
   return pipe(
     flatMap(discretize(path)),
-    concat(
-      utcYear
-        // TODO date :)
-        .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
-        .map<Tyvent<''>>((d) => ({ time: d, value: '' }))
-    ),
+    concat(defaultInterval),
     groupBy(pipe(get('time'), (v) => +v!)),
     map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
       time: pipe(first, get('time'))(v),

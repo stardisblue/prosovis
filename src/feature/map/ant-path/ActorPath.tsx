@@ -1,7 +1,7 @@
+import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import * as d3 from 'd3-scale';
 import L from 'leaflet';
 import { debounce, map } from 'lodash/fp';
-import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import useLazyRef from '../../../hooks/useLazyRef';
@@ -9,7 +9,9 @@ import { setSelection } from '../../../reducers/selectionSlice';
 import { selectSwitchActorColor } from '../../../selectors/switch';
 import { darkgray } from '../../../v2/components/theme';
 import { HoverContext } from '../HoverContext';
-import { AntPath, AntPathEvent } from './AntPath';
+import { DataMarkerOptions } from '../marker/Marker';
+import { AntPath } from './AntPath';
+import { PathSegment } from './path-maker';
 
 const scale = d3.scaleLog().domain([1, 10]).range([2, 50]);
 
@@ -17,16 +19,10 @@ export const ActorPath: React.FC<{
   id: string;
   $l: React.MutableRefObject<L.LayerGroup>;
   // $hover: React.MutableRefObject<string | null>;
-  chain: {
-    segment: [AntPathEvent, AntPathEvent];
-    diff: number;
-    // dist: number;
-  }[];
-  events: any[];
-  offset: _.Dictionary<any>;
-  total: {
-    [x: string]: boolean;
-  };
+  chain: PathSegment<DataMarkerOptions>[];
+  events: DataMarkerOptions[];
+  offset: _.Dictionary<number>;
+  total: _.Dictionary<boolean>;
 }> = function ({ id, $l, chain, offset, total, events }) {
   const $hover = useContext(HoverContext);
   const dispatch = useDispatch();
@@ -87,7 +83,7 @@ export const ActorPath: React.FC<{
   return (
     <>
       {chain.map(({ segment, diff }) => {
-        const key = map('event.id', segment).join(':');
+        const key = map('options.id', segment).join(':');
         const grp = map('groupId', segment).join(':');
 
         return (

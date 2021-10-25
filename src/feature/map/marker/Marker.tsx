@@ -1,14 +1,11 @@
 import React, { useEffect } from 'react';
 import L from 'leaflet';
 import useLazyRef from '../../../hooks/useLazyRef';
-import { ProsoVisDate } from '../../../v2/types/events';
+import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
 
 export type DataMarkerOptions = L.CircleMarkerOptions & {
   id: string;
-  kind: string;
-  actor: string;
-  dates: ProsoVisDate[];
-};
+} & ProsoVisDetailRichEvent;
 
 export interface DataMarkerType extends L.CircleMarker {
   new (latlng: L.LatLngExpression, options?: DataMarkerOptions): DataMarkerType;

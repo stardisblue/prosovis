@@ -6,7 +6,6 @@ import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import { setSelection } from '../../../reducers/selectionSlice';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
 import { selectRichEventColor } from '../../../selectors/switch';
-import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFilter';
 import { ProsoVisDetailRichEvent } from '../../../v2/types/events';
 import { Marker } from './Marker';
 
@@ -17,8 +16,7 @@ const SipMarker: React.FC<{
 }> = function ({ $l, $map, event }) {
   const dispatch = useDispatch();
   const { place } = event;
-  const { id, actor, datation } = event.event;
-  const customPath = useSelector(selectDefaultFilterResolver);
+  const { id } = event.event;
   const color = useSelector(selectRichEventColor);
   const selected = useSelector(superSelectionAsMap);
   const interactive = useMemo(() => ({ id, kind: 'Event' }), [id]);
@@ -39,9 +37,7 @@ const SipMarker: React.FC<{
       latlng={[+place.lat!, +place.lng!]}
       options={{
         id,
-        kind: customPath(event),
-        actor,
-        dates: datation,
+        ...event,
         fillColor: color.main(event),
         color: color.border(event),
         fillOpacity: isEmpty(selected) || selected[id] !== undefined ? 1 : 0.5,

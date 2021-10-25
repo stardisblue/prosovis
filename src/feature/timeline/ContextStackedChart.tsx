@@ -12,7 +12,6 @@ import {
   mapValues,
   pipe,
   sortBy,
-  values,
 } from 'lodash/fp';
 import React, { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useSelector } from 'react-redux';
@@ -20,72 +19,66 @@ import { selectActorColor, selectKindColor } from '../../selectors/color';
 import { selectSwitch } from '../../selectors/switch';
 import {
   selectDetailActorIds,
-  selectDetailKinds,
   selectDetailsRichEvents,
 } from '../../v2/selectors/detail/actors';
+import {
+  selectCustomFilterDefaultValues,
+  selectDefaultFilterResolver,
+} from '../../v2/selectors/mask/customFilter';
 import { ProsoVisDetailRichEvent } from '../../v2/types/events';
 import ContextOptions from './ContextOptions';
 
-const defaultInterval = d3.timeYear
+export type StackEvent = { kind: string; actor: string | null; time: Date };
+
+const defaultInterval = d3.utcYear
   // TODO extract this date
   .range(new Date(1700, 0, 1), new Date(2000, 0, 1))
   .map((d) => ({ time: d, kind: '', actor: null }));
 
 export const selectDiscrete = createSelector(
   selectDetailsRichEvents,
-  pipe(
-    flatMap(({ event }: ProsoVisDetailRichEvent) => {
-      if (event.datation.length === 2) {
-        const [start, end] = map(
-          pipe(get('value'), (d) => new Date(d), d3.timeYear.floor),
-          event.datation
-        );
+  selectDefaultFilterResolver,
+  (events, path) =>
+    pipe(
+      flatMap((event: ProsoVisDetailRichEvent) => {
+        if (event.event.datation.length === 2) {
+          const [start, end] = map(
+            pipe(get('value'), (d) => new Date(d), d3.utcYear.floor),
+            event.event.datation
+          );
 
-        return d3.timeYears(start, d3.timeDay.offset(end, 1)).map((time) => ({
-          // TODO groupby
-          kind: event.kind,
-          actor: event.actor,
-          time,
-        }));
-      } else if (event.datation.length === 1) {
-        return [
-          {
-            // TODO groupby
-            kind: event.kind,
+          return d3.utcYears(start, d3.utcDay.offset(end, 1)).map((time) => ({
+            kind: path(event),
             actor: event.actor,
-            time: d3.timeYear(parseISO(event.datation[0].value)),
-          },
-        ];
-      }
-      return [];
-    }),
-    concat(defaultInterval),
-    groupBy<{
-      time: Date;
-      kind: string;
-      actor: string;
-    }>('time')
-  ) as (v: any) => _.Dictionary<
-    {
-      time: Date;
-      // TODO groupby
-      kind: string;
-      actor: string;
-    }[]
-  >
+            time,
+          }));
+        } else if (event.event.datation.length === 1) {
+          return [
+            {
+              kind: path(event),
+              actor: event.actor,
+              time: d3.utcYear(parseISO(event.event.datation[0].value)),
+            },
+          ];
+        }
+        return [];
+      }),
+      concat(defaultInterval),
+      groupBy<StackEvent>('time')
+    )(events) as _.Dictionary<StackEvent[]>
 );
 
 const selectMap = createSelector(
   selectSwitch,
   selectDetailActorIds,
-  selectDetailKinds,
+  selectCustomFilterDefaultValues,
   selectKindColor,
   selectActorColor,
   (switcher, actors, kinds, mainColor, actorColor) =>
     switcher === 'Actor'
       ? { countBy: 'actor', keys: actors, color: actorColor }
       : // TODO groupby
-        { countBy: 'kind', keys: values(kinds), color: mainColor }
+        { countBy: 'kind', keys: kinds, color: mainColor }
 );
 
 const selectStack = createSelector(
@@ -93,15 +86,7 @@ const selectStack = createSelector(
   selectMap,
   function (events, selection) {
     const flatten = pipe(
-      mapValues(
-        countBy<
-          {
-            time: Date;
-            kind: string;
-            actor: string;
-          }[]
-        >(selection.countBy)
-      ),
+      mapValues(countBy<StackEvent[]>(selection.countBy)),
       (v) => _map(v, (value, time) => ({ time: new Date(time), ...value })),
       sortBy<
         _.Dictionary<number> &
