@@ -32,6 +32,8 @@ const defaultInterval = utcYear
 export const discretize: (
   path: (e: RichEvent) => string
 ) => (e: RichEvent) => Tyvent<string>[] = (path) => (event) => {
+  if (isNil(event.event.datation)) return [];
+
   if (event.event.datation.length === 2) {
     const [start, end] = map(
       pipe(get('value'), parseISO, utcYear.floor),
@@ -41,7 +43,7 @@ export const discretize: (
       value: path(event),
       time,
     }));
-  } else if (event.event.datation.length === 1) {
+  } else if (event.event.datation?.length === 1) {
     return [
       {
         value: path(event),

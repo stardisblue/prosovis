@@ -10,7 +10,6 @@ export type ComputedLabels = {
 
 export type ProsoVisDate = {
   kind: string;
-  id: string;
   label: string;
   value: string;
   uri?: string;
@@ -21,11 +20,14 @@ export type ProsoVisEvent = {
   id: string;
   label: string;
   actor: string;
-  localisation: string | null;
-  datation: [] | [ProsoVisDate] | [ProsoVisDate, ProsoVisDate] | ProsoVisDate[];
+  localisation?: string | null;
+  datation?:
+    | []
+    | [ProsoVisDate]
+    | [ProsoVisDate, ProsoVisDate]
+    | ProsoVisDate[]
+    | null;
   uri?: string;
-  created: string;
-  creator: string;
   computed?: ComputedLabels;
 };
 

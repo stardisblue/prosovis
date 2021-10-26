@@ -1,7 +1,7 @@
 import { createSelector } from '@reduxjs/toolkit';
 import { isAfter, isBefore, parseISO } from 'date-fns';
 import L from 'leaflet';
-import { keyBy } from 'lodash/fp';
+import { isNil, keyBy } from 'lodash/fp';
 import { RootState } from '../reducers';
 import { ActorMask } from '../reducers/maskSlice';
 import { selectDetailsRichEvents } from '../v2/selectors/detail/actors';
@@ -24,7 +24,7 @@ export const selectBoundsMask = createSelector(
 export const selectIntervalFun = createSelector(selectIntervalMask, (res) =>
   res
     ? function ({ event: { datation } }: ProsoVisDetailRichEvent) {
-        if (datation.length === 0) return true; // unbound by interval filter
+        if (isNil(datation) || datation.length === 0) return true; // unbound by interval filter
 
         if (datation.length === 1) {
           const parsed = parseISO(datation[0].value);
@@ -54,8 +54,8 @@ export const selectBoundsFun = createSelector(selectBoundsMask, (res) =>
   res
     ? (e: ProsoVisDetailRichEvent) => {
         const loc = e.place;
-        if (loc && loc.lat !== null && loc.lng !== null) {
-          return L.latLngBounds(res).contains([+loc.lat, +loc.lng]);
+        if (loc && !isNil(loc.lat) && !isNil(loc.lng)) {
+          return L.latLngBounds(res).contains([+loc.lat, +loc?.lng]);
         } else {
           return true;
         }

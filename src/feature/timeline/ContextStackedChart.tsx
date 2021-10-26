@@ -41,7 +41,7 @@ export const selectDiscrete = createSelector(
   (events, path) =>
     pipe(
       flatMap((event: ProsoVisDetailRichEvent) => {
-        if (event.event.datation.length === 2) {
+        if (event.event.datation?.length === 2) {
           const [start, end] = map(
             pipe(get('value'), (d) => new Date(d), d3.utcYear.floor),
             event.event.datation
@@ -52,7 +52,7 @@ export const selectDiscrete = createSelector(
             actor: event.actor,
             time,
           }));
-        } else if (event.event.datation.length === 1) {
+        } else if (event.event.datation?.length === 1) {
           return [
             {
               kind: path(event),

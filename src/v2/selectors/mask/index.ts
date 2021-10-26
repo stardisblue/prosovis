@@ -59,7 +59,8 @@ export const selectRichEventsFiltered = createSelector(
   function (events, bounds) {
     if (!events) return;
     return filter(({ event: { datation } }) => {
-      if (datation.length === 0 || isNil(bounds)) return true;
+      if (isNil(datation) || datation.length === 0 || isNil(bounds))
+        return true;
 
       if (datation.length === 1) {
         return isWithinInterval(parseISO(datation[0].value), bounds);
@@ -107,6 +108,10 @@ export const selectRichEventLocalised = createSelector(
 /** exist: Time */
 function existTime(events: RichEvent[] | undefined) {
   return (
-    events && filter(({ event: { datation } }) => datation.length > 0, events)
+    events &&
+    filter(
+      ({ event: { datation } }) => !isNil(datation) && datation.length > 0,
+      events
+    )
   );
 }

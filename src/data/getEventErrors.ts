@@ -25,17 +25,17 @@ function checkDatationLength(
   const errorMsg: ProsoVisError = {
     kind: 'DatationLength',
     message: `Le nombre de dates est incorrect`,
-    value: event.datation.length,
+    value: String(event.datation?.length),
     expected: sizes,
     level: 'Warning',
   };
 
   if (Array.isArray(sizes)) {
-    if (!some(isEqual(event.datation.length))(sizes)) return errorMsg;
+    if (!some(isEqual(event.datation?.length))(sizes)) return errorMsg;
   } else if (typeof sizes === 'object') {
-    if (!inRange(sizes.start, sizes.end, event.datation.length))
+    if (!inRange(sizes.start, sizes.end, event.datation?.length ?? 0))
       return errorMsg;
-  } else if (event.datation.length !== sizes) {
+  } else if (event.datation?.length !== sizes) {
     return errorMsg;
   }
 }

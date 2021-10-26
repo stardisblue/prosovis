@@ -3,7 +3,8 @@ import { isNil, keyBy, map, pipe, uniq } from 'lodash/fp';
 
 export type CustomFilterField = { value: string | null; count: number };
 
-export function getFilterType(v: string | number | object | undefined | null) {
+export function getFilterType(v: string | number | Object | undefined | null) {
+  if (v === null) return 'null';
   switch (typeof v) {
     case 'object':
       if (Array.isArray(v)) return 'array';
@@ -16,6 +17,7 @@ export function getFilterType(v: string | number | object | undefined | null) {
 export function resolveCustomFilterTypes(
   v: string | number | Object | undefined | null
 ) {
+  if (v === null) return 'null';
   switch (typeof v) {
     case 'object':
       if (Array.isArray(v)) return '' + v.length;
@@ -23,9 +25,8 @@ export function resolveCustomFilterTypes(
     case 'undefined':
       return 'undefined';
     case 'number':
-      return '' + v;
     default:
-      return '' + v;
+      return String(v);
   }
 }
 
@@ -53,16 +54,13 @@ export const customFilterSlice = createSlice({
       }: PayloadAction<{
         selected: boolean;
         filter: string;
-        values: CustomFilterField[];
+        values: { value: string; kind: string; count: number }[];
       }>
     ) {
       state.filters[filter] = {
         name: filter,
-        kinds: pipe(
-          map(({ value }) => getFilterType(value)),
-          uniq
-        )(values),
-        values: keyBy((v) => resolveCustomFilterTypes(v.value), values),
+        kinds: pipe(map('kind'), uniq)(values),
+        values: keyBy('value', values),
       };
       if (selected) state.selected = filter;
     },

@@ -35,6 +35,7 @@ const AutocompleteItems = styled.ul`
   padding: 0.25em;
   border-radius: 3px;
   margin: 0;
+  z-index: 1;
 `;
 
 const Container = styled.div`

@@ -2,6 +2,7 @@ import React from 'react';
 import styled from 'styled-components/macro';
 import { ProsoVisDate, ProsoVisEvent } from '../types/events';
 import { Popper } from '../../components/ui/Popper';
+import { isNil } from 'lodash/fp';
 
 const StyledTime = styled.time`
   white-space: nowrap;
@@ -70,7 +71,7 @@ export const ProsoVisDates: React.FC<{
   dates: ProsoVisEvent['datation'];
   showTooltip?: boolean;
 }> = function ({ dates, showTooltip }) {
-  if (dates.length === 0) return null;
+  if (isNil(dates) || dates.length === 0) return null;
 
   if (dates.length === 1) {
     return (
