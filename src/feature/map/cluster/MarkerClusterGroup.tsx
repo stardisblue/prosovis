@@ -15,8 +15,8 @@ import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFi
 export const selectMarkerGroupBy = createSelector(
   selectSwitchIsActor,
   selectDefaultFilterResolver,
-  (switcher, path) =>
-    switcher ? ({ actor }: DataMarkerOptions) => actor : path
+  (switcher, path): ((d: DataMarkerOptions) => string) =>
+    switcher ? ({ actor }) => actor.id : path
 );
 
 type Cluster = L.MarkerCluster & {
