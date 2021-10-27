@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useMemo } from 'react';
 import * as d3 from 'd3-scale';
 import L from 'leaflet';
-import { debounce, map } from 'lodash/fp';
+import { debounce } from 'lodash/fp';
 import { useDispatch, useSelector } from 'react-redux';
 import useHoverHighlight from '../../../hooks/useHoverHighlight';
 import useLazyRef from '../../../hooks/useLazyRef';
@@ -83,8 +83,8 @@ export const ActorPath: React.FC<{
   return (
     <>
       {chain.map(({ segment, diff }) => {
-        const key = map('options.id', segment).join(':');
-        const grp = map('groupId', segment).join(':');
+        const key = segment.map((s) => s.options.id).join(':');
+        const grp = segment.map((s) => s.groupId).join(':');
 
         return (
           <AntPath

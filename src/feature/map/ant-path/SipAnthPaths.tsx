@@ -17,13 +17,12 @@ import {
   sortBy,
   filter,
   pipe,
-  join,
   fromPairs,
   reverse,
-  identity,
 } from 'lodash/fp';
 import { map as _map } from 'lodash';
 import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
+import { groups } from 'd3';
 
 const markerReducer = function (
   state: _.Dictionary<DataMarkerType>,
@@ -115,7 +114,7 @@ const SipAnthPaths: React.FC<{
       mapValues(
         // chaining values
         (markers: AntPathEvent<DataMarkerOptions>[]) => ({
-          markers: map('options', markers),
+          markers: markers.map((m) => m.options),
           chain: flow(flatify, simplify, segmentify)(markers),
         })
       )
@@ -131,24 +130,20 @@ const SipAnthPaths: React.FC<{
       )
     )(chens);
 
-    const offset: _.Dictionary<number> = pipe(
-      groupBy<PathSegment<DataMarkerOptions>>(
-        pipe((v) => v.segment, map('groupId'), join(':'))
-      ),
-      mapValues(
-        (chain: PathSegment<DataMarkerOptions>[]) =>
-          chain.map(({ segment }, i) => [
-            pipe(map('options.id'), join(':'))(segment),
-            i,
-          ]) as [string, number][]
-      ),
-      flatMap(identity),
-      fromPairs
-    )(flatChens);
+    const offset = fromPairs(
+      groups(flatChens, ({ segment }) =>
+        segment.map((s) => s.groupId).join(':')
+      ).flatMap(([_group, chain]) =>
+        chain.map(
+          ({ segment }, i) =>
+            [segment.map((s) => s.options.id).join(':'), i] as [string, number]
+        )
+      )
+    );
 
     const total = pipe(
       map(({ segment }: PathSegment<DataMarkerOptions>) =>
-        map('groupId', segment)
+        segment.map((s) => s.groupId)
       ),
       keyBy((ids: string[]) => ids.join(':')),
       (values) =>

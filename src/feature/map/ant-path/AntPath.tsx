@@ -5,7 +5,7 @@ import '../../../polylineoffset/index';
 import PolylineOffset from '../../../polylineoffset/index';
 import { useSelector } from 'react-redux';
 import { superSelectionAsMap } from '../../../selectors/superHighlights';
-import { isEmpty, map, some } from 'lodash/fp';
+import { isEmpty } from 'lodash/fp';
 
 export type AntPathEvent<T = { id: string; [k: string]: any }> = {
   options: T;
@@ -59,7 +59,7 @@ export const AntPath: React.FC<{
 
   // update path
   useEffect(() => {
-    $antpath.current.setLatLngs(map('latLng', events));
+    $antpath.current.setLatLngs(events.map((e) => e.latLng));
   }, [events]);
 
   // update color
@@ -85,7 +85,7 @@ export const AntPath: React.FC<{
     $antpath.current.setStyle({
       opacity:
         isEmpty(selected) ||
-        some(({ options: { id } }) => selected[id] !== undefined, events)
+        events.some(({ options: { id } }) => selected[id] !== undefined)
           ? undefined
           : 0.3,
     });

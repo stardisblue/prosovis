@@ -2,8 +2,8 @@ export type ProsoVisRelation = {
   actors: [string, string];
   loc: string;
   events: string[];
-  d: number;
-  med: number;
+  weight: number;
+  order: number;
 };
 
 export type ProsoVisSignedRelation = Omit<ProsoVisRelation, 'actors'> & {

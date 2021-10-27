@@ -11,7 +11,7 @@ import {
   GrabberIcon,
   XIcon,
 } from '@primer/octicons-react';
-import { capitalize, pipe, sortBy } from 'lodash/fp';
+import { capitalize, pipe } from 'lodash/fp';
 import { animated, useSpring } from 'react-spring';
 import { useDrag } from 'react-use-gesture';
 import styled from 'styled-components/macro';
@@ -21,6 +21,7 @@ import { ProsoVisError } from '../../v2/types/errors';
 import { IconSpacer, IconSpacerPointer } from '../ui/IconSpacer';
 import { useDimsPopper } from '../ui/Popper';
 import { darkgray } from '../../v2/components/theme';
+import { sort } from 'd3';
 
 const errorLevelTranslation: { [k in ProsoVisError['level']]: string } = {
   Error: 'erreur',
@@ -180,9 +181,11 @@ export const EventErrorContextMenu: React.FC<{
 
   const sortedErrors = useMemo(
     () =>
-      sortBy(({ level }) => {
-        return level === 'Error' ? 0 : level === 'Warning' ? 1 : 2;
-      }, errors),
+      sort(errors, ({ level }) => {
+        if (level === 'Error') return 0;
+        if (level === 'Warning') return 1;
+        return 2;
+      }),
     [errors]
   );
 

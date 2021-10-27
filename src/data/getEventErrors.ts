@@ -1,22 +1,7 @@
-import {
-  curryRight,
-  filter,
-  first,
-  flatMap,
-  flow,
-  get,
-  last,
-  map,
-  maxBy,
-  minBy,
-  find,
-  every,
-  some,
-  isEqual,
-  inRange,
-} from 'lodash/fp';
+import { first, last, find, isEqual, inRange } from 'lodash/fp';
 import { ProsoVisDate, ProsoVisEvent, RichEvent } from '../v2/types/events';
 import { ProsoVisError } from '../v2/types/errors';
+import { max, min, subset } from 'd3';
 
 function checkDatationLength(
   event: ProsoVisEvent,
@@ -31,7 +16,7 @@ function checkDatationLength(
   };
 
   if (Array.isArray(sizes)) {
-    if (!some(isEqual(event.datation?.length))(sizes)) return errorMsg;
+    if (!sizes.some(isEqual(event.datation?.length))) return errorMsg;
   } else if (typeof sizes === 'object') {
     if (!inRange(sizes.start, sizes.end, event.datation?.length ?? 0))
       return errorMsg;
@@ -44,15 +29,15 @@ function checkDatationType(
   expected: ProsoVisDate['kind'][]
 ): ProsoVisError | undefined {
   // all event.datation is one of the allowed type
-  if (!every((e) => some(isEqual(e.kind), expected), event.datation)) {
+  const eventKinds = (event.datation ?? []).map((e) => e.kind);
+  if (!subset(eventKinds, expected))
     return {
       kind: 'DatationType',
       message: 'Le type de(s) date(s) est incorrect',
-      value: map('kind', event.datation),
+      value: (event.datation ?? []).map((d) => d.kind),
       expected,
       level: 'Warning',
     };
-  }
 }
 
 export function checkMissingPlace(event: RichEvent): ProsoVisError | undefined {
@@ -93,7 +78,7 @@ function checkEventUnicity(
   event: ProsoVisEvent,
   events: RichEvent[]
 ): ProsoVisError | undefined {
-  const subPart = filter(({ event: { kind } }) => kind === event.kind, events);
+  const subPart = events.filter(({ event: { kind } }) => kind === event.kind);
   if (subPart.length > 1) {
     return {
       kind: 'EventDuplication',
@@ -117,13 +102,11 @@ function checkBeforeBirthDatation(
   }
 ): ProsoVisError | undefined {
   if (event.kind !== 'Birth') {
-    const firstEventCleanDate = get('value', first(event.datation));
-    const firstBirthCleanDate = flow(
-      flatMap(get('event.datation')),
-      minBy('value'),
-      get('value')
-    )(keyEvents.birth);
-
+    const firstEventCleanDate = first(event.datation)?.value;
+    const firstBirthCleanDate = min(
+      keyEvents.birth.flatMap((b) => b.event.datation ?? []),
+      (b) => b.value
+    );
     if (
       firstEventCleanDate &&
       firstBirthCleanDate &&
@@ -151,12 +134,11 @@ function checkAfterDeathDatation(
   }
 ): ProsoVisError | undefined {
   if (event.kind !== 'Death') {
-    const lastEventCleanDate = get('value', last(event.datation));
-    const lastDeathCleanDate = flow(
-      flatMap(get('event.datation')),
-      maxBy('value'),
-      get('value')
-    )(keyEvents.death);
+    const lastEventCleanDate = last(event.datation)?.value;
+    const lastDeathCleanDate = max(
+      keyEvents.death.flatMap((d) => d.event.datation ?? []),
+      (d) => d.value
+    );
 
     if (
       lastEventCleanDate &&
@@ -196,16 +178,15 @@ export function accumulator(errors: ProsoVisError[] = []) {
 }
 
 export function prepareActorWide(events: RichEvent[]) {
-  const birth = filter(({ event }) => event.kind === 'Birth', events);
-  const death = filter(({ event }) => event.kind === 'Death', events);
+  const birth = events.filter(({ event }) => event.kind === 'Birth');
+  const death = events.filter(({ event }) => event.kind === 'Death');
   return { birth, death };
 }
 
 export function computeActorWideErrors(events: RichEvent[]) {
-  const { birth, death } = prepareActorWide(events);
+  const actorEvents = { ...prepareActorWide(events), events };
 
-  const curried = curryRight(computeEventErrors)({ birth, death, events });
-  return map(curried, events);
+  return events.map((event) => computeEventErrors(event, actorEvents));
 }
 
 export function computeEventErrors(

@@ -7,9 +7,9 @@ import PieChart from '../PieChart';
 import ReactDOM from 'react-dom';
 import { selectSwitchIsActor } from '../../../selectors/switch';
 import { createSelector } from '@reduxjs/toolkit';
-import { groupBy, map, pipe, sortBy, toPairs } from 'lodash/fp';
 import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
 import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFilter';
+import { groups, sort } from 'd3';
 
 // TODO
 export const selectMarkerGroupBy = createSelector(
@@ -111,12 +111,20 @@ export const MarkerClusterGroup: React.FC<{
         const radius = scale(markers.length);
         const size = radius * 2;
 
-        const counts = pipe(
-          map('options'),
-          groupBy<DataMarkerOptions>(markerGroupBy),
-          toPairs,
-          sortBy<[string, L.MarkerOptions[]]>('0')
-        )(markers);
+        const counts = sort(
+          groups(
+            markers.map((s) => s.options),
+            markerGroupBy
+          ),
+          ([key]) => key
+        );
+
+        // const counts = pipe(
+        //   map((s: DataMarkerType) => s.options),
+        //   groupBy<DataMarkerOptions>(markerGroupBy),
+        //   toPairs,
+        //   sortBy<[string, L.MarkerOptions[]]>('0')
+        // )(markers);
 
         // if (!c._svg_is_child) {
         return ReactDOM.createPortal(

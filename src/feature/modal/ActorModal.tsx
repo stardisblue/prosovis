@@ -13,6 +13,7 @@ import { validateDetailActorsThunk } from '../../v2/thunks/actors';
 import { selectDetailActors } from '../../v2/selectors/detail/actors';
 import { filter, size } from 'lodash/fp';
 import { mapValues, map } from 'lodash';
+import { ProsoVisActor } from '../../v2/types/actors';
 
 export const AbsolDiv = styled.div`
   position: absolute;
@@ -57,7 +58,9 @@ export const ActorModal: React.FC = function () {
     }
   }, [actors, maxActors, current]);
 
-  const [checkboxs, setCheckboxs] = useState({} as _.Dictionary<any>);
+  const [checkboxs, setCheckboxs] = useState(
+    {} as _.Dictionary<{ actor: ProsoVisActor; checked: boolean }>
+  );
 
   useEffect(() => {
     setCheckboxs(mapValues(actors, (actor) => ({ actor, checked: true })));
@@ -85,7 +88,7 @@ export const ActorModal: React.FC = function () {
   }, [dispatch]);
 
   const checkedSize = useMemo(
-    () => filter('checked', checkboxs).length,
+    () => filter((c) => c.checked, checkboxs).length,
     [checkboxs]
   );
 

@@ -72,7 +72,7 @@ function getErrorInfo(
   gray: boolean = true
 ): ColoredErrorInfoType | GrayedErrorInfoType {
   const groupedErrors: { [k in ProsoVisError['level']]?: ProsoVisError[] } =
-    groupBy('level', errors);
+    groupBy((e) => e.level, errors);
   const label = getErrorLabel(groupedErrors);
 
   if (!gray) {
@@ -121,21 +121,19 @@ export const SimpleEventErrors: React.FC<{ errors: ProsoVisError[] }> =
       useRefPopper<HTMLDivElement>(label);
 
     return (
-      <>
-        <ColoredPilledIconSpacer
-          spaceLeft
-          ref={$ref}
-          onMouseEnter={showHint}
-          onFocus={showHint}
-          onMouseLeave={hideHint}
-          onBlur={hideHint}
-          color={lightgray}
-          data-count={errors.length}
-        >
-          <Icon aria-label={label} />
-        </ColoredPilledIconSpacer>
+      <ColoredPilledIconSpacer
+        spaceLeft
+        ref={$ref}
+        onMouseEnter={showHint}
+        onFocus={showHint}
+        onMouseLeave={hideHint}
+        onBlur={hideHint}
+        color={lightgray}
+        data-count={errors.length}
+      >
+        <Icon aria-label={label} />
         {hint}
-      </>
+      </ColoredPilledIconSpacer>
     );
   };
 

@@ -1,4 +1,5 @@
-import { first, isArray, last, maxBy, minBy, reduce } from 'lodash/fp';
+import { greatest, least } from 'd3';
+import { first, isArray, last, reduce } from 'lodash/fp';
 import { useMemo } from 'react';
 import {
   EventGroup as EventGroupType,
@@ -35,11 +36,14 @@ export const useGroupEvents = function (
             lastEvent.events = [lastEvent.events, e];
           }
 
-          lastEvent.start = minBy('value', [
-            lastEvent.start,
-            first(event.datation),
-          ]);
-          lastEvent.end = maxBy('value', [lastEvent.end, last(event.datation)]);
+          lastEvent.start = least(
+            [lastEvent.start, first(event.datation)],
+            (d) => d?.value
+          );
+          lastEvent.end = greatest(
+            [lastEvent.end, last(event.datation)],
+            (d) => d?.value
+          );
 
           return acc;
         },

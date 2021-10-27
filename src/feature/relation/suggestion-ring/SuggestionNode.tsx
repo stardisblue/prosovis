@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { PlusIcon } from '@primer/octicons-react';
 import * as d3 from 'd3';
 import { identity } from 'lodash';
@@ -17,8 +17,6 @@ import {
   selectSortedGhosts,
 } from './selectors';
 import { darkgray } from '../../../v2/components/theme';
-
-const y = d3.scaleLog().domain([1, 10]).range([1, 20]);
 
 const selectGroups = createSelector(
   selectSortedGhosts,
@@ -43,10 +41,13 @@ export const SuggestionNodes: React.FC<{
   x: (v: string) => number;
 }> = function ({ $g, color, x }) {
   const sorted = useSelector(selectSortedGhosts);
-  const domain = d3.extent<number>(map('d', sorted)) as [number, number];
+
+  const y = useMemo(() => {
+    const domain = d3.extent(sorted, (s) => s.weight) as [number, number];
+    return d3.scaleLog().domain(domain).range([1, 20]);
+  }, [sorted]);
 
   const grouped = useSelector(selectGroups);
-  y.domain(domain);
 
   return (
     <g ref={$g} fill={color ?? darkgray}>
@@ -113,7 +114,7 @@ export const SuggestionNode: React.FC<{
       onMouseLeave={handleMouseLeave}
     >
       <circle r={5} />
-      <rect x={6} y={-2.5} height={5} width={y(datum.d)}></rect>
+      <rect x={6} y={-2.5} height={5} width={y(datum.weight)}></rect>
       {showModal.show && (
         <g onClick={onClick}>
           <Modal>

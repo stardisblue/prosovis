@@ -1,9 +1,8 @@
-import { every, flatMap, get, some, compact } from 'lodash/fp';
+import { compact, isNil } from 'lodash/fp';
 import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import styled from 'styled-components/macro';
 import { getKindString } from '../../data/getEventLabel';
-import { ProsoVisError } from '../../v2/types/errors';
 import getEventIcon from '../../data/getEventIcon';
 import {
   highlightable,
@@ -51,20 +50,21 @@ export const EventGroup: React.FC<
 
   /* Computed */
   const isHighlighted = useMemo(
-    () => some(['highlighted', true], events),
+    () => events.some((e) => e.highlighted),
     [events]
   );
-  const isMasked = useMemo(() => every(['masked', true], events), [events]);
-  const isSelected = useMemo(() => some(['selected', true], events), [events]);
+  const isMasked = useMemo(() => events.every((e) => e.masked), [events]);
+  const isSelected = useMemo(() => events.some((e) => e.selected), [events]);
 
-  const eventErrors = compact(
-    flatMap<typeof events, ProsoVisError>(get('errors'), events)
+  const eventErrors = useMemo(
+    () => compact(events.flatMap((e) => e.errors)),
+    [events]
   );
 
   const showErrors = useMemo(
     function () {
       return (
-        eventErrors !== undefined &&
+        !isNil(eventErrors) &&
         eventErrors.length > 0 && <SimpleEventErrors errors={eventErrors} />
       );
     },
