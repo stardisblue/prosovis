@@ -18,7 +18,7 @@ export const selectDetailActors = createSelector(
     actors
       ? flow(
           map((a: string) => actors[a]),
-          keyBy<ProsoVisActor>('id')
+          keyBy<ProsoVisActor>((a) => a.id)
         )(ids)
       : {}
 );

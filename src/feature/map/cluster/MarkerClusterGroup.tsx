@@ -1,23 +1,13 @@
-import React, { useEffect, useState, ReactPortal, useRef } from 'react';
+import React, { ReactPortal, useEffect, useRef, useState } from 'react';
+import * as d3 from 'd3';
+import { groups, sort } from 'd3';
 import L from 'leaflet';
 import 'leaflet.markercluster';
-import { useSelector } from 'react-redux';
-import * as d3 from 'd3';
-import PieChart from '../PieChart';
 import ReactDOM from 'react-dom';
-import { selectSwitchIsActor } from '../../../selectors/switch';
-import { createSelector } from '@reduxjs/toolkit';
-import { DataMarkerOptions, DataMarkerType } from '../marker/Marker';
-import { selectDefaultFilterResolver } from '../../../v2/selectors/mask/customFilter';
-import { groups, sort } from 'd3';
-
-// TODO
-export const selectMarkerGroupBy = createSelector(
-  selectSwitchIsActor,
-  selectDefaultFilterResolver,
-  (switcher, path): ((d: DataMarkerOptions) => string) =>
-    switcher ? ({ actor }) => actor.id : path
-);
+import { useSelector } from 'react-redux';
+import { DataMarkerType } from '../marker/Marker';
+import PieChart from '../PieChart';
+import { selectDefaultGroupBy } from '../../../selectors/switch';
 
 type Cluster = L.MarkerCluster & {
   _childClusters: Cluster[];
@@ -96,7 +86,7 @@ export const MarkerClusterGroup: React.FC<{
     []
   );
 
-  const markerGroupBy = useSelector(selectMarkerGroupBy);
+  const markerGroupBy = useSelector(selectDefaultGroupBy);
 
   const [portals, setPortals] = useState<(ReactPortal | null)[]>([]);
   useEffect(() => {

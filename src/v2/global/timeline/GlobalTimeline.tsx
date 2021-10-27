@@ -1,23 +1,17 @@
 import React, { useMemo, useRef } from 'react';
 import { reduce, stack, stackOrderAscending } from 'd3';
-import { countBy, map, pipe, sortBy } from 'lodash/fp';
 import { useSelector } from 'react-redux';
 import useDimensions from '../../../hooks/useDimensions';
 import Loading from '../../components/Loading';
 import { selectCustomFilterDefaultValues } from '../../selectors/mask/customFilter';
 import { height } from './options';
-import { selectBackgroundDiscrete, selectDiscrete, Tyvent } from './selectors';
+import {
+  flatten,
+  selectBackgroundDiscrete,
+  selectDiscrete,
+  Tyvent,
+} from './selectors';
 import { StreamGraph } from './StreamGraph';
-
-const flatten = pipe(
-  map<Tyvent<Tyvent<string>[]>, Tyvent<_.Dictionary<number>>>(
-    ({ time, value }) => ({
-      time,
-      value: countBy('value', value),
-    })
-  ),
-  sortBy<Tyvent<_.Dictionary<number>>>('time')
-);
 
 const GlobalTimeline: React.FC = function () {
   const $svg = useRef<SVGSVGElement>(null as any);

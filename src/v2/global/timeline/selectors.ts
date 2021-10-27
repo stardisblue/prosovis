@@ -1,15 +1,15 @@
 import { utcDay, utcYear, utcYears } from 'd3';
 import { parseISO } from 'date-fns';
-import { isNil } from 'lodash';
 import {
   concat,
-  filter,
+  countBy,
   first,
   flatMap,
-  get,
   groupBy,
+  isNil,
   map,
   pipe,
+  sortBy,
 } from 'lodash/fp';
 import { createSelector } from 'reselect';
 import {
@@ -17,7 +17,7 @@ import {
   selectRichEventsTimed,
 } from '../../selectors/mask';
 import { selectDefaultFilterResolver } from '../../selectors/mask/customFilter';
-import { RichEvent } from '../../types/events';
+import { ProsoVisDate, RichEvent } from '../../types/events';
 
 export type Tyvent<T> = {
   value: T;
@@ -36,7 +36,7 @@ export const discretize: (
 
   if (event.event.datation.length === 2) {
     const [start, end] = map(
-      pipe(get('value'), parseISO, utcYear.floor),
+      pipe((d: ProsoVisDate) => d.value, parseISO, utcYear.floor),
       event.event.datation
     );
     return utcYears(start, utcDay.offset(end, 1)).map((time) => ({
@@ -66,7 +66,7 @@ export const selectDiscrete = createSelector(
   fillEmpty
 );
 
-function fillEmpty(
+export function fillEmpty(
   events: RichEvent[] | undefined,
   path: (e: RichEvent) => string
 ): Tyvent<Tyvent<string>[]>[] | undefined {
@@ -74,10 +74,20 @@ function fillEmpty(
   return pipe(
     flatMap(discretize(path)),
     concat(defaultInterval),
-    groupBy(pipe(get('time'), (v) => +v!)),
+    groupBy(pipe((d) => +d.time)),
     map<Tyvent<string>[], Tyvent<Tyvent<string>[]>>((v) => ({
-      time: pipe(first, get('time'))(v),
-      value: filter('value', v),
+      time: first(v)?.time!,
+      value: v.filter((v) => v.value, v),
     }))
   )(events) as Tyvent<Tyvent<string>[]>[];
 }
+
+export const flatten = pipe(
+  map<Tyvent<Tyvent<string>[]>, Tyvent<_.Dictionary<number>>>(
+    ({ time, value }) => ({
+      time,
+      value: countBy((d) => d.value, value),
+    })
+  ),
+  sortBy<Tyvent<_.Dictionary<number>>>((d) => d.time)
+);

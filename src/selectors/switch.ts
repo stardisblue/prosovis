@@ -50,6 +50,13 @@ export const selectSwitchActorColor = createSelector(
   (switcher, actor) => (switcher ? actor : null)
 );
 
+export const selectDefaultGroupBy = createSelector(
+  selectSwitchIsActor,
+  selectDefaultFilterResolver,
+  (switcher, path): ((d: RichEvent) => string) =>
+    switcher ? ({ actor }) => actor.id : path
+);
+
 export const selectRichEventColor = createSelector(
   selectSwitchIsActor,
   selectActorColor,

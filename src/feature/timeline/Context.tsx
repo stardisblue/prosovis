@@ -1,17 +1,45 @@
 import React, { useMemo } from 'react';
-import ContextStackedChart from './ContextStackedChart';
-import ContextViewBrush from './ContextViewBrush';
-import ContextOptions from './ContextOptions';
 import * as d3 from 'd3';
-import BrushX from '../../v2/components/brush/BrushX';
-import { Axis } from '../../v2/components/Axis';
 import { parseISO } from 'date-fns';
+import { createSelector } from 'reselect';
+import {
+  selectDefaultGroupBy,
+  selectSwitchIsActor,
+} from '../../selectors/switch';
+import { Axis } from '../../v2/components/Axis';
+import BrushX from '../../v2/components/brush/BrushX';
+import { fillEmpty, flatten, Tyvent } from '../../v2/global/timeline/selectors';
+import {
+  selectDetailActorIds,
+  selectDetailsRichEvents,
+} from '../../v2/selectors/detail/actors';
+import { selectCustomFilterDefaultValues } from '../../v2/selectors/mask/customFilter';
+import ContextOptions from './ContextOptions';
+import ContextViewBrush from './ContextViewBrush';
+import { ContextStackedChart } from './ContextStackedChart';
 
-// todo extract this
+// todo date extract this
 const options = {
   max: parseISO('2000-01-01'), //Maximum date of timeline
   min: parseISO('1700-01-01'), // Minimum date of timeline
 };
+
+export const selectStack = createSelector(
+  selectDetailsRichEvents,
+  selectDefaultGroupBy,
+  selectSwitchIsActor,
+  selectDetailActorIds,
+  selectCustomFilterDefaultValues,
+  (events, path, switcher, actors, filters) => {
+    const filled = fillEmpty(events, path);
+    const flattened = flatten(filled);
+    return d3
+      .stack<any, Tyvent<_.Dictionary<number>>, string>()
+      .keys(switcher ? actors : filters)
+      .order(d3.stackOrderInsideOut)
+      .value((d, k) => d.value[k] || 0)(flattened);
+  }
+);
 
 export const Context: React.FC<{
   mask?: [Date, Date];
@@ -34,6 +62,7 @@ export const Context: React.FC<{
     },
     [width]
   );
+
   return (
     <svg
       id="timeline-context"
