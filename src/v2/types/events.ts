@@ -1,4 +1,5 @@
 import { ProsoVisActor } from './actors';
+import { ProsoVisError } from './errors';
 import { ProsoVisLocalisation, ProsoVisPlace } from './localisations';
 
 export type ComputedLabels = {
@@ -39,5 +40,5 @@ export type RichEvent = {
 };
 
 export type ProsoVisDetailRichEvent = RichEvent & {
-  errors?: any;
+  errors?: ProsoVisError[];
 };
