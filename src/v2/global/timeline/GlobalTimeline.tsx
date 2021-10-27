@@ -19,7 +19,6 @@ const GlobalTimeline: React.FC = function () {
 
   const events = useSelector(selectDiscrete);
   const backgroundEvents = useSelector(selectBackgroundDiscrete);
-  // TODO groupby
   const kinds = useSelector(selectCustomFilterDefaultValues);
 
   const stBackground = useMemo(

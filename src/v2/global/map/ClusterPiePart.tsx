@@ -20,7 +20,6 @@ export const ClusterPiePart: React.FC<{
   radius: number;
 }> = function ({ a, arc, radius }) {
   const dispatch = useDispatch();
-  // TODO groupby
   const color = useSelector(selectSwitchMainColor);
   const [id, values] = a.data;
 

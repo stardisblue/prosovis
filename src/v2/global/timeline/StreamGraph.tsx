@@ -49,7 +49,7 @@ export const StreamGraph: React.FC<{
     function () {
       return (
         scaleTime()
-          // TODO :)
+          // TODO date :)
           .domain([parseISO('1700-01-01'), parseISO('2000-01-01')])
           .range([margin.left, width - margin.right])
           .nice()

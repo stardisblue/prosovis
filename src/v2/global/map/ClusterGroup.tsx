@@ -6,11 +6,11 @@ import { createClusters, RichEventCluster } from './aggregation/createCluster';
 import { FeatureGroup } from '../../components/leaflet/FeatureGroup';
 import { useLeaflet } from '../../components/leaflet/context';
 import { Marker } from '../../components/leaflet/Marker';
-import { groupBy, pipe, sortBy, toPairs } from 'lodash/fp';
 import PieChart from './PieChart';
 import { ClusterPiePart } from './ClusterPiePart';
 import { useSelector } from 'react-redux';
 import { selectDefaultFilterResolver } from '../../selectors/mask/customFilter';
+import { groups, sort } from 'd3';
 
 export const ClusterGroup: React.FC<{ locs: RichEventLocalised[] }> =
   function ({ locs }) {
@@ -48,13 +48,7 @@ export const Cluster: React.FC<{ value: RichEventCluster }> = function ({
   const path = useSelector(selectDefaultFilterResolver);
 
   const parts = useMemo(
-    () =>
-      pipe(
-        // TODO groubpy
-        groupBy<RichEventLocalised>(path),
-        toPairs,
-        sortBy<[string, RichEventLocalised[]]>('0')
-      )(value.children),
+    () => sort(groups(value.children, path), (a) => a[0]),
     [value.children, path]
   );
   return (
