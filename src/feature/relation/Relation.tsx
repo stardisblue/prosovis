@@ -116,7 +116,7 @@ const Relation: React.FC<{ className?: string }> = function ({ className }) {
         .attr('y2', (d: any) => d.target.y);
 
       ringLink.attr('d', (pair?: any) => {
-        if (!pair === undefined) return ''; // solves a bug when sometimes the user will move the mouse too fast causing it to unregister before layout refresh, still registering the action but invalidating the datum associated to this items.
+        if (pair === undefined) return ''; // solves a bug when sometimes the user will move the mouse too fast causing it to unregister before layout refresh, still registering the action but invalidating the datum associated to this items.
 
         const [d, points] = pair;
         if (nodeMap.has(d.source)) {
