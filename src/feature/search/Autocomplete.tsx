@@ -94,7 +94,7 @@ const Autocomplete: React.FC = function () {
         type="text"
         value={text}
         onChange={handleChange}
-        placeholder="Rechercher un acteur"
+        placeholder="Actor search"
       />
       {results.length > 0 && (
         <AutocompleteItems>
