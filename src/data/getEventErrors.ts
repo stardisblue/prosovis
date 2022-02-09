@@ -233,14 +233,10 @@ export function computeEventErrors(
       chain
         .add(checkDatationLength(event.event, 2))
         .add(checkDatationType(event.event, ['Date de début', 'Date de fin']))
+        .add(checkLocalisation(event))
+        .add(checkMissingPlace(event))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
-      // TODO: fix this
-      const localisationCheck = checkLocalisation(event);
-      chain.add(localisationCheck);
-      if (localisationCheck?.kind === 'MissingLocalisation') {
-        chain.add(checkMissingPlace(event));
-      }
 
       break;
     }
@@ -255,6 +251,7 @@ export function computeEventErrors(
           ])
         )
         .add(checkLocalisation(event))
+        .add(checkMissingPlace(event))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
 
@@ -271,13 +268,9 @@ export function computeEventErrors(
           ])
         )
         .add(checkBeforeBirthDatation(event.event, actorEvents))
-        .add(checkAfterDeathDatation(event.event, actorEvents));
-      // TODO: fix this
-      const localisationCheck = checkLocalisation(event);
-      chain.add(localisationCheck);
-      if (localisationCheck?.kind === 'MissingLocalisation') {
-        chain.add(checkMissingPlace(event));
-      }
+        .add(checkAfterDeathDatation(event.event, actorEvents))
+        .add(checkLocalisation(event))
+        .add(checkMissingPlace(event));
 
       break;
     }
