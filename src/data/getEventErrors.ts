@@ -204,12 +204,12 @@ export function computeEventErrors(
       chain
         .add(checkEventUnicity(event.event, actorEvents.events))
         .add(checkDatationLength(event.event, 1))
-        .add(
-          checkDatationType(event.event, [
-            'Date unique',
-            "Date unique (jusqu'à, inclus)",
-          ])
-        )
+        // .add(
+        //   checkDatationType(event.event, [
+        //     'Date unique',
+        //     "Date unique (jusqu'à, inclus)",
+        //   ])
+        // )
         .add(checkMissingPlace(event));
       break;
     }
@@ -218,12 +218,12 @@ export function computeEventErrors(
       chain
         .add(checkEventUnicity(event.event, actorEvents.events))
         .add(checkDatationLength(event.event, 1))
-        .add(
-          checkDatationType(event.event, [
-            'Date unique',
-            "Date unique (jusqu'à, inclus)",
-          ])
-        )
+        // .add(
+        //   checkDatationType(event.event, [
+        //     'Date unique',
+        //     "Date unique (jusqu'à, inclus)",
+        //   ])
+        // )
         .add(checkMissingPlace(event));
 
       break;
@@ -232,7 +232,7 @@ export function computeEventErrors(
     case 'Education': {
       chain
         .add(checkDatationLength(event.event, 2))
-        .add(checkDatationType(event.event, ['Date de début', 'Date de fin']))
+        // .add(checkDatationType(event.event, ['Date de début', 'Date de fin']))
         .add(checkLocalisation(event))
         .add(checkMissingPlace(event))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
@@ -244,12 +244,12 @@ export function computeEventErrors(
     case 'ObtainQualification': {
       chain
         .add(checkDatationLength(event.event, 1))
-        .add(
-          checkDatationType(event.event, [
-            'Date unique',
-            "Date unique (jusqu'à, inclus)",
-          ])
-        )
+        // .add(
+        //   checkDatationType(event.event, [
+        //     'Date unique',
+        //     "Date unique (jusqu'à, inclus)",
+        //   ])
+        // )
         .add(checkLocalisation(event))
         .add(checkMissingPlace(event))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
@@ -261,12 +261,12 @@ export function computeEventErrors(
     case 'PassageExamen': {
       chain
         .add(checkDatationLength(event.event, 1))
-        .add(
-          checkDatationType(event.event, [
-            'Date unique',
-            "Date unique (jusqu'à, inclus)",
-          ])
-        )
+        // .add(
+        //   checkDatationType(event.event, [
+        //     'Date unique',
+        //     "Date unique (jusqu'à, inclus)",
+        //   ])
+        // )
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents))
         .add(checkLocalisation(event))
@@ -278,12 +278,12 @@ export function computeEventErrors(
     case 'Retirement': {
       chain
         .add(checkDatationLength(event.event, 1))
-        .add(
-          checkDatationType(event.event, [
-            'Date unique',
-            "Date unique (jusqu'à, inclus)",
-          ])
-        )
+        // .add(
+        //   checkDatationType(event.event, [
+        //     'Date unique',
+        //     "Date unique (jusqu'à, inclus)",
+        //   ])
+        // )
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
 
@@ -292,7 +292,7 @@ export function computeEventErrors(
     case 'SuspensionActivity': {
       chain
         .add(checkDatationLength(event.event, 2))
-        .add(checkDatationType(event.event, ['Date de début', 'Date de fin']))
+        // .add(checkDatationType(event.event, ['Date de début', 'Date de fin']))
         .add(checkBeforeBirthDatation(event.event, actorEvents))
         .add(checkAfterDeathDatation(event.event, actorEvents));
 
