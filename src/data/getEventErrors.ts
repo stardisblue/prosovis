@@ -1,7 +1,7 @@
 import { first, last, find, isEqual, inRange } from 'lodash/fp';
-import { ProsoVisDate, ProsoVisEvent, RichEvent } from '../v2/types/events';
+import { ProsoVisEvent, RichEvent } from '../v2/types/events';
 import { ProsoVisError } from '../v2/types/errors';
-import { max, min, subset } from 'd3';
+import { max, min } from 'd3';
 
 function checkDatationLength(
   event: ProsoVisEvent,
@@ -24,21 +24,22 @@ function checkDatationLength(
     return errorMsg;
   }
 }
-function checkDatationType(
-  event: ProsoVisEvent,
-  expected: ProsoVisDate['kind'][]
-): ProsoVisError | undefined {
-  // all event.datation is one of the allowed type
-  const eventKinds = (event.datation ?? []).map((e) => e.kind);
-  if (!subset(eventKinds, expected))
-    return {
-      kind: 'DatationType',
-      message: 'Le type de(s) date(s) est incorrect',
-      value: (event.datation ?? []).map((d) => d.kind),
-      expected,
-      level: 'Warning',
-    };
-}
+
+// function checkDatationType(
+//   event: ProsoVisEvent,
+//   expected: ProsoVisDate['kind'][]
+// ): ProsoVisError | undefined {
+//   // all event.datation is one of the allowed type
+//   const eventKinds = (event.datation ?? []).map((e) => e.kind);
+//   if (!subset(eventKinds, expected))
+//     return {
+//       kind: 'DatationType',
+//       message: 'Le type de(s) date(s) est incorrect',
+//       value: (event.datation ?? []).map((d) => d.kind),
+//       expected,
+//       level: 'Warning',
+//     };
+// }
 
 export function checkMissingPlace(event: RichEvent): ProsoVisError | undefined {
   if (!event.place) {
