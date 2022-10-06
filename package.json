@@ -2,6 +2,7 @@
   "name": "prosovis",
   "version": "0.1.0",
   "private": true,
+  "homepage": ".",
   "dependencies": {
     "@egjs/hammerjs": "^2.0.17",
     "@primer/octicons-react": "^16.1.0",
