@@ -1,5 +1,5 @@
 {
-  "@context": "https://w3id.org/codemeta/3.0",
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
   "type": "SoftwareSourceCode",
   "applicationCategory": "Computer Science",
   "author": [
@@ -47,16 +47,21 @@
     "type": "Organization",
     "name": "Agence nationale de la recherche, France"
   },
+  "keywords": [
+    "visual analytics",
+    "information visualisation",
+    "prosopography"
+  ],
   "license": "https://spdx.org/licenses/MIT",
   "name": "Prosovis",
   "programmingLanguage": ["typescript", "javascript"],
   "relatedLink": "https://stardisblue.github.io/prosovis",
   "runtimePlatform": "browser",
   "version": "1.0.0",
-  "codemeta:contIntegration": {
+  "contIntegration": "https://github.com/stardisblue/prosovis/actions/workflows/pages/pages-build-deployment",
+  "codemeta:continuousIntegration": {
     "id": "https://github.com/stardisblue/prosovis/actions/workflows/pages/pages-build-deployment"
   },
-  "continuousIntegration": "https://github.com/stardisblue/prosovis/actions/workflows/pages/pages-build-deployment",
   "developmentStatus": "inactive",
   "funding": "ANR-17-CE38-0013",
   "issueTracker": "https://github.com/stardisblue/prosovis/issues"
